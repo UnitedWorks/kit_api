@@ -3,15 +3,12 @@ machine:
     - curl -sSL https://s3.amazonaws.com/circle-downloads/install-circleci-docker.sh | bash -s -- 1.10.0
   services:
     - docker
-
 deployment:
-  hub:
+  production:
+    branch: [master]
+    commands:
+      - node manage.js deploy
+  images:
     branch: /.*/
     commands:
-      - docker ps -a
-      - docker images
-      - docker login -e $DOCKER_HUB_EMAIL -u $DOCKER_HUB_USER -p $DOCKER_HUB_PWD
-      - docker tag mayorapi_api $DOCKER_HUB_USER/mayorapi:$CIRCLE_SHA1
-      - docker tag mayorapi_api $DOCKER_HUB_USER/mayorapi:latest
-      - docker push $DOCKER_HUB_USER/mayorapi:$CIRCLE_SHA1
-      - docker push $DOCKER_HUB_USER/mayorapi:latest
+      - node manage.js push api
