@@ -44,3 +44,4 @@ To run tests, we want to over-ride the default command of our API container. We 
 1. Having changes in host code be reflected in docker containers without recreating an image?
 2. Creating a central repo to compose all parts of the application?
 3. Get testing suite to work with docker-compose so we can test against the DB and include the override into `circle.yml`
+4. Move deployment to scripts rather than config commands (Ex: https://circleci.com/docs/configuration/#deployment)
