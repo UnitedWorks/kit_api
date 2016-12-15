@@ -4,7 +4,11 @@ machine:
   services:
     - docker
 deployment:
-  dockerhub:
+  production:
     branch: master
     commands:
-      - curl -H "Content-Type: application/json" --data '{"build": true}' -X POST $DOCKER_HUB_BUILD_TRIGGER_URL
+      - node manage.js deploy
+  images:
+    branch: /.*/
+    commands:
+      - node manage.js push
