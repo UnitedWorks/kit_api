@@ -1,11 +1,34 @@
 {
   "name": "mayor-api",
   "version": "0.1.0",
-  "description": "API for managing conversations, city configurations, and integrations with external resources.",
-  "main": "index.js",
+  "description": "API for conversations, cases, cities, and integrations with external services.",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node api/start.js",
+    "test": "mocha tests/start.js"
   },
-  "author": "",
-  "license": "ISC"
+  "contributors": [
+    {
+      "name": "Mark Hansen",
+      "email": "x@markthemark.com"
+    }
+  ],
+  "engines": {
+    "node": "6.9.2"
+  },
+  "devDependencies": {
+    "eslint": "^3.12.2",
+    "eslint-config-airbnb": "^13.0.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^2.2.3",
+    "eslint-plugin-react": "^6.8.0",
+    "mocha": "^3.2.0"
+  },
+  "dependencies": {
+    "babel-core": "^6.20.0",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-stage-3": "^6.17.0",
+    "bookshelf": "^0.10.2",
+    "dotenv": "^2.0.0",
+    "express": "^4.14.0"
+  }
 }
