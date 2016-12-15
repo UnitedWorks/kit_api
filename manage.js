@@ -48,5 +48,6 @@ if (command === 'push') {
 }
 
 if (command === 'deploy') {
-  console.log('Deploying');
+  // Pull Image
+  // Push to AWS ECS
 }
