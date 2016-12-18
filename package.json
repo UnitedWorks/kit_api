@@ -1,9 +1,11 @@
 {
-  "name": "mayor-api",
+  "name": "kit_api",
   "version": "0.1.0",
   "description": "API for conversations, cases, cities, and integrations with external services.",
   "scripts": {
-    "start": "node api/start.js",
+    "start": "npm run start-production",
+    "start-production": "node api/start.js -env production",
+    "start-development": "nodemon api/start.js -env local",
     "test": "mocha tests/start.js"
   },
   "contributors": [
@@ -16,6 +18,7 @@
     "node": "6.9.2"
   },
   "devDependencies": {
+    "babel-eslint": "^7.1.1",
     "eslint": "^3.12.2",
     "eslint-config-airbnb": "^13.0.0",
     "eslint-plugin-import": "^2.2.0",
@@ -29,6 +32,10 @@
     "babel-preset-stage-3": "^6.17.0",
     "bookshelf": "^0.10.2",
     "dotenv": "^2.0.0",
-    "express": "^4.14.0"
+    "express": "^4.14.0",
+    "joi": "^10.0.6",
+    "knex": "^0.12.6",
+    "nodemon": "^1.11.0",
+    "pg": "^6.1.2"
   }
 }
