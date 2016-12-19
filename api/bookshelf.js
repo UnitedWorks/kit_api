@@ -1,12 +1,12 @@
-const knex = require('knex')({
+export const knex = require('knex')({
   client: 'pg',
   connection: {
     host: process.env.DATABASE_HOST,
     user: process.env.DATABASE_USER,
     password: process.env.DATABASE_USER_PASSWORD,
     database: process.env.DATABASE_NAME,
-    charset: process.env.CHARSET,
+    charset: process.env.DATABASE_CHARSET,
   },
 });
 
-export const db = require('bookshelf')(knex);
+export const bookshelf = require('bookshelf')(knex);

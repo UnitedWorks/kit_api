@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "description": "API for conversations, cases, cities, and integrations with external services.",
   "scripts": {
+    "migrate-local": "NODE_ENVIRONMENT=local knex migrate:latest",
+    "migrate-producation": "NODE_ENVIRONMENT=production knex migrate:latest",
     "start": "npm run start-production",
-    "start-production": "node api/start.js -env production",
-    "start-development": "nodemon api/start.js -env local",
-    "test": "mocha tests/start.js"
+    "start-local": "NODE_ENVIRONMENT=local nodemon api/start.js",
+    "start-production": "NODE_ENVIRONMENT=production node api/start.js",
+    "test": "NODE_ENVIRONMENT=local mocha tests/start.js"
   },
   "contributors": [
     {
@@ -36,6 +38,7 @@
     "joi": "^10.0.6",
     "knex": "^0.12.6",
     "nodemon": "^1.11.0",
+    "path": "^0.12.7",
     "pg": "^6.1.2"
   }
 }

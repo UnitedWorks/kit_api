@@ -5,6 +5,7 @@ WORKDIR /usr/src/kit_api
 
 COPY . /usr/src/kit_api
 RUN npm install
+RUN npm install knex -g
 
 EXPOSE 5000
 

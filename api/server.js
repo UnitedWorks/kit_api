@@ -1,12 +1,24 @@
 import express from 'express';
-import { db } from './bookshelf';
+import { User } from './accounts/user';
+import * as environment from './env';
 
 const app = express();
 const port = process.env.PORT;
 
 app.get('/', (req, res) => {
-  const payload = { message: 'EYO' };
-  res.status(200).send(payload);
+  User.fetchAll().then((users) => {
+    res.status(200).send(users);
+  });
+});
+
+app.get('/addUser', (req, res) => {
+  new User({
+    firstName: 'Mark',
+    lastName: 'Hansen',
+    emailAddress: 'x@markthemark.com',
+  }).save().then((saved) => {
+    res.send(saved);
+  });
 });
 
 app.get('/health_check', (req, res) => {
