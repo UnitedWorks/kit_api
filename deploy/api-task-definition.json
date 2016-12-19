@@ -1,7 +1,7 @@
 [
   {
     "name": "nginx",
-    "image": "%s.dkr.ecr.us-east-1.amazonaws.com/kit_api/nginx:latest",
+    "image": "%s.dkr.ecr.us-east-1.amazonaws.com/kit_api/nginx",
     "portMappings": [
       {
         "containerPort": 80,
@@ -14,7 +14,7 @@
   },
   {
     "name": "api",
-    "image": "%s.dkr.ecr.us-east-1.amazonaws.com/kit_api/api:%s",
+    "image": "%s.dkr.ecr.us-east-1.amazonaws.com/kit_api/api",
     "portMappings": [
       {
         "containerPort": 5000,

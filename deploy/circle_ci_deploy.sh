@@ -10,37 +10,35 @@ configure_aws_cli(){
 }
 
 deploy_cluster() {
-
     make_task_def
     register_definition
-    if [[ $(aws ecs update-service --cluster kit_production --service api --task-definition api) ]]; then
+    if service=$(aws ecs update-service --cluster kit_production --service api --task-definition api --desired-count 2); then
+      echo "Service: $service"
+    else
         echo "Error updating service."
         return 1
     fi
-
     echo "Service update took too long."
     return 1
 }
 
 make_task_def(){
 	task_template=$(cat ./deploy/api-task-definition.json)
-	task_def=$(printf "$task_template" $AWS_ACCOUNT_ID $CIRCLE_SHA1)
+	task_def=$(printf "$task_template" $AWS_ACCOUNT_ID)
 }
 
 push_ecr_image(){
 	eval $(aws ecr get-login --region us-east-1)
-	docker push $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/kit_api/api:$CIRCLE_SHA1
+	docker push $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/kit_api/api
 }
 
 register_definition() {
-
     if revision=$(aws ecs register-task-definition --container-definitions "$task_def" --family $family); then
         echo "Revision: $revision"
     else
         echo "Failed to register task definition"
         return 1
     fi
-
 }
 
 family="api"
