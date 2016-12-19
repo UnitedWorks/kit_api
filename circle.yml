@@ -8,4 +8,4 @@ deployment:
   production:
     branch: master
     commands:
-      - sh ./circle_ci_deploy.sh
+      - sh ./deploy/circle_ci_deploy.sh
