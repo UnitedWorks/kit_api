@@ -13,8 +13,7 @@ deploy_cluster() {
 
     make_task_def
     register_definition
-    if [[ $(aws ecs update-service --cluster kit_production --service api --task-definition $revision | \
-                   $JQ '.service.taskDefinition') != $revision ]]; then
+    if [[ $(aws ecs update-service --cluster kit_production --service api --task-definition api) ]]; then
         echo "Error updating service."
         return 1
     fi
@@ -24,7 +23,7 @@ deploy_cluster() {
 }
 
 make_task_def(){
-	task_template=$(cat ./api-task-definition.json)
+	task_template=$(cat ./deploy/api-task-definition.json)
 	task_def=$(printf "$task_template" $AWS_ACCOUNT_ID $CIRCLE_SHA1)
 }
 
@@ -35,7 +34,7 @@ push_ecr_image(){
 
 register_definition() {
 
-    if revision=$(aws ecs register-task-definition --container-definitions="$task_def" --family $family); then
+    if revision=$(aws ecs register-task-definition --container-definitions "$task_def" --family $family); then
         echo "Revision: $revision"
     else
         echo "Failed to register task definition"
