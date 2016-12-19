@@ -1,20 +1,24 @@
-// For ES6 Modules
 require('babel-core/register');
+require('./api/env').setup();
 
-var path = require('path');
-var env = require('./api/env').get();
+const path = require('path');
 
-var config = {
-  local: {
-    client: 'pg',
-    connection: 'postgresql://kit:community@postgres:5432/kit',
-    migrations: {
-      directory: path.join(__dirname, '/migrations/versions'),
-    },
-    seeds: {
-      directory: path.join(__dirname, '/seeds/local'),
-    },
+const dbUser = process.env.DATABASE_USER;
+const dbPassword = process.env.DATABASE_USER_PASSWORD;
+const dbEndpoint = process.env.DATABASE_ENDPOINT;
+const dbPort = process.env.DATABASE_PORT;
+const dbName = process.env.DATABASE_NAME;
+const dbOptions = process.env.DATABASE_PARAMS;
+
+const dbConnectionURL = `postgresql://${dbUser}:${dbPassword}@${dbEndpoint}:${dbPort}/${dbName}${dbOptions}`;
+
+module.exports = {
+  client: 'pg',
+  connection: dbConnectionURL,
+  migrations: {
+    directory: path.join(__dirname, '/migrations/versions'),
+  },
+  seeds: {
+    directory: path.join(__dirname, '/seeds'),
   },
 };
-
-module.exports = config[env];
