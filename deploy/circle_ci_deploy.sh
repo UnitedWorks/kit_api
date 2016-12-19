@@ -2,8 +2,11 @@
 
 # more bash-friendly output for jq
 JQ="jq --raw-output --exit-status"
+family="api"
+cluster="kit_production"
+desired_count=2
 
-configure_aws_cli(){
+configure_aws_cli() {
 	aws --version
 	aws configure set default.region us-east-1
 	aws configure set default.output json
@@ -12,36 +15,32 @@ configure_aws_cli(){
 deploy_cluster() {
     make_task_def
     register_definition
-    if service=$(aws ecs update-service --cluster kit_production --service api --task-definition api --desired-count 2); then
-      echo "Service: $service"
+    if service=$(aws ecs update-service --cluster $cluster --service $family --task-definition $family --desired-count $desired_count); then
+        echo "Service Updated: $service"
     else
         echo "Error updating service."
         return 1
     fi
-    echo "Service update took too long."
-    return 1
 }
 
-make_task_def(){
+make_task_def() {
 	task_template=$(cat ./deploy/api-task-definition.json)
 	task_def=$(printf "$task_template" $AWS_ACCOUNT_ID)
 }
 
 push_ecr_image(){
 	eval $(aws ecr get-login --region us-east-1)
-	docker push $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/kit_api/api
+	docker push https://$AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/kit_api/api
 }
 
 register_definition() {
-    if revision=$(aws ecs register-task-definition --container-definitions "$task_def" --family $family); then
-        echo "Revision: $revision"
+    if task_revision=$(aws ecs register-task-definition --container-definitions "$task_def" --family $family); then
+        echo "Task Revision: $task_revision"
     else
         echo "Failed to register task definition"
         return 1
     fi
 }
-
-family="api"
 
 configure_aws_cli
 push_ecr_image
