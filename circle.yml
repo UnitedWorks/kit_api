@@ -4,12 +4,9 @@ machine:
   services:
     - docker
 
-dependencies:
-  post:
-    - if [ $CIRCLE_BRANCH = 'master' ]; then docker build -t $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/kit_api/api .; fi
-
 deployment:
   production:
     branch: master
     commands:
+      - docker build -t $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/kit_api/api .
       - sh ./deploy/circle_ci_deploy.sh
