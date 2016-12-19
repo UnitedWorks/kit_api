@@ -6,6 +6,10 @@ const app = express();
 const port = process.env.PORT;
 
 app.get('/', (req, res) => {
+  res.status(200).send('Oh howdy howdy neighbor');
+});
+
+app.get('/getUsers', (req, res) => {
   User.fetchAll().then((users) => {
     res.status(200).send(users);
   });
