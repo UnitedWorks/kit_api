@@ -4,6 +4,10 @@ machine:
   services:
     - docker
 
+dependencies:
+  post:
+    - docker build -t $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/kit_api/api:$CIRCLE_SHA1 .
+
 deployment:
   production:
     branch: master

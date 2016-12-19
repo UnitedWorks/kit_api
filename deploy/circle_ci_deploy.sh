@@ -23,18 +23,13 @@ deploy_cluster() {
     fi
 }
 
-make_task_def() {
-	task_template=$(cat ./deploy/api-task-definition.json)
-	task_def=$(printf "$task_template" $AWS_ACCOUNT_ID)
-}
-
 push_ecr_image(){
 	eval $(aws ecr get-login --region us-east-1)
-	docker push https://$AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/kit_api/api
+	docker push $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/kit_api/api
 }
 
 register_definition() {
-    if task_revision=$(aws ecs register-task-definition --container-definitions "$task_def" --family $family); then
+    if task_revision=$(aws ecs register-task-definition --cli-input-json file://deploy/api-task-definition.json); then
         echo "Task Revision: $task_revision"
     else
         echo "Failed to register task definition"
