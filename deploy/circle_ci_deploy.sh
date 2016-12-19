@@ -35,7 +35,7 @@ push_ecr_image(){
 
 register_definition() {
 
-    if revision=$(aws ecs register-task-definition --cli-input-json "$task_def"); then
+    if revision=$(aws ecs register-task-definition --container-definitions "$task_def" --family $family); then
         echo "Revision: $revision"
     else
         echo "Failed to register task definition"
