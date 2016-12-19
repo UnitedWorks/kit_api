@@ -4,9 +4,9 @@ machine:
   services:
     - docker
 
-deployment:
-  production:
-    branch: master
-    commands:
-      - docker build -t $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/kit_api/api .
-      - sh ./deploy/circle_ci_deploy.sh
+# deployment:
+#   production:
+#     branch: master
+#     commands:
+#       - docker build -t $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/kit_api/api .
+#       - sh ./deploy/circle_ci_deploy.sh

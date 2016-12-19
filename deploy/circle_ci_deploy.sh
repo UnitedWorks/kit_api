@@ -12,12 +12,12 @@ configure_aws_cli() {
 
 push_ecr_image(){
 	 eval $(aws ecr get-login --region us-east-1)
-   docker push $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/kit_api/api
-  #  docker push $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/kit_api/api:$CIRCLE_SHA1
+   docker push $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/kit_$family/$family
+   docker push $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/kit_$family/$family:$CIRCLE_SHA1
 }
 
 register_definition() {
-    if task_revision=$(aws ecs register-task-definition --cli-input-json file://deploy/api-task-definition.json); then
+    if task_revision=$(aws ecs register-task-definition --cli-input-json file://deploy/${family}-task-definition.json); then
         echo "Task Revision: $task_revision"
     else
         echo "Failed to register task definition"
