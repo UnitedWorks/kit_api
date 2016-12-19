@@ -1,3 +1,4 @@
+import dotenv from 'dotenv';
 import { ENVIRONMENTS } from './constants/environments';
 
 let environment;
@@ -31,10 +32,17 @@ function getEnv() {
 function set(env) {
   environment = env;
   if (env === 'local') {
-    require('dotenv').config({ path: '.env.local' });
+    dotenv.config({ path: '.env.local' });
   } else if (env === 'production') {
-    require('dotenv').config({ path: '.env.production' });
+    dotenv.config({ path: '.env.production' });
+  } else if (env === 'test') {
+    dotenv.config({ path: '.env.test' });
   }
+}
+
+export function setup() {
+  const env = getEnv();
+  set(env);
 }
 
 export function get() {
@@ -42,9 +50,4 @@ export function get() {
     setup();
   }
   return environment;
-}
-
-export function setup() {
-  const env = getEnv();
-  set(env);
 }
