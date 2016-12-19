@@ -24,7 +24,7 @@ deploy_cluster() {
 }
 
 make_task_def(){
-	task_template=$(cat api-task-definition.json)
+	task_template=$(cat ./api-task-definition.json)
 	task_def=$(printf "$task_template" $AWS_ACCOUNT_ID $CIRCLE_SHA1)
 }
 
@@ -43,6 +43,8 @@ register_definition() {
     fi
 
 }
+
+family="api"
 
 configure_aws_cli
 push_ecr_image
