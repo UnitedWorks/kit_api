@@ -6,7 +6,7 @@ machine:
 
 dependencies:
   post:
-    - docker build -t $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/kit_api/api:$CIRCLE_SHA1 .
+    - if [ $CIRCLE_BRANCH = 'master' ]; then docker build -t $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/kit_api/api .; fi
 
 deployment:
   production:

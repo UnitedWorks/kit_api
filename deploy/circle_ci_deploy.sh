@@ -13,7 +13,6 @@ configure_aws_cli() {
 }
 
 deploy_cluster() {
-    make_task_def
     register_definition
     if service=$(aws ecs update-service --cluster $cluster --service $family --task-definition $family --desired-count $desired_count); then
         echo "Service Updated: $service"
