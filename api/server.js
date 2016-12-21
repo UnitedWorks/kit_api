@@ -167,7 +167,6 @@ function handleEcho(messageId, appId, metadata) {
 }
 
 function handleApiAiAction(sender, action, responseText, contexts, parameters) {
-  logger.info('handeApiAiAction is firing!', sender, action, responseText, contexts, parameters)
 	switch (action) {
 		case "faq-delivery":
 			sendTextMessage(sender, responseText);
@@ -778,14 +777,14 @@ function callSendAPI(messageData) {
 			var messageId = body.message_id;
 
 			if (messageId) {
-				logger.info("Successfully sent message with id %s to recipient %s",
+				logger.info('Successfully sent message with id %s to recipient %s',
 					messageId, recipientId);
 			} else {
-				logger.info("Successfully called Send API for recipient %s",
+				logger.info('Successfully called Send API for recipient %s',
 					recipientId);
 			}
 		} else {
-			logger.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error);
+			logger.error('Failed calling Send API', response.statusCode, response.statusMessage, body.error);
 		}
 	});
 }
@@ -814,11 +813,11 @@ function receivedPostback(event) {
 			break;
 		case 'JOB_APPLY':
 			//get feedback with new jobs
-			sendToApiAi(senderID, "job openings");
+			sendToApiAi(senderID, 'job openings');
 			break;
 		case 'CHAT':
 			//user wants to chat
-			sendTextMessage(senderID, "I love chatting too. Do you have any other questions for me?");
+			sendTextMessage(senderID, 'I love chatting too. Do you have any other questions for me?');
 			break;
 		default:
 			//unindentified payload
@@ -826,9 +825,9 @@ function receivedPostback(event) {
 			break;
 
 	}
-	logger.info("payload" + payload);
+	logger.info('payload' + payload);
 	logger.info("Received postback for user %d and page %d with payload '%s' " +
-		"at %d", senderID, recipientID, payload, timeOfPostback);
+		'at %d', senderID, recipientID, payload, timeOfPostback);
 
 }
 
@@ -848,8 +847,8 @@ function receivedMessageRead(event) {
 	var watermark = event.read.watermark;
 	var sequenceNumber = event.read.seq;
 
-	logger.info("Received message read event for watermark %d and sequence " +
-		"number %d", watermark, sequenceNumber);
+	logger.info('Received message read event for watermark %d and sequence ' +
+		'number %d', watermark, sequenceNumber);
 }
 
 /*
@@ -867,8 +866,8 @@ function receivedAccountLink(event) {
 	var status = event.account_linking.status;
 	var authCode = event.account_linking.authorization_code;
 
-	logger.info("Received account link event with for user %d with status %s " +
-		"and auth code %s ", senderID, status, authCode);
+	logger.info('Received account link event with for user %d with status %s ' +
+		'and auth code %s ', senderID, status, authCode);
 }
 
 /*
@@ -888,12 +887,12 @@ function receivedDeliveryConfirmation(event) {
 
 	if (messageIDs) {
 		messageIDs.forEach(function (messageID) {
-			logger.info("Received delivery confirmation for message ID: %s",
+			logger.info('Received delivery confirmation for message ID: %s',
 				messageID);
 		});
 	}
 
-	logger.info("All message before %d were delivered.", watermark);
+	logger.info('All message before %d were delivered.', watermark);
 }
 
 /*
@@ -916,13 +915,13 @@ function receivedAuthentication(event) {
 	// plugin.
 	var passThroughParam = event.optin.ref;
 
-	logger.info("Received authentication for user %d and page %d with pass " +
+	logger.info('Received authentication for user %d and page %d with pass ' +
 		"through param '%s' at %d", senderID, recipientID, passThroughParam,
 		timeOfAuth);
 
 	// When an authentication is received, we'll send a message back to the sender
 	// to let them know it was successful.
-	sendTextMessage(senderID, "Authentication successful");
+	sendTextMessage(senderID, 'Authentication successful');
 }
 
 /*
@@ -934,7 +933,7 @@ function receivedAuthentication(event) {
  *
  */
 function verifyRequestSignature(req, res, buf) {
-	var signature = req.headers["x-hub-signature"];
+	var signature = req.headers['x-hub-signature'];
 
 	if (!signature) {
 		throw new Error('Couldn\'t validate the signature.');
@@ -959,8 +958,10 @@ function sendEmail(subject, content) {
 	var from_email = new helper.Email(process.env.EMAIL_FROM);
 	var to_email = new helper.Email(process.env.EMAIL_TO);
 	var subject = subject;
-	var content = new helper.Content("text/html", content);
+	var content = new helper.Content('text/html', content);
 	var mail = new helper.Mail(from_email, subject, to_email, content);
+
+  logger.info('Sending email:', content);
 
 	var sg = require('sendgrid')(process.env.SENDGRID_API_KEY);
 	var request = sg.emptyRequest({
@@ -969,7 +970,8 @@ function sendEmail(subject, content) {
 		body: mail.toJSON()
 	});
 
-	sg.API(request, function(error, response) {
+	sg.API(request, (err, response) => {
+    if (err) logger.error(err);
 		logger.info(response.statusCode)
 		logger.info(response.body)
 		logger.info(response.headers)
@@ -999,7 +1001,7 @@ app.get('/', (req, res) => {
 
 app.get('/logs', (req, res) => {
   fs.readFile(path.join(__dirname, '..', 'logs/info.log'), 'utf8', (err, data) => {
-    res.status(200).json(data);
+    res.status(200).json({ logs: data });
   });
 });
 
