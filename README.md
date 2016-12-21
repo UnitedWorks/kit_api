@@ -1,47 +1,63 @@
-#Mayor API
+#Kit API
+
+API for conversations, cases, cities, and integrations with external services.
+
 ----
-##Docker##
-To get a image created and container running for the API, we're going to need two commands.
+###Brainstorming/Flow###
+These are some scattered thoughts about how the flow of data, from when a message is received until a response is given.
+There's bound to be parts that get injected, but I want to get the structure right so the system is a bit more modular for other services.
 
-###Running a Docker Container
-First, create your image. The `-t` flag lets you give the image an identifier. The `.` at the end states that the current directory is where to build from (and look for our Dockerfile).
-```
-  docker build -t mayor-api:0.1 .
-```
+For example, some scenarios to think about:
+- How can a human take over? Before hitting the service, should we find the related conversation in the DB and see if a "Needs Involvement" flag is true
+- How might we send back an "is typing" or "received" event
 
-Second, we run our image. The `-it` flags let you interact with the container via command line and setup stdin/stdout. Using the `-d` flag instead lets you run it detached. The `-p` flag takes exposed ports in the container (defined in the Dockerfile), and maps them to the host(127.0.0.1). Finally, we specify which image we want to create our container from.
-```
-  docker run -it -p 5000:5000 mayor-api:0.1
-```
+I'm concerned my "actions" word is too vague. But maybe that's the right way to think about it. Ex: knowledgeBase, 311, reportPoliceMisconduct, getBenefits, reportWorkingConditions.How about "engagements", "interactions", "engagement_modules", "alliances"
 
-###Running a Docker Network - Linked Containers
-Running an API container without a connected database isn't too useful. To link up an isolated Postgres database, we need to utilize `docker-compose`.
-
-To create this type of image, we're going to use commands that read off our `docker-compose.yml` file. Since our configuraiton sits there, all we need to do is:
 ```
-  docker-compose build
-```
+our endpoint is hit =>
 
-To run this type container, we're going to use a docker-compose command which constructs a docker network.
-```
-  docker-compose up
-```
+  receivedConversationMessage()
+    normalizeConversationMessage({ sourceFrom: facebook })
+      facebook =>
+        facebookMessageToKitMessage()
+    sendToService({ followup: sendMessage })
+      =>
 
-To run tests, we want to over-ride the default command of our API container. We can do it like so:
+  sendToService({ type: NLP, message: message, followup: sendMessage })
+    => NLP
+      handleNLP({ service: ApiAi, message: message, followUp: sendMessage })
+        ApiAI =>
+          handleApiAiSend({ message: message })
+          handleApiAiResponse({ data: data })
+            => return data w/ engagement
+              handleEngagement(engagement: searchKnowledgeBase, followup: sendMessage )
+                =>
+
+  handleEngagement({ engagement: searchKnowledgeBase, data: data, followup: sendMessage })
+    => searchKnowledgeBase
+      lookupKnowledgeBase({ data: data, followup: sendMessage }) =>
+        ... run intent/action label against a slew of switch cases to get instructions on what to do
+          If static response:
+            => sendMessage()
+          If not static response:
+            If city knowledge is missing:
+              => addContextToKnowledgeBitMessage(fallbackData)
+            If geographic info is missing:
+              sendConversationMessage({ type: getLocation, convoData })
+              => addContextToKnowledgeBitMessage(returnedExtendedData)
+            Otherwise:
+              addContextToKnowledgeBitMessage(extendedData)
+            => sendMessage()
+              translateKnowledgeForMessage()
+              sendMessage(translatedKnowledgeData, conversationData)
+
+  sendMessage(translatedKnowledgeData, conversationData)
+    normalizeConversationMessage({ sourceTo: conversationData.sourceTo })
+      conversationData.sourceTo == facebook =>
+        kitMessageToFacebookMessage()
+          =>
+    sendConversationMessage({ sourceTo: conversationData.sourceTo })
+      conversationData.sourceTo == facebook =>
+
+        Hits their endpoint
 ```
-  docker-compose run mayorapi_api npm test
-```
-
-###What you can do to docker containers
-* `ps` - List containers/networks
-* `start/stop/restart` - Manage containers (they persist information)
-* `rm` - Remove containers
-* `commit` - After making changes to a container, you can create a new image
-* `pull` - Lets you pull a version down from DockerHub
-
-
-###To Be Improved
-1. Having changes in host code be reflected in docker containers without recreating an image?
-2. Creating a central repo to compose all parts of the application?
-3. Get testing suite to work with docker-compose so we can test against the DB and include the override into `circle.yml`
-4. Move deployment to scripts rather than config commands (Ex: https://circleci.com/docs/configuration/#deployment)
