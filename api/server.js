@@ -14,24 +14,6 @@ const s3 = new AWS.S3({
   region: process.env.AWS_DEFAULT_REGION
 });
 
-// Messenger API parameters
-if (!process.env.FB_PAGE_TOKEN) {
-	throw new Error('missing FB_PAGE_TOKEN');
-}
-if (!process.env.FB_VERIFY_TOKEN) {
-	throw new Error('missing FB_VERIFY_TOKEN');
-}
-if (!process.env.API_AI_CLIENT_ACCESS_TOKEN) {
-	throw new Error('missing API_AI_CLIENT_ACCESS_TOKEN');
-}
-if (!process.env.FB_APP_SECRET) {
-	throw new Error('missing FB_APP_SECRET');
-}
-if (!process.env.AWS_S3_BUCKET_URL) {
-	throw new Error('missing AWS_S3_BUCKET_URL');
-}
-
-
 app.set('port', (process.env.PORT || 5000))
 
 //verify request came from facebook
@@ -974,7 +956,7 @@ function sendEmail(subject, content) {
 	var content = new helper.Content("text/html", content);
 	var mail = new helper.Mail(from_email, subject, to_email, content);
 
-	var sg = require('sendgrid')(process.env.SENGRID_API_KEY);
+	var sg = require('sendgrid')(process.env.SENDGRID_API_KEY);
 	var request = sg.emptyRequest({
 		method: 'POST',
 		path: '/v3/mail/send',

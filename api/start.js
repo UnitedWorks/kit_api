@@ -1,7 +1,7 @@
 // Init Babel
 require('babel-core/register');
 
-// Setup environment
+// Setup Environment
 require('./env').setup();
 
 // Start Server
