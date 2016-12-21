@@ -1,4 +1,3 @@
-import { User } from './accounts/user';
 import * as environment from './env';
 
 const apiai = require('apiai');
@@ -1015,6 +1014,6 @@ app.get('/health_check', (req, res) => {
 });
 
 
-app.listen(app.get(port), () => {
-  console.log(`Server listening at port: ${app.get(port)}`);
+app.listen(app.get('port'), () => {
+  console.log(`Server listening at port: ${app.get('port')}`);
 });
