@@ -14,6 +14,8 @@ const s3 = new AWS.S3({
   region: process.env.AWS_DEFAULT_REGION
 });
 
+var logs = [];
+
 app.set('port', (process.env.PORT || 5000))
 
 //verify request came from facebook
@@ -162,6 +164,13 @@ function handleEcho(messageId, appId, metadata) {
 }
 
 function handleApiAiAction(sender, action, responseText, contexts, parameters) {
+  logs.push({
+    sender,
+    action,
+    responseText,
+    contexts,
+    parameters
+  });
 	switch (action) {
 		case "faq-delivery":
 			sendTextMessage(sender, responseText);
@@ -988,7 +997,7 @@ function isDefined(obj) {
  */
 
 app.get('/', (req, res) => {
-  res.status(200).send();
+  res.status(200).send(logs);
 });
 
 app.get('/health_check', (req, res) => {
