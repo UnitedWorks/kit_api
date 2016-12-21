@@ -1,20 +1,23 @@
 import * as environment from './env';
+import { logger } from './logger';
 
 const apiai = require('apiai');
-const express = require('express');
-const crypto = require('crypto');
-const bodyParser = require('body-parser');
-const request = require('request');
-const app = express();
-const uuid = require('uuid');
 const AWS = require('aws-sdk');
+const bodyParser = require('body-parser');
+const crypto = require('crypto');
+const express = require('express');
+const fs = require('fs');
+const morgan = require('morgan');
+const path = require('path');
+const request = require('request');
 const s3 = new AWS.S3({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
   region: process.env.AWS_DEFAULT_REGION
 });
+const uuid = require('uuid');
 
-var logs = [];
+const app = express();
 
 app.set('port', (process.env.PORT || 5000))
 
@@ -43,11 +46,11 @@ const sessionIds = new Map();
 
 // for Facebook verification
 app.get('/conversations/webhook/', function (req, res) {
-	console.log("request");
+	logger.info("request");
 	if (req.query['hub.mode'] === 'subscribe' && req.query['hub.verify_token'] === process.env.FB_VERIFY_TOKEN) {
 		res.status(200).send(req.query['hub.challenge']);
 	} else {
-		console.error("Failed validation. Make sure the validation tokens match.");
+		logger.error("Failed validation. Make sure the validation tokens match.");
 		res.sendStatus(403);
 	}
 })
@@ -61,7 +64,7 @@ app.get('/conversations/webhook/', function (req, res) {
  */
 app.post('/conversations/webhook/', function (req, res) {
 	var data = req.body;
-	console.log(JSON.stringify(data));
+	logger.info(JSON.stringify(data));
 
 
 
@@ -88,7 +91,7 @@ app.post('/conversations/webhook/', function (req, res) {
 				} else if (messagingEvent.account_linking) {
 					receivedAccountLink(messagingEvent);
 				} else {
-					console.log("Webhook received unknown messagingEvent: ", messagingEvent);
+					logger.info("Webhook received unknown messagingEvent: ", messagingEvent);
 				}
 			});
 		});
@@ -113,9 +116,9 @@ function receivedMessage(event) {
 	if (!sessionIds.has(senderID)) {
 		sessionIds.set(senderID, uuid.v1());
 	}
-	console.log("Received message for user %d and page %d at %d with message:",
+	logger.info("Received message for user %d and page %d at %d with message:",
 		senderID, recipientID, timeOfMessage);
-	console.log(JSON.stringify(message));
+	logger.info(JSON.stringify(message));
 
 	var isEcho = message.is_echo;
 	var messageId = message.mid;
@@ -152,7 +155,7 @@ function handleMessageAttachments(messageAttachments, senderID){
 
 function handleQuickReply(senderID, quickReply, messageId) {
 	var quickReplyPayload = quickReply.payload;
-	console.log("Quick reply for message %s with payload %s", messageId, quickReplyPayload);
+	logger.info("Quick reply for message %s with payload %s", messageId, quickReplyPayload);
 	//send payload to api.ai
 	sendToApiAi(senderID, quickReplyPayload);
 }
@@ -160,17 +163,11 @@ function handleQuickReply(senderID, quickReply, messageId) {
 //https://developers.facebook.com/docs/messenger-platform/webhook-reference/message-echo
 function handleEcho(messageId, appId, metadata) {
 	// Just logging message echoes to console
-	console.log("Received echo for message %s and app %d with metadata %s", messageId, appId, metadata);
+	logger.info("Received echo for message %s and app %d with metadata %s", messageId, appId, metadata);
 }
 
 function handleApiAiAction(sender, action, responseText, contexts, parameters) {
-  logs.push({
-    sender,
-    action,
-    responseText,
-    contexts,
-    parameters
-  });
+  logger.info('handeApiAiAction is firing!', sender, action, responseText, contexts, parameters)
 	switch (action) {
 		case "faq-delivery":
 			sendTextMessage(sender, responseText);
@@ -247,7 +244,7 @@ function handleApiAiAction(sender, action, responseText, contexts, parameters) {
 			break;
 		default:
 			//unhandled action, just send back the text
-			console.log("send responce in handle actiongit: " + responseText);
+			logger.info("send responce in handle actiongit: " + responseText);
 			sendTextMessage(sender, responseText);
 	}
 }
@@ -259,33 +256,33 @@ function handleApiAiResponse(sender, response) {
 	let contexts = response.result.contexts;
 	let parameters = response.result.parameters;
 
-	console.log("responseText: " + responseText);
-	console.log("responseData: " + responseData);
-	console.log("action: " + action);
+	logger.info("responseText: " + responseText);
+	logger.info("responseData: " + responseData);
+	logger.info("action: " + action);
 	sendTypingOff(sender);
 
 
 	if (responseText == '' && !isDefined(action)) {
 		//api ai could not evaluate input.
-		console.log('Unknown query' + response.result.resolvedQuery);
+		logger.info('Unknown query' + response.result.resolvedQuery);
 		sendTextMessage(senderID, "I'm not sure what you want. Can you be more specific?");
 	} else if (isDefined(action)) {
 		handleApiAiAction(sender, action, responseText, contexts, parameters);
 	} else if (isDefined(responseData) && isDefined(responseData.facebook)) {
 		try {
-			console.log('Response as formatted message' + responseData.facebook);
+			logger.info('Response as formatted message' + responseData.facebook);
 			sendTextMessage(sender, responseData.facebook);
 		} catch (err) {
 			sendTextMessage(sender, err.message);
 		}
 	} else if (isDefined(responseText)) {
-		console.log('Respond as text message');
+		logger.info('Respond as text message');
 		sendTextMessage(sender, responseText);
 	}
 }
 
 function sendToApiAi(sender, text) {
-	console.log("sendToApiAi: " + text);
+	logger.info("sendToApiAi: " + text);
 	sendTypingOn(sender);
 	let apiaiRequest = apiAiService.textRequest(text, {
 		sessionId: sessionIds.get(sender)
@@ -297,7 +294,7 @@ function sendToApiAi(sender, text) {
 		}
 	});
 
-	apiaiRequest.on('error', (error) => console.error(error));
+	apiaiRequest.on('error', (error) => logger.error(error));
 	apiaiRequest.end();
 }
 
@@ -656,7 +653,7 @@ function sendQuickReply(recipientId, text, replies, metadata) {
  *
  */
 function sendReadReceipt(recipientId) {
-	console.log("Sending a read receipt to mark message as seen");
+	logger.info("Sending a read receipt to mark message as seen");
 
 	var messageData = {
 		recipient: {
@@ -673,7 +670,7 @@ function sendReadReceipt(recipientId) {
  *
  */
 function sendTypingOn(recipientId) {
-	console.log("Turning typing indicator on");
+	logger.info("Turning typing indicator on");
 
 	var messageData = {
 		recipient: {
@@ -690,7 +687,7 @@ function sendTypingOn(recipientId) {
  *
  */
 function sendTypingOff(recipientId) {
-	console.log("Turning typing indicator off");
+	logger.info("Turning typing indicator off");
 
 	var messageData = {
 		recipient: {
@@ -742,20 +739,20 @@ function greetUserText(userId) {
 		if (!error && response.statusCode == 200) {
 
 			var user = JSON.parse(body);
-			console.log("getUserData:" + user);
+			logger.info("getUserData:" + user);
 			if (user.first_name) {
-				console.log("FB user: %s %s, %s",
+				logger.info("FB user: %s %s, %s",
 					user.first_name, user.last_name, user.gender);
 
 				sendTextMessage(userId, "Welcome " + user.first_name + '! ' +
 				'I can answer frequently asked questions for you ' +
 				'and I perform job interviews. What can I help you with?');
 			} else {
-				console.log("Cannot get data for fb user with id",
+				logger.info("Cannot get data for fb user with id",
 					userId);
 			}
 		} else {
-			console.error(response.error);
+			logger.error(response.error);
 		}
 
 	});
@@ -781,14 +778,14 @@ function callSendAPI(messageData) {
 			var messageId = body.message_id;
 
 			if (messageId) {
-				console.log("Successfully sent message with id %s to recipient %s",
+				logger.info("Successfully sent message with id %s to recipient %s",
 					messageId, recipientId);
 			} else {
-				console.log("Successfully called Send API for recipient %s",
+				logger.info("Successfully called Send API for recipient %s",
 					recipientId);
 			}
 		} else {
-			console.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error);
+			logger.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error);
 		}
 	});
 }
@@ -829,8 +826,8 @@ function receivedPostback(event) {
 			break;
 
 	}
-	console.log("payload" + payload);
-	console.log("Received postback for user %d and page %d with payload '%s' " +
+	logger.info("payload" + payload);
+	logger.info("Received postback for user %d and page %d with payload '%s' " +
 		"at %d", senderID, recipientID, payload, timeOfPostback);
 
 }
@@ -851,7 +848,7 @@ function receivedMessageRead(event) {
 	var watermark = event.read.watermark;
 	var sequenceNumber = event.read.seq;
 
-	console.log("Received message read event for watermark %d and sequence " +
+	logger.info("Received message read event for watermark %d and sequence " +
 		"number %d", watermark, sequenceNumber);
 }
 
@@ -870,7 +867,7 @@ function receivedAccountLink(event) {
 	var status = event.account_linking.status;
 	var authCode = event.account_linking.authorization_code;
 
-	console.log("Received account link event with for user %d with status %s " +
+	logger.info("Received account link event with for user %d with status %s " +
 		"and auth code %s ", senderID, status, authCode);
 }
 
@@ -891,12 +888,12 @@ function receivedDeliveryConfirmation(event) {
 
 	if (messageIDs) {
 		messageIDs.forEach(function (messageID) {
-			console.log("Received delivery confirmation for message ID: %s",
+			logger.info("Received delivery confirmation for message ID: %s",
 				messageID);
 		});
 	}
 
-	console.log("All message before %d were delivered.", watermark);
+	logger.info("All message before %d were delivered.", watermark);
 }
 
 /*
@@ -919,7 +916,7 @@ function receivedAuthentication(event) {
 	// plugin.
 	var passThroughParam = event.optin.ref;
 
-	console.log("Received authentication for user %d and page %d with pass " +
+	logger.info("Received authentication for user %d and page %d with pass " +
 		"through param '%s' at %d", senderID, recipientID, passThroughParam,
 		timeOfAuth);
 
@@ -973,9 +970,9 @@ function sendEmail(subject, content) {
 	});
 
 	sg.API(request, function(error, response) {
-		console.log(response.statusCode)
-		console.log(response.body)
-		console.log(response.headers)
+		logger.info(response.statusCode)
+		logger.info(response.body)
+		logger.info(response.headers)
 	})
 }
 
@@ -997,7 +994,13 @@ function isDefined(obj) {
  */
 
 app.get('/', (req, res) => {
-  res.status(200).send(logs);
+  res.status(200).send();
+});
+
+app.get('/logs', (req, res) => {
+  fs.readFile(path.join(__dirname, '..', 'logs/info.log'), 'utf8', (err, data) => {
+    res.status(200).json(data);
+  });
 });
 
 app.get('/health_check', (req, res) => {
@@ -1006,5 +1009,5 @@ app.get('/health_check', (req, res) => {
 
 
 app.listen(app.get('port'), () => {
-  console.log(`Server listening at port: ${app.get('port')}`);
+  logger.info(`Server listening at port: ${app.get('port')}`);
 });
