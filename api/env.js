@@ -38,6 +38,7 @@ function set(env) {
   } else if (env === 'test') {
     dotenv.config({ path: '.env.test' });
   }
+  process.env.ROOT = __dirname;
 }
 
 export function setup() {
