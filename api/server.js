@@ -39,20 +39,26 @@ app.use(bodyParser.json())
 
 
 const apiAiService = apiai(process.env.API_AI_CLIENT_ACCESS_TOKEN, {
-	language: "en",
-	requestSource: "fb"
+	language: 'en',
+	requestSource: 'fb'
 });
 const sessionIds = new Map();
 
-// for Facebook verification
+
+function webhookVerificationFacebook(req, res) {
+  if (req.query['hub.mode'] === 'subscribe' && req.query['hub.verify_token'] === process.env.FB_VERIFY_TOKEN) {
+    res.status(200).send(req.query['hub.challenge']);
+  } else {
+    logger.error('Failed validation. Make sure the validation tokens match.');
+    res.sendStatus(403);
+  }
+}
+
 app.get('/conversations/webhook/', function (req, res) {
 	logger.info('request');
-	if (req.query['hub.mode'] === 'subscribe' && req.query['hub.verify_token'] === process.env.FB_VERIFY_TOKEN) {
-		res.status(200).send(req.query['hub.challenge']);
-	} else {
-		logger.error('Failed validation. Make sure the validation tokens match.');
-		res.sendStatus(403);
-	}
+  logger.info(req.headers);
+  // for Facebook verification
+  webhookVerificationFacebook(req, res);
 });
 
 /*
@@ -62,20 +68,17 @@ app.get('/conversations/webhook/', function (req, res) {
  * https://developers.facebook.com/docs/messenger-platform/product-overview/setup#subscribe_app
  *
  */
-app.post('/conversations/webhook/', function (req, res) {
+
+function webhookHitFacebook(req, res) {
 	var data = req.body;
 	logger.info(JSON.stringify(data));
-
-
-
-	// Make sure this is a page subscription
+  // Make sure this is a page subscription
 	if (data.object == 'page') {
 		// Iterate over each entry
 		// There may be multiple if batched
 		data.entry.forEach(function (pageEntry) {
 			var pageID = pageEntry.id;
 			var timeOfEvent = pageEntry.time;
-
 			// Iterate over each messaging event
 			pageEntry.messaging.forEach(function (messagingEvent) {
 				if (messagingEvent.optin) {
@@ -95,15 +98,15 @@ app.post('/conversations/webhook/', function (req, res) {
 				}
 			});
 		});
-
 		// Assume all went well.
 		// You must send back a 200, within 20 seconds
 		res.sendStatus(200);
 	}
+}
+
+app.post('/conversations/webhook/', function (req, res) {
+  webhookHitFacebook(req, res);
 });
-
-
-
 
 
 function receivedMessage(event) {
