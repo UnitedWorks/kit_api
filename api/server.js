@@ -46,14 +46,14 @@ const sessionIds = new Map();
 
 // for Facebook verification
 app.get('/conversations/webhook/', function (req, res) {
-	logger.info("request");
+	logger.info('request');
 	if (req.query['hub.mode'] === 'subscribe' && req.query['hub.verify_token'] === process.env.FB_VERIFY_TOKEN) {
 		res.status(200).send(req.query['hub.challenge']);
 	} else {
-		logger.error("Failed validation. Make sure the validation tokens match.");
+		logger.error('Failed validation. Make sure the validation tokens match.');
 		res.sendStatus(403);
 	}
-})
+});
 
 /*
  * All callbacks for Messenger are POST-ed. They will be sent to the same
@@ -163,12 +163,12 @@ function handleQuickReply(senderID, quickReply, messageId) {
 //https://developers.facebook.com/docs/messenger-platform/webhook-reference/message-echo
 function handleEcho(messageId, appId, metadata) {
 	// Just logging message echoes to console
-	logger.info("Received echo for message %s and app %d with metadata %s", messageId, appId, metadata);
+	logger.info('Received echo for message %s and app %d with metadata %s', messageId, appId, metadata);
 }
 
 function handleApiAiAction(sender, action, responseText, contexts, parameters) {
 	switch (action) {
-		case "faq-delivery":
+		case 'faq-delivery':
 			sendTextMessage(sender, responseText);
 			sendTypingOn(sender);
 
@@ -176,27 +176,27 @@ function handleApiAiAction(sender, action, responseText, contexts, parameters) {
 			setTimeout(function() {
 				let buttons = [
 					{
-						type:"web_url",
-						url:"https://www.myapple.com/track_order",
-						title:"Track my order"
+						type:'web_url',
+						url:'https://www.myapple.com/track_order',
+						title:'Track my order'
 					},
 					{
-						type:"phone_number",
-						title:"Call us",
-						payload:"+16505551234",
+						type:'phone_number',
+						title:'Call us',
+						payload:'+16505551234',
 					},
 					{
-						type:"postback",
-						title:"Keep on Chatting",
-						payload:"CHAT"
+						type:'postback',
+						title:'Keep on Chatting',
+						payload:'CHAT'
 					}
 				];
 
-				sendButtonMessage(sender, "What would you like to do next?", buttons);
+				sendButtonMessage(sender, 'What would you like to do next?', buttons);
 			}, 3000)
 
 			break;
-		case "detailed-application":
+		case 'detailed-application':
 			if (isDefined(contexts[0]) && contexts[0].name == 'job_application' && contexts[0].parameters) {
 				let phone_number = (isDefined(contexts[0].parameters['phone-number'])
 				&& contexts[0].parameters['phone-number']!= '') ? contexts[0].parameters['phone-number'] : '';
@@ -221,29 +221,29 @@ function handleApiAiAction(sender, action, responseText, contexts, parameters) {
 			}
 			sendTextMessage(sender, responseText);
 			break;
-		case "job-enquiry":
+		case 'job-enquiry':
 			let replies = [
 				{
-					"content_type":"text",
-					"title":"Accountant",
-					"payload":"Accountant"
+					'content_type':'text',
+					'title':'Accountant',
+					'payload':'Accountant'
 				},
 				{
-					"content_type":"text",
-					"title":"Sales",
-					"payload":"Sales"
+					'content_type':'text',
+					'title':'Sales',
+					'payload':'Sales'
 				},
 				{
-					"content_type":"text",
-					"title":"Not interested",
-					"payload":"Not interested"
+					'content_type':'text',
+					'title':'Not interested',
+					'payload':'Not interested'
 				}
 			];
 			sendQuickReply(sender, responseText, replies);
 			break;
 		default:
 			//unhandled action, just send back the text
-			logger.info("send responce in handle actiongit: " + responseText);
+			logger.info('send responce in handle actiongit: ' + responseText);
 			sendTextMessage(sender, responseText);
 	}
 }
@@ -255,9 +255,9 @@ function handleApiAiResponse(sender, response) {
 	let contexts = response.result.contexts;
 	let parameters = response.result.parameters;
 
-	logger.info("responseText: " + responseText);
-	logger.info("responseData: " + responseData);
-	logger.info("action: " + action);
+	logger.info('responseText: ' + responseText);
+	logger.info('responseData: ' + responseData);
+	logger.info('action: ' + action);
 	sendTypingOff(sender);
 
 
@@ -281,7 +281,7 @@ function handleApiAiResponse(sender, response) {
 }
 
 function sendToApiAi(sender, text) {
-	logger.info("sendToApiAi: " + text);
+	logger.info('sendToApiAi: ' + text);
 	sendTypingOn(sender);
 	let apiaiRequest = apiAiService.textRequest(text, {
 		sessionId: sessionIds.get(sender)
@@ -323,9 +323,9 @@ function sendImageMessage(recipientId) {
 		},
 		message: {
 			attachment: {
-				type: "image",
+				type: 'image',
 				payload: {
-					url: process.env.AWS_S3_BUCKET_URL + "/assets/rift.png"
+					url: process.env.AWS_S3_BUCKET_URL + '/assets/rift.png'
 				}
 			}
 		}
@@ -345,9 +345,9 @@ function sendGifMessage(recipientId) {
 		},
 		message: {
 			attachment: {
-				type: "image",
+				type: 'image',
 				payload: {
-					url: process.env.AWS_S3_BUCKET_URL + "/assets/instagram_logo.gif"
+					url: process.env.AWS_S3_BUCKET_URL + '/assets/instagram_logo.gif'
 				}
 			}
 		}
@@ -367,9 +367,9 @@ function sendAudioMessage(recipientId) {
 		},
 		message: {
 			attachment: {
-				type: "audio",
+				type: 'audio',
 				payload: {
-					url: process.env.AWS_S3_BUCKET_URL + "/assets/sample.mp3"
+					url: process.env.AWS_S3_BUCKET_URL + '/assets/sample.mp3'
 				}
 			}
 		}
@@ -389,7 +389,7 @@ function sendVideoMessage(recipientId, videoName) {
 		},
 		message: {
 			attachment: {
-				type: "video",
+				type: 'video',
 				payload: {
 					url: process.env.AWS_S3_BUCKET_URL + videoName
 				}
@@ -411,7 +411,7 @@ function sendFileMessage(recipientId, fileName) {
 		},
 		message: {
 			attachment: {
-				type: "file",
+				type: 'file',
 				payload: {
 					url: process.env.AWS_S3_BUCKET_URL + fileName
 				}
@@ -435,9 +435,9 @@ function sendButtonMessage(recipientId, text, buttons) {
 		},
 		message: {
 			attachment: {
-				type: "template",
+				type: 'template',
 				payload: {
-					template_type: "button",
+					template_type: 'button',
 					text: text,
 					buttons: buttons
 				}
@@ -541,9 +541,9 @@ function sendGenericMessage(recipientId, elements) {
 		},
 		message: {
 			attachment: {
-				type: "template",
+				type: 'template',
 				payload: {
-					template_type: "generic",
+					template_type: 'generic',
 					elements: elements
 				}
 			}
@@ -600,7 +600,7 @@ function sendGenericMessage(recipientId, elements) {
 function sendReceiptMessage(recipientId, recipient_name, currency, payment_method,
 							timestamp, elements, address, summary, adjustments) {
 	// Generate a random receipt ID as the API requires a unique ID
-	var receiptId = "order" + Math.floor(Math.random() * 1000);
+	var receiptId = 'order' + Math.floor(Math.random() * 1000);
 
 	var messageData = {
 		recipient: {
@@ -608,9 +608,9 @@ function sendReceiptMessage(recipientId, recipient_name, currency, payment_metho
 		},
 		message: {
 			attachment: {
-				type: "template",
+				type: 'template',
 				payload: {
-					template_type: "receipt",
+					template_type: 'receipt',
 					recipient_name: recipient_name,
 					order_number: receiptId,
 					currency: currency,
@@ -652,13 +652,13 @@ function sendQuickReply(recipientId, text, replies, metadata) {
  *
  */
 function sendReadReceipt(recipientId) {
-	logger.info("Sending a read receipt to mark message as seen");
+	logger.info('Sending a read receipt to mark message as seen');
 
 	var messageData = {
 		recipient: {
 			id: recipientId
 		},
-		sender_action: "mark_seen"
+		sender_action: 'mark_seen'
 	};
 
 	callSendAPI(messageData);
@@ -669,13 +669,13 @@ function sendReadReceipt(recipientId) {
  *
  */
 function sendTypingOn(recipientId) {
-	logger.info("Turning typing indicator on");
+	logger.info('Turning typing indicator on');
 
 	var messageData = {
 		recipient: {
 			id: recipientId
 		},
-		sender_action: "typing_on"
+		sender_action: 'typing_on'
 	};
 
 	callSendAPI(messageData);
@@ -686,13 +686,13 @@ function sendTypingOn(recipientId) {
  *
  */
 function sendTypingOff(recipientId) {
-	logger.info("Turning typing indicator off");
+	logger.info('Turning typing indicator off');
 
 	var messageData = {
 		recipient: {
 			id: recipientId
 		},
-		sender_action: "typing_off"
+		sender_action: 'typing_off'
 	};
 
 	callSendAPI(messageData);
@@ -709,13 +709,13 @@ function sendAccountLinking(recipientId) {
 		},
 		message: {
 			attachment: {
-				type: "template",
+				type: 'template',
 				payload: {
-					template_type: "button",
-					text: "Welcome. Link your account.",
+					template_type: 'button',
+					text: 'Welcome. Link your account.',
 					buttons: [{
-						type: "account_link",
-						url: process.env.SERVER_URL + "/authorize"
+						type: 'account_link',
+						url: process.env.SERVER_URL + '/authorize'
           }]
 				}
 			}
@@ -738,16 +738,16 @@ function greetUserText(userId) {
 		if (!error && response.statusCode == 200) {
 
 			var user = JSON.parse(body);
-			logger.info("getUserData:" + user);
+			logger.info('getUserData:' + user);
 			if (user.first_name) {
-				logger.info("FB user: %s %s, %s",
+				logger.info('FB user: %s %s, %s',
 					user.first_name, user.last_name, user.gender);
 
-				sendTextMessage(userId, "Welcome " + user.first_name + '! ' +
+				sendTextMessage(userId, 'Welcome ' + user.first_name + '! ' +
 				'I can answer frequently asked questions for you ' +
 				'and I perform job interviews. What can I help you with?');
 			} else {
-				logger.info("Cannot get data for fb user with id",
+				logger.info('Cannot get data for fb user with id',
 					userId);
 			}
 		} else {
