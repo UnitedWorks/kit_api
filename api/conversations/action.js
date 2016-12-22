@@ -39,7 +39,7 @@ export function handleAction(sender, action, responseText, contexts, parameters)
 				{
 					'content_type':'text',
 					'title':'Sales',
-					'payload':'Sales'
+					'payload':'Sales Rep'
 				},
 				{
 					'content_type':'text',

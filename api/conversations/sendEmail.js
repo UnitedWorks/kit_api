@@ -1,8 +1,7 @@
-import sengrid from 'sendgrid';
 import { logger } from '../logger';
 
 export function sendEmail(subject, content) {
-	var helper = sendgrid.mail;
+	var helper = require('sendgrid').mail;
 
 	var from_email = new helper.Email(process.env.EMAIL_FROM);
 	var to_email = new helper.Email(process.env.EMAIL_TO);
@@ -12,7 +11,7 @@ export function sendEmail(subject, content) {
 
   logger.info('Sending email:', content);
 
-	var sg = sendgrid(process.env.SENDGRID_API_KEY);
+	var sg = require('sendgrid')(process.env.SENDGRID_API_KEY);
 	var request = sg.emptyRequest({
 		method: 'POST',
 		path: '/v3/mail/send',
