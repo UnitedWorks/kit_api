@@ -1,8 +1,7 @@
 import uuid from 'uuid';
 import { logger } from '../logger';
-import * as conversations from './index';
+import { interfaces, sessionIds} from './index';
 import { services } from '../services/index';
-import { interfaces } from './index';
 
 export function receivedMessage(event) {
 	var senderID = event.sender.id;
@@ -10,8 +9,8 @@ export function receivedMessage(event) {
 	var timeOfMessage = event.timestamp;
 	var message = event.message;
 
-	if (!conversations.sessionIds.has(senderID)) {
-		conversations.sessionIds.set(senderID, uuid.v1());
+	if (!sessionIds.has(senderID)) {
+		sessionIds.set(senderID, uuid.v1());
 	}
 
 	logger.info("Received message for user %d and page %d at %d with message:",

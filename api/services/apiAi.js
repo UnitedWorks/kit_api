@@ -4,11 +4,15 @@ import { sessionIds, interfaces, actions } from '../conversations/index';
 import * as utils from '../utils/index';
 
 export const apiAiService = apiai(process.env.API_AI_CLIENT_ACCESS_TOKEN, {
-	language: 'en'
+	language: 'en',
+	requestSource: 'fb',
 });
 
 export function sendToApiAi(sender, text) {
-	logger.info('sendToApiAi: ' + text);
+	logger.info('sendToApiAi: sender:' + sender);
+	logger.info('sendToApiAi: text:' + text);
+	logger.info('sendToApiAi: sessionIds:' + sessionIds);
+	logger.info('sendToApiAi: sessionId:' + sessionIds.get(sender));
 	interfaces.facebook.send.sendTypingOn(sender);
 	let apiaiRequest = apiAiService.textRequest(text, {
 		sessionId: sessionIds.get(sender)
@@ -20,7 +24,10 @@ export function sendToApiAi(sender, text) {
 		}
 	});
 
-	apiaiRequest.on('error', (error) => logger.error(error));
+	apiaiRequest.on('error', (error) => {
+		logger.error(error)
+	});
+
 	apiaiRequest.end();
 }
 
