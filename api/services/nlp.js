@@ -3,12 +3,14 @@ import { logger } from '../logger';
 import { sessionIds, interfaces, actions } from '../conversations/index';
 import * as utils from '../utils/index';
 
-export const apiAiService = apiai(process.env.API_AI_CLIENT_ACCESS_TOKEN, {
+const nlpProvider = 'apiAi';
+
+const apiAiService = apiai(process.env.API_AI_CLIENT_ACCESS_TOKEN, {
 	language: 'en',
 	requestSource: 'fb',
 });
 
-export function sendToApiAi(sender, text) {
+function sendToApiAi(sender, text) {
 	logger.info('sendToApiAi: sender:' + sender);
 	logger.info('sendToApiAi: text:' + text);
 	logger.info('sendToApiAi: sessionIds:' + sessionIds);
@@ -32,7 +34,7 @@ export function sendToApiAi(sender, text) {
 	apiAiRequest.end();
 }
 
-export function handleApiAiResponse(sender, response) {
+function handleApiAiResponse(sender, response) {
 	let responseText = response.result.fulfillment.speech;
 	let responseData = response.result.fulfillment.data;
 	let action = response.result.action;
@@ -62,3 +64,13 @@ export function handleApiAiResponse(sender, response) {
 		interfaces.facebook.send.sendTextMessage(sender, responseText);
 	}
 }
+
+const nlpServices = {
+	apiAi: {
+		service: apiAiService,
+		sendToNlp: sendToApiAi,
+		handleNlpResponse: handleApiAiResponse,
+	}
+};
+
+export const nlp = nlpServices[nlpProvider];

@@ -1,30 +1,14 @@
-import * as receiveFacebook from './receiveFacebook';
-import * as sendFacebook from './sendFacebook';
-import * as helpersFacebook from './helpersFacebook';
-import * as receiveWeb from './receiveWeb';
-import * as sendWeb from './sendWeb';
-import * as helpersWeb from './helpersWeb';
-import * as sendEmail from './sendEmail';
 import * as action from './action';
+import * as helpers from './helpers';
+import * as receive from './receive';
+import * as send from './send';
 
 export let sessionIds = new Map();
 
-export let interfaces = {
-	facebook: {
-		send: sendFacebook,
-		receive: receiveFacebook,
-		helpers: helpersFacebook,
-	},
-	web: {
-		send: sendWeb,
-		receive: receiveWeb,
-		helpers: helpersWeb,
-	},
-	email: {
-		send: sendEmail,
-	}
+export const events = {
+	send: send,
+	receive: receive,
+	helpers: helpers,
 };
 
-export let actions = {
-	handleAction: action.handleAction
-};
+export const actions = action;

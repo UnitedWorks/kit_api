@@ -1,5 +1,6 @@
 import { logger } from '../logger';
-import { interfaces } from './index';
+import { events } from './index';
+import { services } from '../services/index';
 import * as utils from '../utils/index';
 
 export function handleAction(sender, action, responseText, contexts, parameters) {
@@ -24,10 +25,10 @@ export function handleAction(sender, action, responseText, contexts, parameters)
 							'.<br> Years of experience: ' + years_of_experience + '.' +
 							'.<br> Phone number: ' + phone_number + '.';
 
-					interfaces.email.send.sendEmail('New job application', emailContent);
+					services.email.send('New job application', emailContent);
 				}
 			}
-			interfaces.facebook.send.sendTextMessage(sender, responseText);
+			events.send.sendTextMessage(sender, responseText);
 			break;
 		case 'job-enquiry':
 			let replies = [
@@ -47,11 +48,11 @@ export function handleAction(sender, action, responseText, contexts, parameters)
 					'payload':'Not interested'
 				}
 			];
-			interfaces.facebook.send.sendQuickReply(sender, responseText, replies);
+			events.send.sendQuickReply(sender, responseText, replies);
 			break;
 		default:
 			//unhandled action, just send back the text
 			logger.info('send responce in handle actiongit: ' + responseText);
-			interfaces.facebook.send.sendTextMessage(sender, responseText);
+			events.send.sendTextMessage(sender, responseText);
 	}
 }

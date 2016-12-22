@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import { logger } from '../logger';
-import { interfaces } from './index';
+import { events } from './index';
 
 /*
  * All callbacks for Messenger are POST-ed. They will be sent to the same
@@ -18,17 +18,17 @@ export function webhookHitByFacebook(req, res) {
 		// Iterate over each messaging event
 		pageEntry.messaging.forEach((messagingEvent) => {
 			if (messagingEvent.optin) {
-				interfaces.facebook.receive.receivedAuthentication(messagingEvent);
+				events.receive.receivedAuthentication(messagingEvent);
 			} else if (messagingEvent.message) {
-				interfaces.facebook.receive.receivedMessage(messagingEvent);
+				events.receive.receivedMessage(messagingEvent);
 			} else if (messagingEvent.delivery) {
-				interfaces.facebook.receive.receivedDeliveryConfirmation(messagingEvent);
+				events.receive.receivedDeliveryConfirmation(messagingEvent);
 			} else if (messagingEvent.postback) {
-				interfaces.facebook.receive.receivedPostback(messagingEvent);
+				events.receive.receivedPostback(messagingEvent);
 			} else if (messagingEvent.read) {
-				interfaces.facebook.receive.receivedMessageRead(messagingEvent);
+				events.receive.receivedMessageRead(messagingEvent);
 			} else if (messagingEvent.account_linking) {
-				interfaces.facebook.receive.receivedAccountLink(messagingEvent);
+				events.receive.receivedAccountLink(messagingEvent);
 			} else {
 				logger.info("Webhook received unknown messagingEvent: ", messagingEvent);
 			}
@@ -74,3 +74,22 @@ export function webhookVerificationFacebook(req, res) {
     res.sendStatus(403);
   }
 };
+
+// TO DO
+// Include web
+
+// export function webhookHitByWeb(req, res) {
+//   const data = req.body;
+//   // Iterate over each source (incase it's a batched request)
+//   data.source.forEach((sourceEntry) => {
+//     // Iterate over messaging event
+//     sourceEntry.messaging.forEach((messagingEvent) => {
+//       if (messagingEvent.message) {
+//         receivedMessage(messagingEvent);
+//       } else {
+//         logger.info("Webhook received unknown messagingEvent: ", messagingEvent);
+//       }
+//     });
+//   });
+//   res.sendStatus(200);
+// }
