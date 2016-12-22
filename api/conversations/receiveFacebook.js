@@ -4,7 +4,6 @@ import * as conversations from './index';
 import { services } from '../services/index';
 
 export function receivedMessage(event) {
-
 	var senderID = event.sender.id;
 	var recipientID = event.recipient.id;
 	var timeOfMessage = event.timestamp;
@@ -13,6 +12,7 @@ export function receivedMessage(event) {
 	if (!conversations.sessionIds.has(senderID)) {
 		conversations.sessionIds.set(senderID, uuid.v1());
 	}
+
 	logger.info("Received message for user %d and page %d at %d with message:",
 		senderID, recipientID, timeOfMessage);
 	logger.info(JSON.stringify(message));
@@ -81,7 +81,6 @@ export function receivedPostback(event) {
 	logger.info('payload' + payload);
 	logger.info("Received postback for user %d and page %d with payload '%s' " +
 		'at %d', senderID, recipientID, payload, timeOfPostback);
-
 }
 
 /*
