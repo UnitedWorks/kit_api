@@ -10,6 +10,8 @@ export const apiAiService = apiai(process.env.API_AI_CLIENT_ACCESS_TOKEN, {
 export function sendToApiAi(sender, text) {
 	logger.info('sendToApiAi: sender:' + sender);
 	logger.info('sendToApiAi: text:' + text);
+	logger.info('sendToApiAi: sessionIds:' + sessionIds);
+	logger.info('sendToApiAi: sessionId:' + sessionIds.get(sender));
 	interfaces.facebook.send.sendTypingOn(sender);
 	let apiaiRequest = apiAiService.textRequest(text, {
 		sessionId: sessionIds.get(sender)
