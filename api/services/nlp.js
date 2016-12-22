@@ -1,6 +1,6 @@
 import apiai from 'apiai';
 import { logger } from '../logger';
-import { sessionIds, interfaces, actions } from '../conversations/index';
+import { sessionIds, events, actions } from '../conversations/index';
 import * as utils from '../utils/index';
 
 const nlpProvider = 'apiAi';
@@ -15,7 +15,7 @@ function sendToApiAi(sender, text) {
 	logger.info('sendToApiAi: text:' + text);
 	logger.info('sendToApiAi: sessionIds:' + sessionIds);
 	logger.info('sendToApiAi: sessionId:' + sessionIds.get(sender));
-	interfaces.facebook.send.sendTypingOn(sender);
+	events.send.sendTypingOn(sender);
 	let apiAiRequest = apiAiService.textRequest(text, {
 		sessionId: sessionIds.get(sender)
 	});
@@ -44,24 +44,24 @@ function handleApiAiResponse(sender, response) {
 	logger.info('responseText: ' + responseText);
 	logger.info('responseData: ' + responseData);
 	logger.info('action: ' + action);
-	interfaces.facebook.send.sendTypingOff(sender);
+	events.send.sendTypingOff(sender);
 
 	if (responseText == '' && !utils.isDefined(action)) {
 		//api ai could not evaluate input.
 		logger.info('Unknown query' + response.result.resolvedQuery);
-		interfaces.facebook.send.sendTextMessage(senderID, "I'm not sure what you want. Can you be more specific?");
+		events.send.sendTextMessage(senderID, "I'm not sure what you want. Can you be more specific?");
 	} else if (utils.isDefined(action)) {
 		actions.handleAction(sender, action, responseText, contexts, parameters);
 	} else if (utils.isDefined(responseData) && utils.isDefined(responseData.facebook)) {
 		try {
 			logger.info('Response as formatted message' + responseData.facebook);
-			interfaces.facebook.send.sendTextMessage(sender, responseData.facebook);
+			events.send.sendTextMessage(sender, responseData.facebook);
 		} catch (err) {
-			interfaces.facebook.send.sendTextMessage(sender, err.message);
+			events.send.sendTextMessage(sender, err.message);
 		}
 	} else if (utils.isDefined(responseText)) {
 		logger.info('Respond as text message');
-		interfaces.facebook.send.sendTextMessage(sender, responseText);
+		events.send.sendTextMessage(sender, responseText);
 	}
 }
 
