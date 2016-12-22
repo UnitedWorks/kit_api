@@ -22,13 +22,16 @@ const port = process.env.PORT || 5000;
 
 //verify request came from facebook
 app.use(bodyParser.json({
-  verify: conversations.interfaces.facebook.helpers.verifyRequestSignature
+  verify: conversations.events.helpers.verifyRequestSignature
 }));
 
 // Process application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({
 	extended: false
 }));
+
+// Process application/json
+app.use(bodyParser.json())
 
 app.get('/', (req, res) => {
   res.status(200).send();
@@ -39,23 +42,16 @@ app.get('/conversations/lastMessage', (req, res) => {
   res.status(200).send(lastMessage);
 });
 
-app.get('/conversations/webhook/', (req, res) => {
+app.get('/conversations/webhook', (req, res) => {
 	logger.info('Verification Requested');
   // for Facebook verification
-  conversations.interfaces.facebook.helpers.webhookVerificationFacebook(req, res);
+  conversations.events.helpers.webhookVerificationFacebook(req, res);
 });
 
-app.post('/conversations/webhook/', (req, res) => {
+app.post('/conversations/webhook', (req, res) => {
   logger.info('Webhook Pinged');
   lastMessage = req.body;
-  // If we see 'page', the request came from Facebook
-  if (req.body.object == 'page') {
-    conversations.interfaces.facebook.helpers.webhookHitByFacebook(req, res);
-  }
-  // If we see 'web', the request came from a website
-  // if (req.body.object == 'web') {
-  //   conversations.interfaces.web.helpers.webhookHitByWeb(req, res);
-  // }
+  conversations.events.helpers.webhookHitByFacebook(req, res);
 });
 
 app.get('/logs', (req, res) => {

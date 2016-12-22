@@ -1,4 +1,6 @@
-export function sendEmail(subject, content) {
+import { logger } from '../logger';
+
+function sendEmail(subject, content) {
 	var helper = require('sendgrid').mail;
 
 	var from_email = new helper.Email(process.env.EMAIL_FROM);
@@ -23,3 +25,7 @@ export function sendEmail(subject, content) {
 		logger.info(response.headers)
 	})
 }
+
+export const email = {
+  send: sendEmail
+};

@@ -1,6 +1,6 @@
 import uuid from 'uuid';
 import { logger } from '../logger';
-import { interfaces, sessionIds} from './index';
+import { events, sessionIds} from './index';
 import { services } from '../services/index';
 
 export function receivedMessage(event) {
@@ -38,7 +38,7 @@ export function receivedMessage(event) {
 
 	if (messageText) {
 		//send message to api.ai
-		services.nlp.apiAi.sendToApiAi(senderID, messageText);
+		services.nlp.sendToNlp(senderID, messageText);
 	} else if (messageAttachments) {
 		handleMessageAttachments(messageAttachments, senderID);
 	}
@@ -62,19 +62,19 @@ export function receivedPostback(event) {
 
 	switch (payload) {
 		case 'GET_STARTED':
-			interfaces.facebook.send.greetUserText(senderID);
+			events.send.greetUserText(senderID);
 			break;
 		case 'JOB_APPLY':
 			//get feedback with new jobs
-			services.nlp.apiAi.sendToApiAi(senderID, 'job openings');
+			services.nlp.sendToNlp(senderID, 'job openings');
 			break;
 		case 'CHAT':
 			//user wants to chat
-			interfaces.facebook.send.sendTextMessage(senderID, 'I love chatting too. Do you have any other questions for me?');
+			events.send.sendTextMessage(senderID, 'I love chatting too. Do you have any other questions for me?');
 			break;
 		default:
 			//unindentified payload
-			interfaces.facebook.send.sendTextMessage(senderID, "I'm not sure what you want. Can you be more specific?");
+			events.send.sendTextMessage(senderID, "I'm not sure what you want. Can you be more specific?");
 			break;
 
 	}
@@ -172,7 +172,7 @@ export function receivedAuthentication(event) {
 
 	// When an authentication is received, we'll send a message back to the sender
 	// to let them know it was successful.
-	interfaces.facebook.send.sendTextMessage(senderID, 'Authentication successful');
+	events.send.sendTextMessage(senderID, 'Authentication successful');
 }
 
 //https://developers.facebook.com/docs/messenger-platform/webhook-reference/message-echo
@@ -183,12 +183,12 @@ export function handleEcho(messageId, appId, metadata) {
 
 export function handleMessageAttachments(messageAttachments, senderID){
 	//for now just reply
-	interfaces.facebook.send.sendTextMessage(senderID, "Attachment received. Thank you.");
+	events.send.sendTextMessage(senderID, "Attachment received. Thank you.");
 }
 
 export function handleQuickReply(senderID, quickReply, messageId) {
 	var quickReplyPayload = quickReply.payload;
 	logger.info("Quick reply for message %s with payload %s", messageId, quickReplyPayload);
 	//send payload to api.ai
-	services.nlp.apiAi.sendToApiAi(senderID, quickReplyPayload);
+	services.nlp.sendToNlp(senderID, quickReplyPayload);
 }

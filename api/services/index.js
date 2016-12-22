@@ -1,7 +1,7 @@
-import * as apiAi from './apiAi';
+import { nlp } from './nlp';
+import { email } from './email';
 
 export const services = {
-  nlp: {
-    apiAi: apiAi
-  }
+  nlp: nlp,
+  email: email
 };

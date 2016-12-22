@@ -473,7 +473,7 @@ export function callSendAPI(messageData) {
 		method: 'POST',
 		json: messageData
 
-	}, function (error, response, body) {
+	}, (error, response, body) => {
 		if (!error && response.statusCode == 200) {
 			var recipientId = body.recipient_id;
 			var messageId = body.message_id;
