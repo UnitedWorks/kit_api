@@ -1,5 +1,6 @@
 import request from 'request';
 import { logger } from '../logger';
+import * as utils from '../utils/index';
 
 export function sendTextMessage(recipientId, text) {
 	var messageData = {
@@ -340,7 +341,7 @@ export function sendQuickReply(recipientId, text, replies, metadata) {
 		},
 		message: {
 			text: text,
-			metadata: isDefined(metadata)?metadata:'',
+			metadata: utils.isDefined(metadata)?metadata:'',
 			quick_replies: replies
 		}
 	};
