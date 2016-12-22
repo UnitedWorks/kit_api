@@ -30,6 +30,9 @@ app.use(bodyParser.urlencoded({
 	extended: false
 }));
 
+// Process application/json
+app.use(bodyParser.json())
+
 app.get('/', (req, res) => {
   res.status(200).send();
 });
@@ -39,30 +42,16 @@ app.get('/conversations/lastMessage', (req, res) => {
   res.status(200).send(lastMessage);
 });
 
-app.get('/conversations/webhook/', (req, res) => {
+app.get('/conversations/webhook', (req, res) => {
 	logger.info('Verification Requested');
   // for Facebook verification
   conversations.events.helpers.webhookVerificationFacebook(req, res);
 });
 
-app.post('/conversations/webhook/', (req, res) => {
+app.post('/conversations/webhook', (req, res) => {
   logger.info('Webhook Pinged');
   lastMessage = req.body;
   conversations.events.helpers.webhookHitByFacebook(req, res);
-});
-
-app.get('/conversations/pingWebhook', (req, res) => {
-  request({
-		uri: 'https://graph.facebook.com/v2.6/me/messages',
-		qs: {
-			access_token: process.env.FB_PAGE_TOKEN
-		},
-		method: 'POST'
-  }, (error, response, body) => {
-    logger.info(`Error: ${error}`);
-    logger.info(`Body: ${Body}`);
-    res.status(200).send(res);
-  });
 });
 
 app.get('/logs', (req, res) => {
