@@ -18,10 +18,13 @@ export function sendToApiAi(sender, text) {
 		if (utils.isDefined(response.result)) {
 			handleApiAiResponse(sender, response);
 		}
+		apiaiRequest.end();
 	});
 
-	apiaiRequest.on('error', (error) => logger.error(error));
-	apiaiRequest.end();
+	apiaiRequest.on('error', (error) => {
+		logger.error(error)
+		apiaiRequest.end();
+	});
 }
 
 export function handleApiAiResponse(sender, response) {
