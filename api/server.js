@@ -18,7 +18,7 @@ const s3 = new AWS.S3({
 const uuid = require('uuid');
 
 export const app = express();
-const port = process.env.PORT;
+const port = process.env.PORT || 5000;
 
 //verify request came from facebook
 app.use(bodyParser.json({
@@ -37,6 +37,12 @@ app.get('/', (req, res) => {
   res.status(200).send();
 });
 
+let lastPayload = {};
+
+app.get('/conversations/lastPayload', (req, res) => {
+  res.status(200).send(lastPayload);
+});
+
 app.get('/conversations/webhook/', (req, res) => {
 	logger.info('Verification Requested');
   // for Facebook verification
@@ -45,7 +51,7 @@ app.get('/conversations/webhook/', (req, res) => {
 
 app.post('/conversations/webhook/', (req, res) => {
   logger.info('Webhook Pinged');
-  logger.info(req.body);
+  lastPayload = req.body;
   // If we see 'page', the request came from Facebook
   // if (req.body.object == 'page') {
     conversations.interfaces.facebook.helpers.webhookHitByFacebook(req, res);
