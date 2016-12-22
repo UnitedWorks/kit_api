@@ -8,7 +8,8 @@ export const apiAiService = apiai(process.env.API_AI_CLIENT_ACCESS_TOKEN, {
 });
 
 export function sendToApiAi(sender, text) {
-	logger.info('sendToApiAi: ' + text);
+	logger.info('sendToApiAi: sender:' + sender);
+	logger.info('sendToApiAi: text:' + text);
 	interfaces.facebook.send.sendTypingOn(sender);
 	let apiaiRequest = apiAiService.textRequest(text, {
 		sessionId: sessionIds.get(sender)
@@ -18,13 +19,13 @@ export function sendToApiAi(sender, text) {
 		if (utils.isDefined(response.result)) {
 			handleApiAiResponse(sender, response);
 		}
-		apiaiRequest.end();
 	});
 
 	apiaiRequest.on('error', (error) => {
 		logger.error(error)
-		apiaiRequest.end();
 	});
+
+	apiaiRequest.end();
 }
 
 export function handleApiAiResponse(sender, response) {
