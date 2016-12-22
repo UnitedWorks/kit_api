@@ -61,6 +61,7 @@ app.get('/conversations/pingWebhook', (req, res) => {
   }, (error, response, body) => {
     logger.info(`Error: ${error}`);
     logger.info(`Body: ${Body}`);
+    res.status(200).send(res);
   });
 });
 
