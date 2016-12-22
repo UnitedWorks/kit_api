@@ -48,14 +48,20 @@ app.get('/conversations/webhook/', (req, res) => {
 app.post('/conversations/webhook/', (req, res) => {
   logger.info('Webhook Pinged');
   lastMessage = req.body;
-  // If we see 'page', the request came from Facebook
-  if (req.body.object == 'page') {
-    conversations.events.helpers.webhookHitByFacebook(req, res);
-  }
-  // If we see 'web', the request came from a website
-  // if (req.body.object == 'web') {
-  //   conversations.interfaces.web.helpers.webhookHitByWeb(req, res);
-  // }
+  conversations.events.helpers.webhookHitByFacebook(req, res);
+});
+
+app.get('/conversations/pingWebhook', (req, res) => {
+  request({
+		uri: 'https://graph.facebook.com/v2.6/me/messages',
+		qs: {
+			access_token: process.env.FB_PAGE_TOKEN
+		},
+		method: 'POST'
+  }, (error, response, body) => {
+    logger.info(`Error: ${error}`);
+    logger.info(`Body: ${Body}`);
+  });
 });
 
 app.get('/logs', (req, res) => {
