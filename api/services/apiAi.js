@@ -14,21 +14,22 @@ export function sendToApiAi(sender, text) {
 	logger.info('sendToApiAi: sessionIds:' + sessionIds);
 	logger.info('sendToApiAi: sessionId:' + sessionIds.get(sender));
 	interfaces.facebook.send.sendTypingOn(sender);
-	let apiaiRequest = apiAiService.textRequest(text, {
+	let apiAiRequest = apiAiService.textRequest(text, {
 		sessionId: sessionIds.get(sender)
 	});
 
-	apiaiRequest.on('response', (response) => {
+	apiAiRequest.on('response', (response) => {
+		logger.info('apiAi request response': response);
 		if (utils.isDefined(response.result)) {
 			handleApiAiResponse(sender, response);
 		}
 	});
 
-	apiaiRequest.on('error', (error) => {
+	apiAiRequest.on('error', (error) => {
 		logger.error(error)
 	});
 
-	apiaiRequest.end();
+	apiAiRequest.end();
 }
 
 export function handleApiAiResponse(sender, response) {
