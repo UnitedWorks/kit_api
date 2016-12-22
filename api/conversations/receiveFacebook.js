@@ -2,6 +2,7 @@ import uuid from 'uuid';
 import { logger } from '../logger';
 import * as conversations from './index';
 import { services } from '../services/index';
+import { interfaces } from './index';
 
 export function receivedMessage(event) {
 	var senderID = event.sender.id;
@@ -62,7 +63,7 @@ export function receivedPostback(event) {
 
 	switch (payload) {
 		case 'GET_STARTED':
-			greetUserText(senderID);
+			interfaces.facebook.send.greetUserText(senderID);
 			break;
 		case 'JOB_APPLY':
 			//get feedback with new jobs
@@ -70,11 +71,11 @@ export function receivedPostback(event) {
 			break;
 		case 'CHAT':
 			//user wants to chat
-			sendTextMessage(senderID, 'I love chatting too. Do you have any other questions for me?');
+			interfaces.facebook.send.sendTextMessage(senderID, 'I love chatting too. Do you have any other questions for me?');
 			break;
 		default:
 			//unindentified payload
-			sendTextMessage(senderID, "I'm not sure what you want. Can you be more specific?");
+			interfaces.facebook.send.sendTextMessage(senderID, "I'm not sure what you want. Can you be more specific?");
 			break;
 
 	}
@@ -172,7 +173,7 @@ export function receivedAuthentication(event) {
 
 	// When an authentication is received, we'll send a message back to the sender
 	// to let them know it was successful.
-	sendTextMessage(senderID, 'Authentication successful');
+	interfaces.facebook.send.sendTextMessage(senderID, 'Authentication successful');
 }
 
 //https://developers.facebook.com/docs/messenger-platform/webhook-reference/message-echo
@@ -183,7 +184,7 @@ export function handleEcho(messageId, appId, metadata) {
 
 export function handleMessageAttachments(messageAttachments, senderID){
 	//for now just reply
-	sendTextMessage(senderID, "Attachment received. Thank you.");
+	interfaces.facebook.send.sendTextMessage(senderID, "Attachment received. Thank you.");
 }
 
 export function handleQuickReply(senderID, quickReply, messageId) {

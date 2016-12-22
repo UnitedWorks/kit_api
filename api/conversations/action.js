@@ -4,34 +4,6 @@ import * as utils from '../utils/index';
 
 export function handleAction(sender, action, responseText, contexts, parameters) {
 	switch (action) {
-		case 'faq-delivery':
-			interfaces.facebook.send.sendTextMessage(sender, responseText);
-			interfaces.facebook.send.sendTypingOn(sender);
-
-			//ask what user wants to do next
-			setTimeout(function() {
-				let buttons = [
-					{
-						type:'web_url',
-						url:'https://www.myapple.com/track_order',
-						title:'Track my order'
-					},
-					{
-						type:'phone_number',
-						title:'Call us',
-						payload:'+16505551234',
-					},
-					{
-						type:'postback',
-						title:'Keep on Chatting',
-						payload:'CHAT'
-					}
-				];
-
-				interfaces.facebook.send.sendButtonMessage(sender, 'What would you like to do next?', buttons);
-			}, 3000)
-
-			break;
 		case 'detailed-application':
 			if (utils.isDefined(contexts[0]) && contexts[0].name == 'job_application' && contexts[0].parameters) {
 				let phone_number = (utils.isDefined(contexts[0].parameters['phone-number'])
