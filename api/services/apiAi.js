@@ -19,7 +19,7 @@ export function sendToApiAi(sender, text) {
 	});
 
 	apiAiRequest.on('response', (response) => {
-		logger.info('apiAi request response': response);
+		logger.info('apiAi request response:', response);
 		if (utils.isDefined(response.result)) {
 			handleApiAiResponse(sender, response);
 		}
