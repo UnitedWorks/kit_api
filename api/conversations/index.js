@@ -7,9 +7,9 @@ import * as helpersWeb from './helpersWeb';
 import * as sendEmail from './sendEmail';
 import * as action from './action';
 
-export const sessionIds = new Map();
+export let sessionIds = new Map();
 
-export const interfaces = {
+export let interfaces = {
 	facebook: {
 		send: sendFacebook,
 		receive: receiveFacebook,
@@ -25,6 +25,6 @@ export const interfaces = {
 	}
 };
 
-export const actions = {
+export let actions = {
 	handleAction: action.handleAction
 };
