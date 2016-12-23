@@ -1,7 +1,7 @@
 import uuid from 'uuid';
 import { logger } from '../logger';
 import { events, sessionIds } from './index';
-import { NLPService } from '../services/index';
+import { NLPService } from '../services/nlp';
 
 export class ConversationMessage {
 	constructor(options) {
@@ -59,12 +59,14 @@ export class ConversationMessage {
 			return;
 		}
 		if (messageText) {
-			NLPService().sendTo({
-				event: event,
+			new NLPService({
+				event: this.event,
 				context: this.context,
+			}).evaluate({
 				senderID: senderID,
 				text: messageText,
-			});
+				handleResponse: true,
+			})
 		} else if (messageAttachments) {
 			handleMessageAttachments({ messageAttachments, senderID });
 		}
@@ -75,18 +77,21 @@ export class ConversationMessage {
 		var recipientID = event.recipient.id;
 		var timeOfPostback = event.timestamp;
 		var payload = event.postback.payload;
+
 		switch (payload) {
 			case 'GET_STARTED':
 				events.send.greetUserText(senderID);
 				break;
 			case 'JOB_APPLY':
 				//get feedback with new jobs
-				NLPService().sendTo({
+				new NLPService({
 					event: event,
 					context: this.context,
+				}).evaluate({
 					senderID: senderID,
 					text: 'job openings',
-				});
+					handleResponse: true,
+				})
 				break;
 			case 'CHAT':
 				//user wants to chat
@@ -158,12 +163,15 @@ export class ConversationMessage {
 	handleQuickReply(event) {
 		var quickReplyPayload = event.quickReply.payload;
 		logger.info("Quick reply for message %s with payload %s", event.messageId, quickReplyPayload);
-		NLPService().sendTo({
+
+		new NLPService({
 			context: this.context,
-			event: event,
+			event: this.event,
+		}).evaluate({
 			senderID: event.senderID,
 			text: quickReplyPayload,
-		});
+			handleResponse: true,
+		})
 	}
 
 

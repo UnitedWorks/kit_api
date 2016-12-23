@@ -4,6 +4,8 @@ import { logger } from '../logger';
 import { events } from './index';
 import { ConversationMessage } from './receive'
 
+const bodyParser = require('body-parser');
+
 /*
  * All callbacks for Messenger are POST-ed. They will be sent to the same
  * webhook. Be sure to subscribe your app to your page to receive callbacks
@@ -16,15 +18,15 @@ export function webhookHitWithMessage(req, res) {
 	logger.info('Handle Message: ', req.body);
 
 	if (req.body.extendedContext.source == constants.FACEBOOK) {
-		bodyParser.json({verify: conversations.events.helpers.verifyRequestSignature});
+		bodyParser.json({verify: verifyRequestSignature});
 	}
-
-	context = req.body.extendedContext;
-	context.req = req;
-	context.res = res;
 
 	const data = req.body;
 	logger.info(JSON.stringify(data));
+
+	let context = data.extendedContext;
+	context.req = req;
+	context.res = res;
 
 	// Iterate over each entry
 	// There may be multiple if batched
@@ -34,12 +36,10 @@ export function webhookHitWithMessage(req, res) {
 			new ConversationMessage({
 				context: context,
 				event: messagingEvent,
-			}).exec();
+			})
 		});
 	});
 
-	// You must send back a 200, within 20 seconds
-	res.sendStatus(200);
 }
 
 /*

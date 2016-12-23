@@ -3,14 +3,14 @@ import * as constants from '../constants/interfaces'
 import { logger } from '../logger';
 import * as utils from '../utils/index';
 
-class SendInterface {
+export class SendInterface {
 
 	constructor(config) {
 		this.event = config.event;
 		this.context = config.context;
 	}
 
-	sendTextMessage({ recipientId, text }) {
+	sendTextMessage(recipientId, text) {
 		var messageData = {
 			recipient: {
 				id: recipientId
@@ -336,17 +336,22 @@ class SendInterface {
 	 *
 	 */
 	sendQuickReply({ recipientId, text, replies, metadata }) {
-		var messageData = {
-			recipient: {
-				id: recipientId
-			},
-			message: {
-				text: text,
-				metadata: utils.isDefined(metadata) ? metadata : '',
-				quick_replies: replies
-			}
-		};
-		this.callSendAPI(messageData);
+
+		let acceptedSources = [constants.FACEBOOK];
+
+		if (acceptedSources.includes(this.context.source)) {
+			var messageData = {
+				recipient: {
+					id: recipientId
+				},
+				message: {
+					text: text,
+					metadata: utils.isDefined(metadata) ? metadata : '',
+					quick_replies: replies
+				}
+			};
+			this.callSendAPI(messageData);
+		}
 	}
 
 	/*
@@ -372,13 +377,17 @@ class SendInterface {
 	sendTypingOn({ recipientId }) {
 		logger.info('Turning typing indicator on');
 
-		var messageData = {
-			recipient: {
-				id: recipientId
-			},
-			sender_action: 'typing_on'
-		};
-		this.callSendAPI(messageData);
+		let acceptedSources = [constants.FACEBOOK];
+
+		if (acceptedSources.includes(this.context.source)) {
+			var messageData = {
+				recipient: {
+					id: recipientId
+				},
+				sender_action: 'typing_on'
+			};
+			this.callSendAPI(messageData);
+		}
 	}
 
 	/*
@@ -388,13 +397,17 @@ class SendInterface {
 	sendTypingOff({ recipientId }) {
 		logger.info('Turning typing indicator off');
 
-		var messageData = {
-			recipient: {
-				id: recipientId
-			},
-			sender_action: 'typing_off'
-		};
-		this.callSendAPI(messageData);
+		let acceptedSources = [constants.FACEBOOK];
+
+		if (acceptedSources.includes(this.context.source)) {
+			var messageData = {
+				recipient: {
+					id: recipientId
+				},
+				sender_action: 'typing_off'
+			};
+			this.callSendAPI(messageData);
+		}
 	}
 
 	/*
@@ -441,10 +454,7 @@ class SendInterface {
 					logger.info('FB user: %s %s, %s',
 						user.first_name, user.last_name, user.gender);
 
-					this.sendTextMessage({
-						recipientId: userId,
-						text: `Welcome ${user.first_name}! I can answer frequently asked questions for you and I perform job interviews. What can I help you with?`
-					});
+					this.sendTextMessage(userId, `Welcome ${user.first_name}! I can answer frequently asked questions for you and I perform job interviews. What can I help you with?`);
 				} else {
 					logger.info('Cannot get data for fb user with id',
 						userId);
@@ -464,7 +474,7 @@ class SendInterface {
 		// Setup DB
 
 		// If Facebook, ping their webhook
-		if (this.context.source == constants.FACEBOOK) {
+		if (this.context.source === constants.FACEBOOK) {
 			request({
 				uri: 'https://graph.facebook.com/v2.6/me/messages',
 				qs: {
@@ -490,11 +500,8 @@ class SendInterface {
 				}
 			});
 		// If not Facebook, we'll do a bunch of sttuf but just respond for now
-	} else if (this.context.source == constants.WEB) {
-			let res = this.context.res;
-			logger.info('Context: ', this.context);
-			logger.info('Event: ', this.event);
-			res.status(200).send(messageData);
+	} else if (this.context.source === constants.WEB) {
+			this.context.res.status(200).send(messageData);
 		}
 
 	}
