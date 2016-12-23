@@ -28,7 +28,10 @@ export function handleAction(sender, action, responseText, contexts, parameters)
 					services.email.send('New job application', emailContent);
 				}
 			}
-			events.send.sendTextMessage(sender, responseText);
+			events.send.sendTextMessage({
+				sender: sender,
+				responseText: responseText
+			});
 			break;
 		case 'job-enquiry':
 			let replies = [
@@ -48,11 +51,18 @@ export function handleAction(sender, action, responseText, contexts, parameters)
 					'payload':'Not interested'
 				}
 			];
-			events.send.sendQuickReply(sender, responseText, replies);
+			events.send.sendQuickReply({
+				sender: sender,
+				responseText: responseText,
+				replies: replies
+			});
 			break;
 		default:
 			//unhandled action, just send back the text
 			logger.info('send responce in handle actiongit: ' + responseText);
-			events.send.sendTextMessage(sender, responseText);
+			events.send.sendTextMessage({
+				sender: sender,
+				responseText: responseText
+			});
 	}
 }

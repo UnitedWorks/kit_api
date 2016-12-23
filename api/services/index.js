@@ -1,7 +1,7 @@
-import { nlp } from './nlp';
-import { email } from './email';
+import { NLPService } from './nlp';
+import { EmailService } from './email';
 
 export const services = {
-  nlp: nlp,
-  email: email
+  NLPService: NLPService,
+  EmailService: EmailService
 };

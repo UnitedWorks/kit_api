@@ -1,3 +1,4 @@
+import * as constants from './constants/interfaces'
 import * as environment from './env';
 import { logger } from './logger';
 import * as conversations from './conversations';
@@ -19,11 +20,6 @@ const uuid = require('uuid');
 
 export const app = express();
 const port = process.env.PORT || 5000;
-
-//verify request came from facebook
-app.use(bodyParser.json({
-  verify: conversations.events.helpers.verifyRequestSignature
-}));
 
 // Process application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({
@@ -49,9 +45,20 @@ app.get('/conversations/webhook', (req, res) => {
 });
 
 app.post('/conversations/webhook', (req, res) => {
+
   logger.info('Webhook Pinged');
-  lastMessage = req.body;
-  conversations.events.helpers.webhookHitByFacebook(req, res);
+
+  // Extend message objects so later functions now how to handle
+  let extendedContext = {};
+  if (req.body.object == 'page') {
+    extendedContext.source = constants.FACEBOOK;
+  } else if (req.body.object == 'bridge') {
+    extendedContext.source = constants.BRIDGE;
+  }
+  req.body.extendedContext = extendedContext;
+
+  // Handle messages
+  conversations.events.helpers.webhookHitWithMessage(req, res);
 });
 
 app.get('/logs', (req, res) => {

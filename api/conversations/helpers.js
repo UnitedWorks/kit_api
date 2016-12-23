@@ -1,6 +1,8 @@
+import * as constants from '../constants/interfaces'
 import crypto from 'crypto';
 import { logger } from '../logger';
 import { events } from './index';
+import { ConversationMessage } from './receive'
 
 /*
  * All callbacks for Messenger are POST-ed. They will be sent to the same
@@ -9,31 +11,31 @@ import { events } from './index';
  * https://developers.facebook.com/docs/messenger-platform/product-overview/setup#subscribe_app
  *
  */
-export function webhookHitByFacebook(req, res) {
+export function webhookHitWithMessage(req, res) {
+
+	if (req.body.extendedContext.source == constants.FACEBOOK) {
+		bodyParser.json({verify: conversations.events.helpers.verifyRequestSignature});
+	}
+
+	context = req.body.extendedContext;
+	context.req = req;
+	context.res = res;
+
 	const data = req.body;
 	logger.info(JSON.stringify(data));
+
 	// Iterate over each entry
 	// There may be multiple if batched
 	data.entry.forEach((pageEntry) => {
 		// Iterate over each messaging event
 		pageEntry.messaging.forEach((messagingEvent) => {
-			if (messagingEvent.optin) {
-				events.receive.receivedAuthentication(messagingEvent);
-			} else if (messagingEvent.message) {
-				events.receive.receivedMessage(messagingEvent);
-			} else if (messagingEvent.delivery) {
-				events.receive.receivedDeliveryConfirmation(messagingEvent);
-			} else if (messagingEvent.postback) {
-				events.receive.receivedPostback(messagingEvent);
-			} else if (messagingEvent.read) {
-				events.receive.receivedMessageRead(messagingEvent);
-			} else if (messagingEvent.account_linking) {
-				events.receive.receivedAccountLink(messagingEvent);
-			} else {
-				logger.info("Webhook received unknown messagingEvent: ", messagingEvent);
-			}
+			new ConversationMessage({
+				context: context,
+				event: messagingEvent,
+			}).exec();
 		});
 	});
+
 	// You must send back a 200, within 20 seconds
 	res.sendStatus(200);
 }
@@ -74,22 +76,3 @@ export function webhookVerificationFacebook(req, res) {
     res.sendStatus(403);
   }
 };
-
-// TO DO
-// Include web
-
-// export function webhookHitByWeb(req, res) {
-//   const data = req.body;
-//   // Iterate over each source (incase it's a batched request)
-//   data.source.forEach((sourceEntry) => {
-//     // Iterate over messaging event
-//     sourceEntry.messaging.forEach((messagingEvent) => {
-//       if (messagingEvent.message) {
-//         receivedMessage(messagingEvent);
-//       } else {
-//         logger.info("Webhook received unknown messagingEvent: ", messagingEvent);
-//       }
-//     });
-//   });
-//   res.sendStatus(200);
-// }
