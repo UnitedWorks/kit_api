@@ -490,7 +490,7 @@ class SendInterface {
 				}
 			});
 		// If not Facebook, we'll do a bunch of sttuf but just respond for now
-		} else {
+	} else if (this.context.source == constants.WEB) {
 			let res = this.context.res;
 			logger.info('Context: ', this.context);
 			logger.info('Event: ', this.event);

@@ -46,14 +46,14 @@ app.get('/conversations/webhook', (req, res) => {
 
 app.post('/conversations/webhook', (req, res) => {
 
-  logger.info('Webhook Pinged');
+  logger.info('Webhook Pinged: ', req.body);
 
   // Extend message objects so later functions now how to handle
   let extendedContext = {};
   if (req.body.object == 'page') {
     extendedContext.source = constants.FACEBOOK;
-  } else if (req.body.object == 'bridge') {
-    extendedContext.source = constants.BRIDGE;
+  } else if (req.body.object == 'web') {
+    extendedContext.source = constants.WEB;
   }
   req.body.extendedContext = extendedContext;
 

@@ -13,6 +13,8 @@ import { ConversationMessage } from './receive'
  */
 export function webhookHitWithMessage(req, res) {
 
+	logger.info('Handle Message: ', req.body);
+
 	if (req.body.extendedContext.source == constants.FACEBOOK) {
 		bodyParser.json({verify: conversations.events.helpers.verifyRequestSignature});
 	}
