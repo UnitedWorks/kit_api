@@ -17,10 +17,6 @@ export function webhookHitWithMessage(req, res) {
 
 	logger.info('Handle Message: ', req.body);
 
-	if (req.body.extendedContext.source == constants.FACEBOOK) {
-		bodyParser.json({verify: verifyRequestSignature});
-	}
-
 	const data = req.body;
 	logger.info(JSON.stringify(data));
 
