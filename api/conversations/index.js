@@ -5,7 +5,7 @@ import * as send from './send';
 
 export let sessionIds = new Map();
 
-export const events = {
+export const methods = {
 	send: send,
 	receive: receive,
 	helpers: helpers,

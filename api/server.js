@@ -33,12 +33,7 @@ app.get('/', (req, res) => {
   res.status(200).send();
 });
 
-let lastMessage = {};
-app.get('/conversations/lastMessage', (req, res) => {
-  res.status(200).send(lastMessage);
-});
-
-app.use('/conversations/webhook', (req, res) => {
+app.use('/conversations/webhook', (req, res, next) => {
   // Extend message objects so later functions now how to handle
   let extendedContext = {};
   if (req.body.object == 'page') {
@@ -47,24 +42,26 @@ app.use('/conversations/webhook', (req, res) => {
     extendedContext.source = constants.WEB;
   }
   req.body.extendedContext = extendedContext;
+  next();
 });
 
-app.use('/conversations/webhook', (req, res) => {
+app.use('/conversations/webhook', (req, res, next) => {
   if (req.body.extendedContext.source == constants.FACEBOOK) {
-		bodyParser.json({verify: verifyRequestSignature});
+		bodyParser.json({verify: conversations.methods.helpers.verifyFacebookRequestSignature});
 	}
+  next();
 });
 
 app.get('/conversations/webhook', (req, res) => {
 	logger.info('Verification Requested');
   // for Facebook verification
-  conversations.events.helpers.webhookVerificationFacebook(req, res);
+  conversations.methods.helpers.webhookVerificationFacebook(req, res);
 });
 
 app.post('/conversations/webhook', (req, res) => {
   logger.info('Webhook Pinged: ', req.body);
   // Handle messages
-  conversations.events.helpers.webhookHitWithMessage(req, res);
+  conversations.methods.helpers.webhookHitWithMessage(req, res);
 });
 
 app.get('/logs', (req, res) => {

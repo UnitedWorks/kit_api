@@ -46,7 +46,7 @@ export function webhookHitWithMessage(req, res) {
  * https://developers.facebook.com/docs/graph-api/webhooks#setup
  *
  */
-export function verifyRequestSignature(req, res, buf) {
+export function verifyFacebookRequestSignature(req, res, buf) {
 	var signature = req.headers['x-hub-signature'];
 
 	if (!signature) {
