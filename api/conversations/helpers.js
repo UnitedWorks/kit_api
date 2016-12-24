@@ -1,4 +1,5 @@
-import * as constants from '../constants/interfaces'
+import * as interfaces from '../constants/interfaces'
+import * as environments from '../constants/environments'
 import crypto from 'crypto';
 import { logger } from '../logger';
 import { events } from './index';
@@ -38,6 +39,16 @@ export function webhookHitWithMessage(req, res) {
 
 }
 
+export function getOrigin(origin) {
+	if (/chrome/.test(origin) || /localhost/.test(origin)) {
+		return environments.LOCAL;
+	} else if(/kit.community/.test(origin)) {
+		return environments.PRODUCTION;
+	} else {
+		return interfaces.FACEBOOK;
+	}
+}
+
 /*
  * Verify that the callback came from Facebook. Using the App Secret from
  * the App Dashboard, we can verify the signature that is sent with each
@@ -46,22 +57,27 @@ export function webhookHitWithMessage(req, res) {
  * https://developers.facebook.com/docs/graph-api/webhooks#setup
  *
  */
-export function verifyFacebookRequestSignature(req, res, buf) {
-	var signature = req.headers['x-hub-signature'];
+export function verifyRequestSignature(req, res, buf) {
 
-	if (!signature) {
-		throw new Error('Couldn\'t validate the signature.');
+	let origin = getOrigin(req.headers.origin);
+
+	if (origin === environments.LOCAL || origin === environments.PRODUCTION) {
+		// If on local testing with postman, a local dashboard, or website, bypass.
 	} else {
-		var elements = signature.split('=');
-		var method = elements[0];
-		var signatureHash = elements[1];
-
-		var expectedHash = crypto.createHmac('sha1', process.env.FB_APP_SECRET)
-			.update(buf)
-			.digest('hex');
-
-		if (signatureHash != expectedHash) {
-			throw new Error("Couldn't validate the request signature.");
+		// If hit by Facebook
+		let signature = req.headers['x-hub-signature'];
+		if (!signature) {
+			throw new Error('Couldn\'t validate the signature.');
+		} else {
+			let elements = signature.split('=');
+			let method = elements[0];
+			let signatureHash = elements[1];
+			let expectedHash = crypto.createHmac('sha1', process.env.FB_APP_SECRET)
+				.update(buf)
+				.digest('hex');
+			if (signatureHash != expectedHash) {
+				throw new Error("Couldn't validate the request signature.");
+			}
 		}
 	}
 }

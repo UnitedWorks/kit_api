@@ -21,6 +21,10 @@ const uuid = require('uuid');
 export const app = express();
 const port = process.env.PORT || 5000;
 
+app.use(bodyParser.json({
+  verify: conversations.methods.helpers.verifyRequestSignature
+}));
+
 // Process application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({
 	extended: false
@@ -33,25 +37,6 @@ app.get('/', (req, res) => {
   res.status(200).send();
 });
 
-app.use('/conversations/webhook', (req, res, next) => {
-  // Extend message objects so later functions now how to handle
-  let extendedContext = {};
-  if (req.body.object == 'page') {
-    extendedContext.source = constants.FACEBOOK;
-  } else if (req.body.object == 'web') {
-    extendedContext.source = constants.WEB;
-  }
-  req.body.extendedContext = extendedContext;
-  next();
-});
-
-app.use('/conversations/webhook', (req, res, next) => {
-  if (req.body.extendedContext.source == constants.FACEBOOK) {
-		bodyParser.json({verify: conversations.methods.helpers.verifyFacebookRequestSignature});
-	}
-  next();
-});
-
 app.get('/conversations/webhook', (req, res) => {
 	logger.info('Verification Requested');
   // for Facebook verification
@@ -60,6 +45,13 @@ app.get('/conversations/webhook', (req, res) => {
 
 app.post('/conversations/webhook', (req, res) => {
   logger.info('Webhook Pinged: ', req.body);
+  // Setup context  let extendedContext = {};
+  req.body.extendedContext = {};
+  if (req.body.object == 'page') {
+    req.body.extendedContext.source = constants.FACEBOOK;
+  } else if (req.body.object == 'web') {
+    req.body.extendedContext.source = constants.WEB;
+  }
   // Handle messages
   conversations.methods.helpers.webhookHitWithMessage(req, res);
 });
