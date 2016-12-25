@@ -82,7 +82,7 @@ export class NLPService {
 		if (responseText == '' && !utils.isDefined(action)) {
 			//api ai could not evaluate input.
 			logger.info(`Unknown query: ${response.result.resolvedQuery}`);
-			SendClient.sendTextMessage(senderID, "I'm not sure what you want. Can you be more specific?");
+			SendClient.sendTextMessage(sender, "I'm not sure what you want. Can you be more specific?");
 		} else if (utils.isDefined(action)) {
 			new ActionDispatch({
 				event: this.event,

@@ -26,7 +26,7 @@ export class SendInterface {
 	 * Send an image using the Send API.
 	 *
 	 */
-	sendImageMessage({ recipientId }) {
+	sendImageMessage(recipientId) {
 		var messageData = {
 			recipient: {
 				id: recipientId
@@ -47,7 +47,7 @@ export class SendInterface {
 	 * Send a Gif using the Send API.
 	 *
 	 */
-	sendGifMessage({ recipientId }) {
+	sendGifMessage(recipientId) {
 		var messageData = {
 			recipient: {
 				id: recipientId
@@ -69,7 +69,7 @@ export class SendInterface {
 	 * Send audio using the Send API.
 	 *
 	 */
-	sendAudioMessage({ recipientId }) {
+	sendAudioMessage(recipientId) {
 		var messageData = {
 			recipient: {
 				id: recipientId
@@ -90,7 +90,7 @@ export class SendInterface {
 	 * Send a video using the Send API.
 	 * example videoName: "/assets/allofus480.mov"
 	 */
-	sendVideoMessage({ recipientId, videoName }) {
+	sendVideoMessage(recipientId, videoName) {
 		var messageData = {
 			recipient: {
 				id: recipientId
@@ -111,7 +111,7 @@ export class SendInterface {
 	 * Send a video using the Send API.
 	 * example fileName: fileName"/assets/test.txt"
 	 */
-	sendFileMessage({ recipientId, fileName }) {
+	sendFileMessage(recipientId, fileName) {
 		var messageData = {
 			recipient: {
 				id: recipientId
@@ -134,7 +134,7 @@ export class SendInterface {
 	 * Send a button message using the Send API.
 	 *
 	 */
-	sendButtonMessage({ recipientId, text, buttons }) {
+	sendButtonMessage(recipientId, text, buttons) {
 		var messageData = {
 			recipient: {
 				id: recipientId
@@ -239,7 +239,7 @@ export class SendInterface {
 	 * ]
 	 *
 	 */
-	sendGenericMessage({ recipientId, elements }) {
+	sendGenericMessage(recipientId, elements) {
 		var messageData = {
 			recipient: {
 				id: recipientId
@@ -301,8 +301,8 @@ export class SendInterface {
 	 * 	amount: -100
 	 * 	}]
 	 */
-	sendReceiptMessage({ recipientId, recipient_name, currency, payment_method,
-								timestamp, elements, address, summary, adjustments }) {
+	sendReceiptMessage(recipientId, recipient_name, currency, payment_method,
+								timestamp, elements, address, summary, adjustments) {
 		// Generate a random receipt ID as the API requires a unique ID
 		var receiptId = 'order' + Math.floor(Math.random() * 1000);
 
@@ -335,7 +335,7 @@ export class SendInterface {
 	 * Send a message with Quick Reply buttons.
 	 *
 	 */
-	sendQuickReply({ recipientId, text, replies, metadata }) {
+	sendQuickReply(recipientId, text, replies, metadata) {
 
 		let acceptedSources = [constants.FACEBOOK];
 
@@ -472,7 +472,7 @@ export class SendInterface {
 	 */
 	callSendAPI(messageData) {
 		// Setup DB
-
+		
 		// If Facebook, ping their webhook
 		if (this.context.source === constants.FACEBOOK) {
 			request({
@@ -482,7 +482,6 @@ export class SendInterface {
 				},
 				method: 'POST',
 				json: messageData
-
 			}, (error, response, body) => {
 				if (!error && response.statusCode == 200) {
 					var recipientId = body.recipient_id;

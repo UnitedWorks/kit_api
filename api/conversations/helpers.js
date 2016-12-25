@@ -58,7 +58,6 @@ export function getOrigin(origin) {
  *
  */
 export function verifyRequestSignature(req, res, buf) {
-
 	let origin = getOrigin(req.headers.origin);
 
 	if (origin === environments.LOCAL || origin === environments.PRODUCTION) {
