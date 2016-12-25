@@ -351,7 +351,26 @@ export class SendInterface {
 				}
 			};
 			this.callSendAPI(messageData);
+		} else {
+			let updatedText = `${text} `;
+			replies.forEach((obj, index) => {
+				updatedText += obj.payload;
+				if (replies.length - 1 != index) {
+					 updatedText += ', ';
+				}
+			});
+			var messageData = {
+				recipient: {
+					id: recipientId
+				},
+				message: {
+					text: updatedText,
+					metadata: utils.isDefined(metadata) ? metadata : ''
+				}
+			};
+			this.callSendAPI(messageData);
 		}
+		
 	}
 
 	/*
@@ -472,7 +491,7 @@ export class SendInterface {
 	 */
 	callSendAPI(messageData) {
 		// Setup DB
-		
+
 		// If Facebook, ping their webhook
 		if (this.context.source === constants.FACEBOOK) {
 			request({

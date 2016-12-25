@@ -6,7 +6,7 @@ export class EmailService {
 		this.service = require('sendgrid');
 	}
 
-	sendEmail(subject, content) {
+	send(subject, content) {
 		var helper = this.service.mail;
 
 		var from_email = new helper.Email(process.env.EMAIL_FROM);
