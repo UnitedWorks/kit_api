@@ -370,7 +370,7 @@ export class SendInterface {
 			};
 			this.callSendAPI(messageData);
 		}
-		
+
 	}
 
 	/*
@@ -520,7 +520,7 @@ export class SendInterface {
 			this.context.res.status(200).send();
 		// If not Facebook, we'll do a bunch of sttuf but just respond for now
 		} else if (this.context.source === constants.WEB) {
-				this.context.res.status(200).send(messageData);
+			this.context.res.status(200).send(messageData);
 		}
 
 	}

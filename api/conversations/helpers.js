@@ -86,6 +86,6 @@ export function webhookVerificationFacebook(req, res) {
     res.status(200).send(req.query['hub.challenge']);
   } else {
     logger.error('Failed validation. Make sure the validation tokens match.');
-    res.sendStatus(403);
+    res.status(403).send();
   }
 };
