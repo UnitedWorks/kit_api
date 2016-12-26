@@ -38,29 +38,25 @@ export class ActionDispatch {
 								'.<br> Years of experience: ' + years_of_experience + '.' +
 								'.<br> Phone number: ' + phone_number + '.';
 
-						EmailService.send('New job application', emailContent);
+						new EmailService().send('New job application', emailContent);
 					}
 				}
 				SendClient.sendTextMessage(sender, responseText);
 				break;
 			case 'job-enquiry':
-				let replies = [
-					{
-						'content_type':'text',
-						'title':'Accountant',
-						'payload':'Accountant'
-					},
-					{
-						'content_type':'text',
-						'title':'Sales',
-						'payload':'Sales Rep'
-					},
-					{
-						'content_type':'text',
-						'title':'Not interested',
-						'payload':'Not interested'
-					}
-				];
+				let replies = [{
+					'content_type':'text',
+					'title':'Accountant',
+					'payload':'Accountant',
+				}, {
+					'content_type':'text',
+					'title':'Sales',
+					'payload':'Sales Rep',
+				}, {
+					'content_type':'text',
+					'title':'Not interested',
+					'payload':'Not interested',
+				}];
 				SendClient.sendQuickReply(sender, responseText, replies);
 				break;
 			default:

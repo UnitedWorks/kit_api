@@ -1,5 +1,5 @@
 import request from 'request';
-import * as constants from '../constants/interfaces'
+import * as interfaces from '../constants/interfaces'
 import { logger } from '../logger';
 import * as utils from '../utils/index';
 
@@ -337,7 +337,7 @@ export class SendInterface {
 	 */
 	sendQuickReply(recipientId, text, replies, metadata) {
 
-		let acceptedSources = [constants.FACEBOOK];
+		let acceptedSources = [interfaces.FACEBOOK];
 
 		if (acceptedSources.includes(this.context.source)) {
 			var messageData = {
@@ -377,7 +377,7 @@ export class SendInterface {
 	 * Send a read receipt to indicate the message has been read
 	 *
 	 */
-	sendReadReceipt({ recipientId }) {
+	sendReadReceipt(recipientId) {
 		logger.info('Sending a read receipt to mark message as seen');
 
 		var messageData = {
@@ -393,10 +393,10 @@ export class SendInterface {
 	 * Turn typing indicator on
 	 *
 	 */
-	sendTypingOn({ recipientId }) {
+	sendTypingOn(recipientId) {
 		logger.info('Turning typing indicator on');
 
-		let acceptedSources = [constants.FACEBOOK];
+		let acceptedSources = [interfaces.FACEBOOK];
 
 		if (acceptedSources.includes(this.context.source)) {
 			var messageData = {
@@ -413,10 +413,10 @@ export class SendInterface {
 	 * Turn typing indicator off
 	 *
 	 */
-	sendTypingOff({ recipientId }) {
+	sendTypingOff(recipientId) {
 		logger.info('Turning typing indicator off');
 
-		let acceptedSources = [constants.FACEBOOK];
+		let acceptedSources = [interfaces.FACEBOOK];
 
 		if (acceptedSources.includes(this.context.source)) {
 			var messageData = {
@@ -433,7 +433,7 @@ export class SendInterface {
 	 * Send a message with the account linking call-to-action
 	 *
 	 */
-	sendAccountLinking({ recipientId }) {
+	sendAccountLinking(recipientId) {
 		var messageData = {
 			recipient: {
 				id: recipientId
@@ -456,7 +456,7 @@ export class SendInterface {
 	}
 
 
-	greetUserText({ userId }) {
+	greetUserText(userId) {
 		//first read user firstname
 		request({
 			uri: 'https://graph.facebook.com/v2.7/' + userId,
@@ -493,7 +493,7 @@ export class SendInterface {
 		// Setup DB
 
 		// If Facebook, ping their webhook
-		if (this.context.source === constants.FACEBOOK) {
+		if (this.context.source === interfaces.FACEBOOK) {
 			request({
 				uri: 'https://graph.facebook.com/v2.6/me/messages',
 				qs: {
@@ -519,7 +519,7 @@ export class SendInterface {
 			});
 			this.context.res.status(200).send();
 		// If not Facebook, we'll do a bunch of sttuf but just respond for now
-		} else if (this.context.source === constants.WEB) {
+	} else if (this.context.source === interfaces.WEB) {
 			this.context.res.status(200).send(messageData);
 		}
 

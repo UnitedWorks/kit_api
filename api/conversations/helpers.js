@@ -16,14 +16,20 @@ const bodyParser = require('body-parser');
  */
 export function webhookHitWithMessage(req, res) {
 
-	logger.info('Handle Message: ', req.body);
+	logger.info('Handle Message', req.body);
 
 	const data = req.body;
 	logger.info(JSON.stringify(data));
 
-	let context = data.extendedContext;
+	let context = {};
 	context.req = req;
 	context.res = res;
+
+  if (req.body.object == 'page') {
+    context.source = interfaces.FACEBOOK;
+  } else if (req.body.object == 'web') {
+    context.source = interfaces.WEB;
+  }
 
 	// Iterate over each entry
 	// There may be multiple if batched

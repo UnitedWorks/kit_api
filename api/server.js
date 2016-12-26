@@ -1,4 +1,4 @@
-import * as constants from './constants/interfaces'
+import * as interfaces from './constants/interfaces'
 import * as environment from './env';
 import { logger } from './logger';
 import * as conversations from './conversations';
@@ -45,13 +45,6 @@ app.get('/conversations/webhook', (req, res) => {
 
 app.post('/conversations/webhook', (req, res) => {
   logger.info('Webhook Pinged: ', req.body);
-  // Setup context  let extendedContext = {};
-  req.body.extendedContext = {};
-  if (req.body.object == 'page') {
-    req.body.extendedContext.source = constants.FACEBOOK;
-  } else if (req.body.object == 'web') {
-    req.body.extendedContext.source = constants.WEB;
-  }
   // Handle messages
   conversations.methods.helpers.webhookHitWithMessage(req, res);
 });

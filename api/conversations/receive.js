@@ -42,7 +42,7 @@ export class ConversationMessage {
 			sessionIds.set(senderID, uuid.v1());
 		}
 		logger.info("Received message for user %d and page %d at %d with message:",
-			senderID, recipientID, timeOfMessage);
+			senderID, recipientID, timeOfMessage, message);
 		logger.info(JSON.stringify(message));
 		var isEcho = message.is_echo;
 		var messageId = message.mid;
@@ -52,10 +52,10 @@ export class ConversationMessage {
 		var messageAttachments = message.attachments;
 		var quickReply = message.quick_reply;
 		if (isEcho) {
-			handleEcho({ messageId, appId, metadata });
+			handleEcho(messageId, appId, metadata);
 			return;
 		} else if (quickReply) {
-			handleQuickReply({ senderID, quickReply, messageId });
+			handleQuickReply(senderID, quickReply, messageId);
 			return;
 		}
 		if (messageText) {
@@ -68,7 +68,7 @@ export class ConversationMessage {
 				handleResponse: true,
 			})
 		} else if (messageAttachments) {
-			handleMessageAttachments({ messageAttachments, senderID });
+			handleMessageAttachments(messageAttachments, senderID);
 		}
 	}
 
@@ -152,23 +152,23 @@ export class ConversationMessage {
 		events.send.sendTextMessage(senderID, 'Authentication successful');
 	}
 
-	handleEcho(event) {
+	handleEcho(messageId, appId, metadata) {
 		logger.info('Received echo for message %s and app %d with metadata %s', event.messageId, event.appId, event.metadata);
 	}
 
-	handleMessageAttachments(event) {
-		events.send.sendTextMessage(event.senderID, "Attachment received. Thank you.");
+	handleMessageAttachments(messageAttachments, senderID) {
+		events.send.sendTextMessage(senderID, "Attachment received. Thank you.");
 	}
 
-	handleQuickReply(event) {
-		var quickReplyPayload = event.quickReply.payload;
-		logger.info("Quick reply for message %s with payload %s", event.messageId, quickReplyPayload);
+	handleQuickReply(senderID, quickReply, messageId) {
+		var quickReplyPayload = quickReply.payload;
+		logger.info("Quick reply for message %s with payload %s", messageId, quickReplyPayload);
 
 		new NLPService({
 			context: this.context,
 			event: this.event,
 		}).evaluate({
-			senderID: event.senderID,
+			senderID: senderID,
 			text: quickReplyPayload,
 			handleResponse: true,
 		})
