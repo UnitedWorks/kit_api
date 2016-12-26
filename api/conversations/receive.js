@@ -1,194 +1,178 @@
 import uuid from 'uuid';
 import { logger } from '../logger';
-import { events, sessionIds} from './index';
-import { services } from '../services/index';
+import { events, sessionIds } from './index';
+import { NLPService } from '../services/nlp';
 
-export function receivedMessage(event) {
-	var senderID = event.sender.id;
-	var recipientID = event.recipient.id;
-	var timeOfMessage = event.timestamp;
-	var message = event.message;
+export class ConversationMessage {
+	constructor(options) {
+		this.event = options.event;
+		this.context = options.context;
 
-	if (!sessionIds.has(senderID)) {
-		sessionIds.set(senderID, uuid.v1());
+		if (this.event.optin) {
+			this.receivedAuthentication(this.event);
+		} else if (this.event.message) {
+			this.receivedMessage(this.event);
+		} else if (this.event.delivery) {
+			this.receivedDeliveryConfirmation(this.event);
+		} else if (this.event.postback) {
+			this.receivedPostback(this.event);
+		} else if (this.event.read) {
+			this.receivedMessageRead(this.event);
+		} else if (this.event.account_linking) {
+			this.receivedAccountLink(this.event);
+		} else {
+			logger.info("Unknown messagingEvent: ", this.event);
+		}
 	}
 
-	logger.info("Received message for user %d and page %d at %d with message:",
-		senderID, recipientID, timeOfMessage);
-	logger.info(JSON.stringify(message));
+	get () {
+		return {
+			context: this.context,
+			event: this.event,
+			message: this.messageData,
+		};
+	}
 
-	var isEcho = message.is_echo;
-	var messageId = message.mid;
-	var appId = message.app_id;
-	var metadata = message.metadata;
+	receivedMessage(event) {
+		var senderID = event.sender.id;
+		var recipientID = event.recipient.id;
+		var timeOfMessage = event.timestamp;
+		var message = event.message;
+		if (!sessionIds.has(senderID)) {
+			sessionIds.set(senderID, uuid.v1());
+		}
+		logger.info("Received message for user %d and page %d at %d with message:",
+			senderID, recipientID, timeOfMessage, message);
+		logger.info(JSON.stringify(message));
+		var isEcho = message.is_echo;
+		var messageId = message.mid;
+		var appId = message.app_id;
+		var metadata = message.metadata;
+		var messageText = message.text;
+		var messageAttachments = message.attachments;
+		var quickReply = message.quick_reply;
+		if (isEcho) {
+			handleEcho(messageId, appId, metadata);
+			return;
+		} else if (quickReply) {
+			handleQuickReply(senderID, quickReply, messageId);
+			return;
+		}
+		if (messageText) {
+			new NLPService({
+				event: this.event,
+				context: this.context,
+			}).evaluate({
+				senderID: senderID,
+				text: messageText,
+				handleResponse: true,
+			})
+		} else if (messageAttachments) {
+			handleMessageAttachments(messageAttachments, senderID);
+		}
+	}
 
-	// You may get a text or attachment but not both
-	var messageText = message.text;
-	var messageAttachments = message.attachments;
-	var quickReply = message.quick_reply;
+	receivedPostback(event) {
+		var senderID = event.sender.id;
+		var recipientID = event.recipient.id;
+		var timeOfPostback = event.timestamp;
+		var payload = event.postback.payload;
 
-	if (isEcho) {
-		handleEcho(messageId, appId, metadata);
-		return;
-	} else if (quickReply) {
-		handleQuickReply(senderID, quickReply, messageId);
-		return;
+		switch (payload) {
+			case 'GET_STARTED':
+				events.send.greetUserText(senderID);
+				break;
+			case 'JOB_APPLY':
+				//get feedback with new jobs
+				new NLPService({
+					event: event,
+					context: this.context,
+				}).evaluate({
+					senderID: senderID,
+					text: 'job openings',
+					handleResponse: true,
+				})
+				break;
+			case 'CHAT':
+				//user wants to chat
+				events.send.sendTextMessage(senderID, 'I love chatting too. Do you have any other questions for me?');
+				break;
+			default:
+				//unindentified payload
+				events.send.sendTextMessage(senderID, "I'm not sure what you want. Can you be more specific?");
+				break;
+		}
+		logger.info('payload' + payload);
+		logger.info("Received postback for user %d and page %d with payload '%s' " +
+			'at %d', senderID, recipientID, payload, timeOfPostback);
+	}
+
+	receivedMessageRead(event) {
+		var senderID = event.sender.id;
+		var recipientID = event.recipient.id;
+		var watermark = event.read.watermark;
+		var sequenceNumber = event.read.seq;
+		logger.info('Received message read event for watermark %d and sequence ' +
+			'number %d', watermark, sequenceNumber);
+	}
+
+	receivedAccountLink(event) {
+		var senderID = event.sender.id;
+		var recipientID = event.recipient.id;
+		var status = event.account_linking.status;
+		var authCode = event.account_linking.authorization_code;
+		logger.info('Received account link event with for user %d with status %s ' +
+			'and auth code %s ', senderID, status, authCode);
+	}
+
+	receivedDeliveryConfirmation(event) {
+		var senderID = event.sender.id;
+		var recipientID = event.recipient.id;
+		var delivery = event.delivery;
+		var messageIDs = delivery.mids;
+		var watermark = delivery.watermark;
+		var sequenceNumber = delivery.seq;
+		if (messageIDs) {
+			messageIDs.forEach(function (messageID) {
+				logger.info('Received delivery confirmation for message ID: %s',
+					messageID);
+			});
+		}
+		logger.info('All message before %d were delivered.', watermark);
+	}
+
+	receivedAuthentication(event) {
+		var senderID = event.sender.id;
+		var recipientID = event.recipient.id;
+		var timeOfAuth = event.timestamp;
+		var passThroughParam = event.optin.ref;
+		logger.info('Received authentication for user %d and page %d with pass ' +
+			"through param '%s' at %d", senderID, recipientID, passThroughParam,
+			timeOfAuth);
+		events.send.sendTextMessage(senderID, 'Authentication successful');
+	}
+
+	handleEcho(messageId, appId, metadata) {
+		logger.info('Received echo for message %s and app %d with metadata %s', event.messageId, event.appId, event.metadata);
+	}
+
+	handleMessageAttachments(messageAttachments, senderID) {
+		events.send.sendTextMessage(senderID, "Attachment received. Thank you.");
+	}
+
+	handleQuickReply(senderID, quickReply, messageId) {
+		var quickReplyPayload = quickReply.payload;
+		logger.info("Quick reply for message %s with payload %s", messageId, quickReplyPayload);
+
+		new NLPService({
+			context: this.context,
+			event: this.event,
+		}).evaluate({
+			senderID: senderID,
+			text: quickReplyPayload,
+			handleResponse: true,
+		})
 	}
 
 
-	if (messageText) {
-		//send message to api.ai
-		services.nlp.sendToNlp(senderID, messageText);
-	} else if (messageAttachments) {
-		handleMessageAttachments(messageAttachments, senderID);
-	}
-}
-
-/*
- * Postback Event
- *
- * This event is called when a postback is tapped on a Structured Message.
- * https://developers.facebook.com/docs/messenger-platform/webhook-reference/postback-received
- *
- */
-export function receivedPostback(event) {
-	var senderID = event.sender.id;
-	var recipientID = event.recipient.id;
-	var timeOfPostback = event.timestamp;
-
-	// The 'payload' param is a developer-defined field which is set in a postback
-	// button for Structured Messages.
-	var payload = event.postback.payload;
-
-	switch (payload) {
-		case 'GET_STARTED':
-			events.send.greetUserText(senderID);
-			break;
-		case 'JOB_APPLY':
-			//get feedback with new jobs
-			services.nlp.sendToNlp(senderID, 'job openings');
-			break;
-		case 'CHAT':
-			//user wants to chat
-			events.send.sendTextMessage(senderID, 'I love chatting too. Do you have any other questions for me?');
-			break;
-		default:
-			//unindentified payload
-			events.send.sendTextMessage(senderID, "I'm not sure what you want. Can you be more specific?");
-			break;
-
-	}
-	logger.info('payload' + payload);
-	logger.info("Received postback for user %d and page %d with payload '%s' " +
-		'at %d', senderID, recipientID, payload, timeOfPostback);
-}
-
-/*
- * Message Read Event
- *
- * This event is called when a previously-sent message has been read.
- * https://developers.facebook.com/docs/messenger-platform/webhook-reference/message-read
- *
- */
-export function receivedMessageRead(event) {
-	var senderID = event.sender.id;
-	var recipientID = event.recipient.id;
-
-	// All messages before watermark (a timestamp) or sequence have been seen.
-	var watermark = event.read.watermark;
-	var sequenceNumber = event.read.seq;
-
-	logger.info('Received message read event for watermark %d and sequence ' +
-		'number %d', watermark, sequenceNumber);
-}
-
-/*
- * Account Link Event
- *
- * This event is called when the Link Account or UnLink Account action has been
- * tapped.
- * https://developers.facebook.com/docs/messenger-platform/webhook-reference/account-linking
- *
- */
-export function receivedAccountLink(event) {
-	var senderID = event.sender.id;
-	var recipientID = event.recipient.id;
-
-	var status = event.account_linking.status;
-	var authCode = event.account_linking.authorization_code;
-
-	logger.info('Received account link event with for user %d with status %s ' +
-		'and auth code %s ', senderID, status, authCode);
-}
-
-/*
- * Delivery Confirmation Event
- *
- * This event is sent to confirm the delivery of a message. Read more about
- * these fields at https://developers.facebook.com/docs/messenger-platform/webhook-reference/message-delivered
- *
- */
-export function receivedDeliveryConfirmation(event) {
-	var senderID = event.sender.id;
-	var recipientID = event.recipient.id;
-	var delivery = event.delivery;
-	var messageIDs = delivery.mids;
-	var watermark = delivery.watermark;
-	var sequenceNumber = delivery.seq;
-
-	if (messageIDs) {
-		messageIDs.forEach(function (messageID) {
-			logger.info('Received delivery confirmation for message ID: %s',
-				messageID);
-		});
-	}
-
-	logger.info('All message before %d were delivered.', watermark);
-}
-
-/*
- * Authorization Event
- *
- * The value for 'optin.ref' is defined in the entry point. For the "Send to
- * Messenger" plugin, it is the 'data-ref' field. Read more at
- * https://developers.facebook.com/docs/messenger-platform/webhook-reference/authentication
- *
- */
-export function receivedAuthentication(event) {
-	var senderID = event.sender.id;
-	var recipientID = event.recipient.id;
-	var timeOfAuth = event.timestamp;
-
-	// The 'ref' field is set in the 'Send to Messenger' plugin, in the 'data-ref'
-	// The developer can set this to an arbitrary value to associate the
-	// authentication callback with the 'Send to Messenger' click event. This is
-	// a way to do account linking when the user clicks the 'Send to Messenger'
-	// plugin.
-	var passThroughParam = event.optin.ref;
-
-	logger.info('Received authentication for user %d and page %d with pass ' +
-		"through param '%s' at %d", senderID, recipientID, passThroughParam,
-		timeOfAuth);
-
-	// When an authentication is received, we'll send a message back to the sender
-	// to let them know it was successful.
-	events.send.sendTextMessage(senderID, 'Authentication successful');
-}
-
-//https://developers.facebook.com/docs/messenger-platform/webhook-reference/message-echo
-export function handleEcho(messageId, appId, metadata) {
-	// Just logging message echoes to console
-	logger.info('Received echo for message %s and app %d with metadata %s', messageId, appId, metadata);
-}
-
-export function handleMessageAttachments(messageAttachments, senderID){
-	//for now just reply
-	events.send.sendTextMessage(senderID, "Attachment received. Thank you.");
-}
-
-export function handleQuickReply(senderID, quickReply, messageId) {
-	var quickReplyPayload = quickReply.payload;
-	logger.info("Quick reply for message %s with payload %s", messageId, quickReplyPayload);
-	//send payload to api.ai
-	services.nlp.sendToNlp(senderID, quickReplyPayload);
 }
