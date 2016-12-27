@@ -52,10 +52,10 @@ export class ConversationMessage {
 		var messageAttachments = message.attachments;
 		var quickReply = message.quick_reply;
 		if (isEcho) {
-			handleEcho(messageId, appId, metadata);
+			this.handleEcho(messageId, appId, metadata);
 			return;
 		} else if (quickReply) {
-			handleQuickReply(senderID, quickReply, messageId);
+			this.handleQuickReply(senderID, quickReply, messageId);
 			return;
 		}
 		if (messageText) {
@@ -68,7 +68,7 @@ export class ConversationMessage {
 				handleResponse: true,
 			})
 		} else if (messageAttachments) {
-			handleMessageAttachments(messageAttachments, senderID);
+			this.handleMessageAttachments(messageAttachments, senderID);
 		}
 	}
 
