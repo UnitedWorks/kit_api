@@ -12,6 +12,21 @@ export class ActionDispatch {
 
 	handleAction(sender, action, responseText, contexts, parameters) {
 
+		let moduleTag = action.match(/(^.*)-/)[1];
+
+		switch (moduleTag) {
+			case: '311':
+				// Send to 311 module
+				break;
+			case: 'faq':
+				// Send to FAQ module
+				break;
+			default:
+				// Send to fallback module
+				break;
+		}
+
+
 		let SendClient = new SendInterface({
 			event: this.event,
 			context: this.context,
