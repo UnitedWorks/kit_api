@@ -22,7 +22,7 @@ export const ConversationSchema = Joi.object({
 });
 
 export const Message = bookshelf.Model.extend({
-  tableName: 'Message'
+  tableName: 'Message',
 });
 
 export const MessageSchema = Joi.object({
@@ -41,8 +41,13 @@ export const MessageSchema = Joi.object({
   attachment: Joi.array().items(Joi.string()),
 });
 
-export const Attachment = Joi.object({
+export const Attachment = bookshelf.Model.extend({
+  tableName: 'Attachment',
+});
+
+export const AttachmentSchema = Joi.object({
   title: Joi.string(),
   url: Joi.string(),
   type: Joi.string().valid(['image', 'audio', 'video', 'file', 'location']),
+  payload: Joi.object(),
 });
