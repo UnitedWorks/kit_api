@@ -1,12 +1,17 @@
 import uuid from 'uuid';
 import { logger } from '../logger';
-import { events, sessionIds } from './index';
+import { sessionIds } from './index';
+import { SendInterface } from './send';
 import { NLPService } from '../services/nlp';
 
 export class ConversationMessage {
 	constructor(options) {
 		this.event = options.event;
 		this.context = options.context;
+		this.SendClient = new SendInterface({
+			event: this.event,
+			context: this.context,
+		});
 
 		if (this.event.optin) {
 			this.receivedAuthentication(this.event);
@@ -23,14 +28,6 @@ export class ConversationMessage {
 		} else {
 			logger.info("Unknown messagingEvent: ", this.event);
 		}
-	}
-
-	get () {
-		return {
-			context: this.context,
-			event: this.event,
-			message: this.messageData,
-		};
 	}
 
 	receivedMessage(event) {
@@ -80,7 +77,7 @@ export class ConversationMessage {
 
 		switch (payload) {
 			case 'GET_STARTED':
-				events.send.greetUserText(senderID);
+				this.SendClient.greetUserText(senderID);
 				break;
 			case 'JOB_APPLY':
 				//get feedback with new jobs
@@ -95,11 +92,11 @@ export class ConversationMessage {
 				break;
 			case 'CHAT':
 				//user wants to chat
-				events.send.sendTextMessage(senderID, 'I love chatting too. Do you have any other questions for me?');
+				this.SendClient.sendTextMessage(senderID, 'I love chatting too. Do you have any other questions for me?');
 				break;
 			default:
 				//unindentified payload
-				events.send.sendTextMessage(senderID, "I'm not sure what you want. Can you be more specific?");
+				this.SendClient.sendTextMessage(senderID, "I'm not sure what you want. Can you be more specific?");
 				break;
 		}
 		logger.info('payload' + payload);
@@ -149,7 +146,7 @@ export class ConversationMessage {
 		logger.info('Received authentication for user %d and page %d with pass ' +
 			"through param '%s' at %d", senderID, recipientID, passThroughParam,
 			timeOfAuth);
-		events.send.sendTextMessage(senderID, 'Authentication successful');
+		this.SendClient.sendTextMessage(senderID, 'Authentication successful');
 	}
 
 	handleEcho(messageId, appId, metadata) {
@@ -157,7 +154,7 @@ export class ConversationMessage {
 	}
 
 	handleMessageAttachments(messageAttachments, senderID) {
-		events.send.sendTextMessage(senderID, "Attachment received. Thank you.");
+		this.SendClient.sendTextMessage(senderID, "Attachment received. Thank you.");
 	}
 
 	handleQuickReply(senderID, quickReply, messageId) {

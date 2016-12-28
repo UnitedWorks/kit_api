@@ -1,6 +1,6 @@
 import apiai from 'apiai';
 import { logger } from '../logger';
-import { sessionIds, events, actions } from '../conversations/index';
+import { sessionIds, actions } from '../conversations/index';
 import * as utils from '../utils/index';
 import { SendInterface } from '../conversations/send';
 import { ActionDispatch } from '../conversations/action';

@@ -1,7 +1,7 @@
 import * as interfaces from './constants/interfaces'
 import * as environment from './env';
 import { logger } from './logger';
-import * as conversations from './conversations';
+import * as helpers from './conversations/helpers';
 import { User } from './accounts/models';
 
 const AWS = require('aws-sdk');
@@ -23,7 +23,7 @@ export const app = express();
 const port = process.env.PORT || 5000;
 
 app.use(bodyParser.json({
-  verify: conversations.methods.helpers.verifyRequestSignature
+  verify: helpers.verifyRequestSignature
 }));
 
 // Process application/x-www-form-urlencoded
@@ -57,13 +57,13 @@ app.get('/addUser', (req, res) => {
 app.get('/conversations/webhook', (req, res) => {
 	logger.info('Verification Requested');
   // for Facebook verification
-  conversations.methods.helpers.webhookVerificationFacebook(req, res);
+  helpers.webhookVerificationFacebook(req, res);
 });
 
 app.post('/conversations/webhook', (req, res) => {
   logger.info('Webhook Pinged: ', req.body);
   // Handle messages
-  conversations.methods.helpers.webhookHitWithMessage(req, res);
+  helpers.webhookHitWithMessage(req, res);
 });
 
 app.get('/logs', (req, res) => {
