@@ -2,6 +2,7 @@ import * as interfaces from './constants/interfaces'
 import * as environment from './env';
 import { logger } from './logger';
 import * as helpers from './conversations/helpers';
+import { User } from './accounts/models';
 
 const AWS = require('aws-sdk');
 const bodyParser = require('body-parser');
@@ -35,6 +36,22 @@ app.use(bodyParser.json())
 
 app.get('/', (req, res) => {
   res.status(200).send();
+});
+
+app.get('/users', (req, res) => {
+  User.fetchAll().then((users) => {
+    res.status(200).send(users);
+  });
+});
+
+app.get('/addUser', (req, res) => {
+  new User({
+    firstName: 'Mark',
+    lastName: 'Hansen',
+    emailAddress: 'x@markthemark.com',
+  }).save().then((saved) => {
+    res.send(saved);
+  });
 });
 
 app.get('/conversations/webhook', (req, res) => {
