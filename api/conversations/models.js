@@ -38,6 +38,11 @@ export const MessageSchema = Joi.object({
   // Keep a number sequence
   sequence: Joi.number(),
   // Attachment details
-  attachmentType: Joi.string().valid(['image', 'video', 'file']),
-  attachementUrl: Joi.string(),
+  attachment: Joi.array().items(Joi.string()),
+});
+
+export const Attachment = Joi.object({
+  title: Joi.string(),
+  url: Joi.string(),
+  type: Joi.string().valid(['image', 'audio', 'video', 'file', 'location']),
 });

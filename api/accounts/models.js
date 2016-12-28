@@ -6,7 +6,7 @@ export const Organization = bookshelf.Model.extend({
   tableName: 'Organization',
   conversations: () => {
     return this.hasMany(conversations.Conversation);
-  }
+  },
 });
 
 export const OrganizationSchema = Joi.object({
@@ -14,7 +14,7 @@ export const OrganizationSchema = Joi.object({
   id: Joi.string(),
   name: Joi.string(),
   parent: Joi.array().items(Joi.string()),
-  sibling: Joi.array().items(Joi.string()),
+  children: Joi.array().items(Joi.string()),
   representatives: Joi.array().items(Joi.string()),
   // Conversations
   conversations: Joi.array().items(Joi.string()),
@@ -32,8 +32,9 @@ export const UserSchema = Joi.object({
   email: Joi.string(),
   password: Joi.string(),
   salt: Joi.string(),
-  verified: Joi.boolean(),
   name: Joi.string(),
   joined: Joi.date(),
   organization: Joi.string(),
+  // A non-verified user
+  verified: Joi.boolean(),
 });
