@@ -1,7 +1,8 @@
-import * as interfaces from '../constants/interfaces'
-import * as environments from '../constants/environments'
 import crypto from 'crypto';
 import { logger } from '../logger';
+import * as utils from '../utils/index';
+import * as interfaces from '../constants/interfaces'
+import * as environments from '../constants/environments'
 import { events } from './index';
 import { ConversationMessage } from './receive'
 
@@ -45,16 +46,6 @@ export function webhookHitWithMessage(req, res) {
 
 }
 
-export function getOrigin(origin) {
-	if (/chrome/.test(origin) || /localhost/.test(origin)) {
-		return environments.LOCAL;
-	} else if(/kit.community/.test(origin)) {
-		return environments.PRODUCTION;
-	} else {
-		return interfaces.FACEBOOK;
-	}
-}
-
 /*
  * Verify that the callback came from Facebook. Using the App Secret from
  * the App Dashboard, we can verify the signature that is sent with each
@@ -64,7 +55,7 @@ export function getOrigin(origin) {
  *
  */
 export function verifyRequestSignature(req, res, buf) {
-	let origin = getOrigin(req.headers.origin);
+	let origin = utils.getOrigin(req.headers.origin);
 
 	if (origin === environments.LOCAL || origin === environments.PRODUCTION) {
 		// If on local testing with postman, a local dashboard, or website, bypass.

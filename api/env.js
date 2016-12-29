@@ -23,10 +23,9 @@ function getEnv() {
   if (ENVIRONMENTS.includes(env)) {
     return env;
   } else if (!env) {
-    throw 'No Environment Variable Found';
-  } else {
-    throw 'Unacceptable Environment Variable';
+    return ENVIRONMENTS.LOCAL;
   }
+  throw new Error('Unacceptable Environment Variable');
 }
 
 function set(env) {

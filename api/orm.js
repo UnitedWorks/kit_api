@@ -10,3 +10,5 @@ export const knex = require('knex')({
 });
 
 export const bookshelf = require('bookshelf')(knex);
+
+export const st = require('knex-postgis')(knex);

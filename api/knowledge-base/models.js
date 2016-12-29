@@ -1,10 +1,10 @@
 import Joi from 'joi';
-import { bookshelf } from '../../bookshelf';
+import { bookshelf } from '../orm';
 
 export const KnowledgeBaseModule = bookshelf.Model.extend({
   tableName: 'KnowledgeBaseModule',
   items: () => {
-    return this.hasMany(KnowledgeBaseItem);
+    return this.hasMany(KnowledgeBaseListing);
   },
 });
 
@@ -13,18 +13,18 @@ export const KnowledgeBaseModuleSchema = Joi.object({
   id: Joi.string(),
   name: Joi.string(),
   description: Joi.string(),
-  // Labels should be the prefix of actions/intents in the Api.AI system
+  // Items are
   items: Joi.array().items(),
 });
 
-export const KnowledgeBaseItem = bookshelf.Model.extend({
-  tableName: 'KnowledgeBaseItem',
+export const KnowledgeBaseListing = bookshelf.Model.extend({
+  tableName: 'KnowledgeBaseListing',
   entries: () => {
     return this.hasMany(KnowledgeBaseEntry);
   }
 });
 
-export const KnowledgeBaseItemSchema = Joi.object({
+export const KnowledgeBaseListingSchema = Joi.object({
   // uuid
   id: Joi.string(),
   // Details
@@ -33,7 +33,8 @@ export const KnowledgeBaseItemSchema = Joi.object({
   type: Joi.string(), // BaseItem types? Services, events, facilities, questions?
   // Engagement module ID
   module: Joi.string(),
-  entries: Joi.array(),
+  // Entry IDs
+  entries: Joi.array().items(Joi.string()),
 });
 
 export const KnowledgeBaseEntry = bookshelf.Model.extend({
@@ -43,6 +44,6 @@ export const KnowledgeBaseEntry = bookshelf.Model.extend({
 export const KnowledgeBaseEntrySchema = Joi.object({
   // uuid
   id: Joi.string(),
-  // Corresponding KnowledgeBaseItem
-  item: Joi.string(),
+  // Corresponding KnowledgeBaseListing
+  listing: Joi.string(),
 });
