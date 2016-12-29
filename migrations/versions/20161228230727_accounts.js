@@ -12,7 +12,7 @@ exports.up = function (knex, Promise) {
         .unsigned()
         .references('id')
         .inTable('organizations')
-      table.timestamps();
+      table.dateTime('created_at').defaultTo(knex.raw('now()'));
       // To add:
       // location
       // To debate:
@@ -26,7 +26,7 @@ exports.up = function (knex, Promise) {
       table.string('phone');
       table.string('facebook_id');
       table.string('twitter_handle');
-      table.timestamps();
+      table.dateTime('created_at').defaultTo(knex.raw('now()'));
       // To add:
       // location
       // gender?
@@ -44,7 +44,7 @@ exports.up = function (knex, Promise) {
         .references('id')
         .inTable('organizations')
         .onDelete('CASCADE');
-      table.timestamps();
+      table.dateTime('created_at').defaultTo(knex.raw('now()'));
       // To add:
       // display_name
       // avatar url
