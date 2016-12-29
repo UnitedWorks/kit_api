@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import { bookshelf } from '../bookshelf';
+import { bookshelf } from '../orm';
 import * as accounts from '../accounts/models';
 import * as interfaces from '../constants/interfaces'
 

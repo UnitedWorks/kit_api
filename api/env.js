@@ -23,10 +23,9 @@ function getEnv() {
   if (ENVIRONMENTS.includes(env)) {
     return env;
   } else if (!env) {
-    throw 'No Environment Variable Found';
-  } else {
-    throw 'Unacceptable Environment Variable';
+    return ENVIRONMENTS.LOCAL;
   }
+  throw new Error('Unacceptable Environment Variable');
 }
 
 function set(env) {
@@ -35,7 +34,7 @@ function set(env) {
     dotenv.config({ path: '.env.local' });
   } else if (env === 'production') {
     dotenv.config({ path: '.env.production' });
-  } else if (env === 'test') {
+  } else if (env === 'test' && !process.env.CONTINUOUS_INTEGRATION) {
     dotenv.config({ path: '.env.test' });
   }
   process.env.ROOT = __dirname;
