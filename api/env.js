@@ -34,7 +34,7 @@ function set(env) {
     dotenv.config({ path: '.env.local' });
   } else if (env === 'production') {
     dotenv.config({ path: '.env.production' });
-  } else if (env === 'test') {
+  } else if (env === 'test' && !process.env.CONTINUOUS_INTEGRATION) {
     dotenv.config({ path: '.env.test' });
   }
   process.env.ROOT = __dirname;

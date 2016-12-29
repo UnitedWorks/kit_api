@@ -3,6 +3,8 @@ machine:
     version: 6.9.2
   services:
     - docker
+  environment:
+    CONTINUOUS_INTEGRATION: true
 
 # deployment:
 #   production:
