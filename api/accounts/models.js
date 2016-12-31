@@ -15,8 +15,8 @@ export const Constituent = bookshelf.Model.extend({
 export const Organization = bookshelf.Model.extend({
   tableName: 'organizations',
   representatives: () => this.hasMany(Representative, 'organization_id'),
-  parent_organization: () => this.hasOne(Organization, 'parent_organization_id'),
-  child_organizations: () => {
+  parentOrganization: () => this.hasOne(Organization, 'parent_organization_id'),
+  childOrganizations: () => {
     return this.hasMany(Organization).query({ where: { 'parent_organization_id': 'id' } });
   },
   // conversations: () => this.hasMany(conversations.Conversation),
@@ -28,22 +28,25 @@ export const RepresentativeSchema = Joi.object({
   // Account
   name: Joi.string(),
   email: Joi.string().email(),
+  phone: Joi.string(),
   password: Joi.string(),
   salt: Joi.string(),
-  created_at: Joi.date(),
-  organization: Joi.string(),
-  verified: Joi.boolean(), // False if hasn't verified (ex: was invited)
+  organizationId: Joi.string(),
+  emailConfirmed: Joi.boolean(), // False if hasn't verified (ex: was invited)
+  createdAt: Joi.date(),
 });
 
 export const ConstituentSchema = Joi.object({
   // UUID
   id: Joi.string(),
   // Account
+  email: Joi.string().email(),
+  phone: Joi.string(),
   facebookId: Joi.string(),
   twitterId: Joi.string(),
   twitterHandle: Joi.string(),
-  email: Joi.string().email(),
   // conversations: Joi.array().items(Joi.string()),
+  createdAt: Joi.date(),
 });
 
 export const OrganizationSchema = Joi.object({
@@ -54,10 +57,10 @@ export const OrganizationSchema = Joi.object({
   email: Joi.string().email(),
   phone: Joi.string(),
   // Org Structure
-  parent: Joi.array().items(Joi.string()),
-  children: Joi.array().items(Joi.string()),
-  // Associated Users
-  representatives: Joi.array().items(Joi.string()),
+  representatives: Joi.array(),
+  parentOrganization: Joi.array().items(Joi.string()),
+  childOrganizations: Joi.array().items(Joi.string()),
   // Conversations
   // conversations: Joi.array().items(Joi.string()),
+  createdAt: Joi.date(),
 });

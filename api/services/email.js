@@ -6,11 +6,11 @@ export class EmailService {
 		this.service = require('sendgrid');
 	}
 
-	send(subject, content) {
+	send(subject, content, toEmail, fromEmail) {
 		var helper = this.service.mail;
 
-		var from_email = new helper.Email(process.env.EMAIL_FROM);
-		var to_email = new helper.Email(process.env.EMAIL_TO);
+		var from_email = new helper.Email(fromEmail || process.env.EMAIL_FROM);
+		var to_email = new helper.Email(toEmail || process.env.EMAIL_TO);
 		var content = new helper.Content('text/html', content);
 		var mail = new helper.Mail(from_email, subject, to_email, content);
 
@@ -24,10 +24,10 @@ export class EmailService {
 		});
 
 		sg.API(request, (err, response) => {
-	    if (err) logger.error(err);
-			logger.info(response.statusCode)
-			logger.info(response.body)
-			logger.info(response.headers)
+		  if (err) logger.error(err);
+			logger.info(response.statusCode);
+			logger.info(response.body);
+			logger.info(response.headers);
 		});
 	}
 

@@ -9,9 +9,7 @@ exports.up = function (knex, Promise) {
       table.string('phone');
       table.string('website');
       table.integer('parent_organization_id')
-        .unsigned()
-        .references('id')
-        .inTable('organizations')
+        .unsigned().references('id').inTable('organizations')
       table.dateTime('created_at').defaultTo(knex.raw('now()'));
       // To add:
       // location
@@ -25,6 +23,7 @@ exports.up = function (knex, Promise) {
       table.string('email');
       table.string('phone');
       table.string('facebook_id');
+      table.string('twitter_id');
       table.string('twitter_handle');
       table.dateTime('created_at').defaultTo(knex.raw('now()'));
       // To add:
@@ -40,9 +39,7 @@ exports.up = function (knex, Promise) {
       table.string('salt');
       table.boolean('email_confirmed').defaultTo(false);
       table.integer('organization_id')
-        .unsigned()
-        .references('id')
-        .inTable('organizations')
+        .unsigned().references('id').inTable('organizations')
         .onDelete('CASCADE');
       table.dateTime('created_at').defaultTo(knex.raw('now()'));
       // To add:

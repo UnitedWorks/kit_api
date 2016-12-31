@@ -1,17 +1,46 @@
 import { Router } from 'express';
-import { User } from './models';
+import { Constituent, Representative, Organization } from './models';
 
 const router = new Router();
 
-router.get('/users', (req, res) => {
-  User.fetchAll().then((users) => {
-    res.status(200).send(users);
+// Constituents
+router.get('/constituents', (req, res) => {
+  Constituent.fetchAll().then((cons) => {
+    res.status(200).send(cons);
   });
 });
 
-router.get('/addUser', (req, res) => {
-  new User(req.body).save().then((saved) => {
-    res.send(saved);
+// Representatives
+router.post('/representative', (req, res) => {
+  new Representative(req.body).save()
+  .then((saved) => {
+    res.status(200).send(saved);
+  })
+  .catch((err) => {
+    res.status(400).send(err);
+  });
+});
+
+router.get('/representatives', (req, res) => {
+  Representative.fetchAll().then((reps) => {
+    res.status(200).send(reps);
+  });
+});
+
+// Organizations
+router.post('/organization', (req, res) => {
+  new Representative(req.body).save()
+  .then((saved) => {
+    res.status(200).send(saved);
+  })
+  .catch((err) => {
+    res.status(400).send(err);
+  });
+});
+
+router.get('/organizations', (req, res) => {
+  Organization.fetchAll().then((orgs) => {
+    res.status(200).send(orgs);
   });
 });
 
