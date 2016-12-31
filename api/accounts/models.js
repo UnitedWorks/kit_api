@@ -30,10 +30,9 @@ export const RepresentativeSchema = Joi.object({
   email: Joi.string().email(),
   password: Joi.string(),
   salt: Joi.string(),
-  joined: Joi.date(),
+  created_at: Joi.date(),
   organization: Joi.string(),
-  // A non-verified user
-  verified: Joi.boolean(),
+  verified: Joi.boolean(), // False if hasn't verified (ex: was invited)
 });
 
 export const ConstituentSchema = Joi.object({
