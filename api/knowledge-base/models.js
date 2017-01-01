@@ -50,6 +50,7 @@ export const KnowledgeFacility = bookshelf.Model.extend({
   category: () => this.hasOne(KnowledgeCategory, 'category_id'),
   schedule: () => this.hasOne(Schedule, 'schedule_id'),
   location: () => this.hasOne(Location, 'location_id'),
+  services: () => this.belongsToMany(KnowledgeService, 'facility_id'),
 });
 
 export const KnowledgeFacilitySchema = Joi.object({

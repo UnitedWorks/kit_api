@@ -20,14 +20,9 @@ exports.up = function(knex, Promise) {
       table.increments('id').primary();
       table.string('label');
     })
-    .createTable('knowledge_answers', (table) => {
+    .createTable('knowledge_facility_types', (table) => {
       table.increments('id').primary();
-      table.text('question');
-      table.text('answer');
-      table.integer('category_id')
-        .unsigned().references('id').inTable('knowledge_categorys');
-      table.string('url');
-      table.dateTime('created_at').defaultTo(knex.raw('now()'));
+      table.string('label');
     })
     .createTable('knowledge_facilitys', (table) => {
       table.increments('id');
@@ -35,13 +30,13 @@ exports.up = function(knex, Promise) {
       table.text('description');
       table.integer('category_id')
         .unsigned().references('id').inTable('knowledge_categorys');
-      table.intger('type_id')
+      table.integer('type_id')
         .unsigned().references('id').inTable('knowledge_facility_types');
+      table.integer('schedule_id')
+        .unsigned().references('id').inTable('schedules');
+      table.integer('location_id')
+        .unsigned().references('id').inTable('locations');
       table.dateTime('created_at').defaultTo(knex.raw('now()'));
-    })
-    .createTable('knowledge_facility_types', (table) => {
-      table.increments('id').primary();
-      table.string('label');
     })
     .createTable('knowledge_services', (table) => {
       table.increments('id').primary();
@@ -73,6 +68,15 @@ exports.up = function(knex, Promise) {
         .unsigned().references('id').inTable('knowledge_services');
       table.dateTime('created_at').defaultTo(knex.raw('now()'));
     })
+    .createTable('knowledge_answers', (table) => {
+      table.increments('id').primary();
+      table.text('question');
+      table.text('answer');
+      table.integer('category_id')
+        .unsigned().references('id').inTable('knowledge_categorys');
+      table.string('url');
+      table.dateTime('created_at').defaultTo(knex.raw('now()'));
+    })
     // Tables for Associations
     .createTable('knowledge_answer_events', (table) => {
       table.integer('answer_id')
@@ -96,16 +100,16 @@ exports.up = function(knex, Promise) {
 
 exports.down = function(knex, Promise) {
   return knex.schema
-    .dropTable('locations')
-    .dropTable('schedules')
-    .dropTable('medias')
-    .dropTable('knowledge_categorys')
-    .dropTable('knowledge_answers')
-    .dropTable('knowledge_events')
-    .dropTable('knowledge_facilitys')
-    .dropTable('knowledge_facility_types')
-    .dropTable('knowledge_services')
     .dropTable('knowledge_answer_events')
     .dropTable('knowledge_answer_services')
-    .dropTable('knowledge_answer_facilitys');
+    .dropTable('knowledge_answer_facilitys')
+    .dropTable('knowledge_answers')
+    .dropTable('knowledge_events')
+    .dropTable('knowledge_services')
+    .dropTable('knowledge_facilitys')
+    .dropTable('knowledge_facility_types')
+    .dropTable('knowledge_categorys')
+    .dropTable('locations')
+    .dropTable('schedules')
+    .dropTable('medias');
 };

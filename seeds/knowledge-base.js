@@ -3,42 +3,46 @@ import * as KnowledgeConstants from '../api/constants/knowledge-base';
 exports.seed = function(knex, Promise) {
 
   const categorySeed = [];
-  let categoryIds;
+  const categoryIds = [];
   KnowledgeConstants.CATEGORIES.forEach((category) => {
     categorySeed.push(knex('knowledge_categorys').insert({
       label: category,
-    }, 'ids').then((ids) => { categoryIds = ids; }));
+    }, 'id').then((ids) => { categoryIds.push(ids[0]); }));
   });
 
   const facilityTypeSeed = [];
-  let faciltiyTypeId;
+  const faciltiyTypeIds = [];
   KnowledgeConstants.FACILITY_TYPES.forEach((type) => {
     categorySeed.push(knex('knowledge_facility_types').insert({
       label: type,
-    }, 'id').then((ids) => { faciltiyTypeId = ids[0]; }));
+    }, 'id').then((ids) => { faciltiyTypeIds.push(ids[0]); }));
   });
 
   const locationSeed = [];
-  let locationIds;
-  locationSeed.push(knex('locations').insert([{}, {}], 'id').then((ids) => {
-    locationIds = ids;
-  }));
+  const locationIds = [];
+  for (let i = 0; i < 2; i += 1) {
+    locationSeed.push(knex('locations').insert({}, 'id').then((ids) => {
+      locationIds.push(ids[0]);
+    }));
+  }
 
   const scheduleSeed = [];
-  let scheduleIds;
-  scheduleSeed.push(knex('locations').insert([{}, {}, {}], 'id').then((ids) => {
-    scheduleIds = ids;
-  }));
+  const scheduleIds = [];
+  for (let i = 0; i < 3; i += 1) {
+    scheduleSeed.push(knex('schedules').insert({}, 'id').then((ids) => {
+      scheduleIds.push(ids[0]);
+    }));
+  }
 
   const facilitiesSeed = [];
   let facilityId;
   facilitiesSeed.push(knex('knowledge_facilitys').insert({
     name: 'Job Training Center',
     description: 'Walk in center for education, job search help, and other resources.',
-    type_id: faciltiyTypeId,
+    type_id: faciltiyTypeIds[0],
+    category_id: categoryIds[0],
     schedule_id: scheduleIds[0], // Refers to hours of operation
     location_id: locationIds[0], // Geolocation of facility
-    category_id: categoryIds[0],
   }, 'id').then((ids) => { facilityId = ids[0]; }));
 
   const servicesSeed = [];
@@ -46,9 +50,9 @@ exports.seed = function(knex, Promise) {
   servicesSeed.push(knex('knowledge_services').insert({
     name: 'Computer Training',
     description: 'Introduction to word and data processing programs',
+    facility_id: facilityId, // Refers to the job center
     category_id: categoryIds[0],
     schedule_id: scheduleIds[1], // Refers to the schedule of the class
-    facility_id: facilityId, // Refers to the job center
   }, 'id').then((ids) => { serviceId = ids[0]; }));
 
   const eventsSeed = [];
@@ -56,8 +60,8 @@ exports.seed = function(knex, Promise) {
   eventsSeed.push(knex('knowledge_events').insert({
     name: 'Computer Training Information Session',
     description: 'A quick overview',
-    schedule_id: scheduleIds[3], // Refers to a single time period
     facility_id: facilityId, // Refers to the job center
+    schedule_id: scheduleIds[3], // Refers to a single time period
     service_id: serviceId, // Refers to the computer training course
   }, 'id').then((ids) => { eventId = ids[0]; }));
 
