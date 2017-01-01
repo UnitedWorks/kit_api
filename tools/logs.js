@@ -11,7 +11,7 @@ if (!fs.existsSync(logPath)) {
 
 // Create log files
 const infoPath = `${logPath}/info.log`;
-if (!fs.existsSync(infoPath)) {
+if (fs.existsSync(infoPath)) {
   fs.unlinkSync(infoPath);
 }
 fs.writeFileSync(infoPath);
