@@ -78,31 +78,31 @@ exports.up = function(knex, Promise) {
       table.dateTime('created_at').defaultTo(knex.raw('now()'));
     })
     // Tables for Associations
-    .createTable('knowledge_answer_events', (table) => {
-      table.integer('answer_id')
+    .createTable('knowledge_answers_knowledge_events', (table) => {
+      table.integer('knowledge_answer_id')
         .unsigned().references('id').inTable('knowledge_answers');
-      table.integer('event_id')
+      table.integer('knowledge_event_id')
         .unsigned().references('id').inTable('knowledge_events');
     })
-    .createTable('knowledge_answer_services', (table) => {
-      table.integer('answer_id')
+    .createTable('knowledge_answers_knowledge_services', (table) => {
+      table.integer('knowledge_answer_id')
         .unsigned().references('id').inTable('knowledge_answers');
-      table.integer('service_id')
+      table.integer('knowledge_service_id')
         .unsigned().references('id').inTable('knowledge_services');
     })
-    .createTable('knowledge_answer_facilitys', (table) => {
-      table.integer('answer_id')
+    .createTable('knowledge_answers_knowledge_facilitys', (table) => {
+      table.integer('knowledge_answer_id')
         .unsigned().references('id').inTable('knowledge_answers');
-      table.integer('facility_id')
+      table.integer('knowledge_facility_id')
         .unsigned().references('id').inTable('knowledge_facilitys');
     });
 };
 
 exports.down = function(knex, Promise) {
   return knex.schema
-    .dropTable('knowledge_answer_events')
-    .dropTable('knowledge_answer_services')
-    .dropTable('knowledge_answer_facilitys')
+    .dropTable('knowledge_answers_knowledge_events')
+    .dropTable('knowledge_answers_knowledge_services')
+    .dropTable('knowledge_answers_knowledge_facilitys')
     .dropTable('knowledge_answers')
     .dropTable('knowledge_events')
     .dropTable('knowledge_services')

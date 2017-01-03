@@ -5,70 +5,238 @@ import { KnowledgeAnswer, KnowledgeCategory, KnowledgeEvent, KnowledgeFacility, 
 const router = new Router();
 
 /**
- * Returns all categories
+ * Get knowledge base categories
  * @return {Array}
  */
 router.get('/categories', (req, res) => {
   logger.info('Pinged: knowledge-base/categories');
   KnowledgeCategory.fetchAll().then((categoriesArray) => {
-    res.status(200).send(categoriesArray);
+    res.status(200).send({ categories: categoriesArray });
   });
 });
 
 /**
- * Returns all facility types
+ * Get facility types
  * @return {Array}
  */
 router.get('/facility-types', (req, res) => {
   logger.info('Pinged: knowledge-base/facility-types');
   KnowledgeFacilityType.fetchAll().then((typesArray) => {
-    res.status(200).send(typesArray);
+    res.status(200).send({ types: typesArray });
   });
 });
 
 /**
- * Returns all facilities
- * @return {Array}
+ * Facilities Endpoint
  */
-router.get('/facilities', (req, res) => {
-  logger.info('Pinged: knowledge-base/facilities');
-  KnowledgeFacility.fetchAll({ withRelated: ['category', 'type', 'schedule', 'location', 'services'] })
-    .then((facilityArray) => {
-      res.status(200).send(facilityArray);
-    });
-});
+router.route('/facilities')
+  /**
+   * Get Facilities
+   * @return {Array}
+   */
+  .get((req, res) => {
+    KnowledgeFacility.fetchAll({ withRelated: ['category', 'events', 'location', 'schedule', 'services', 'type'] })
+      .then((facilityArray) => {
+        res.status(200).send({ facilities: facilityArray });
+      });
+  })
+  /**
+   * Create Facilities
+   * @param {Object} facility - Facility object to be created
+   * @return {Object}
+   */
+  .post((req, res) => {
+    new KnowledgeFacility(req.body.facility).save(null, { method: 'insert' })
+      .then((created) => {
+        res.status(200).send({ facility: created });
+      }).catch((err) => {
+        res.status(200).send(err);
+      });
+  })
+  /**
+   * Update Facilities
+   * @param {Object} facility - Facility object containing updates
+   * @param {Number} facility.id - Required: Id of updated object
+   * @return {Object}
+   */
+   .put((req, res) => {
+     new KnowledgeFacility(req.body.facility).save(null, { method: 'update' })
+       .then((updated) => {
+         res.status(200).send({ facility: updated });
+       }).catch((err) => {
+         res.status(200).send(err);
+       });
+   })
+   /**
+    * Delete facilities
+    * @param {Number} id - Id of the facility to be removed
+    * @return {Object}
+    */
+  .delete((req, res) => {
+    new KnowledgeFacility({ id: req.query.id }).destroy()
+      .then(() => {
+        res.status(200).send();
+      }).catch((err) => {
+        return res.status(400).send(err);
+      });
+  });
 
 /**
- * Returns all services
- * @return {Array}
+ * Events Endpoint
  */
-router.get('/events', (req, res) => {
-  KnowledgeEvent.fetchAll({ withRelated: ['category', 'facility', 'location', 'service', 'schedule'] })
-    .then((eventsArray) => {
-      res.status(200).send(eventsArray);
-    });
-});
+router.route('/events')
+  /**
+   * Get events
+   * @return {Array}
+   */
+  .get((req, res) => {
+    KnowledgeEvent.fetchAll({ withRelated: ['category', 'facility', 'location', 'service', 'schedule'] })
+      .then((eventsArray) => {
+        res.status(200).send({ events: eventsArray });
+      });
+  })
+  /**
+   * Create event
+   * @return {Object}
+   */
+  .post((req, res) => {
+    new KnowledgeEvent(req.body.event).save(null, { method: 'insert' })
+      .then((saved) => {
+        res.status(200).send({ event: saved });
+      }).catch((err) => {
+        res.status(400).send({ error: err });
+      });
+  })
+  /**
+   * Update event
+   * @return {Object}
+   */
+  .put((req, res) => {
+    new KnowledgeEvent(req.body.event).save(null, { method: 'update' })
+      .then((updated) => {
+        res.status(200).send({ event: updated });
+      }).catch((err) => {
+        res.status(400).send({ error: err });
+      });
+  })
+  /**
+   * Delete event
+   * @param {Number} id - Id of the event to be removed
+   * @return {Object}
+   */
+  .delete((req, res) => {
+    new KnowledgeEvent({ id: req.query.id }).destroy()
+      .then(() => {
+        res.status(200).send();
+      }).catch(() => {
+        res.status(400).send();
+      });
+  });
 
 /**
- * Returns all events
- * @return {Array}
+ * Services Endpoint
  */
-router.get('/services', (req, res) => {
-  KnowledgeService.fetchAll({ withRelated: ['category', 'facility', 'location', 'schedule'] })
-    .then((serviceArray) => {
-      res.status(200).send(serviceArray);
-    });
-});
+router.route('/services')
+  /**
+   * Get services
+   * @return {Array}
+   */
+  .get((req, res) => {
+    KnowledgeService.fetchAll({ withRelated: ['category', 'events', 'facility', 'location', 'schedule'] })
+      .then((serviceArray) => {
+        res.status(200).send({ services: serviceArray });
+      });
+  })
+  /**
+   * Create service
+   * @param {Object} service - Object for service creation
+   * @return {Object}
+   */
+  .post((req, res) => {
+    new KnowledgeService(req.body.service).save(null, { method: 'insert' })
+      .then((saved) => {
+        res.status(200).send({ service: saved });
+      }).catch((err) => {
+        res.status(400).send({ error: err });
+      });
+  })
+  /**
+   * Update service
+   * @param {Object} service - Object for service update
+   * @return {Object}
+   */
+  .put((req, res) => {
+    new KnowledgeService(req.body.service).save(null, { method: 'update' })
+      .then((saved) => {
+        res.status(200).send({ service: saved });
+      }).catch((err) => {
+        res.status(400).send({ error: err });
+      });
+  })
+  /**
+   * Delete Service
+   * @param {Number} id - Id of the service to be deleted
+   * @return {Object}
+   */
+  .delete((req, res) => {
+    new KnowledgeService({ id: req.query.id }).destroy()
+      .then(() => {
+        res.status(200).send();
+      }).catch(() => {
+        res.status(400).send();
+      });
+  });
 
 /**
- * Returns all answers
- * @return {Array}
+ * Answers Endpoint
  */
-router.get('/answers', (req, res) => {
-  KnowledgeAnswer.fetchAll({ withRelated: ['category'] })
-    .then((answerArray) => {
-      res.status(200).send(answerArray);
-    });
-});
+router.route('/answers')
+  /**
+   * Get answers
+   * @return {Array}
+   */
+  .get((req, res) => {
+    KnowledgeAnswer.fetchAll({ withRelated: ['category', 'events', 'facilities', 'services'] })
+      .then((answerArray) => {
+        res.status(200).send({ answers: answerArray });
+      });
+  })
+  /**
+   * Create Answer
+   * @return {Object}
+   */
+  .post((req, res) => {
+    new KnowledgeAnswer(req.body.answer).save(null, { method: 'insert' })
+      .then((saved) => {
+        res.status(200).send({ answer: saved });
+      }).catch((err) => {
+        res.status(400).send({ error: err });
+      });
+  })
+  /**
+   * Update Answer
+   * @return {Object}
+   */
+  .put((req, res) => {
+    new KnowledgeAnswer(req.body.answer).save(null, { method: 'update' })
+      .then((saved) => {
+        res.status(200).send({ answer: saved });
+      }).catch((err) => {
+        res.status(400).send({ error: err });
+      });
+  })
+  /**
+   * Delete Answer
+   * @param {Number} id - Id of the answer to be deleted
+   * @return {Object}
+   */
+  .delete((req, res) => {
+    new KnowledgeAnswer({ id: req.query.id }).destroy()
+      .then(() => {
+        res.status(200).send();
+      }).catch(() => {
+        res.status(400).send();
+      });
+  });
 
 module.exports = router;

@@ -13,12 +13,12 @@ router.get('/constituents', (req, res) => {
 // Representatives
 router.post('/representative', (req, res) => {
   new Representative(req.body).save()
-  .then((saved) => {
-    res.status(200).send(saved);
-  })
-  .catch((err) => {
-    res.status(400).send(err);
-  });
+    .then((saved) => {
+      res.status(200).send(saved);
+    })
+    .catch((err) => {
+      res.status(400).send(err);
+    });
 });
 
 router.get('/representatives', (req, res) => {
@@ -30,12 +30,12 @@ router.get('/representatives', (req, res) => {
 // Organizations
 router.post('/organization', (req, res) => {
   new Representative(req.body).save()
-  .then((saved) => {
-    res.status(200).send(saved);
-  })
-  .catch((err) => {
-    res.status(400).send(err);
-  });
+    .then((saved) => {
+      res.status(200).send(saved);
+    })
+    .catch((err) => {
+      res.status(400).send(err);
+    });
 });
 
 router.get('/organizations', (req, res) => {

@@ -58,7 +58,7 @@ exports.seed = function(knex, Promise) {
       name: 'Job Training Center',
       description: 'Walk in center for education, job search help, and other resources.',
       type_id: obj.facilityTypeIds[0],
-      category_id: obj.categoryIds[0],
+      category_id: obj.categoryIds[3],
       schedule_id: obj.scheduleIds[0], // Refers to hours of operation
       location_id: obj.locationIds[0], // Geolocation of facility
     }, 'id'));
@@ -74,7 +74,7 @@ exports.seed = function(knex, Promise) {
       name: 'Computer Training',
       description: 'Introduction to word and data processing programs',
       facility_id: obj.facilityIds[0], // Refers to the job center
-      category_id: obj.categoryIds[0],
+      category_id: obj.categoryIds[3],
       schedule_id: obj.scheduleIds[1], // Refers to the schedule of the class
     }, 'id'));
     return Promise.all(servicesInserts).then((data) => {
@@ -114,17 +114,17 @@ exports.seed = function(knex, Promise) {
 
   const relationshipSeed = (obj) => {
     const relationshipsInserts = [];
-    relationshipsInserts.push(knex('knowledge_answer_events').insert({
-      answer_id: obj.answerIds[0],
-      event_id: obj.eventIds[0],
+    relationshipsInserts.push(knex('knowledge_answers_knowledge_events').insert({
+      knowledge_answer_id: obj.answerIds[0],
+      knowledge_event_id: obj.eventIds[0],
     }));
-    relationshipsInserts.push(knex('knowledge_answer_services').insert({
-      answer_id: obj.answerIds[0],
-      service_id: obj.serviceIds[0],
+    relationshipsInserts.push(knex('knowledge_answers_knowledge_services').insert({
+      knowledge_answer_id: obj.answerIds[0],
+      knowledge_service_id: obj.serviceIds[0],
     }));
-    relationshipsInserts.push(knex('knowledge_answer_facilitys').insert({
-      answer_id: obj.answerIds[0],
-      facility_id: obj.facilityIds[0],
+    relationshipsInserts.push(knex('knowledge_answers_knowledge_facilitys').insert({
+      knowledge_answer_id: obj.answerIds[0],
+      knowledge_facility_id: obj.facilityIds[0],
     }));
     return Promise.all(relationshipsInserts).then((data) => {
       return finishSeed(obj);
