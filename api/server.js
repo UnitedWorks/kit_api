@@ -18,16 +18,16 @@ const s3 = new AWS.S3({
 });
 const uuid = require('uuid');
 
-export const app = express();
+const app = express();
 const port = process.env.PORT || 5000;
 
 app.use(bodyParser.json({
-  verify: conversations.verifyRequestSignature
+  verify: conversations.verifyRequestSignature,
 }));
 
 // Process application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({
-	extended: false
+  extended: false,
 }));
 
 // Process application/json
@@ -37,9 +37,10 @@ app.get('/', (req, res) => {
   res.status(200).send();
 });
 
+// API
 app.use('/accounts', require('./accounts/routes'));
 app.use('/conversations', require('./conversations/routes'));
-app.use('./knowledge-base', require('./knowledge-base/routes'));
+app.use('/knowledge-base', require('./knowledge-base/routes'));
 
 app.get('/logs', (req, res) => {
   fs.readFile(path.join(__dirname, '..', 'logs/info.log'), 'utf8', (err, data) => {

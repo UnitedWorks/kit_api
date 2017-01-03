@@ -45,27 +45,50 @@ export const KnowledgeCategory = bookshelf.Model.extend({
   tableName: 'knowledge_categorys',
 });
 
+export const KnowledgeFacilityType = bookshelf.Model.extend({
+  tableName: 'knowledge_facility_types',
+});
+
 export const KnowledgeFacility = bookshelf.Model.extend({
   tableName: 'knowledge_facilitys',
-  category: () => this.hasOne(KnowledgeCategory, 'category_id'),
-  schedule: () => this.hasOne(Schedule, 'schedule_id'),
-  location: () => this.hasOne(Location, 'location_id'),
-  services: () => this.belongsToMany(KnowledgeService, 'facility_id'),
+  category: function() {
+    return this.belongsTo(KnowledgeCategory, 'id');
+  },
+  type: function() {
+    return this.belongsTo(KnowledgeFacilityType, 'id');
+  },
+  schedule: function() {
+    return this.hasOne(Schedule, 'id');
+  },
+  location: function() {
+    return this.hasOne(Location, 'id');
+  },
+  services: function() {
+    return this.hasMany(KnowledgeService, 'facility_id');
+  },
 });
 
 export const KnowledgeFacilitySchema = Joi.object({
   id: Joi.string(),
   name: Joi.string(),
-  category: Joi.string().valid(KnowledgeConstants.FACILITY_CATEGORIES),
+  category: Joi.string().valid(KnowledgeConstants.CATEGORIES),
   description: Joi.string(),
 });
 
 export const KnowledgeService = bookshelf.Model.extend({
   tableName: 'knowledge_services',
-  category: () => this.hasOne(KnowledgeCategory, 'category_id'),
-  schedule: () => this.hasOne(Schedule, 'schedule_id'),
-  location: () => this.hasOne(Location, 'location_id'),
-  facility: () => this.hasOne(KnowledgeFacility, 'facility_id'),
+  category: function() {
+    return this.belongsTo(KnowledgeCategory, 'id');
+  },
+  schedule: function() {
+    return this.hasOne(Schedule, 'id');
+  },
+  location: function() {
+    return this.hasOne(Location, 'id');
+  },
+  facility: function() {
+    return this.hasOne(KnowledgeFacility, 'id');
+  },
 });
 
 export const KnowledgeServiceSchema = Joi.object({
@@ -77,13 +100,24 @@ export const KnowledgeServiceSchema = Joi.object({
 
 export const KnowledgeEvent = bookshelf.Model.extend({
   tableName: 'knowledge_events',
-  schedule: () => this.hasOne(Schedule, 'schedule_id'),
-  location: () => this.hasOne(Location, 'location_id'),
-  facility: () => this.hasOne(KnowledgeFacility, 'facility_id'),
-  service: () => this.hasOne(KnowledgeService, 'service_id'),
+  category: function() {
+    return this.belongsTo(KnowledgeCategory, 'id');
+  },
+  schedule: function() {
+    return this.hasOne(Schedule, 'id');
+  },
+  location: function() {
+    return this.hasOne(Location, 'id');
+  },
+  facility: function() {
+    return this.hasOne(KnowledgeFacility, 'id');
+  },
+  service: function() {
+    return this.belongsTo(KnowledgeService, 'id');
+  },
 });
 
-export const KnowledgeEventSchema = bookshelf.Model.extend({
+export const KnowledgeEventSchema = Joi.object({
   id: Joi.string(),
   name: Joi.string(),
   description: Joi.string(),
@@ -91,11 +125,18 @@ export const KnowledgeEventSchema = bookshelf.Model.extend({
 
 export const KnowledgeAnswer = bookshelf.Model.extend({
   tableName: 'knowledge_answers',
-  category: () => this.hasOne(KnowledgeCategory, 'category_id'),
-  // Setup relationship tables to get associated events, services, and facilities
-  events: () => this.belongsToMany(KnowledgeEvent),
-  services: () => this.belongsToMany(KnowledgeService),
-  facilities: () => this.belongsToMany(KnowledgeFacility),
+  category: function() {
+    return this.belongsTo(KnowledgeCategory, 'id');
+  },
+  events: function() {
+    return this.belongsToMany(KnowledgeEvent);
+  },
+  services: function() {
+    return this.belongsToMany(KnowledgeService);
+  },
+  facilities: function() {
+    return this.belongsToMany(KnowledgeFacility);
+  },
 });
 
 export const KnowledgeAnswerSchema = Joi.object({
