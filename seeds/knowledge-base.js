@@ -1,4 +1,3 @@
-import fs from 'fs';
 import { logger } from '../api/logger';
 import * as KnowledgeConstants from '../api/constants/knowledge-base';
 
