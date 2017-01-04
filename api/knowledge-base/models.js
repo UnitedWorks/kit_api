@@ -83,16 +83,16 @@ export const KnowledgeEvent = bookshelf.Model.extend({
   },
 });
 
-const KnowledgeAnswerEvents = bookshelf.Model.extend({
-  tabeName: 'knowledge_answers_knowledge_events',
+export const KnowledgeAnswerEvents = bookshelf.Model.extend({
+  tableName: 'knowledge_answers_knowledge_events',
 });
 
-const KnowledgeAnswerFacilitys = bookshelf.Model.extend({
-  tabeName: 'knowledge_answers_knowledge_facilitys',
+export const KnowledgeAnswerFacilitys = bookshelf.Model.extend({
+  tableName: 'knowledge_answers_knowledge_facilitys',
 });
 
-const KnowledgeAnswerServices = bookshelf.Model.extend({
-  tabeName: 'knowledge_answers_knowledge_services',
+export const KnowledgeAnswerServices = bookshelf.Model.extend({
+  tableName: 'knowledge_answers_knowledge_services',
 });
 
 export const KnowledgeAnswer = bookshelf.Model.extend({

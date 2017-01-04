@@ -38,6 +38,7 @@
     "babel-core": "^6.20.0",
     "babel-preset-es2015": "^6.18.0",
     "babel-preset-stage-3": "^6.17.0",
+    "bluebird": "^3.4.7",
     "body-parser": "^1.15.2",
     "bookshelf": "^0.10.2",
     "crypto": "0.0.3",

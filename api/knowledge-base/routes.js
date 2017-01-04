@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import { logger } from '../logger';
-import { KnowledgeAnswer, KnowledgeCategory, KnowledgeEvent, KnowledgeFacility, KnowledgeFacilityType, KnowledgeService } from './models';
+import { KnowledgeAnswer, KnowledgeCategory, KnowledgeEvent, KnowledgeFacility,
+  KnowledgeFacilityType, KnowledgeService } from './models';
+import { makeAnswerRelation } from './helpers';
 
 const router = new Router();
 
@@ -46,7 +48,7 @@ router.route('/facilities')
    * @return {Object}
    */
   .post((req, res) => {
-    new KnowledgeFacility(req.body.facility).save(null, { method: 'insert' })
+    KnowledgeFacility.forge(req.body.facility).save(null, { method: 'insert' })
       .then((created) => {
         res.status(200).send({ facility: created });
       }).catch((err) => {
@@ -60,7 +62,7 @@ router.route('/facilities')
    * @return {Object}
    */
    .put((req, res) => {
-     new KnowledgeFacility(req.body.facility).save(null, { method: 'update' })
+     KnowledgeFacility.forge(req.body.facility).save(null, { method: 'update' })
        .then((updated) => {
          res.status(200).send({ facility: updated });
        }).catch((err) => {
@@ -73,7 +75,7 @@ router.route('/facilities')
     * @return {Object}
     */
   .delete((req, res) => {
-    new KnowledgeFacility({ id: req.query.id }).destroy()
+    KnowledgeFacility.forge({ id: req.query.id }).destroy()
       .then(() => {
         res.status(200).send();
       }).catch((err) => {
@@ -100,7 +102,7 @@ router.route('/events')
    * @return {Object}
    */
   .post((req, res) => {
-    new KnowledgeEvent(req.body.event).save(null, { method: 'insert' })
+    KnowledgeEvent.forge(req.body.event).save(null, { method: 'insert' })
       .then((saved) => {
         res.status(200).send({ event: saved });
       }).catch((err) => {
@@ -112,7 +114,7 @@ router.route('/events')
    * @return {Object}
    */
   .put((req, res) => {
-    new KnowledgeEvent(req.body.event).save(null, { method: 'update' })
+    KnowledgeEvent.forge(req.body.event).save(null, { method: 'update' })
       .then((updated) => {
         res.status(200).send({ event: updated });
       }).catch((err) => {
@@ -125,7 +127,7 @@ router.route('/events')
    * @return {Object}
    */
   .delete((req, res) => {
-    new KnowledgeEvent({ id: req.query.id }).destroy()
+    KnowledgeEvent.forge({ id: req.query.id }).destroy()
       .then(() => {
         res.status(200).send();
       }).catch(() => {
@@ -153,7 +155,7 @@ router.route('/services')
    * @return {Object}
    */
   .post((req, res) => {
-    new KnowledgeService(req.body.service).save(null, { method: 'insert' })
+    KnowledgeService.forge(req.body.service).save(null, { method: 'insert' })
       .then((saved) => {
         res.status(200).send({ service: saved });
       }).catch((err) => {
@@ -166,7 +168,7 @@ router.route('/services')
    * @return {Object}
    */
   .put((req, res) => {
-    new KnowledgeService(req.body.service).save(null, { method: 'update' })
+    KnowledgeService.forge(req.body.service).save(null, { method: 'update' })
       .then((saved) => {
         res.status(200).send({ service: saved });
       }).catch((err) => {
@@ -179,7 +181,7 @@ router.route('/services')
    * @return {Object}
    */
   .delete((req, res) => {
-    new KnowledgeService({ id: req.query.id }).destroy()
+    KnowledgeService.forge({ id: req.query.id }).destroy()
       .then(() => {
         res.status(200).send();
       }).catch(() => {
@@ -206,23 +208,33 @@ router.route('/answers')
    * @return {Object}
    */
   .post((req, res) => {
-    new KnowledgeAnswer(req.body.answer).save(null, { method: 'insert' })
-      .then((saved) => {
-        res.status(200).send({ answer: saved });
-      }).catch((err) => {
-        res.status(400).send({ error: err });
-      });
+      KnowledgeAnswer.forge(req.body.answer)
+        .save(null, {
+          method: 'insert',
+        }).then((model) => {
+          makeAnswerRelation(model, req.body.events, req.body.services, req.body.facilities)
+            .then(() => {
+              res.status(200).send({ answer: model });
+            }).catch((err) => {
+              res.status(400).send(err);
+            });
+        });
   })
   /**
    * Update Answer
    * @return {Object}
    */
   .put((req, res) => {
-    new KnowledgeAnswer(req.body.answer).save(null, { method: 'update' })
-      .then((saved) => {
-        res.status(200).send({ answer: saved });
-      }).catch((err) => {
-        res.status(400).send({ error: err });
+    KnowledgeAnswer.forge(req.body.answer)
+      .save(null, {
+        method: 'update'
+      }).then((model) => {
+        makeAnswerRelation(model, req.body.events, req.body.services, req.body.facilities)
+          .then(() => {
+            res.status(200).send({ answer: model });
+          }).catch((err) => {
+            res.status(400).send(err);
+          });
       });
   })
   /**
@@ -231,7 +243,7 @@ router.route('/answers')
    * @return {Object}
    */
   .delete((req, res) => {
-    new KnowledgeAnswer({ id: req.query.id }).destroy()
+    KnowledgeAnswer.forge({ id: req.query.id }).destroy()
       .then(() => {
         res.status(200).send();
       }).catch(() => {

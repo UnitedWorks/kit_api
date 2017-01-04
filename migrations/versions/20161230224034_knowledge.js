@@ -79,21 +79,24 @@ exports.up = function(knex, Promise) {
     })
     // Tables for Associations
     .createTable('knowledge_answers_knowledge_events', (table) => {
-      table.integer('knowledge_answer_id')
+      table.increments('id').primary();
+      table.integer('knowledge_answer_id').notNullable()
         .unsigned().references('id').inTable('knowledge_answers');
-      table.integer('knowledge_event_id')
+      table.integer('knowledge_event_id').notNullable()
         .unsigned().references('id').inTable('knowledge_events');
     })
     .createTable('knowledge_answers_knowledge_services', (table) => {
-      table.integer('knowledge_answer_id')
+      table.increments('id').primary();
+      table.integer('knowledge_answer_id').notNullable()
         .unsigned().references('id').inTable('knowledge_answers');
-      table.integer('knowledge_service_id')
+      table.integer('knowledge_service_id').notNullable()
         .unsigned().references('id').inTable('knowledge_services');
     })
     .createTable('knowledge_answers_knowledge_facilitys', (table) => {
-      table.integer('knowledge_answer_id')
+      table.increments('id').primary();
+      table.integer('knowledge_answer_id').notNullable()
         .unsigned().references('id').inTable('knowledge_answers');
-      table.integer('knowledge_facility_id')
+      table.integer('knowledge_facility_id').notNullable()
         .unsigned().references('id').inTable('knowledge_facilitys');
     });
 };
