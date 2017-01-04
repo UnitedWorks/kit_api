@@ -1,3 +1,10 @@
+// Entity Types
+export const FACILITY = 'facility';
+export const EVENT = 'event';
+export const SERVICE = 'service';
+export const ANSWER = 'answer';
+export const ENTITIES = [FACILITY, EVENT, SERVICE, ANSWER];
+
 // FAQ Categories
 export const TRANSPORTATION = 'Transportation, Streets, and Sidewalks';
 export const ENVIRONMENT = 'Environment and Sanitation';
