@@ -1,3 +1,4 @@
+import { knex, bookshelf } from '../orm';
 import { logger } from '../logger';
 import { KnowledgeAnswerEvents, KnowledgeAnswerFacilitys, KnowledgeAnswerServices } from './models';
 
@@ -7,7 +8,7 @@ const relatedModels = {
   services: KnowledgeAnswerServices,
 };
 
-const runSave = (collection, modelName) => {
+const runSave = (collection) => {
   return collection.forEach((model) => {
     return model.save().then((results) => {
       return results;
@@ -38,8 +39,8 @@ export const makeAnswerRelation = (answerModel, events = [], services = [], faci
     }));
   });
   return Promise.all([
-    runSave(eventRelationsArray, 'events'),
-    runSave(serviceRelationsArray, 'services'),
-    runSave(facilityRelationsArray, 'facilities'),
+    runSave(eventRelationsArray),
+    runSave(serviceRelationsArray),
+    runSave(facilityRelationsArray),
   ]);
 };

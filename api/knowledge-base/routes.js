@@ -208,13 +208,13 @@ router.route('/answers')
    * @return {Object}
    */
   .post((req, res) => {
-      KnowledgeAnswer.forge(req.body.answer)
+    KnowledgeAnswer.forge(req.body.answer)
         .save(null, {
           method: 'insert',
-        }).then((model) => {
-          makeAnswerRelation(model, req.body.events, req.body.services, req.body.facilities)
+        }).then((answerModel) => {
+          makeAnswerRelation(answerModel, req.body.events, req.body.services, req.body.facilities)
             .then(() => {
-              res.status(200).send({ answer: model });
+              res.status(200).send({ answer: answerModel });
             }).catch((err) => {
               res.status(400).send(err);
             });
@@ -227,11 +227,11 @@ router.route('/answers')
   .put((req, res) => {
     KnowledgeAnswer.forge(req.body.answer)
       .save(null, {
-        method: 'update'
-      }).then((model) => {
-        makeAnswerRelation(model, req.body.events, req.body.services, req.body.facilities)
+        method: 'update',
+      }).then((answerModel) => {
+        makeAnswerRelation(answerModel, req.body.events, req.body.services, req.body.facilities)
           .then(() => {
-            res.status(200).send({ answer: model });
+            res.status(200).send({ answer: answerModel });
           }).catch((err) => {
             res.status(400).send(err);
           });
