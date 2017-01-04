@@ -1,4 +1,3 @@
-import Joi from 'joi';
 import { bookshelf } from '../orm';
 // import * as conversations from '../conversations/models';
 
@@ -14,53 +13,11 @@ export const Constituent = bookshelf.Model.extend({
 
 export const Organization = bookshelf.Model.extend({
   tableName: 'organizations',
+  narrativeModuleConfig: () => this.hasMany(OrganizationNarrativeModule, 'organization_id'),
   representatives: () => this.hasMany(Representative, 'organization_id'),
-  parentOrganization: () => this.hasOne(Organization, 'parent_organization_id'),
-  childOrganizations: () => {
-    return this.hasMany(Organization).query({ where: { 'parent_organization_id': 'id' } });
-  },
   // conversations: () => this.hasMany(conversations.Conversation),
 });
 
-export const RepresentativeSchema = Joi.object({
-  // UUID
-  id: Joi.string(),
-  // Account
-  name: Joi.string(),
-  email: Joi.string().email(),
-  phone: Joi.string(),
-  password: Joi.string(),
-  salt: Joi.string(),
-  organizationId: Joi.string(),
-  emailConfirmed: Joi.boolean(), // False if hasn't verified (ex: was invited)
-  createdAt: Joi.date(),
-});
-
-export const ConstituentSchema = Joi.object({
-  // UUID
-  id: Joi.string(),
-  // Account
-  email: Joi.string().email(),
-  phone: Joi.string(),
-  facebookId: Joi.string(),
-  twitterId: Joi.string(),
-  twitterHandle: Joi.string(),
-  // conversations: Joi.array().items(Joi.string()),
-  createdAt: Joi.date(),
-});
-
-export const OrganizationSchema = Joi.object({
-  // UUID
-  id: Joi.string(),
-  name: Joi.string(),
-  abbreviation: Joi.string(),
-  email: Joi.string().email(),
-  phone: Joi.string(),
-  // Org Structure
-  representatives: Joi.array(),
-  parentOrganization: Joi.array().items(Joi.string()),
-  childOrganizations: Joi.array().items(Joi.string()),
-  // Conversations
-  // conversations: Joi.array().items(Joi.string()),
-  createdAt: Joi.date(),
+export const OrganizationNarrativeModule = bookshelf.Model.extend({
+  tableName: 'organizations_narrative_modules',
 });
