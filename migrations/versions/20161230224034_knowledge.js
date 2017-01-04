@@ -25,7 +25,7 @@ exports.up = function(knex, Promise) {
       table.string('label');
     })
     .createTable('knowledge_facilitys', (table) => {
-      table.increments('id');
+      table.increments('id').primary();
       table.string('name');
       table.text('description');
       table.integer('category_id')
@@ -77,7 +77,7 @@ exports.up = function(knex, Promise) {
       table.string('url');
       table.dateTime('created_at').defaultTo(knex.raw('now()'));
     })
-    // Tables for Associations
+    // Junction Tables
     .createTable('knowledge_answers_knowledge_events', (table) => {
       table.increments('id').primary();
       table.integer('knowledge_answer_id').notNullable()
