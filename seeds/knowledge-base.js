@@ -32,7 +32,7 @@ exports.seed = function(knex, Promise) {
 
   const locationSeed = (obj) => {
     const locationInserts = [];
-    for (let i = 0; i < 2; i += 1) {
+    for (let i = 0; i < 4; i += 1) {
       locationInserts.push(knex('locations').insert({}, 'id'));
     }
     return Promise.all(locationInserts).then((data) => {
@@ -43,7 +43,7 @@ exports.seed = function(knex, Promise) {
 
   const scheduleSeed = (obj) => {
     const scheduleInserts = [];
-    for (let i = 0; i < 3; i += 1) {
+    for (let i = 0; i < 6; i += 1) {
       scheduleInserts.push(knex('schedules').insert({}, 'id'));
     }
     return Promise.all(scheduleInserts).then((data) => {
@@ -57,10 +57,18 @@ exports.seed = function(knex, Promise) {
     facilitiesInserts.push(knex('knowledge_facilitys').insert({
       name: 'Job Training Center',
       description: 'Walk in center for education, job search help, and other resources.',
-      type_id: obj.facilityTypeIds[0],
-      category_id: obj.categoryIds[3],
+      type_id: 21,
+      category_id: 4,
       schedule_id: obj.scheduleIds[0], // Refers to hours of operation
       location_id: obj.locationIds[0], // Geolocation of facility
+    }, 'id'));
+    facilitiesInserts.push(knex('knowledge_facilitys').insert({
+      name: 'Midtown Precinct North',
+      description: 'Your classic neighborhood police station in Manhattan',
+      type_id: 22,
+      category_id: 8,
+      schedule_id: obj.scheduleIds[1],
+      location_id: obj.locationIds[1],
     }, 'id'));
     return Promise.all(facilitiesInserts).then((data) => {
       obj['facilityIds'] = [].concat(...data);
@@ -74,8 +82,15 @@ exports.seed = function(knex, Promise) {
       name: 'Computer Training',
       description: 'Introduction to word and data processing programs',
       facility_id: obj.facilityIds[0], // Refers to the job center
-      category_id: obj.categoryIds[3],
-      schedule_id: obj.scheduleIds[1], // Refers to the schedule of the class
+      category_id: 4,
+      schedule_id: obj.scheduleIds[2], // Refers to the schedule of the class
+    }, 'id'));
+    servicesInserts.push(knex('knowledge_services').insert({
+      name: 'Scared straight',
+      description: 'A program that everyone thought was a good idea',
+      facility_id: obj.facilityIds[0],
+      category_id: 8,
+      schedule_id: obj.scheduleIds[4],
     }, 'id'));
     return Promise.all(servicesInserts).then((data) => {
       obj['serviceIds'] = [].concat(...data);
@@ -91,6 +106,13 @@ exports.seed = function(knex, Promise) {
       facility_id: obj.facilityIds[0], // Refers to the job center
       schedule_id: obj.scheduleIds[3], // Refers to a single time period
       service_id: obj.serviceIds[0], // Refers to the computer training course
+    }, 'id'));
+    eventsInserts.push(knex('knowledge_events').insert({
+      name: 'Middleschool PS111 visits the jail',
+      description: 'Get it out of their system?',
+      facility_id: obj.facilityIds[1],
+      schedule_id: obj.scheduleIds[5],
+      service_id: obj.serviceIds[1],
     }, 'id'));
     return Promise.all(eventsInserts).then((data) => {
       obj['eventIds'] = [].concat(...data);
