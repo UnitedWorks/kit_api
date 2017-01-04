@@ -1,49 +1,112 @@
-import Joi from 'joi';
 import { bookshelf } from '../orm';
+import * as KnowledgeConstants from '../constants/knowledge-base';
 
-export const KnowledgeBaseModule = bookshelf.Model.extend({
-  tableName: 'KnowledgeBaseModule',
-  items: () => {
-    return this.hasMany(KnowledgeBaseListing);
+// Information Entries - Referenced in knowledge and non-knowledge base tables
+export const Location = bookshelf.Model.extend({
+  tableName: 'locations',
+});
+
+export const Schedule = bookshelf.Model.extend({
+  tableName: 'schedules',
+});
+
+export const Media = bookshelf.Model.extend({
+  tableName: 'medias',
+});
+
+// Knowledge Base Entries - Think of as complex objects
+export const KnowledgeCategory = bookshelf.Model.extend({
+  tableName: 'knowledge_categorys',
+});
+
+export const KnowledgeFacilityType = bookshelf.Model.extend({
+  tableName: 'knowledge_facility_types',
+});
+
+export const KnowledgeFacility = bookshelf.Model.extend({
+  tableName: 'knowledge_facilitys',
+  category: function() {
+    return this.belongsTo(KnowledgeCategory, 'category_id');
+  },
+  events: function() {
+    return this.hasMany(KnowledgeEvent, 'facility_id');
+  },
+  location: function() {
+    return this.hasOne(Location, 'id');
+  },
+  schedule: function() {
+    return this.hasOne(Schedule, 'id');
+  },
+  services: function() {
+    return this.hasMany(KnowledgeService, 'facility_id');
+  },
+  type: function() {
+    return this.belongsTo(KnowledgeFacilityType, 'type_id');
   },
 });
 
-export const KnowledgeBaseModuleSchema = Joi.object({
-  // uuid
-  id: Joi.string(),
-  name: Joi.string(),
-  description: Joi.string(),
-  // Items are
-  items: Joi.array().items(),
+export const KnowledgeService = bookshelf.Model.extend({
+  tableName: 'knowledge_services',
+  category: function() {
+    return this.belongsTo(KnowledgeCategory, 'category_id');
+  },
+  events: function() {
+    return this.hasMany(KnowledgeEvent, 'service_id');
+  },
+  facility: function() {
+    return this.belongsTo(KnowledgeFacility, 'facility_id');
+  },
+  location: function() {
+    return this.hasOne(Location, 'id');
+  },
+  schedule: function() {
+    return this.hasOne(Schedule, 'id');
+  },
 });
 
-export const KnowledgeBaseListing = bookshelf.Model.extend({
-  tableName: 'KnowledgeBaseListing',
-  entries: () => {
-    return this.hasMany(KnowledgeBaseEntry);
-  }
+export const KnowledgeEvent = bookshelf.Model.extend({
+  tableName: 'knowledge_events',
+  category: function() {
+    return this.belongsTo(KnowledgeCategory, 'category_id');
+  },
+  facility: function() {
+    return this.hasOne(KnowledgeFacility, 'id');
+  },
+  location: function() {
+    return this.hasOne(Location, 'id');
+  },
+  schedule: function() {
+    return this.hasOne(Schedule, 'id');
+  },
+  service: function() {
+    return this.belongsTo(KnowledgeService, 'service_id');
+  },
 });
 
-export const KnowledgeBaseListingSchema = Joi.object({
-  // uuid
-  id: Joi.string(),
-  // Details
-  name: Joi.string(),
-  description: Joi.string(),
-  type: Joi.string(), // BaseItem types? Services, events, facilities, questions?
-  // Engagement module ID
-  module: Joi.string(),
-  // Entry IDs
-  entries: Joi.array().items(Joi.string()),
+export const KnowledgeAnswerEvents = bookshelf.Model.extend({
+  tableName: 'knowledge_answers_knowledge_events',
 });
 
-export const KnowledgeBaseEntry = bookshelf.Model.extend({
-  tableName: 'KnowledgeBaseEntry',
+export const KnowledgeAnswerFacilitys = bookshelf.Model.extend({
+  tableName: 'knowledge_answers_knowledge_facilitys',
 });
 
-export const KnowledgeBaseEntrySchema = Joi.object({
-  // uuid
-  id: Joi.string(),
-  // Corresponding KnowledgeBaseListing
-  listing: Joi.string(),
+export const KnowledgeAnswerServices = bookshelf.Model.extend({
+  tableName: 'knowledge_answers_knowledge_services',
+});
+
+export const KnowledgeAnswer = bookshelf.Model.extend({
+  tableName: 'knowledge_answers',
+  category: function() {
+    return this.belongsTo(KnowledgeCategory, 'category_id');
+  },
+  events: function() {
+    return this.belongsToMany(KnowledgeEvent, 'knowledge_answers_knowledge_events');
+  },
+  facilities: function() {
+    return this.belongsToMany(KnowledgeFacility, 'knowledge_answers_knowledge_facilitys');
+  },
+  services: function() {
+    return this.belongsToMany(KnowledgeService, 'knowledge_answers_knowledge_services');
+  },
 });

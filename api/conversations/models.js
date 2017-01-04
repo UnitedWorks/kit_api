@@ -1,28 +1,13 @@
 import Joi from 'joi';
 import { bookshelf } from '../orm';
+import * as interfaces from '../constants/interfaces';
 import * as accounts from '../accounts/models';
-import * as interfaces from '../constants/interfaces'
+import * as knowledge from '../knowledge-base/models';
 
-export const Conversation = bookshelf.Model.extend({
-  tableName: 'Conversation',
-  messages: () => {
-    return this.hasMany(Message);
-  }
-});
-
-export const ConversationSchema = Joi.object({
-  // UUID
-  id: Joi.string(),
-  // What platform is this taking place on
-  interface: Joi.string().valid([interfaces.FACEBOOK]),
-  // What messages are part of this
-  messages: Joi.array().items(Joi.string()),
-  started: Joi.date(),
-  assigned: Joi.string(),
-});
-
+// Conversations
 export const Message = bookshelf.Model.extend({
   tableName: 'Message',
+  attachments: () => this.hasMany(Attachment, 'message_id')
 });
 
 export const MessageSchema = Joi.object({
@@ -38,16 +23,31 @@ export const MessageSchema = Joi.object({
   // Keep a number sequence
   sequence: Joi.number(),
   // Attachment details
-  attachment: Joi.array().items(Joi.string()),
+  attachments: Joi.array(),
+});
+
+export const Conversation = bookshelf.Model.extend({
+  tableName: 'Conversation',
+  messages: () => this.hasMany(Message, 'message_id'),
+});
+
+export const ConversationSchema = Joi.object({
+  // UUID
+  id: Joi.string(),
+  // What platform is this taking place on
+  interface: Joi.string().valid([interfaces.FACEBOOK]),
+  // What messages are part of this
+  messages: Joi.array().items(Joi.string()),
+  started: Joi.date(),
+  assigned: Joi.string(),
 });
 
 export const Attachment = bookshelf.Model.extend({
   tableName: 'Attachment',
+  message: () => this.belongsTo(Message, 'message_id'),
+  media: () => this.hasOne(knowledge.Media, 'media_id'),
 });
 
 export const AttachmentSchema = Joi.object({
   title: Joi.string(),
-  url: Joi.string(),
-  type: Joi.string().valid(['image', 'audio', 'video', 'file', 'location']),
-  payload: Joi.object(),
 });
