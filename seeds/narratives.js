@@ -15,7 +15,7 @@ exports.seed = function(knex, Promise) {
     // Add Sources
     const askDarcelInsert = knex('narrative_sources').insert({
       name: 'AskDarcel',
-      description: 'A collection of the most frequent 311 requests.',
+      description: 'A collection of service information for the unhoused.',
       label: 'askDarcel',
     }, 'id').then((ids) => { return ids[0] });
     const organizationSelect = knex.select().from('organizations').then((rows) => {

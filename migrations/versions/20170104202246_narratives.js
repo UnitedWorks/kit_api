@@ -15,6 +15,7 @@ exports.up = function(knex, Promise) {
         .unsigned().references('id').inTable('constituents');
       table.integer('organization_id')
         .unsigned().references('id').inTable('organizations');
+      table.string('interface_property_id');
       table.string('state_machine_name');
       table.string('state_machine_previous_state');
       table.string('state_machine_current_state');

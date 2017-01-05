@@ -1,4 +1,7 @@
-export class State {
+import { smallTalkMachine } from './small-talk';
+import { faqMachine } from './faq';
+
+export class NarrativeStateMachine {
   constructor(states, current, previous, datastore) {
     this.states = states;
     this.current = current || 'init';
@@ -31,3 +34,8 @@ export class State {
     }
   }
 }
+
+export const stateMachines = {
+  smallTalk: SmallTalkMachine,
+  faq: FaqMachine,
+};
