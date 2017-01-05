@@ -8,16 +8,14 @@ export const Representative = bookshelf.Model.extend({
 
 export const Constituent = bookshelf.Model.extend({
   tableName: 'constituents',
-  // conversations: () => this.hasMany(conversations.Conversation),
 });
 
 export const Organization = bookshelf.Model.extend({
   tableName: 'organizations',
-  narrativeModuleConfig: () => this.hasMany(OrganizationNarrativeModule, 'organization_id'),
   representatives: () => this.hasMany(Representative, 'organization_id'),
-  // conversations: () => this.hasMany(conversations.Conversation),
+  narrativeSources: () => this.hasMany(OrganizationNarrativeSources, 'organization_id'),
 });
 
-export const OrganizationNarrativeModule = bookshelf.Model.extend({
-  tableName: 'organizations_narrative_modules',
+export const OrganizationNarrativeSources = bookshelf.Model.extend({
+  tableName: 'organizations_narrative_sources',
 });

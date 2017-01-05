@@ -4,9 +4,13 @@ exports.up = function(knex, Promise) {
     // Primitive Knowledge Tables
     .createTable('locations', (table) => {
       table.increments('id').primary();
+      table.integer('organization_id')
+        .unsigned().references('id').inTable('organizations');
     })
     .createTable('schedules', (table) => {
       table.increments('id').primary();
+      table.integer('organization_id')
+        .unsigned().references('id').inTable('organizations');
     })
     .createTable('medias', (table) => {
       table.increments('id').primary();
@@ -36,6 +40,8 @@ exports.up = function(knex, Promise) {
         .unsigned().references('id').inTable('schedules');
       table.integer('location_id')
         .unsigned().references('id').inTable('locations');
+      table.integer('organization_id')
+        .unsigned().references('id').inTable('organizations');
       table.dateTime('created_at').defaultTo(knex.raw('now()'));
     })
     .createTable('knowledge_services', (table) => {
@@ -50,6 +56,8 @@ exports.up = function(knex, Promise) {
         .unsigned().references('id').inTable('locations');
       table.integer('facility_id')
         .unsigned().references('id').inTable('knowledge_facilitys');
+      table.integer('organization_id')
+        .unsigned().references('id').inTable('organizations');
       table.dateTime('created_at').defaultTo(knex.raw('now()'));
     })
     .createTable('knowledge_events', (table) => {
@@ -66,15 +74,20 @@ exports.up = function(knex, Promise) {
         .unsigned().references('id').inTable('knowledge_facilitys');
       table.integer('service_id')
         .unsigned().references('id').inTable('knowledge_services');
+      table.integer('organization_id')
+        .unsigned().references('id').inTable('organizations');
       table.dateTime('created_at').defaultTo(knex.raw('now()'));
     })
     .createTable('knowledge_answers', (table) => {
       table.increments('id').primary();
+      table.string('label').unique();
       table.text('question');
       table.text('answer');
       table.integer('category_id')
         .unsigned().references('id').inTable('knowledge_categorys');
       table.string('url');
+      table.integer('organization_id')
+        .unsigned().references('id').inTable('organizations');
       table.dateTime('created_at').defaultTo(knex.raw('now()'));
     })
     // Junction Tables

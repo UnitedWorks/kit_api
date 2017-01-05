@@ -60,6 +60,7 @@ exports.seed = function(knex, Promise) {
       category_id: 4,
       schedule_id: obj.scheduleIds[0], // Refers to hours of operation
       location_id: obj.locationIds[0], // Geolocation of facility
+      organization_id: obj.organizationIds[0],
     }, 'id'));
     facilitiesInserts.push(knex('knowledge_facilitys').insert({
       name: 'Midtown Precinct North',
@@ -68,6 +69,7 @@ exports.seed = function(knex, Promise) {
       category_id: 8,
       schedule_id: obj.scheduleIds[1],
       location_id: obj.locationIds[1],
+      organization_id: obj.organizationIds[0],
     }, 'id'));
     return Promise.all(facilitiesInserts).then((data) => {
       obj['facilityIds'] = [].concat(...data);
@@ -83,6 +85,7 @@ exports.seed = function(knex, Promise) {
       facility_id: obj.facilityIds[0], // Refers to the job center
       category_id: 4,
       schedule_id: obj.scheduleIds[2], // Refers to the schedule of the class
+      organization_id: obj.organizationIds[0],
     }, 'id'));
     servicesInserts.push(knex('knowledge_services').insert({
       name: 'Scared straight',
@@ -90,6 +93,7 @@ exports.seed = function(knex, Promise) {
       facility_id: obj.facilityIds[0],
       category_id: 8,
       schedule_id: obj.scheduleIds[4],
+      organization_id: obj.organizationIds[0],
     }, 'id'));
     return Promise.all(servicesInserts).then((data) => {
       obj['serviceIds'] = [].concat(...data);
@@ -105,6 +109,7 @@ exports.seed = function(knex, Promise) {
       facility_id: obj.facilityIds[0], // Refers to the job center
       schedule_id: obj.scheduleIds[3], // Refers to a single time period
       service_id: obj.serviceIds[0], // Refers to the computer training course
+      organization_id: obj.organizationIds[0],
     }, 'id'));
     eventsInserts.push(knex('knowledge_events').insert({
       name: 'Middleschool PS111 visits the jail',
@@ -112,6 +117,7 @@ exports.seed = function(knex, Promise) {
       facility_id: obj.facilityIds[1],
       schedule_id: obj.scheduleIds[5],
       service_id: obj.serviceIds[1],
+      organization_id: obj.organizationIds[0],
     }, 'id'));
     return Promise.all(eventsInserts).then((data) => {
       obj['eventIds'] = [].concat(...data);
@@ -122,10 +128,19 @@ exports.seed = function(knex, Promise) {
   const answerSeed = (obj) => {
     const answersInserts = [];
     answersInserts.push(knex('knowledge_answers').insert({
-      question: 'Where can I get basic computer training?',
+      label: 'faq-education-jobTraining',
+      question: 'Where can I get basic job training?',
       answer: 'The city provides training for jobs around the year. Be sure to visit a job center or check our website',
       category_id: obj.categoryIds[0],
+      organization_id: obj.organizationIds[0],
       url: 'http://www1.nyc.gov/nyc-resources/service/2984/nyc-job-training-guide',
+    }, 'id'));
+    answersInserts.push(knex('knowledge_answers').insert({
+      label: 'smallTalk-food',
+      question: 'What is the best food in the city?',
+      answer: 'Fat sandwiches!',
+      category_id: obj.categoryIds[0],
+      organization_id: obj.organizationIds[1],
     }, 'id'));
     return Promise.all(answersInserts).then((data) => {
       obj['answerIds'] = [].concat(...data);
@@ -157,7 +172,17 @@ exports.seed = function(knex, Promise) {
   };
 
   const startSeed = () => {
-    return categorySeed({});
+    return new Promise((resolve, reject) => {
+      knex.select().from('organizations').then((rows) => {
+        resolve(rows.map((row) => {
+          return row.id;
+        }));
+      });
+    }).then((orgIds) => {
+      return categorySeed({
+        organizationIds: orgIds,
+      });
+    });
   };
 
   return startSeed();

@@ -1,48 +1,45 @@
-import { sources } from '../../api/narratives/narrative-module-sources';
 
 exports.up = function(knex, Promise) {
   return knex.schema
     // Narrative Tables
-    .createTable('narrative_modules', (table) => {
+    .createTable('narrative_sources', (table) => {
       table.increments('id').primary();
       table.string('name').notNullable();
       table.text('description');
+      // Labels are checked when handling state machine events
       table.string('label').notNullable().unique();
     })
-    .createTable('narrative_intents', (table) => {
+    .createTable('narrative_states', (table) => {
       table.increments('id').primary();
-      table.integer('narrative_module_id')
-        .unsigned().references('id').inTable('narrative_modules');
-      table.string('name');
-      table.text('description');
-      table.string('intent_token');
-    })
-    .createTable('narrative_responses', (table) => {
-      table.increments('id').primary();
+      table.integer('constituent_id')
+        .unsigned().references('id').inTable('constituents');
       table.integer('organization_id')
         .unsigned().references('id').inTable('organizations');
-      table.string('intent_token');
-      // The answer has references to events, facilities, schedules, etc
-      table.integer('response_id')
-        .unsigned().references('id').inTable('knowledge_answers');
+      table.string('state_machine_name');
+      table.string('state_machine_previous_state');
+      table.string('state_machine_current_state');
+      // This can be flipped on/off when a rep takes over to prevent entering a state machine
+      table.boolean('over_ride').defaultTo(false);
+      // Set by cron job so a user is prompted with choise to continue or start a new conversation
+      table.boolean('stale').defaultTo(false);
+      // Holds info on previous states AND location, organization, sources, user, etc.
+      table.jsonb('data_store');
+      table.dateTime('updated_at');
       table.dateTime('created_at').defaultTo(knex.raw('now()'));
     })
     // Junction Tables
-    .createTable('organizations_narrative_modules', (table) => {
+    .createTable('organizations_narrative_sources', (table) => {
       table.increments('id').primary();
       table.integer('organization_id')
         .unsigned().references('id').inTable('organizations');
-      table.integer('narrative_module_id')
-        .unsigned().references('id').inTable('narrative_modules');
-      // TO DO: Make a narrative_module_sources table that can be referenced. For now, using enums
-      table.enum('source', Object.keys(sources)).defaultTo('kit');
+      table.integer('narrative_source_id')
+        .unsigned().references('id').inTable('narrative_sources');
     });
 };
 
 exports.down = function(knex, Promise) {
   return knex.schema
-    .dropTable('organizations_narrative_modules')
-    .dropTable('narrative_responses')
-    .dropTable('narrative_intents')
-    .dropTable('narrative_modules');
+    .dropTable('organizations_narrative_sources')
+    .dropTable('narrative_states')
+    .dropTable('narrative_sources');
 };
