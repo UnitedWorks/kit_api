@@ -39,7 +39,7 @@ router.post('/organization', (req, res) => {
 });
 
 router.get('/organizations', (req, res) => {
-  Organization.fetchAll().then((orgs) => {
+  Organization.fetchAll({ withRelated: ['narrativeSources'] }).then((orgs) => {
     res.status(200).send(orgs);
   });
 });
