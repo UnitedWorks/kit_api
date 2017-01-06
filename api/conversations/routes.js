@@ -13,6 +13,8 @@ router.route('/webhook')
   .post((req, res) => {
     logger.info('Webhook Pinged', req.body);
     process.webhookHitWithMessage(req, res);
+    // Response is expected by whoever hit the webhook
+    res.status(200).send();
   });
 
 module.exports = router;

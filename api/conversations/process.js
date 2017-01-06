@@ -3,7 +3,7 @@ import * as utils from '../utils/index';
 import * as interfaces from '../constants/interfaces';
 import { NarrativeState } from '../narratives/models';
 import { Constituent } from '../accounts/models';
-// import { stateMachines } from '../narratives/machines/state';
+import { stateDirector } from '../narratives/states/helpers';
 
 function getConstituent(senderId) {
   return new Promise((resolve, reject) => {
@@ -17,7 +17,6 @@ function getConstituent(senderId) {
       }
     });
   });
-
 }
 
 function getPropertyInfo(propertyId) {
@@ -53,11 +52,11 @@ function setupConstituentState(constituent) {
 }
 
 function normalizeMessage(interfaceType, messageObject) {
-  const adjustedMessageObject = messageObject;
+  let adjustedMessageObject;
   // Input: interface, message, state
   if (interfaceType === interfaces.FACEBOOK) {
+    adjustedMessageObject = messageObject.message;
     delete adjustedMessageObject.mid;
-    delete adjustedMessageObject.seq;
   }
   // Output: reformatted message
   // NLP isn't always necessary so it should be called by state machine
@@ -95,9 +94,11 @@ function normalizeStatesFromRequest(req) {
   // }
 }
 
-function runStateMachine(application, stateSnapShot) {
+function runStateMachine(appSession, stateSnapShot) {
   logger.info(stateSnapShot);
-  // const machine = new stateMachines[stateSnapShot.stateMachineName](stateSnapShot);
+  if (!stateSnapShot.over_ride) {
+    stateDirector(appSession, stateSnapShot);
+  }
 }
 
 export function webhookHitWithMessage(req, res) {
@@ -105,11 +106,11 @@ export function webhookHitWithMessage(req, res) {
   // Does: Normalizes data format for our state machines
   normalizeStatesFromRequest(req).then((normalizedStates) => {
     // Follup: Send to state machine
-    normalizedStates.forEach((stateSnapshot) => {
-      const application = {
-        response: res,
+    normalizedStates.forEach((stateSnapShot) => {
+      const appSession = {
+        res: res,
       };
-      runStateMachine(application, stateSnapshot);
+      runStateMachine(appSession, stateSnapShot);
     });
   });
 }
