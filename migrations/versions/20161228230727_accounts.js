@@ -1,7 +1,7 @@
 
 exports.up = function (knex, Promise) {
   return knex.schema
-    .createTable('organizations', function(table) {
+    .createTable('organizations', (table) => {
       table.increments('id').primary();
       table.string('name');
       table.string('abbreviation');
@@ -18,7 +18,7 @@ exports.up = function (knex, Promise) {
       //  that a representative can assign themselves to? That means
       //  no nesting, using enums as filters, and updating on an enum's change
     })
-    .createTable('constituents', function(table) {
+    .createTable('constituents', (table) => {
       table.increments('id').primary();
       table.string('email');
       table.string('phone');
@@ -30,7 +30,7 @@ exports.up = function (knex, Promise) {
       // location
       // gender?
     })
-    .createTable('representatives', function(table) {
+    .createTable('representatives', (table) => {
       table.increments('id').primary();
       table.string('name');
       table.string('email');
@@ -45,11 +45,20 @@ exports.up = function (knex, Promise) {
       // To add:
       // display_name
       // avatar url
+    })
+    .createTable('organizations_constituents', (table) => {
+      table.increments('id').primary();
+      table.integer('organization_id')
+        .unsigned().references('id').inTable('organizations');
+      table.integer('constituent_id')
+        .unsigned().references('id').inTable('constituents');
+      table.string('type');
     });
 };
 
-exports.down = function (knex, Promise) {
+exports.down = (knex, Promise) => {
   return knex.schema
+    .dropTable('organizations_constituents')
     .dropTable('constituents')
     .dropTable('representatives')
     .dropTable('organizations');
