@@ -1,9 +1,11 @@
 import { logger } from '../../logger';
-import { NarrativeState } from './state';
+import { StateMachine } from './state';
 
-export class SmallTalkMachine extends NarrativeStateMachine({
-  init(stateSnapShot) {
-    this.super();
+export class SmallTalkMachine extends StateMachine {
+
+  constructor() {
+    super();
     logger.info('Smalltalk Machine Started');
-  },
-});
+  }
+
+}

@@ -1,7 +1,7 @@
 import { smallTalkMachine } from './small-talk';
 import { faqMachine } from './faq';
 
-export class NarrativeStateMachine {
+export class StateMachine {
   constructor(states, current, previous, datastore) {
     this.states = states;
     this.current = current || 'init';

@@ -40,8 +40,28 @@ exports.seed = function(knex, Promise) {
         }));
       });
     });
-    return Promise.all(sourceRelationInserts).then((results) => {
-      return results;
+    return Promise.all(sourceRelationInserts).then(() => {
+      return passedObj;
+    });
+  }).then((passedObj) => {
+    // Add Constituents
+    const idsObj = passedObj;
+    const constituentInserts = [];
+    constituentInserts.push(kenx('constituents').insert({
+      email: 'x@markthemark.com',
+      phone: '9737239567',
+      facebook_id: 1,
+      twitter_handle: 'youmustfight',
+    }, 'id'));
+    constituentInserts.push(kenx('constituents').insert({
+      email: 'markhansen09@gmail.com',
+      phone: '9737239567',
+      facebook_id: 2,
+      twitter_handle: 'unitedworks',
+    }, 'id'));
+    return Promise.all(constituentInserts).then((ids) => {
+      idsObj.constituentIds = [].concat(...ids);
+      return idsObj;
     });
   }).then((passedObj) => {
     return logger.info(passedObj);

@@ -25,8 +25,6 @@ exports.up = function (knex, Promise) {
       table.string('facebook_id');
       table.string('twitter_id');
       table.string('twitter_handle');
-      table.integer('default_organization_id')
-        .unsigned().references('id').inTable('organizations');
       table.dateTime('created_at').defaultTo(knex.raw('now()'));
       // To add:
       // location

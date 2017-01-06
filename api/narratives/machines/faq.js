@@ -1,9 +1,11 @@
 import { logger } from '../../logger';
-import { NarrativeState } from './state';
+import { StateMachine } from './state';
 
-export class FaqMachine extends NarrativeStateMachine({
-  init(stateSnapShot) {
-    this.super();
+export class FaqMachine extends StateMachine {
+
+  constructor() {
+    super();
     logger.info('F.A.Q. Machine Started');
-  },
-});
+  }
+
+}
