@@ -1,3 +1,4 @@
+import uuid from 'uuid/v4';
 import { logger } from '../logger';
 import * as utils from '../utils/index';
 import * as interfaces from '../constants/interfaces';
@@ -7,13 +8,13 @@ import { stateDirector } from '../narratives/states/helpers';
 
 function getConstituent(senderId) {
   return new Promise((resolve, reject) => {
-    Constituent.collection().fetchOne({ facebook_id: senderId }).then((model) => {
+    Constituent.where({ facebook_id: senderId }).fetch().then((model) => {
       if (!model) {
         new Constituent({ facebook_id: senderId }).save().then((constituent) => {
-          resolve(constituent);
+          resolve(constituent.attributes);
         });
       } else {
-        resolve(model);
+        resolve(model.attributes);
       }
     });
   });
@@ -36,6 +37,7 @@ function setupConstituentState(constituent) {
       // IF no store exists for this constituent, start blank
       if (!model) {
         resolve({
+          session_id: uuid(),
           state_machine_name: 'smallTalk',
           state_machine_previous_state: null,
           state_machine_current_state: null,
@@ -51,10 +53,10 @@ function setupConstituentState(constituent) {
   });
 }
 
-function normalizeMessage(interfaceType, messageObject) {
+function normalizeMessage(clientInterface, messageObject) {
   let adjustedMessageObject;
   // Input: interface, message, state
-  if (interfaceType === interfaces.FACEBOOK) {
+  if (clientInterface === interfaces.FACEBOOK) {
     adjustedMessageObject = messageObject.message;
     delete adjustedMessageObject.mid;
   }
@@ -66,11 +68,11 @@ function normalizeMessage(interfaceType, messageObject) {
 function normalizeStatesFromRequest(req) {
   // Input: Request Object
   // const requestBy = utils.getOrigin(req.headers.origin);
-  let messageTotal = 0;
   let messageCount = 0;
+  let messageTotal = 0;
+  req.body.entry.forEach((entry) => { messageTotal += entry.messaging.length; });
   const readyStates = [];
   // if (requestBy === interfaces.FACEBOOK) {
-  req.body.entry.forEach((entry)=> { messageTotal += entry.messaging.length; });
   return new Promise((resolve) => {
     req.body.entry.forEach((entry) => {
       entry.messaging.forEach((message) => {
@@ -80,9 +82,10 @@ function normalizeStatesFromRequest(req) {
           setupConstituentState(constituent).then((constituentState) => {
             const state = constituentState;
             // state.data_store.interfaceProperty = getPropertyInfo(message.recipient.id);
-            state.data_store.initialInput = normalizeMessage(interfaces.FACEBOOK, message);
+            state.data_store.clientInterface = interfaces.FACEBOOK;
+            state.data_store.input = normalizeMessage(interfaces.FACEBOOK, message);
             readyStates.push(state);
-            messageCount++;
+            messageCount += 1;
             if (messageCount === messageTotal) {
               resolve(readyStates);
             }
@@ -94,23 +97,19 @@ function normalizeStatesFromRequest(req) {
   // }
 }
 
-function runStateMachine(appSession, stateSnapShot) {
-  logger.info(stateSnapShot);
-  if (!stateSnapShot.over_ride) {
-    stateDirector(appSession, stateSnapShot);
-  }
-}
-
 export function webhookHitWithMessage(req, res) {
   // Input: Request Object
   // Does: Normalizes data format for our state machines
   normalizeStatesFromRequest(req).then((normalizedStates) => {
     // Follup: Send to state machine
     normalizedStates.forEach((stateSnapShot) => {
+      logger.info(stateSnapShot);
       const appSession = {
         res: res,
       };
-      runStateMachine(appSession, stateSnapShot);
+      if (!stateSnapShot.over_ride) {
+        stateDirector(appSession, stateSnapShot);
+      }
     });
   });
 }
