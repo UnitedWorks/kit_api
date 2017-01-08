@@ -7,25 +7,98 @@ exports.seed = (knex, Promise) => {
       // Clearing organizations first CASCADE deletes representatives with associated foreign keys
       // Then we clear unassociated representatives
       return Promise.all([
+        knex.select().table('locations').del(),
+        knex.select().table('schedules').del(),
         knex.select().table('representatives').del(),
-        knex.select().table('constituents').del()
+        knex.select().table('constituents').del(),
       ]);
     })
     .then(() => {
+      // Seed Locations
+      const seedJerseyCity = knex('locations').insert({
+        latitude: 40.72815749999999,
+        longitude: -74.0776417,
+        formatted_address: 'Jersey City, NJ, USA',
+        city: 'Jersey City',
+        country: 'United States',
+        country_code: 'US',
+        zipcode: '08901',
+        administrative_levels: {
+          level2long: 'Hudson County',
+          level2short: 'Hudson County',
+          level1long: 'New Jersey',
+          level1short: 'NJ',
+        },
+      }, 'id');
+      const seedNewBrunswick = knex('locations').insert({
+        latitude: 40.4862157,
+        longitude: -74.4518188,
+        formatted_address: 'New Brunswick, NJ, USA',
+        city: 'New Brunswick',
+        country: 'United States',
+        country_code: 'US',
+        zipcode: '08901',
+        administrative_levels: {
+          level2long: 'Middlesex County',
+          level2short: 'Middlesex County',
+          level1long: 'New Jersey',
+          level1short: 'NJ',
+        },
+      }, 'id');
+      const seedHanoverTownship = knex('locations').insert({
+        latitude: 40.828898,
+        longitude: -74.449686,
+        formatted_address: 'Hanover, NJ 07927, USA',
+        city: 'Hanover',
+        country: 'United States',
+        country_code: 'US',
+        zipcode: '07927',
+        administrative_levels: {
+          level2long: 'Morris County',
+          level2short: 'Morris County',
+          level1long: 'New Jersey',
+          level1short: 'NJ',
+        },
+      }, 'id');
+      return Promise.join(seedJerseyCity, seedNewBrunswick, seedHanoverTownship, (jC, nB, hT) => {
+        return {
+          locationIds: {
+            jerseyCityLocation: jC[0],
+            newBrunswickLocation: nB[0],
+            hanoverTownshipLocation: hT[0],
+          },
+        };
+      });
+    })
+    .then((passedObj) => {
+      logger.info(passedObj);
       // Seed Organizations
       return Promise.all([
         knex('organizations').insert({
           name: 'Jersey City',
-          website: 'www.cityofjerseycity.com',
+          category: 'public',
+          type: 'admin',
+          website: 'http://www.cityofjerseycity.com',
+          location_id: passedObj.locationIds.jerseyCityLocation,
         }, 'id').then((ids) => { return ids[0]; }),
         knex('organizations').insert({
           name: 'City of New Brunswick',
-          website: 'www.thecityofnewbrunswick.org',
+          category: 'public',
+          type: 'admin',
+          website: 'http://www.thecityofnewbrunswick.org',
+          location_id: passedObj.locationIds.newBrunswickLocation,
+        }, 'id').then((ids) => { return ids[0] }),
+        knex('organizations').insert({
+          name: 'Hanover Township',
+          category: 'public',
+          type: 'admin',
+          website: 'http://www.hanovertownship.com/',
+          location_id: passedObj.locationIds.hanoverTownshipLocation,
         }, 'id').then((ids) => { return ids[0] }),
       ]).then((ids) => {
-        return {
+        return Object.assign(passedObj, {
           organizationIds: [].concat(...ids),
-        };
+        });
       });
     })
     .then((passedObj) => {

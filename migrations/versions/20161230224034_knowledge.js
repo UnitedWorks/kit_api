@@ -1,24 +1,6 @@
 
 exports.up = function(knex, Promise) {
   return knex.schema
-    // Primitive Knowledge Tables
-    .createTable('locations', (table) => {
-      table.increments('id').primary();
-      table.integer('organization_id')
-        .unsigned().references('id').inTable('organizations');
-    })
-    .createTable('schedules', (table) => {
-      table.increments('id').primary();
-      table.integer('organization_id')
-        .unsigned().references('id').inTable('organizations');
-    })
-    .createTable('medias', (table) => {
-      table.increments('id').primary();
-      table.string('name');
-      table.string('type');
-      table.string('url');
-      table.dateTime('created_at').defaultTo(knex.raw('now()'));
-    })
     // Complex Knowledge Tables
     .createTable('knowledge_categorys', (table) => {
       table.increments('id').primary();
@@ -124,8 +106,5 @@ exports.down = function(knex, Promise) {
     .dropTable('knowledge_services')
     .dropTable('knowledge_facilitys')
     .dropTable('knowledge_facility_types')
-    .dropTable('knowledge_categorys')
-    .dropTable('locations')
-    .dropTable('schedules')
-    .dropTable('medias');
+    .dropTable('knowledge_categorys');
 };

@@ -23,6 +23,7 @@ export default class FacebookMessengerClient extends BaseClient {
         method: 'POST',
         json: messageData,
       }, (error, response, body) => {
+        // this.isTyping(messageData.recipient.id, false);
         if (!error && !body.error) {
           logger.info('Successfully called Send API for recipient %s', body.recipient_id);
           resolve();
@@ -30,7 +31,7 @@ export default class FacebookMessengerClient extends BaseClient {
           reject();
         }
       });
-    })
+    });
   }
 
   isTyping(constituent, isTyping) {
@@ -62,7 +63,15 @@ export default class FacebookMessengerClient extends BaseClient {
       };
     }
 
-    this.callAPI(sendData);
+    return new Promise((resolve) => {
+      const fakeTiming = text ? text.length * 60 : 800;
+      this.isTyping(constituent, true);
+      setTimeout(() => {
+        this.callAPI(sendData).then(() => {
+          this.isTyping(constituent, false);
+          resolve();
+        });
+      }, fakeTiming);
+    });
   }
-
 }

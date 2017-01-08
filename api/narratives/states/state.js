@@ -39,19 +39,16 @@ export class StateMachine {
 export class NarrativeStoreMachine extends StateMachine {
   constructor(appSession, snapshot, states) {
     // Set State
-    super(states,
-      snapshot.state_machine_current_state,
-      snapshot.state_machine_previous_state,
+    super(states, snapshot.state_machine_current_state, snapshot.state_machine_previous_state,
       snapshot.data_store);
     this.snapshot = snapshot;
+
     // Set the Messaging Client
     if (this.snapshot.data_store.conversationClient === interfaces.FACEBOOK) {
       this.messagingClient = new FacebookMessengerClient();
     } else {
       this.messagingClient = new BaseClient();
     }
-    // Initialize
-    this.fire(this.current || 'init');
   }
 
   exit(pickUpState) {
@@ -60,6 +57,7 @@ export class NarrativeStoreMachine extends StateMachine {
       const attributes = {
         constituent_id: this.snapshot.constituent_id,
         session_id: this.snapshot.session_id,
+        organization_id: this.get('organizationId'),
         state_machine_name: this.snapshot.state_machine_name,
         state_machine_previous_state: this.current,
         state_machine_current_state: pickUpState,

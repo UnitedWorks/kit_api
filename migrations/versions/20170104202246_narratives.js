@@ -44,5 +44,4 @@ exports.down = function(knex, Promise) {
     .dropTable('organizations_narrative_sources')
     .dropTable('narrative_stores')
     .dropTable('narrative_sources');
-    table.string('session_id').unique();
 };

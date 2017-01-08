@@ -10,10 +10,10 @@ function getConstituent(senderId) {
     Constituent.where({ facebook_id: senderId }).fetch().then((model) => {
       if (!model) {
         new Constituent({ facebook_id: senderId }).save().then((constituent) => {
-          resolve(constituent.attributes);
+          resolve(constituent.toJSON());
         });
       } else {
-        resolve(model.attributes);
+        resolve(model.toJSON());
       }
     });
   });
@@ -21,13 +21,11 @@ function getConstituent(senderId) {
 
 function setupConstituentState(constituent) {
   return new Promise((resolve) => {
-    // We need to split state by interface properties
-    // Ex: A constituent starts talking to Jersey City and New Brunswick
     NarrativeStore.collection({
       constituent_id: constituent.id,
+      // We eventually need to filter interface properties too
     }).fetchOne().then((model) => {
-      // IF no store exists for this constituent, start blank
-      if (!model) {
+      if (model === null) {
         resolve({
           session_id: uuid(),
           state_machine_name: 'smallTalk',
@@ -38,8 +36,9 @@ function setupConstituentState(constituent) {
           data_store: {},
           constituent,
         });
+      } else {
+        resolve(Object.assign({}, model.toJSON(), { constituent }));
       }
-      resolve(Object.assign({}, model.attributes, { constituent }));
     });
   });
 }

@@ -1,6 +1,26 @@
 
 exports.up = function (knex, Promise) {
   return knex.schema
+    // Primitive Documents
+    .createTable('locations', (table) => {
+      table.increments('id').primary();
+      table.float('latitude');
+      table.float('longitude');
+      table.string('formatted_address');
+      table.string('street_number');
+      table.string('street_name');
+      table.string('city');
+      table.string('zipcode');
+      table.string('country');
+      table.string('country_code');
+      table.jsonb('administrative_levels');
+      table.jsonb('extra');
+      table.dateTime('created_at').defaultTo(knex.raw('now()'));
+    })
+    .createTable('schedules', (table) => {
+      table.increments('id').primary();
+    })
+    // Account Documents
     .createTable('organizations', (table) => {
       table.increments('id').primary();
       table.string('name');
@@ -8,15 +28,14 @@ exports.up = function (knex, Promise) {
       table.string('email');
       table.string('phone');
       table.string('website');
+      table.enum('category', ['public', 'ngo', 'private']);
+      table.enum('type', ['admin', 'division']);
+      table.integer('location_id')
+        .unsigned().references('id').inTable('locations')
+        .onDelete('CASCADE');
       table.integer('parent_organization_id')
         .unsigned().references('id').inTable('organizations')
       table.dateTime('created_at').defaultTo(knex.raw('now()'));
-      // To add:
-      // location
-      // To debate:
-      //  Rather than parent/child orgs, do we use an enum of department names
-      //  that a representative can assign themselves to? That means
-      //  no nesting, using enums as filters, and updating on an enum's change
     })
     .createTable('constituents', (table) => {
       table.increments('id').primary();
@@ -26,13 +45,11 @@ exports.up = function (knex, Promise) {
       table.string('twitter_id');
       table.string('twitter_handle');
       table.dateTime('created_at').defaultTo(knex.raw('now()'));
-      // To add:
-      // location
-      // gender?
     })
     .createTable('representatives', (table) => {
       table.increments('id').primary();
       table.string('name');
+      table.string('title');
       table.string('email');
       table.string('phone');
       table.string('password');
@@ -42,9 +59,6 @@ exports.up = function (knex, Promise) {
         .unsigned().references('id').inTable('organizations')
         .onDelete('CASCADE');
       table.dateTime('created_at').defaultTo(knex.raw('now()'));
-      // To add:
-      // display_name
-      // avatar url
     })
     .createTable('organizations_constituents', (table) => {
       table.increments('id').primary();
@@ -61,5 +75,7 @@ exports.down = (knex, Promise) => {
     .dropTable('organizations_constituents')
     .dropTable('constituents')
     .dropTable('representatives')
-    .dropTable('organizations');
+    .dropTable('organizations')
+    .dropTable('schedules')
+    .dropTable('locations');
 };
