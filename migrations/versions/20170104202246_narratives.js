@@ -9,7 +9,7 @@ exports.up = function(knex, Promise) {
       // Labels are checked when handling state machine events
       table.string('label').notNullable().unique();
     })
-    .createTable('narrative_sessions', (table) => {
+    .createTable('narrative_stores', (table) => {
       table.increments('id').primary();
       table.string('session_id').unique();
       table.integer('constituent_id')
@@ -42,7 +42,7 @@ exports.up = function(knex, Promise) {
 exports.down = function(knex, Promise) {
   return knex.schema
     .dropTable('organizations_narrative_sources')
-    .dropTable('narrative_sessions')
+    .dropTable('narrative_stores')
     .dropTable('narrative_sources');
     table.string('session_id').unique();
 };

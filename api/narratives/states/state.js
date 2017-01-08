@@ -1,7 +1,7 @@
 import { logger } from '../../logger';
 import * as interfaces from '../../constants/interfaces';
-import { stateMachines } from './helpers';
 import { BaseClient, FacebookMessengerClient } from '../../conversations/clients';
+import { NarrativeStore } from '../models';
 
 export class StateMachine {
   constructor(states, current, previous, datastore) {
@@ -21,6 +21,7 @@ export class StateMachine {
   }
 
   input(event, aux) {
+    logger.info(`Event Input: ${this.current}`);
     this.fire(this.current, event, aux);
   }
 
@@ -35,26 +36,43 @@ export class StateMachine {
   }
 }
 
-export class NarrativeStateMachine extends StateMachine {
+export class NarrativeStoreMachine extends StateMachine {
   constructor(appSession, snapshot, states) {
-    // Easier setup of state
+    // Set State
     super(states,
       snapshot.state_machine_current_state,
       snapshot.state_machine_previous_state,
       snapshot.data_store);
     this.snapshot = snapshot;
-    this.session = appSession;
-    if (snapshot.data_store.clientInterface === interfaces.FACEBOOK) {
+    // Set the Messaging Client
+    if (this.snapshot.data_store.conversationClient === interfaces.FACEBOOK) {
       this.messagingClient = new FacebookMessengerClient();
     } else {
       this.messagingClient = new BaseClient();
     }
-    this.fire('init', 'enter');
+    // Initialize
+    this.fire(this.current || 'init');
   }
-  // A method for transferring to a different machine
-  changeMachine(machineName, event) {
-    logger.info(`Changing Machine: ${machineName}`);
-    const newMachine = new stateMachines[machineName](this.session, this.snapshot);
-    newMachine.fire('init', event);
+
+  exit(pickUpState) {
+    logger.info('Exiting');
+    NarrativeStore.where({ session_id: this.snapshot.session_id }).fetch().then((model) => {
+      const attributes = {
+        constituent_id: this.snapshot.constituent_id,
+        session_id: this.snapshot.session_id,
+        state_machine_name: this.snapshot.state_machine_name,
+        state_machine_previous_state: this.current,
+        state_machine_current_state: pickUpState,
+        over_ride: false,
+        data_store: this.snapshot.data_store,
+      };
+      if (model) {
+        attributes.id = model.attributes.id;
+      }
+      // logger.info(attributes);
+      NarrativeStore.forge(attributes).save(null, null).then((state) => {
+        // logger.info(state.attributes);
+      });
+    });
   }
 }

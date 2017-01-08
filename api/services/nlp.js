@@ -1,7 +1,7 @@
 import { Wit, log } from 'node-wit';
 import { logger } from '../logger';
 
-export const client = new Wit({
+export const nlp = new Wit({
   accessToken: process.env.WIT_ACCESS_TOKEN,
   actions: {
     send(request, response) {

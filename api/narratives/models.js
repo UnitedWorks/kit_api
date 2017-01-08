@@ -8,8 +8,8 @@ export const NarrativeSource = bookshelf.Model.extend({
 });
 
 // Intents have responses, which can take different sources of information.
-export const NarrativeState = bookshelf.Model.extend({
-  tableName: 'narrative_states',
+export const NarrativeStore = bookshelf.Model.extend({
+  tableName: 'narrative_stores',
   hasTimestamps: true,
   constituent: function() {
     return this.hasOne(AccountModels.Constituent, 'constituent_id');

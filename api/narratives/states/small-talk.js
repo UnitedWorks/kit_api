@@ -1,70 +1,53 @@
 import { logger } from '../../logger';
-import { NarrativeStateMachine } from './state';
-import { client } from '../../services/nlp';
+import { NarrativeStoreMachine } from './state';
+import { nlp } from '../../services/nlp';
 import { geocoder } from '../../services/geocoder';
 
 const smallTalkStates = {
   init() {
-    logger.info('SmallTalkState: init');
     // If this is a fresh conversation, do the getting started flow.
-    if (!this.snapshot.state_machine_current_state) {
-      this.fire('gettingStarted');
-    } else {
-      this.fire('base');
-    }
+    this.fire('base');
   },
   gettingStarted() {
-    logger.info('SmallTalkState: gettingStarted');
-    // Hey how are you!
-    // Send picture
-    // Thanks for stopping by. I hope I'll be able to help.
-    // I'm helping residents get trash schedules, report potholes, and get info for human services.
+    this.messagingClient.send(this.snapshot.constituent, 'Hi, thanks for getting in touch!');
+    this.messagingClient.send(this.snapshot.constituent, 'I\'m an AI bot that helps you connect with you city and community. You can call me the mayor ;), but I also go by Jane or Angela!');
+    this.messagingClient.send(this.snapshot.constituent, 'I can tell you the trash schedule, help you report a pothole, anonymously notify departments of injustices you face, and more! I\'m constantly trying to do more for you.');
+    this.messagingClient.send(this.snapshot.constituent, 'I just need to know a few things I can help!');
     this.fire('location');
   },
   location() {
-    logger.info('SmallTalkState: location');
-    // If no location
-    if (!this.datastore.location) {
-      // this.changeMachine('location', 'city');
-      client.message(this.snapshot.data_store.input.text, {}).then((nlpData) => {
-        if (!nlpData.location) {
-          this.messagingClient.send(this.snapshot.data_store.constituent, 'Sorry, I don\'t recognize that. Where do you live?')
+    const input = this.get('input');
+    nlp.message(input.text, {}).then((nlpData) => {
+      geocoder.geocode(nlpData.entities.location[0].value).then((geoData) => {
+        this.set('nlp', nlpData.entities);
+        this.set('location', geoData[Object.keys(geoData)[0]])
+        if (Object.keys(geoData).length > 1) {
+          const message = `Did you mean ${geoData['0'].formattedAddress}? If not, give a bit more detail.`;
+          this.messagingClient.send(this.snapshot.constituent, message);
+          this.exit('location');
+        } else if (Object.keys(geoData).length === 1) {
+          this.set('location', geoData[0]);
+          this.fire('setOrganization');
+        } else {
+          const message = this.previous !== 'location' ? 'What city are you located in?' : 'Hmm, I`m not familiar with that city. I might need a state or zipcode.';
+          this.messagingClient.send(this.snapshot.constituent, message);
+          this.exit('location');
         }
-        geocoder.geocode(nlpData.entities.location[0].value).then((geoData) => {
-          this.snapshot.data_store.nlp = nlpData.entities;
-          this.snapshot.data_store.location = geoData[Object.keys(geoData)[0]];
-          if (Object.keys(geoData).length > 1) {
-            const message = `Did you mean ${geoData['0'].formattedAddress}? If not, give a bit more detail.`;
-            this.messagingClient.send(this.snapshot.data_store.constituent, message)
-            this.fire('locationClarification');
-          } else {
-            const message = `Thanks! I passed through there a few times.`;
-            this.messagingClient.send(this.snapshot.data_store.constituent, message)
-            this.fire('locationSet');
-          }
-        }).catch(logger.info);
       }).catch(logger.info);
-    } else {
-      this.fire('base');
-    }
+    }).catch(logger.info);
   },
-  locationClarification() {
-    logger.info('SmallTalkState: locationClarification');
-  },
-  locationSet() {
-    logger.info('SmallTalkState: locationSetting');
+  setOrganization() {
+    logger.info('Set Organization');
+    const message = `Oh! I've passed through ${this.get('location').city} there a few times.`;
+    this.messagingClient.send(this.snapshot.constituent, message);
     // - add location to user?
     // - associate constituent with a organization?
-    // - save the narrative_state to DB
-    this.fire('base');
   },
   base() {
-    logger.info('SmallTalkState: base');
-    logger.info(this.snapshot);
   },
 };
 
-export default class SmallTalkMachine extends NarrativeStateMachine {
+export default class SmallTalkMachine extends NarrativeStoreMachine {
   constructor(appSession, snapshot) {
     super(appSession, snapshot, smallTalkStates);
   }
