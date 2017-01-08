@@ -9,13 +9,13 @@ const smallTalkStates = {
   },
   gettingStarted() {
     logger.info('State: Getting Started');
-    // this.messagingClient.send(this.snapshot.constituent, 'Hey there! I\'m the Mayor').then(() => {
-    //   this.messagingClient.send(this.snapshot.constituent, 'Sort of... Truthfully, I\'m an AI bot that helps you connect with the city and your community').then(() => {
-    //     this.messagingClient.send(this.snapshot.constituent, 'I can tell you the trash schedule, report potholes, or try and help with any problems or injustices you\'re facing.').then(() => {
+    this.messagingClient.send(this.snapshot.constituent, 'Hey there! I\'m the Mayor').then(() => {
+      this.messagingClient.send(this.snapshot.constituent, 'Sort of... Truthfully, I\'m an AI bot that helps you connect with the city and your community').then(() => {
+        this.messagingClient.send(this.snapshot.constituent, 'I can tell you the trash schedule, report potholes, or try and help with any problems or injustices you\'re facing.').then(() => {
           this.fire('location');
-    //     });
-    //   });
-    // });
+        });
+      });
+    });
   },
   location() {
     logger.info('State: Location');
@@ -72,7 +72,7 @@ export default class SmallTalkMachine extends NarrativeStoreMachine {
   constructor(appSession, snapshot) {
     super(appSession, snapshot, smallTalkStates);
     // Initialize
-    if (!this.snapshot.state_machine_current_state && this.snapshot.organization_id === null) {
+    if (typeof this.snapshot.state_machine_current_state !== 'string' && typeof this.snapshot.organization_id !== 'string') {
       this.fire('gettingStarted');
     } else if (this.current) {
       this.fire(this.current);

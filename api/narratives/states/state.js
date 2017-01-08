@@ -67,7 +67,6 @@ export class NarrativeStoreMachine extends StateMachine {
       if (model) {
         attributes.id = model.attributes.id;
       }
-      // logger.info(attributes);
       NarrativeStore.forge(attributes).save(null, null).then((state) => {
         // logger.info(state.attributes);
       });
