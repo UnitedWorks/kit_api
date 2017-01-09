@@ -142,6 +142,30 @@ exports.seed = function(knex, Promise) {
       category_id: obj.categoryIds[0],
       organization_id: obj.organizationIds[1],
     }, 'id'));
+    answersInserts.push(knex('knowledge_answers').insert({
+      label: 'sanitation-garbage-schedule',
+      question: 'What day is trash pickup?',
+      answer: 'Trash alternates based on districts and address. Please refer to our schedule.',
+      category_id: obj.categoryIds[3],
+      organization_id: obj.organizationIds[0],
+      url: 'http://www.cityofjerseycity.com/public_works.aspx?id=878',
+    }, 'id'));
+    answersInserts.push(knex('knowledge_answers').insert({
+      label: 'sanitation-garbage-schedule',
+      question: 'What day is trash pickup?',
+      answer: 'Trash pickup is every Wednesday, starting at 5:00 AM',
+      category_id: obj.categoryIds[3],
+      organization_id: obj.organizationIds[1],
+      url: 'http://thecityofnewbrunswick.org/public-works/trash-and-recycling-info/',
+    }, 'id'));
+    answersInserts.push(knex('knowledge_answers').insert({
+      label: 'sanitation-garbage-schedule',
+      question: 'What day is trash pickup?',
+      answer: 'Trash pickup is every Friday',
+      category_id: obj.categoryIds[3],
+      organization_id: obj.organizationIds[2],
+      url: 'http://www.hanovertownship.org/garbage.html',
+    }, 'id'));
     return Promise.all(answersInserts).then((data) => {
       obj['answerIds'] = [].concat(...data);
       return relationshipSeed(obj);

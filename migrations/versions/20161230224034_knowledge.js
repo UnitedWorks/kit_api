@@ -62,7 +62,7 @@ exports.up = function(knex, Promise) {
     })
     .createTable('knowledge_answers', (table) => {
       table.increments('id').primary();
-      table.string('label').unique();
+      table.string('label');
       table.text('question');
       table.text('answer');
       table.integer('category_id')

@@ -3,10 +3,13 @@ import { NarrativeStoreMachine } from './state';
 import { nlp } from '../../services/nlp';
 import { geocoder } from '../../services/geocoder';
 import { Organization } from '../../accounts/models';
+import * as Tags from '../../constants/nlp-tagging';
+import { getAnswers } from '../../knowledge-base/helpers';
 
 const smallTalkStates = {
   init() {
   },
+
   gettingStarted() {
     logger.info('State: Getting Started');
     this.messagingClient.send(this.snapshot.constituent, 'Hey there! I\'m the Mayor').then(() => {
@@ -17,6 +20,7 @@ const smallTalkStates = {
       });
     });
   },
+
   location() {
     logger.info('State: Location');
     const input = this.get('input');
@@ -45,25 +49,58 @@ const smallTalkStates = {
       }
     }).catch(logger.info);
   },
+
   setOrganization() {
     logger.info('State: Set Organization');
+    // When a geolocation is found for the user, see if a matching city is found for an organization
+    // I think this function should be improved to require administrative level matching
     const constituentLocation = this.get('location');
     Organization.collection().fetch({ withRelated: 'location' }).then((collection) => {
+      let cityFound = false;
       collection.toJSON().forEach((document) => {
         if (document.location.city === constituentLocation.city) {
           this.set('organizationId', document.id);
           const message = `Oh! I've passed through ${constituentLocation.city} before`;
           this.messagingClient.send(this.snapshot.constituent, message);
           this.exit('start');
+          cityFound = true;
         }
       });
+      if (!cityFound) {
+        this.messagingClient.send(this.snapshot.constituent, 'Oh no! Your city isn\'t registered. I will let them know you\'re interested.');
+        this.exit('start');
+      }
     });
   },
+
   start() {
     logger.info('State: Start');
     const input = this.get('input');
     nlp.message(input.text, {}).then((nlpData) => {
+      this.set('nlp', nlpData.entities);
+      const entities = Object.keys(nlpData.entities);
       logger.info(nlpData);
+      // What services does my city offer?
+      if (entities.includes(Tags.SANITATION)) {
+        if (entities.includes(Tags.SCHEDULES)) {
+          getAnswers({}, {
+            label: 'sanitation-garbage-schedule',
+            organization: this.get('organizationId'),
+          }, { withRelated: false }).then((payload) => {
+            const answer = payload.toJSON()[0];
+            logger.info({ answer });
+            let message = answer.answer;
+            if (answer.url) {
+              message = `${message} (More info at ${answer.url})`;
+            }
+            this.messagingClient.send(this.snapshot.constituent, message);
+          });
+        }
+      }
+      // What events are coming up?
+
+      // Where can I find good food around here?
+
     });
   },
 };

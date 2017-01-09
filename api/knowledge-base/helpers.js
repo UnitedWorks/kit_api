@@ -1,19 +1,14 @@
 import { knex, bookshelf } from '../orm';
 import { logger } from '../logger';
-import { KnowledgeAnswerEvents, KnowledgeAnswerFacilitys, KnowledgeAnswerServices } from './models';
+import { KnowledgeAnswer, KnowledgeAnswerEvents, KnowledgeAnswerFacilitys, KnowledgeAnswerServices } from './models';
 
-const relatedModels = {
-  events: KnowledgeAnswerEvents,
-  facilities: KnowledgeAnswerFacilitys,
-  services: KnowledgeAnswerServices,
-};
-
-const runSave = (collection) => {
-  return collection.forEach((model) => {
-    return model.save().then((results) => {
-      return results;
+export const getAnswers = (session, params, options) => {
+  return KnowledgeAnswer.where({
+      label: params.label,
+      organization_id: params.organization,
+    }).fetchAll({
+      withRelated: ['category', 'events', 'facilities', 'services'],
     });
-  });
 };
 
 export const makeAnswerRelation = (answerModel, events = [], services = [], facilities = []) => {
@@ -43,4 +38,12 @@ export const makeAnswerRelation = (answerModel, events = [], services = [], faci
     runSave(serviceRelationsArray),
     runSave(facilityRelationsArray),
   ]);
+};
+
+const runSave = (collection) => {
+  return collection.forEach((model) => {
+    return model.save().then((results) => {
+      return results;
+    });
+  });
 };
