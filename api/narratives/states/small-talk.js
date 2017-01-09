@@ -59,7 +59,7 @@ const smallTalkStates = {
       let cityFound = false;
       collection.toJSON().forEach((document) => {
         if (document.location.city === constituentLocation.city) {
-          this.set('organizationId', document.id);
+          this.set('organization', document);
           const message = `Oh! I've passed through ${constituentLocation.city} before`;
           this.messagingClient.send(this.snapshot.constituent, message);
           this.exit('start');
@@ -85,7 +85,7 @@ const smallTalkStates = {
         if (entities.includes(Tags.SCHEDULES)) {
           getAnswers({}, {
             label: 'sanitation-garbage-schedule',
-            organization: this.get('organizationId'),
+            organization_id: this.get('organization').id,
           }, { withRelated: false }).then((payload) => {
             const answer = payload.toJSON()[0];
             logger.info({ answer });
@@ -94,13 +94,12 @@ const smallTalkStates = {
               message = `${message} (More info at ${answer.url})`;
             }
             this.messagingClient.send(this.snapshot.constituent, message);
+            this.exit('start');
           });
         }
       }
       // What events are coming up?
-
       // Where can I find good food around here?
-
     });
   },
 };

@@ -3,10 +3,8 @@ import { logger } from '../logger';
 import { KnowledgeAnswer, KnowledgeAnswerEvents, KnowledgeAnswerFacilitys, KnowledgeAnswerServices } from './models';
 
 export const getAnswers = (session, params, options) => {
-  return KnowledgeAnswer.where({
-      label: params.label,
-      organization_id: params.organization,
-    }).fetchAll({
+  const filters = Object.assign({}, params);
+  return KnowledgeAnswer.where(filters).fetchAll({
       withRelated: ['category', 'events', 'facilities', 'services'],
     });
 };

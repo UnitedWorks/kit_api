@@ -55,9 +55,9 @@ export class NarrativeStoreMachine extends StateMachine {
     logger.info('Exiting');
     NarrativeStore.where({ session_id: this.snapshot.session_id }).fetch().then((model) => {
       const attributes = {
-        constituent_id: this.snapshot.constituent_id,
+        constituent_id: this.snapshot.constituent.id,
         session_id: this.snapshot.session_id,
-        organization_id: this.get('organizationId'),
+        organization_id: this.get('organization').id,
         state_machine_name: this.snapshot.state_machine_name,
         state_machine_previous_state: this.current,
         state_machine_current_state: pickUpState,
