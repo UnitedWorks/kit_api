@@ -22,8 +22,6 @@ exports.up = function(knex, Promise) {
       table.string('state_machine_current_state');
       // This can be flipped on/off when a rep takes over to prevent entering a state machine
       table.boolean('over_ride').defaultTo(false);
-      // Set by cron job so a user is prompted with choise to continue or start a new conversation
-      table.boolean('stale').defaultTo(false);
       // Holds info on previous states AND location, organization, sources, user, etc.
       table.jsonb('data_store');
       table.dateTime('updated_at');

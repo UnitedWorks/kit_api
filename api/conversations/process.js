@@ -32,7 +32,6 @@ function setupConstituentState(constituent) {
           state_machine_previous_state: null,
           state_machine_current_state: null,
           over_ride: false,
-          stale: false,
           data_store: {},
           constituent,
         });
