@@ -3,7 +3,7 @@ import { NarrativeStoreMachine } from './state';
 import { nlp } from '../../services/nlp';
 import { geocoder } from '../../services/geocoder';
 import { Organization } from '../../accounts/models';
-import * as Tags from '../../constants/nlp-tagging';
+import * as TAGS from '../../constants/nlp-tagging';
 import { getAnswers } from '../../knowledge-base/helpers';
 
 const smallTalkStates = {
@@ -78,21 +78,53 @@ const smallTalkStates = {
     const input = this.get('input');
     nlp.message(input.text, {}).then((nlpData) => {
       this.set('nlp', nlpData.entities);
-      const entities = Object.keys(nlpData.entities);
+      const entities = nlpData.entities;
       logger.info(nlpData);
       // What services does my city offer?
-      if (entities.includes(Tags.SANITATION)) {
-        if (entities.includes(Tags.SCHEDULES)) {
-          getAnswers({}, {
-            label: 'sanitation-garbage-schedule',
+      if (entities.hasOwnProperty(TAGS.SANITATION)) {
+        const value = entities[TAGS.SANITATION][0].value;
+        let answerRequest;
+        if (value === TAGS.COMPOST) {
+          answerRequest = getAnswers({}, {
+            label: 'sanitation-compost',
             organization_id: this.get('organization').id,
-          }, { withRelated: false }).then((payload) => {
+          }, { withRelated: false });
+        }
+        if (value === TAGS.BULK) {
+          answerRequest = getAnswers({}, {
+            label: 'sanitation-bulk-pickup',
+            organization_id: this.get('organization').id,
+          }, { withRelated: false });
+        }
+        if (value === TAGS.ELECTRONICS) {
+          answerRequest = getAnswers({}, {
+            label: 'sanitation-electronics-disposal',
+            organization_id: this.get('organization').id,
+          }, { withRelated: false });
+        }
+        if (entities.hasOwnProperty(TAGS.SCHEDULES)) {
+          switch (value) {
+            // Request Garbage
+            case TAGS.GARBAGE:
+              answerRequest = getAnswers({}, {
+                label: 'sanitation-garbage-schedule',
+                organization_id: this.get('organization').id,
+              }, { withRelated: false });
+              break;
+            // Request Recycling
+            case TAGS.RECYCLING:
+              answerRequest = getAnswers({}, {
+                label: 'sanitation-recycling-schedule',
+                organization_id: this.get('organization').id,
+              }, { withRelated: false });
+              break;
+          }
+        }
+        // Handle
+        if (answerRequest) {
+          answerRequest.then((payload) => {
             const answer = payload.toJSON()[0];
-            logger.info({ answer });
-            let message = answer.answer;
-            if (answer.url) {
-              message = `${message} (More info at ${answer.url})`;
-            }
+            const message = answer.url ? `${answer.answer} (More info at ${answer.url})` : `${answer.answer}`;
             this.messagingClient.send(this.snapshot.constituent, message);
             this.exit('start');
           });
