@@ -1,12 +1,20 @@
-import { knex, bookshelf } from '../orm';
+import { knex } from '../orm';
 import { logger } from '../logger';
 import { KnowledgeAnswer, KnowledgeAnswerEvents, KnowledgeAnswerFacilitys, KnowledgeAnswerServices } from './models';
 
 export const getAnswers = (session, params, options) => {
   const filters = Object.assign({}, params);
   return KnowledgeAnswer.where(filters).fetchAll({
-      withRelated: ['category', 'events', 'facilities', 'services'],
+    withRelated: ['category', 'events', 'facilities', 'services'],
+  });
+};
+
+const runSave = (collection) => {
+  return collection.forEach((model) => {
+    return model.save().then((results) => {
+      return results;
     });
+  });
 };
 
 export const makeAnswerRelation = (answerModel, events = [], services = [], facilities = []) => {
@@ -32,16 +40,14 @@ export const makeAnswerRelation = (answerModel, events = [], services = [], faci
     }));
   });
   return Promise.all([
-    runSave(eventRelationsArray),
-    runSave(serviceRelationsArray),
-    runSave(facilityRelationsArray),
-  ]);
-};
-
-const runSave = (collection) => {
-  return collection.forEach((model) => {
-    return model.save().then((results) => {
-      return results;
-    });
+    knex.select().where('knowledge_answer_id', answerModel.id).from('knowledge_answers_knowledge_events').del(),
+    knex.select().where('knowledge_answer_id', answerModel.id).from('knowledge_answers_knowledge_services').del(),
+    knex.select().where('knowledge_answer_id', answerModel.id).from('knowledge_answers_knowledge_facilitys').del(),
+  ]).then(() => {
+    return Promise.all([
+      runSave(eventRelationsArray),
+      runSave(serviceRelationsArray),
+      runSave(facilityRelationsArray),
+    ]);
   });
 };
