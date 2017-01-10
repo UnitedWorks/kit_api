@@ -60,16 +60,16 @@ exports.seed = function(knex, Promise) {
       category_id: 4,
       schedule_id: obj.scheduleIds[0], // Refers to hours of operation
       location_id: obj.locationIds[0], // Geolocation of facility
-      organization_id: obj.organizationIds[0],
+      organization_id: obj.organizationIds.jerseyCity,
     }, 'id'));
     facilitiesInserts.push(knex('knowledge_facilitys').insert({
       name: 'Midtown Precinct North',
-      description: 'Your classic neighborhood police station in Manhattan',
+      description: 'Your classic neighborhood police station downtown',
       type_id: 22,
       category_id: 8,
       schedule_id: obj.scheduleIds[1],
       location_id: obj.locationIds[1],
-      organization_id: obj.organizationIds[0],
+      organization_id: obj.organizationIds.jerseyCity,
     }, 'id'));
     return Promise.all(facilitiesInserts).then((data) => {
       obj['facilityIds'] = [].concat(...data);
@@ -85,7 +85,7 @@ exports.seed = function(knex, Promise) {
       facility_id: obj.facilityIds[0], // Refers to the job center
       category_id: 4,
       schedule_id: obj.scheduleIds[2], // Refers to the schedule of the class
-      organization_id: obj.organizationIds[0],
+      organization_id: obj.organizationIds.jerseyCity,
     }, 'id'));
     servicesInserts.push(knex('knowledge_services').insert({
       name: 'Scared straight',
@@ -93,7 +93,7 @@ exports.seed = function(knex, Promise) {
       facility_id: obj.facilityIds[0],
       category_id: 8,
       schedule_id: obj.scheduleIds[4],
-      organization_id: obj.organizationIds[0],
+      organization_id: obj.organizationIds.jerseyCity,
     }, 'id'));
     return Promise.all(servicesInserts).then((data) => {
       obj['serviceIds'] = [].concat(...data);
@@ -109,7 +109,7 @@ exports.seed = function(knex, Promise) {
       facility_id: obj.facilityIds[0], // Refers to the job center
       schedule_id: obj.scheduleIds[3], // Refers to a single time period
       service_id: obj.serviceIds[0], // Refers to the computer training course
-      organization_id: obj.organizationIds[0],
+      organization_id: obj.organizationIds.jerseyCity,
     }, 'id'));
     eventsInserts.push(knex('knowledge_events').insert({
       name: 'Middleschool PS111 visits the jail',
@@ -117,7 +117,7 @@ exports.seed = function(knex, Promise) {
       facility_id: obj.facilityIds[1],
       schedule_id: obj.scheduleIds[5],
       service_id: obj.serviceIds[1],
-      organization_id: obj.organizationIds[0],
+      organization_id: obj.organizationIds.jerseyCity,
     }, 'id'));
     return Promise.all(eventsInserts).then((data) => {
       obj['eventIds'] = [].concat(...data);
@@ -131,40 +131,91 @@ exports.seed = function(knex, Promise) {
       label: 'faq-education-jobTraining',
       question: 'Where can I get basic job training?',
       answer: 'The city provides training for jobs around the year. Be sure to visit a job center or check our website',
-      category_id: obj.categoryIds[0],
-      organization_id: obj.organizationIds[0],
+      category_id: obj.categoryIds[3],
+      organization_id: obj.organizationIds.jerseyCity,
       url: 'http://www1.nyc.gov/nyc-resources/service/2984/nyc-job-training-guide',
     }, 'id'));
     answersInserts.push(knex('knowledge_answers').insert({
       label: 'smallTalk-food',
       question: 'What is the best food in the city?',
       answer: 'Fat sandwiches!',
-      category_id: obj.categoryIds[0],
-      organization_id: obj.organizationIds[1],
+      organization_id: obj.organizationIds.newBrunswick,
     }, 'id'));
+    // Sanitation - Garbage Schedule
     answersInserts.push(knex('knowledge_answers').insert({
       label: 'sanitation-garbage-schedule',
       question: 'What day is trash pickup?',
       answer: 'Trash alternates based on districts and address. Please refer to our schedule.',
-      category_id: obj.categoryIds[3],
-      organization_id: obj.organizationIds[0],
+      category_id: obj.categoryIds[1],
+      organization_id: obj.organizationIds.jerseyCity,
       url: 'http://www.cityofjerseycity.com/public_works.aspx?id=878',
     }, 'id'));
     answersInserts.push(knex('knowledge_answers').insert({
       label: 'sanitation-garbage-schedule',
       question: 'What day is trash pickup?',
       answer: 'Trash pickup is every Wednesday, starting at 5:00 AM',
-      category_id: obj.categoryIds[3],
-      organization_id: obj.organizationIds[1],
+      category_id: obj.categoryIds[1],
+      organization_id: obj.organizationIds.newBrunswick,
       url: 'http://thecityofnewbrunswick.org/public-works/trash-and-recycling-info/',
     }, 'id'));
     answersInserts.push(knex('knowledge_answers').insert({
       label: 'sanitation-garbage-schedule',
       question: 'What day is trash pickup?',
       answer: 'Trash pickup is every Friday',
-      category_id: obj.categoryIds[3],
-      organization_id: obj.organizationIds[2],
+      category_id: obj.categoryIds[1],
+      organization_id: obj.organizationIds.hanover,
       url: 'http://www.hanovertownship.org/garbage.html',
+    }, 'id'));
+    // Sanitation - Recycling Schedule
+    answersInserts.push(knex('knowledge_answers').insert({
+      label: 'sanitation-recycling-schedule',
+      question: 'Which day is recycling?',
+      answer: 'Recycling alternates based on districts and address. Please refer to our schedule.',
+      category_id: obj.categoryIds[1],
+      organization_id: obj.organizationIds.jerseyCity,
+      url: 'http://www.cityofjerseycity.com/uploadedFiles/Waste%20Disposal%20and%20Recycling%20Rules%202016.pdf',
+    }, 'id'));
+    answersInserts.push(knex('knowledge_answers').insert({
+      label: 'sanitation-recycling-schedule',
+      question: 'Which day is recycling?',
+      answer: 'Recycling pickup is every Wednesday, starting at 5:00 AM',
+      category_id: obj.categoryIds[1],
+      organization_id: obj.organizationIds.newBrunswick,
+      url: 'http://thecityofnewbrunswick.org/blog/2015/12/16/2016-trash-and-recycling-schedules-now-available/',
+    }, 'id'));
+    answersInserts.push(knex('knowledge_answers').insert({
+      label: 'sanitation-recycling-schedule',
+      question: 'Which day is recycling?',
+      answer: 'Recycling pickup is every Friday',
+      category_id: obj.categoryIds[1],
+      organization_id: obj.organizationIds.hanover,
+      url: 'http://www.hanovertownship.com/Portals/1/DPW/2017%20recycling%20schedule.pdf',
+    }, 'id'));
+    // Sanitation - Compost
+    answersInserts.push(knex('knowledge_answers').insert({
+      label: 'sanitation-compost',
+      question: 'When do you collect compost?',
+      answer: 'Composting is collected in select locations. You can find more info on our partner website.',
+      category_id: obj.categoryIds[1],
+      organization_id: obj.organizationIds.jerseyCity,
+      url: 'http://sustainablejc.org/wordpress/projects/community-composting/',
+    }, 'id'));
+    // Sanitation - Bulk
+    answersInserts.push(knex('knowledge_answers').insert({
+      label: 'sanitation-bulk-pickup',
+      question: 'How can I request bulk item pickup?',
+      answer: 'To schedule bulk pickup with the Department of Public Works, simply call 201-547-4400',
+      category_id: obj.categoryIds[1],
+      organization_id: obj.organizationIds.jerseyCity,
+    }, 'id'));
+    // Sanitation - Electronics
+    answersInserts.push(knex('knowledge_answers').insert({
+      label: 'sanitation-electronics-disposal',
+      question: 'Where can I dispose of electronics?',
+      answer: 'Electronics disposal is handled by the county at this time. Please refer to their websites and locations.',
+      category_id: obj.categoryIds[1],
+      organization_id: obj.organizationIds.jerseyCity,
+      url: 'http://www.hcia.org/index.php?option=com_content&view=article&id=31&Itemid=34',
     }, 'id'));
     return Promise.all(answersInserts).then((data) => {
       obj['answerIds'] = [].concat(...data);
@@ -196,15 +247,19 @@ exports.seed = function(knex, Promise) {
   };
 
   const startSeed = () => {
-    return new Promise((resolve, reject) => {
-      knex.select().from('organizations').then((rows) => {
-        resolve(rows.map((row) => {
-          return row.id;
-        }));
-      });
-    }).then((orgIds) => {
+    const getNewBrunswick = knex.select().where('name', 'City of New Brunswick').from('organizations');
+    const getJerseyCity = knex.select().where('name', 'Jersey City').from('organizations');
+    const getHanover = knex.select().where('name', 'Hanover Township').from('organizations');
+    return new Promise.join(
+      getNewBrunswick, getJerseyCity, getHanover, (newBrunswick, jerseyCity, hanover) => {
+        return {
+          newBrunswick: newBrunswick[0].id,
+          jerseyCity: jerseyCity[0].id,
+          hanover: hanover[0].id,
+        };
+    }).then((orgs) => {
       return categorySeed({
-        organizationIds: orgIds,
+        organizationIds: orgs,
       });
     });
   };
