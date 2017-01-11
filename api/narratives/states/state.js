@@ -11,6 +11,14 @@ export class StateMachine {
     this.datastore = datastore || {};
   }
 
+  currentState() {
+    return this.current;
+  }
+
+  previousState() {
+    return this.previous;
+  }
+
   set(key, value) {
     this.datastore[key] = value;
     this.fire('data', 'enter', this.datastore);
@@ -53,19 +61,21 @@ export class NarrativeStoreMachine extends StateMachine {
 
   exit(pickUpState) {
     logger.info('Exiting');
-    NarrativeStore.where({ session_id: this.snapshot.session_id }).fetch().then((model) => {
+    NarrativeStore.where({ session_id: this.snapshot.session_id }).fetch().then((existingStore) => {
       const attributes = {
         constituent_id: this.snapshot.constituent.id,
         session_id: this.snapshot.session_id,
-        organization_id: this.get('organization').id,
         state_machine_name: this.snapshot.state_machine_name,
         state_machine_previous_state: this.current,
         state_machine_current_state: pickUpState,
         over_ride: false,
         data_store: this.snapshot.data_store,
       };
-      if (model) {
-        attributes.id = model.attributes.id;
+      if (this.get('organization')) {
+        attributes.organization_id = this.get('organization').id || null;
+      }
+      if (existingStore) {
+        attributes.id = existingStore.attributes.id;
       }
       NarrativeStore.forge(attributes).save(null, null).then(() => {
         // logger.info(state.attributes);

@@ -25,7 +25,7 @@ const smallTalkStates = {
     logger.info('State: Location');
     const input = this.get('input');
     nlp.message(input.text, {}).then((nlpData) => {
-      if (!nlpData.entities.location) {
+      if (!this.previousState() === 'gettingStarted') {
         this.messagingClient.send(this.snapshot.constituent, 'But before I can help out, what city and state do you live in?');
         this.exit('location');
       } else {
