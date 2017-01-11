@@ -5,9 +5,9 @@ exports.seed = function(knex, Promise) {
   return new Promise((resolve) => {
     // Setup
     return Promise.all([
+      knex('organizations_narrative_sources').del(),
       knex('narrative_sources').del(),
       knex('narrative_stores').del(),
-      knex('organizations_narrative_sources').del(),
     ]).then(() => {
       resolve({});
     });
