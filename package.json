@@ -48,11 +48,14 @@
     "knex": "^0.12.6",
     "knex-postgis": "^0.2.0",
     "morgan": "^1.7.0",
+    "node-geocoder": "^3.15.2",
+    "node-wit": "^4.2.0",
     "nodemon": "^1.11.0",
     "path": "^0.12.7",
     "pg": "^6.1.2",
     "request": "^2.79.0",
     "sendgrid": "^4.7.1",
+    "uuid": "^3.0.1",
     "winston": "^2.3.0"
   }
 }

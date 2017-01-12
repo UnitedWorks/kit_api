@@ -1,7 +1,7 @@
 import * as interfaces from './constants/interfaces'
 import * as environment from './env';
 import { logger } from './logger';
-import * as conversations from './conversations/helpers';
+import * as conversations from './conversations/verify';
 
 const AWS = require('aws-sdk');
 const bodyParser = require('body-parser');

@@ -1,5 +1,6 @@
 import { bookshelf } from '../orm';
 import * as KnowledgeConstants from '../constants/knowledge-base';
+import * as AccountModels from '../accounts/models';
 
 // Information Entries - Referenced in knowledge and non-knowledge base tables
 export const Location = bookshelf.Model.extend({
@@ -8,10 +9,6 @@ export const Location = bookshelf.Model.extend({
 
 export const Schedule = bookshelf.Model.extend({
   tableName: 'schedules',
-});
-
-export const Media = bookshelf.Model.extend({
-  tableName: 'medias',
 });
 
 // Knowledge Base Entries - Think of as complex objects

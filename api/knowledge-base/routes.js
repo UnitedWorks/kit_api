@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { logger } from '../logger';
 import { KnowledgeAnswer, KnowledgeCategory, KnowledgeEvent, KnowledgeFacility,
   KnowledgeFacilityType, KnowledgeService } from './models';
-import { makeAnswerRelation } from './helpers';
+import { getAnswers, makeAnswerRelation } from './helpers';
 
 const router = new Router();
 
@@ -198,10 +198,13 @@ router.route('/answers')
    * @return {Array}
    */
   .get((req, res) => {
-    KnowledgeAnswer.fetchAll({ withRelated: ['category', 'events', 'facilities', 'services'] })
-      .then((answerArray) => {
-        res.status(200).send({ answers: answerArray });
+    const session = { req };
+    const params = req.query;
+    getAnswers(session, params, {}).then((payload) => {
+      res.status(200).send({
+        answers: payload,
       });
+    });
   })
   /**
    * Create Answer
