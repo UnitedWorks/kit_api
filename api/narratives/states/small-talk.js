@@ -138,12 +138,10 @@ const smallTalkStates = {
             return;
           });
         }
+      } else {
+        this.messagingClient.send(this.snapshot.constituent, 'I\'m not sure I understanding. Can you try phrase that differently?');
+        this.exit('start');
       }
-      // What events are coming up?
-      // Where can I find good food around here?
-      // Fallback Response
-      this.messagingClient.send(this.snapshot.constituent, 'I\'m not sure I understanding. Can you try phrase that differently?');
-      this.exit('start');
     });
   },
 };
