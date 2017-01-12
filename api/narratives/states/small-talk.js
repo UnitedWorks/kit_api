@@ -32,7 +32,7 @@ const smallTalkStates = {
           break;
         default:
           this.messagingClient.send(this.snapshot.constituent, 'Which city do you want to connect to and get info from?');
-          this.exit('start');
+          this.exit('location');
           break;
       }
     } else {
@@ -68,7 +68,7 @@ const smallTalkStates = {
       collection.toJSON().forEach((document) => {
         if (document.location.city === constituentLocation.city) {
           this.set('organization', document);
-          const message = `Oh! I've passed through ${constituentLocation.city} before`;
+          const message = `Got it! I'll make sure my answers relate to ${constituentLocation.city}. Where were we?`;
           this.messagingClient.send(this.snapshot.constituent, message);
           this.exit('start');
           cityFound = true;
@@ -165,7 +165,7 @@ export default class SmallTalkMachine extends NarrativeStoreMachine {
     }
 
     function handleAction() {
-      switch (self.snapshot.data_store.input.payload) {
+      switch (self.snapshot.data_store.input.payload.payload) {
         case 'GET_STARTED':
           self.fire('gettingStarted');
           break;

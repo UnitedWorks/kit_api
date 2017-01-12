@@ -8,11 +8,11 @@ const persistentMenu = {
   thread_state: 'existing_thread',
   call_to_actions: [{
     type: 'postback',
-    title: 'Change City',
+    title: 'Change your city',
     payload: 'CHANGE_CITY',
   }, {
     type: 'postback',
-    title: 'Get the Mayor for your city!',
+    title: 'Register your city',
     payload: 'REGISTER_YOUR_CITY',
   }],
 };
