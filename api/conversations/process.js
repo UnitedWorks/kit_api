@@ -3,7 +3,7 @@ import { logger } from '../logger';
 import * as interfaces from '../constants/interfaces';
 import { NarrativeStore } from '../narratives/models';
 import { Constituent } from '../accounts/models';
-import { stateDirector } from '../narratives/states/helpers';
+import { inputDirector } from '../narratives/states/helpers';
 
 function getConstituent(senderId) {
   return new Promise((resolve, reject) => {
@@ -42,11 +42,21 @@ function setupConstituentState(constituent) {
   });
 }
 
-function normalizeMessage(conversationClient, messageObject) {
+function normalizeInput(conversationClient, input) {
   let adjustedMessageObject;
   // Input: interface, message, state
   if (conversationClient === interfaces.FACEBOOK) {
-    adjustedMessageObject = messageObject.message;
+    if (input.hasOwnProperty('message')) {
+      adjustedMessageObject = {
+        type: 'message',
+        payload: input.message,
+      };
+    } else if (input.hasOwnProperty('postback')) {
+      adjustedMessageObject = {
+        type: 'action',
+        payload: input.postback,
+      };
+    }
     delete adjustedMessageObject.mid;
   }
   // Output: reformatted message
@@ -63,14 +73,14 @@ function normalizeStatesFromRequest(req) {
   // if (requestBy === interfaces.FACEBOOK) {
   return new Promise((resolve) => {
     req.body.entry.forEach((entry) => {
-      entry.messaging.forEach((message) => {
+      entry.messaging.forEach((input) => {
         // Does: Get user
-        getConstituent(message.sender.id).then((constituent) => {
+        getConstituent(input.sender.id).then((constituent) => {
           // Does: Gets narrative_state snapshot and adds to data store's context?
           setupConstituentState(constituent).then((constituentState) => {
             const state = constituentState;
             state.data_store.conversationClient = interfaces.FACEBOOK;
-            state.data_store.input = normalizeMessage(interfaces.FACEBOOK, message);
+            state.data_store.input = normalizeInput(interfaces.FACEBOOK, input);
             readyStates.push(state);
             messageCount += 1;
             if (messageCount === messageTotal) {
@@ -92,7 +102,7 @@ export function webhookHitWithMessage(req, res) {
     normalizedStates.forEach((stateSnapShot) => {
       const appSession = { res };
       if (!stateSnapShot.over_ride) {
-        stateDirector(appSession, stateSnapShot);
+        inputDirector(appSession, stateSnapShot);
       }
     });
   });

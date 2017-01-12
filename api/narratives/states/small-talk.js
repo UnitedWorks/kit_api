@@ -15,20 +15,28 @@ const smallTalkStates = {
     this.messagingClient.send(this.snapshot.constituent, 'Hey there! I\'m the Mayor').then(() => {
       this.messagingClient.send(this.snapshot.constituent, 'Sort of... Truthfully, I\'m an AI bot that helps you connect with the city and your community').then(() => {
         this.messagingClient.send(this.snapshot.constituent, 'I can tell you the trash schedule, report potholes, or try and help with any problems or injustices you\'re facing.').then(() => {
-          this.fire('location');
+          this.fire('location', null, { previous: 'gettingStarted' });
         });
       });
     });
   },
 
-  location() {
+  location(aux = {}) {
     logger.info('State: Location');
-    const input = this.get('input');
-    nlp.message(input.text, {}).then((nlpData) => {
-      if (!this.previousState() === 'gettingStarted') {
-        this.messagingClient.send(this.snapshot.constituent, 'But before I can help out, what city and state do you live in?');
-        this.exit('location');
-      } else {
+    const input = this.get('input').payload;
+    if (aux.hasOwnProperty('previous')) {
+      switch (aux.previous) {
+        case 'gettingStarted':
+          this.messagingClient.send(this.snapshot.constituent, 'But before I can help out, what city and state do you live in?');
+          this.exit('location');
+          break;
+        default:
+          this.messagingClient.send(this.snapshot.constituent, 'Which city do you want to connect to and get info from?');
+          this.exit('start');
+          break;
+      }
+    } else {
+      nlp.message(input.text, {}).then((nlpData) => {
         geocoder.geocode(nlpData.entities.location[0].value).then((geoData) => {
           this.set('nlp', nlpData.entities);
           this.set('location', geoData[Object.keys(geoData)[0]]);
@@ -46,8 +54,8 @@ const smallTalkStates = {
             this.exit('location');
           }
         }).catch(logger.info);
-      }
-    }).catch(logger.info);
+      }).catch(logger.info);
+    }
   },
 
   setOrganization() {
@@ -75,7 +83,7 @@ const smallTalkStates = {
 
   start() {
     logger.info('State: Start');
-    const input = this.get('input');
+    const input = this.get('input').payload;
     nlp.message(input.text, {}).then((nlpData) => {
       this.set('nlp', nlpData.entities);
       const entities = nlpData.entities;
@@ -127,11 +135,15 @@ const smallTalkStates = {
             const message = answer.url ? `${answer.answer} (More info at ${answer.url})` : `${answer.answer}`;
             this.messagingClient.send(this.snapshot.constituent, message);
             this.exit('start');
+            return;
           });
         }
       }
       // What events are coming up?
       // Where can I find good food around here?
+      // Fallback Response
+      this.messagingClient.send(this.snapshot.constituent, 'I\'m not sure I understanding. Can you try phrase that differently?');
+      this.exit('start');
     });
   },
 };
@@ -139,13 +151,42 @@ const smallTalkStates = {
 export default class SmallTalkMachine extends NarrativeStoreMachine {
   constructor(appSession, snapshot) {
     super(appSession, snapshot, smallTalkStates);
-    // Initialize
-    if (typeof this.snapshot.state_machine_current_state !== 'string' && typeof this.snapshot.organization_id !== 'string') {
-      this.fire('gettingStarted');
-    } else if (this.current) {
-      this.fire(this.current);
-    } else {
-      this.fire('start');
+    const self = this;
+
+    // Handlers
+    function handleMessage() {
+      if (typeof self.snapshot.state_machine_current_state !== 'string' && typeof self.snapshot.organization_id !== 'string') {
+        self.fire('gettingStarted');
+      } else if (self.current) {
+        self.fire(self.current);
+      } else {
+        self.fire('start');
+      }
     }
+
+    function handleAction() {
+      switch (self.snapshot.data_store.input.payload) {
+        case 'GET_STARTED':
+          self.fire('gettingStarted');
+          break;
+        case 'CHANGE_CITY':
+          self.fire('location', null, { previous: self.current || self.previous });
+          break;
+        case 'REGISTER_YOUR_CITY':
+          break;
+      }
+    }
+
+    // Initialize
+    const actionType = self.snapshot.data_store.input.type;
+    switch (actionType) {
+      case 'message':
+        handleMessage();
+        break;
+      case 'action':
+        handleAction();
+        break;
+    }
+
   }
 }

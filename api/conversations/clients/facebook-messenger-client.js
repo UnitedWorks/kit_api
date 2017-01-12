@@ -3,6 +3,28 @@ import BaseClient from './base-client';
 
 const request = require('request');
 
+const persistentMenu = {
+  setting_type: 'call_to_actions',
+  thread_state: 'existing_thread',
+  call_to_actions: [{
+    type: 'postback',
+    title: 'Change City',
+    payload: 'CHANGE_CITY',
+  }, {
+    type: 'postback',
+    title: 'Get the Mayor for your city!',
+    payload: 'REGISTER_YOUR_CITY',
+  }],
+};
+
+const startingMenu = {
+  setting_type: 'call_to_actions',
+  thread_state: 'new_thread',
+  call_to_actions: [{
+    payload: 'GET_STARTED',
+  }],
+};
+
 export default class FacebookMessengerClient extends BaseClient {
   init() {
     const defaults = {
@@ -13,6 +35,24 @@ export default class FacebookMessengerClient extends BaseClient {
     };
 
     this.config = Object.assign({}, defaults, this.config);
+
+    // Send FB the persistent menu settings for the sake of it
+    request({
+      uri: `${this.config.graph_uri}/v2.6/me/thread_settings?access_token=${this.config.page_token}`,
+      method: 'POST',
+      json: persistentMenu,
+    }, (error) => {
+      if (error) logger.info(error);
+    });
+    // Send FB the getting started settings for the sake of it
+    request({
+      uri: `${this.config.graph_uri}/v2.6/me/thread_settings?access_token=${this.config.page_token}`,
+      method: 'POST',
+      json: startingMenu,
+    }, (error) => {
+      if (error) logger.info(error);
+    });
+
   }
 
   callAPI(messageData) {

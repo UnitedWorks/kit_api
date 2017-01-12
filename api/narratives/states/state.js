@@ -11,14 +11,6 @@ export class StateMachine {
     this.datastore = datastore || {};
   }
 
-  currentState() {
-    return this.current;
-  }
-
-  previousState() {
-    return this.previous;
-  }
-
   set(key, value) {
     this.datastore[key] = value;
     this.fire('data', 'enter', this.datastore);
