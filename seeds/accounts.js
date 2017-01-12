@@ -6,7 +6,7 @@ exports.seed = (knex, Promise) => {
     // Clear relationships between orgs and other entities
     knex.select().table('organizations_constituents').del(),
     knex.select().table('organizations_narrative_sources').del(),
-    knex.select().table('narrative_stores').del(),
+    knex.select().table('narrative_sessions').del(),
     knex.select().table('knowledge_answers_knowledge_events').del(),
     knex.select().table('knowledge_answers_knowledge_services').del(),
     knex.select().table('knowledge_answers_knowledge_facilitys').del(),

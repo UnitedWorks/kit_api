@@ -7,7 +7,7 @@ exports.seed = function(knex, Promise) {
     return Promise.all([
       knex('organizations_narrative_sources').del(),
       knex('narrative_sources').del(),
-      knex('narrative_stores').del(),
+      knex('narrative_sessions').del(),
     ]).then(() => {
       resolve({});
     });
