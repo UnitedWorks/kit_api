@@ -1,6 +1,16 @@
 import { logger } from '../../logger';
 import SmallTalkMachine from './small-talk';
 
+export const hasSource = (sources, label) => {
+  const listLength = sources.filter((source) => {
+    return source.label === label;
+  }).length;
+  if (listLength > 0) {
+    return true;
+  }
+  return false;
+};
+
 export const stateMachines = {
   smallTalk: SmallTalkMachine,
 };

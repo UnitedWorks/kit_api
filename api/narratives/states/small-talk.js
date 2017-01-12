@@ -1,10 +1,14 @@
+import request from 'request';
+import axios from 'axios';
 import { logger } from '../../logger';
 import { NarrativeStoreMachine } from './state';
 import { nlp } from '../../services/nlp';
 import { geocoder } from '../../services/geocoder';
 import { Organization } from '../../accounts/models';
 import * as TAGS from '../../constants/nlp-tagging';
+import * as SOURCES from '../../constants/narrative-sources';
 import { getAnswers } from '../../knowledge-base/helpers';
+import { hasSource } from './helpers';
 
 const smallTalkStates = {
   init() {
@@ -63,7 +67,7 @@ const smallTalkStates = {
     // When a geolocation is found for the user, see if a matching city is found for an organization
     // I think this function should be improved to require administrative level matching
     const constituentLocation = this.get('location');
-    Organization.collection().fetch({ withRelated: 'location' }).then((collection) => {
+    Organization.collection().fetch({ withRelated: ['location', 'narrativeSources'] }).then((collection) => {
       let cityFound = false;
       collection.toJSON().forEach((document) => {
         if (document.location.city === constituentLocation.city) {
@@ -88,29 +92,29 @@ const smallTalkStates = {
       this.set('nlp', nlpData.entities);
       const entities = nlpData.entities;
       logger.info(nlpData);
-      // What services does my city offer?
-      if (entities.hasOwnProperty(TAGS.SANITATION)) {
+
+      if (entities.hasOwnProperty(TAGS.SANITATION)) { // Sanitation Services
         const value = entities[TAGS.SANITATION][0].value;
         let answerRequest;
         if (value === TAGS.COMPOST) {
+          // Request Compost Dumping
           answerRequest = getAnswers({}, {
             label: 'sanitation-compost',
             organization_id: this.get('organization').id,
           }, { withRelated: false });
-        }
-        if (value === TAGS.BULK) {
+        } else if (value === TAGS.BULK) {
+          // Request Bulk Pickup
           answerRequest = getAnswers({}, {
             label: 'sanitation-bulk-pickup',
             organization_id: this.get('organization').id,
           }, { withRelated: false });
-        }
-        if (value === TAGS.ELECTRONICS) {
+        } else if (value === TAGS.ELECTRONICS) {
+          // Request Electronics
           answerRequest = getAnswers({}, {
             label: 'sanitation-electronics-disposal',
             organization_id: this.get('organization').id,
           }, { withRelated: false });
-        }
-        if (entities.hasOwnProperty(TAGS.SCHEDULES)) {
+        } else if (entities.hasOwnProperty(TAGS.SCHEDULES)) {
           switch (value) {
             // Request Garbage
             case TAGS.GARBAGE:
@@ -126,6 +130,8 @@ const smallTalkStates = {
                 organization_id: this.get('organization').id,
               }, { withRelated: false });
               break;
+            default:
+              break;
           }
         }
         // Handle
@@ -137,6 +143,198 @@ const smallTalkStates = {
             this.exit('start');
             return;
           });
+        }
+      } else if (entities.hasOwnProperty(TAGS.SOCIAL_SERVICES)) { // Human Services
+        const orgSources = this.datastore.organization.narrativeSources;
+        // Shelter Search
+        const value = entities[TAGS.SOCIAL_SERVICES][0].value;
+        if (value === TAGS.SHELTER) {
+          if (hasSource(orgSources, SOURCES.ASKDARCEL)) {
+            axios.get('https://staging.askdarcel.org/api/resources', {
+              params: {
+                category_id: 1,
+                lat: this.get('location').latitude,
+                long: this.get('location').longitude,
+              },
+            }).then((response) => {
+              const body = response.data;
+              const resources = body.resources;
+              const counter = resources.length > 3 ? 3 : resources.length;
+              let message = 'Here are some shelters we\'ve found in your city: \n\n';
+              for (let i = counter; i > 0; i -= 1) {
+                const resource = resources[i];
+                message += `${resource.name} \n ${resource.website} \n ${resource.short_description || resource.long_description || ''} \n\n`;
+              }
+              this.messagingClient.send(this.snapshot.constituent, message);
+            });
+          } else {
+            getAnswers({}, {
+              label: 'social-services-shelters',
+              organization_id: this.get('organization').id,
+            }, { withRelated: true }).then((payload) => {
+              const answer = payload.toJSON()[0];
+              let message;
+              if (payload.length === 0) {
+                message = 'I\'m sorry. I can\'t find anything in our database. I\'m going to let the city know about your need.';
+              } else {
+                message = answer.url ? `${answer.answer} (More info at ${answer.url})` : `${answer.answer}`;
+              }
+              this.messagingClient.send(this.snapshot.constituent, message);
+            });
+          }
+        }
+        if (value === TAGS.FOOD) { // Food Assistance
+          if (hasSource(orgSources, SOURCES.ASKDARCEL)) {
+            axios.get('https://staging.askdarcel.org/api/resources', {
+              params: {
+                category_id: 2,
+                lat: this.get('location').latitude,
+                long: this.get('location').longitude,
+              },
+            }).then((response) => {
+              const body = response.data;
+              const resources = body.resources;
+              const counter = resources.length > 3 ? 3 : resources.length;
+              let message = 'Here is what we\'ve found in your city: \n\n';
+              for (let i = counter; i > 0; i -= 1) {
+                const resource = resources[i];
+                message += `${resource.name} \n ${resource.website} \n ${resource.short_description || resource.long_description || ''} \n\n`;
+              }
+              this.messagingClient.send(this.snapshot.constituent, message);
+            });
+          } else {
+            getAnswers({}, {
+              label: 'social-services-food-assistance',
+              organization_id: this.get('organization').id,
+            }, { withRelated: true }).then((payload) => {
+              const answer = payload.toJSON()[0];
+              let message;
+              if (payload.length === 0) {
+                message = 'I\'m sorry. I can\'t find anything in our database. I\'m going to let the city know about your need.';
+              } else {
+                message = answer.url ? `${answer.answer} (More info at ${answer.url})` : `${answer.answer}`;
+              }
+              this.messagingClient.send(this.snapshot.constituent, message);
+              this.exit('start');
+            });
+          }
+        }
+        // Hygiene Services
+        if (value === TAGS.HYGIENE) {
+          if (hasSource(orgSources, SOURCES.ASKDARCEL)) {
+            axios.get('https://staging.askdarcel.org/api/resources', {
+              params: {
+                category_id: 4,
+                lat: this.get('location').latitude,
+                long: this.get('location').longitude,
+              },
+            }).then((response) => {
+              const body = response.data;
+              const resources = body.resources;
+              const counter = resources.length > 2 ? 2 : resources.length;
+              let message = 'Here are some places we\'ve found close to your location: \n\n';
+              for (let i = counter; i > 0; i -= 1) {
+                const resource = resources[i];
+                message += `${resource.name} \n ${resource.website} \n ${resource.short_description || resource.long_description || ''} \n\n`;
+              }
+              this.messagingClient.send(this.snapshot.constituent, message);
+            });
+          } else {
+            getAnswers({}, {
+              label: 'social-services-hygiene',
+              organization_id: this.get('organization').id,
+            }, { withRelated: true }).then((payload) => {
+              const answer = payload.toJSON()[0];
+              let message;
+              if (payload.length === 0) {
+                message = 'I\'m sorry. I can\'t find anything in our database. I\'m going to let the city know about your need.';
+              } else {
+                message = answer.url ? `${answer.answer} (More info at ${answer.url})` : `${answer.answer}`;
+              }
+              this.messagingClient.send(this.snapshot.constituent, message);
+              this.exit('start');
+            });
+          }
+        }
+      } else if (entities.hasOwnProperty(TAGS.HEALTH)) { // Medical Services
+        const value = entities[TAGS.HEALTH][0].value;
+        const orgSources = this.datastore.organization.narrativeSources;
+        // Clinics
+        if (value === TAGS.CLINIC) {
+          if (hasSource(orgSources, SOURCES.ASKDARCEL)) {
+            axios.get('https://staging.askdarcel.org/api/resources', {
+              params: {
+                category_id: 3,
+                lat: this.get('location').latitude,
+                long: this.get('location').longitude,
+              },
+            }).then((response) => {
+              const body = response.data;
+              const resources = body.resources;
+              const counter = resources.length > 3 ? 3 : resources.length;
+              let message = 'Here are some places we\'ve found close to your location: \n\n';
+              for (let i = counter; i > 0; i -= 1) {
+                const resource = resources[i];
+                message += `${resource.name} \n ${resource.website} \n ${resource.short_description || resource.long_description || ''} \n\n`;
+              }
+              this.messagingClient.send(this.snapshot.constituent, message);
+            });
+          } else {
+            getAnswers({}, {
+              label: 'health-clinic',
+              organization_id: this.get('organization').id,
+            }, { withRelated: true }).then((payload) => {
+              const answer = payload.toJSON()[0];
+              let message;
+              if (payload.length === 0) {
+                message = 'I\'m sorry. I can\'t find anything in our database. I\'m going to let the city know about your need.';
+              } else {
+                message = answer.url ? `${answer.answer} (More info at ${answer.url})` : `${answer.answer}`;
+              }
+              this.messagingClient.send(this.snapshot.constituent, message);
+              this.exit('start');
+            });
+          }
+        }
+      } else if (entities.hasOwnProperty(TAGS.EMPLOYMENT)) { // Employment Services
+        const value = entities[TAGS.EMPLOYMENT][0].value;
+        const orgSources = this.datastore.organization.narrativeSources;
+        // Employment Asssistance
+        if (value === TAGS.JOB_TRAINING) {
+          if (hasSource(orgSources, SOURCES.ASKDARCEL)) {
+            axios.get('https://staging.askdarcel.org/api/resources', {
+              params: {
+                category_id: 5,
+                lat: this.get('location').latitude,
+                long: this.get('location').longitude,
+              },
+            }).then((response) => {
+              const body = response.data;
+              const resources = body.resources;
+              const counter = resources.length > 3 ? 3 : resources.length;
+              let message = 'Here are some places we\'ve found close to your location: \n\n';
+              for (let i = counter; i > 0; i -= 1) {
+                const resource = resources[i];
+                message += `${resource.name} \n ${resource.website} \n ${resource.short_description || resource.long_description || ''} \n\n`;
+              }
+              this.messagingClient.send(this.snapshot.constituent, message);
+            });
+          } else {
+            getAnswers({}, {
+              label: 'employment-job-training',
+              organization_id: this.get('organization').id,
+            }, { withRelated: true }).then((payload) => {
+              const answer = payload.toJSON()[0];
+              let message;
+              if (payload.length === 0) {
+                message = 'I\'m sorry. I can\'t find anything in our database. I\'m going to let the city know about your need.';
+              } else {
+                message = answer.url ? `${answer.answer} (More info at ${answer.url})` : `${answer.answer}`;
+              }
+              this.messagingClient.send(this.snapshot.constituent, message);
+              this.exit('start');
+            });
+          }
         }
       } else {
         this.messagingClient.send(this.snapshot.constituent, 'I\'m not sure I understanding. Can you try phrase that differently?');

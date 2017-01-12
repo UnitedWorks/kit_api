@@ -128,7 +128,7 @@ exports.seed = function(knex, Promise) {
   const answerSeed = (obj) => {
     const answersInserts = [];
     answersInserts.push(knex('knowledge_answers').insert({
-      label: 'faq-education-jobTraining',
+      label: 'employment-job-training',
       question: 'Where can I get basic job training?',
       answer: 'The city provides training for jobs around the year. Be sure to visit a job center or check our website',
       category_id: obj.categoryIds[3],

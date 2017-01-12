@@ -82,12 +82,27 @@ exports.seed = (knex, Promise) => {
         level1short: 'NJ',
       },
     }, 'id');
-    return Promise.join(seedJerseyCity, seedNewBrunswick, seedHanoverTownship, (jC, nB, hT) => {
+    const seedSanFrancisco = knex('locations').insert({
+      latitude: 37.7749295,
+      longitude: -122.4194155,
+      formatted_address: 'San Francisco, CA, USA',
+      city: 'San Francisco',
+      country: 'United States',
+      country_code: 'US',
+      administrative_levels: {
+        level2long: 'San Francisco County',
+        level2short: 'San Francisco County',
+        level1long: 'California',
+        level1short: 'CA',
+      },
+    }, 'id');
+    return Promise.join(seedJerseyCity, seedNewBrunswick, seedHanoverTownship, seedSanFrancisco, (jC, nB, hT, sF) => {
       return {
         locationIds: {
           jerseyCityLocation: jC[0],
           newBrunswickLocation: nB[0],
           hanoverTownshipLocation: hT[0],
+          sanFranciscoLocation: sF[0],
         },
       };
     });
@@ -115,6 +130,13 @@ exports.seed = (knex, Promise) => {
         type: 'admin',
         website: 'http://www.hanovertownship.com/',
         location_id: passedObj.locationIds.hanoverTownshipLocation,
+      }, 'id').then((ids) => { return ids[0] }),
+      knex('organizations').insert({
+        name: 'San Francisco',
+        category: 'public',
+        type: 'admin',
+        website: 'http://sfgov.org/',
+        location_id: passedObj.locationIds.sanFranciscoLocation,
       }, 'id').then((ids) => { return ids[0] }),
     ]).then((ids) => {
       return Object.assign(passedObj, {
