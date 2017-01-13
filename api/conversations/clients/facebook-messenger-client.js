@@ -8,6 +8,10 @@ const persistentMenu = {
   thread_state: 'existing_thread',
   call_to_actions: [{
     type: 'postback',
+    title: 'Make a Complaint',
+    payload: 'MAKE_COMPLAINT',
+  }, {
+    type: 'postback',
     title: 'Change my city',
     payload: 'CHANGE_CITY',
   }, {

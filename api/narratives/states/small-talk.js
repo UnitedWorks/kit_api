@@ -95,8 +95,7 @@ const smallTalkStates = {
       logger.info(nlpData);
 
       if (entities.hasOwnProperty(TAGS.COMPLAINT)) { // Complaint
-        this.messagingClient.send(this.snapshot.constituent, 'You\'re having a problem? Can you describe the whole situation to me? I\'ll do my best to forward it along to the right department.');
-        this.exit('complaint');
+        this.fire('complaintStart');
       } else if (entities.hasOwnProperty(TAGS.SANITATION)) { // Sanitation Services
         const value = entities[TAGS.SANITATION][0].value;
         let answerRequest;
@@ -347,7 +346,12 @@ const smallTalkStates = {
     });
   },
 
-  complaint() {
+  complaintStart() {
+    this.messagingClient.send(this.snapshot.constituent, 'You\'re having a problem? Can you describe the whole situation to me? I\'ll do my best to forward it along to the right department.');
+    this.exit('complaintFile');
+  },
+
+  complaintFile() {
     const input = this.get('input').payload;
     // If a city has email, use that, otherwise, slack it to us to follow up with the city on
     if (this.get('organization').email) {
@@ -378,6 +382,9 @@ export default class SmallTalkMachine extends NarrativeStoreMachine {
 
     function handleAction() {
       switch (self.snapshot.data_store.input.payload.payload) {
+        case 'MAKE_COMPLAINT':
+          self.fire('complaintStart');
+          break;
         case 'GET_STARTED':
           self.fire('gettingStarted');
           break;
