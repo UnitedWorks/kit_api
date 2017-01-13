@@ -1,7 +1,9 @@
+import * as env from './env';
+import * as environments from './constants/environments'
 import * as interfaces from './constants/interfaces'
-import * as environment from './env';
 import { logger } from './logger';
 import * as conversations from './conversations/verify';
+import * as clients from './conversations/clients';
 
 const AWS = require('aws-sdk');
 const bodyParser = require('body-parser');
@@ -51,6 +53,12 @@ app.get('/health_check', (req, res) => {
   res.status(200).send("I'm not dead yet!");
 });
 
+// Ping/Configure/Setup External Services
+if (env.get() === environments.PRODUCTION) {
+  clients.configureExternalInterfaces();
+}
+
+// Start Server
 app.listen(port, () => {
   logger.info(`Server listening at port: ${port}`);
 });

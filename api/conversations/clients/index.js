@@ -1,7 +1,12 @@
 import BaseClient from './base-client';
-import FacebookMessengerClient from './facebook-messenger-client';
+import * as Messenger from './facebook-messenger-client';
+
+const configureExternalInterfaces = () => {
+  Messenger.configureExternalInterfaces();
+};
 
 module.exports = {
   BaseClient,
-  FacebookMessengerClient,
+  FacebookMessengerClient: Messenger.FacebookMessengerClient,
+  configureExternalInterfaces,
 };

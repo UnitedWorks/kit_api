@@ -141,10 +141,13 @@ const smallTalkStates = {
         if (answerRequest) {
           answerRequest.then((payload) => {
             const answer = payload.toJSON()[0];
-            const message = answer.url ? `${answer.answer} (More info at ${answer.url})` : `${answer.answer}`;
-            this.messagingClient.send(this.snapshot.constituent, message);
+            if (answer) {
+              const message = answer.url ? `${answer.answer} (More info at ${answer.url})` : `${answer.answer}`;
+              this.messagingClient.send(this.snapshot.constituent, message);
+            } else {
+              this.messagingClient.send(this.snapshot.constituent, 'Unfortunately, I don\'t have an answer for that');
+            }
             this.exit('start');
-            return;
           });
         }
       } else if (entities.hasOwnProperty(TAGS.SOCIAL_SERVICES)) { // Human Services

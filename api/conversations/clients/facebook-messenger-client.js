@@ -28,7 +28,20 @@ const startingMenu = {
   }],
 };
 
-export default class FacebookMessengerClient extends BaseClient {
+export const configureExternalInterfaces = () => {
+  // Send FB the persistent menu settings for the sake of it
+  axios.post(`https://graph.facebook.com/v2.6/me/thread_settings?access_token=${process.env.FB_PAGE_TOKEN}`, persistentMenu)
+    .catch((error) => {
+      if (error) logger.info(error);
+    });
+  // Send FB the getting started settings for the sake of it
+  axios.post(`https://graph.facebook.com/v2.6/me/thread_settings?access_token=${process.env.FB_PAGE_TOKEN}`, startingMenu)
+    .catch((error) => {
+      if (error) logger.info(error);
+    });
+};
+
+export class FacebookMessengerClient extends BaseClient {
   init() {
     const defaults = {
       verify_token: process.env.FB_VERIFY_TOKEN,
