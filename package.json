@@ -33,7 +33,6 @@
     "mocha": "^3.2.0"
   },
   "dependencies": {
-    "apiai": "^3.0.3",
     "aws-sdk": "^2.7.17",
     "axios": "^0.15.3",
     "babel-core": "^6.20.0",
@@ -45,7 +44,6 @@
     "crypto": "0.0.3",
     "dotenv": "^2.0.0",
     "express": "^4.14.0",
-    "joi": "^10.0.6",
     "knex": "^0.12.6",
     "knex-postgis": "^0.2.0",
     "morgan": "^1.7.0",
