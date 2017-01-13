@@ -381,11 +381,11 @@ const smallTalkStates = {
 
   complaintLocation() {
     const payload = this.get('input').payload;
-    if (payload.location) {
+    if (payload.attachments) {
       const updatedComplaint = Object.assign({}, this.get('complaint'), {
         location: {
-          latitude: payload.location.coordinates.latitude,
-          longitude: payload.location.coordinates.longitude,
+          latitude: payload.attachments[0].payload.coordinates.lat,
+          longitude: payload.attachments[0].payload.coordinates.long,
         },
       });
       this.set('complaint', updatedComplaint);
