@@ -348,16 +348,79 @@ const smallTalkStates = {
 
   complaintStart() {
     this.messagingClient.send(this.snapshot.constituent, 'You\'re having a problem? Can you describe the whole situation to me? I\'ll do my best to forward it along to the right department.');
-    this.exit('complaintFile');
+    this.exit('complaintText');
   },
 
-  complaintFile() {
-    const input = this.get('input').payload;
+  complaintText() {
+    const text = this.get('input').payload.text;
+    if (text) {
+      const complaint = {
+        text,
+      };
+      this.set('complaint', complaint);
+      this.messagingClient.send(this.snapshot.constituent, 'Great, if it makes sense to send a picture, can you send it? If not, simply say you don\'t have one');
+      this.exit('complaintPicture');
+    }
+  },
+
+  complaintPicture() {
+    const payload = this.get('input').payload;
+    if (payload.attachments) {
+      this.messagingClient.send(this.snapshot.constituent, 'Thank you!');
+      const updatedComplaint = Object.assign({}, this.get('complaint'), {
+        attachments: payload.attachments,
+      });
+      this.set('complaint', updatedComplaint);
+    }
+    this.messagingClient.send(this.snapshot.constituent, 'Can you send your location? That can simply be an address or a pin on the map.');
+    this.exit('complaintLocation');
+  },
+
+  complaintLocation() {
+    const payload = this.get('input').payload;
+    if (payload.location) {
+      const updatedComplaint = Object.assign({}, this.get('complaint'), {
+        location: {
+          latitude: payload.location.coordinates.latitude,
+          longitude: payload.location.coordinates.longitude,
+        },
+      });
+      this.set('complaint', updatedComplaint);
+      this.fire('complaintSubmit');
+    } else if (payload.text) {
+      geocoder.geocode(payload.text).then((geoData) => {
+        const updatedComplaint = Object.assign({}, this.get('complaint'), {
+          location: geoData[Object.keys(geoData)[0]],
+        });
+        this.set('complaint', updatedComplaint);
+        this.fire('complaintSubmit');
+      });
+    } else {
+      this.fire('complaintSubmit');
+    }
+  },
+
+  complaintSubmit() {
+    const complaint = this.get('complaint');
     // If a city has email, use that, otherwise, slack it to us to follow up with the city on
     if (this.get('organization').email) {
-      new EmailService().send('Constituent Complaint', input.text, 'mark@unitedworks.us', 'cases@mayor.chat');
+      let message = complaint.text;
+      if (complaint.attachments) {
+        message += `( Attachment: ${complaint.attachments[0].payload.url} )`;
+      }
+      if (complaint.location) {
+        message += `( Geo-location: http://maps.google.com/maps?q=${complaint.location.latitude},${complaint.location.longitude}=${complaint.location.latitude},${complaint.location.longitude} )`;
+      }
+      new EmailService().send('Constituent Complaint', message, 'mark@unitedworks.us', 'cases@mayor.chat');
     } else {
-      new SlackService().send(`>*City*: ${this.get('organization').name}\n>*Constituent ID*: ${this.snapshot.constituent_id}\n>*Complaint*: ${input.text}`);
+      let message = `>*City*: ${this.get('organization').name}\n>*Constituent ID*: ${this.snapshot.constituent_id}\n>*Complaint*: ${complaint.text}`;
+      if (complaint.attachments) {
+        message += `\n>*Attachment*: <${complaint.attachments[0].payload.url}|Image>`;
+      }
+      if (complaint.location) {
+        message += `\n>*Geo-location*: <http://maps.google.com/maps/place/${complaint.location.latitude},${complaint.location.longitude}|${complaint.location.latitude},${complaint.location.longitude}>`;
+      }
+      new SlackService().send(message);
     }
     this.messagingClient.send(this.snapshot.constituent, 'I just sent your message along. I\'ll try to let you know when it\'s been addressed.');
     this.exit('start');

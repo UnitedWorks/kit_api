@@ -9,7 +9,7 @@ export default class SlackService {
       channel: payload.channel || process.env.SLACK_ALERT_COMMUNITY_CHANNEL,
       text: payload.text || '',
       username: process.env.NODE_ENVIRONMENT === environments.PRODUCTION ? payload.username || 'Constituent Complaint' : 'Local Environment Complaint',
-      icon_emoji: process.env.NODE_ENVIRONMENT === environments.PRODUCTION ? payload.icon_emoji || ':capitol:' : ':wrench:',
+      icon_emoji: process.env.NODE_ENVIRONMENT === environments.PRODUCTION ? payload.icon_emoji || ':rage:' : ':wrench:',
     };
   }
 
