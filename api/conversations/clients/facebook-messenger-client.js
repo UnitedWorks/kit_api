@@ -8,11 +8,11 @@ const persistentMenu = {
   thread_state: 'existing_thread',
   call_to_actions: [{
     type: 'postback',
-    title: 'Change your city',
+    title: 'Change my city',
     payload: 'CHANGE_CITY',
   }, {
     type: 'postback',
-    title: 'Register your city',
+    title: 'Register my city',
     payload: 'REGISTER_YOUR_CITY',
   }],
 };
@@ -104,7 +104,8 @@ export default class FacebookMessengerClient extends BaseClient {
     }
 
     return new Promise((resolve) => {
-      const fakeTiming = text ? text.length * 60 : 800;
+      let fakeTiming = text ? text.length * 60 : 800;
+      if (fakeTiming > 2000) fakeTiming = 2000;
       this.isTyping(constituent, true);
       setTimeout(() => {
         this.callAPI(sendData).then(() => {

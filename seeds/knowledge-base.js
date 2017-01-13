@@ -128,7 +128,7 @@ exports.seed = function(knex, Promise) {
   const answerSeed = (obj) => {
     const answersInserts = [];
     answersInserts.push(knex('knowledge_answers').insert({
-      label: 'faq-education-jobTraining',
+      label: 'employment-job-training',
       question: 'Where can I get basic job training?',
       answer: 'The city provides training for jobs around the year. Be sure to visit a job center or check our website',
       category_id: obj.categoryIds[3],
@@ -250,12 +250,14 @@ exports.seed = function(knex, Promise) {
     const getNewBrunswick = knex.select().where('name', 'City of New Brunswick').from('organizations');
     const getJerseyCity = knex.select().where('name', 'Jersey City').from('organizations');
     const getHanover = knex.select().where('name', 'Hanover Township').from('organizations');
-    return new Promise.join(
-      getNewBrunswick, getJerseyCity, getHanover, (newBrunswick, jerseyCity, hanover) => {
+    const getSanFrancisco = knex.select().where('name', 'San Francisco').from('organizations');
+    return new Promise.join(getNewBrunswick, getJerseyCity, getHanover, getSanFrancisco,
+      (newBrunswick, jerseyCity, hanover, sanFrancisco) => {
         return {
           newBrunswick: newBrunswick[0].id,
           jerseyCity: jerseyCity[0].id,
           hanover: hanover[0].id,
+          sanFrancisco: sanFrancisco[0].id,
         };
     }).then((orgs) => {
       return categorySeed({

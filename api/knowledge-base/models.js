@@ -1,5 +1,4 @@
 import { bookshelf } from '../orm';
-import * as KnowledgeConstants from '../constants/knowledge-base';
 import * as AccountModels from '../accounts/models';
 
 // Information Entries - Referenced in knowledge and non-knowledge base tables

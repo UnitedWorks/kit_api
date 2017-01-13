@@ -31,10 +31,9 @@ exports.up = function (knex, Promise) {
       table.enum('category', ['public', 'ngo', 'private']);
       table.enum('type', ['admin', 'division']);
       table.integer('location_id')
-        .unsigned().references('id').inTable('locations')
-        .onDelete('CASCADE');
+        .unsigned().references('id').inTable('locations');
       table.integer('parent_organization_id')
-        .unsigned().references('id').inTable('organizations')
+        .unsigned().references('id').inTable('organizations');
       table.dateTime('created_at').defaultTo(knex.raw('now()'));
     })
     .createTable('constituents', (table) => {
