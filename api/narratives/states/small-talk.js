@@ -405,20 +405,20 @@ const smallTalkStates = {
     // If a city has email, use that, otherwise, slack it to us to follow up with the city on
     if (this.get('organization').email) {
       let message = complaint.text;
-      if (complaint.attachments) {
-        message += `( Attachment: ${complaint.attachments[0].payload.url} )`;
-      }
       if (complaint.location) {
         message += `( Geo-location: http://maps.google.com/maps?q=${complaint.location.latitude},${complaint.location.longitude}=${complaint.location.latitude},${complaint.location.longitude} )`;
+      }
+      if (complaint.attachments) {
+        message += `( Attachment: ${complaint.attachments[0].payload.url} )`;
       }
       new EmailService().send('Constituent Complaint', message, 'mark@unitedworks.us', 'cases@mayor.chat');
     } else {
       let message = `>*City*: ${this.get('organization').name}\n>*Constituent ID*: ${this.snapshot.constituent_id}\n>*Complaint*: ${complaint.text}`;
-      if (complaint.attachments) {
-        message += `\n>*Attachment*: <${complaint.attachments[0].payload.url}|Image>`;
-      }
       if (complaint.location) {
         message += `\n>*Geo-location*: <http://maps.google.com/maps/place/${complaint.location.latitude},${complaint.location.longitude}|${complaint.location.latitude},${complaint.location.longitude}>`;
+      }
+      if (complaint.attachments) {
+        message += `\n>*Attachment*: <${complaint.attachments[0].payload.url}|Image>`;
       }
       new SlackService().send(message);
     }
