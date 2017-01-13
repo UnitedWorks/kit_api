@@ -145,9 +145,9 @@ const smallTalkStates = {
           });
         }
       } else if (entities.hasOwnProperty(TAGS.SOCIAL_SERVICES)) { // Human Services
+        const value = entities[TAGS.SOCIAL_SERVICES][0].value;
         const orgSources = this.datastore.organization.narrativeSources;
         // Shelter Search
-        const value = entities[TAGS.SOCIAL_SERVICES][0].value;
         if (value === TAGS.SHELTER) {
           if (hasSource(orgSources, SOURCES.ASKDARCEL)) {
             axios.get('https://staging.askdarcel.org/api/resources', {

@@ -36,6 +36,6 @@ export const Organization = bookshelf.Model.extend({
     return this.belongsToMany(NarrativeModels.NarrativeSource, 'organizations_narrative_sources');
   },
   location: function () {
-    return this.hasOne(KnowledgeModels.Location, 'id');
+    return this.belongsTo(KnowledgeModels.Location, 'location_id');
   },
 });

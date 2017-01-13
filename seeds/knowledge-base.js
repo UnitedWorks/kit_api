@@ -250,12 +250,14 @@ exports.seed = function(knex, Promise) {
     const getNewBrunswick = knex.select().where('name', 'City of New Brunswick').from('organizations');
     const getJerseyCity = knex.select().where('name', 'Jersey City').from('organizations');
     const getHanover = knex.select().where('name', 'Hanover Township').from('organizations');
-    return new Promise.join(
-      getNewBrunswick, getJerseyCity, getHanover, (newBrunswick, jerseyCity, hanover) => {
+    const getSanFrancisco = knex.select().where('name', 'San Francisco').from('organizations');
+    return new Promise.join(getNewBrunswick, getJerseyCity, getHanover, getSanFrancisco,
+      (newBrunswick, jerseyCity, hanover, sanFrancisco) => {
         return {
           newBrunswick: newBrunswick[0].id,
           jerseyCity: jerseyCity[0].id,
           hanover: hanover[0].id,
+          sanFrancisco: sanFrancisco[0].id,
         };
     }).then((orgs) => {
       return categorySeed({
