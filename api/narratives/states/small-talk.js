@@ -1,4 +1,3 @@
-import request from 'request';
 import axios from 'axios';
 import { logger } from '../../logger';
 import { NarrativeStoreMachine } from './state';
@@ -9,6 +8,8 @@ import * as TAGS from '../../constants/nlp-tagging';
 import * as SOURCES from '../../constants/narrative-sources';
 import { getAnswers } from '../../knowledge-base/helpers';
 import { hasSource } from './helpers';
+import SlackService from '../../services/slack';
+import EmailService from '../../services/email';
 
 const smallTalkStates = {
   init() {
@@ -93,7 +94,10 @@ const smallTalkStates = {
       const entities = nlpData.entities;
       logger.info(nlpData);
 
-      if (entities.hasOwnProperty(TAGS.SANITATION)) { // Sanitation Services
+      if (entities.hasOwnProperty(TAGS.COMPLAINT)) { // Complaint
+        this.messagingClient.send(this.snapshot.constituent, 'You\'re having a problem? Can you describe the whole situation to me? I\'ll do my best to forward it along to the right department.');
+        this.exit('complaint');
+      } else if (entities.hasOwnProperty(TAGS.SANITATION)) { // Sanitation Services
         const value = entities[TAGS.SANITATION][0].value;
         let answerRequest;
         if (value === TAGS.COMPOST) {
@@ -341,6 +345,18 @@ const smallTalkStates = {
         this.exit('start');
       }
     });
+  },
+
+  complaint() {
+    const input = this.get('input').payload;
+    // If a city has email, use that, otherwise, slack it to us to follow up with the city on
+    if (this.get('organization').email) {
+      new EmailService().send('Constituent Complaint', input.text, 'mark@unitedworks.us', 'cases@mayor.chat');
+    } else {
+      new SlackService().send(`>*City*: ${this.get('organization').name}\n>*Constituent ID*: ${this.snapshot.constituent_id}\n>*Complaint*: ${input.text}`);
+    }
+    this.messagingClient.send(this.snapshot.constituent, 'I just sent your message along. I\'ll try to let you know when it\'s been addressed.');
+    this.exit('start');
   },
 };
 
