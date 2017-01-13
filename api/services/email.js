@@ -1,6 +1,6 @@
 import { logger } from '../logger';
 
-export class EmailService {
+export default class EmailService {
 
 	constructor() {
 		this.service = require('sendgrid');
