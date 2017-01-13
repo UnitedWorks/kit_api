@@ -1,13 +1,12 @@
-import http from 'http';
-import request from 'request';
+import axios from 'axios';
 import { assert, expect, should } from 'chai';
 
 import '../api/start.js';
 
 describe('Node Server', () => {
   it('health check should return 200', done => {
-    http.get('http://127.0.0.1:5000/health_check', res => {
-      assert.equal(200, res.statusCode);
+    axios.get('http://127.0.0.1:5000/health_check').then((response) => {
+      assert.equal(200, response.status);
       done();
     });
   });
@@ -36,50 +35,50 @@ describe('Environment Variables', () => {
 });
 
 describe('Conversation Webhook', () => {
-  let payload = {
-    "object": "web",
-    "entry": [{
-      "id": "1",
-      "time": 1482371439168,
-      "messaging": [{
-        "sender": {
-          "id": "2"
+  const payload = {
+    object: 'web',
+    entry: [{
+      id: '1',
+      time: 1482371439168,
+      messaging: [{
+        sender: {
+          id: '2'
         },
-        "recipient": {
-          "id": "3"
+        recipient: {
+          id: '3'
         },
-        "timestamp": 1482371439098,
-        "message": {
-          "mid": "mid.1482371439098:ae07c2a413",
-          "seq": 1,
-          "text": "hi"
+        timestamp: 1482371439098,
+        message: {
+          mid: 'mid.1482371439098:ae07c2a413',
+          seq: 1,
+          text: 'hi'
         }
       }]
     }]
   };
   it('should return 200 when sending a web message', done => {
-    request({
-      uri: 'http://127.0.0.1:5000/conversations/webhook',
-      method: 'POST',
-      json: payload,
+    axios({
+      url: 'http://127.0.0.1:5000/conversations/webhook',
+      method: 'post',
+      data: payload,
       headers: {
         'Origin': 'localhost'
       }
-    }, (error, response) => {
-      assert.equal(200, response.statusCode);
+    }).then((response) => {
+      assert.equal(200, response.status);
       done();
     });
   });
-  it('should return error when trying to send a Facebook message', done => {
-    let modifiedPayload = payload;
-    modifiedPayload.object = "page";
+  it('should return error when trying to send a Facebook message', (done) => {
+    const modifiedPayload = payload;
+    modifiedPayload.object = 'page';
     // Test Verification Error
-    request({
-      uri: 'http://127.0.0.1:5000/conversations/webhook',
-      method: 'POST',
-      json: modifiedPayload,
-    }, (error, response) => {
-      assert.equal(403, response.statusCode);
+    axios({
+      url: 'http://127.0.0.1:5000/conversations/webhook',
+      method: 'post',
+      data: modifiedPayload,
+    }).catch((error) => {
+      expect(error).to.be.an('error');
       done();
     });
   });

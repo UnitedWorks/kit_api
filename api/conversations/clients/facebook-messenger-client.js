@@ -1,7 +1,6 @@
+import axios from 'axios';
 import { logger } from '../../logger';
 import BaseClient from './base-client';
-
-const request = require('request');
 
 const persistentMenu = {
   setting_type: 'call_to_actions',
@@ -39,41 +38,20 @@ export default class FacebookMessengerClient extends BaseClient {
     };
 
     this.config = Object.assign({}, defaults, this.config);
-
-    // Send FB the persistent menu settings for the sake of it
-    request({
-      uri: `${this.config.graph_uri}/v2.6/me/thread_settings?access_token=${this.config.page_token}`,
-      method: 'POST',
-      json: persistentMenu,
-    }, (error) => {
-      if (error) logger.info(error);
-    });
-    // Send FB the getting started settings for the sake of it
-    request({
-      uri: `${this.config.graph_uri}/v2.6/me/thread_settings?access_token=${this.config.page_token}`,
-      method: 'POST',
-      json: startingMenu,
-    }, (error) => {
-      if (error) logger.info(error);
-    });
-
   }
 
   callAPI(messageData) {
     return new Promise((resolve, reject) => {
-      request({
-        uri: `${this.config.graph_uri}/v2.6/me/messages`,
-        qs: { access_token: this.config.page_token },
-        method: 'POST',
-        json: messageData,
-      }, (error, response, body) => {
+      axios.post(`${this.config.graph_uri}/v2.6/me/messages`, messageData, {
+        params: {
+          access_token: this.config.page_token,
+        },
+      }).then((response) => {
         // this.isTyping(messageData.recipient.id, false);
-        if (!error && !body.error) {
-          logger.info('Successfully called Send API for recipient %s', body.recipient_id);
-          resolve();
-        } else {
-          reject();
-        }
+        logger.info('Successfully called Send API for recipient %s', response.data.recipient_id);
+        resolve();
+      }).catch(() => {
+        reject();
       });
     });
   }
