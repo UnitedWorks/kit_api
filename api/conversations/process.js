@@ -43,31 +43,46 @@ function setupConstituentState(constituent) {
 }
 
 function normalizeInput(conversationClient, input) {
-  let adjustedMessageObject;
+  let newMessageObject;
   // Input: interface, message, state
   if (conversationClient === interfaces.FACEBOOK) {
     if (input.hasOwnProperty('message')) {
-      adjustedMessageObject = {
+      newMessageObject = {
         type: 'message',
         payload: input.message,
       };
     } else if (input.hasOwnProperty('postback')) {
-      adjustedMessageObject = {
+      newMessageObject = {
         type: 'action',
         payload: input.postback,
       };
     }
-    delete adjustedMessageObject.mid;
+    delete newMessageObject.mid;
+    delete newMessageObject.seq;
   } else if (conversationClient === interfaces.TWILIO) {
-    adjustedMessageObject = {
+    newMessageObject = {
       type: 'message',
       payload: {
         text: input.Body,
       },
     };
+    for (let a = 0; a < 10; a += 1) {
+      if (input.hasOwnProperty(`MediaContentType${a}`)) {
+        // Check for existing attachments array
+        if (!newMessageObject.payload.hasOwnProperty('attachments')) {
+          newMessageObject.payload.attachments = [];
+        }
+        newMessageObject.payload.attachments.push({
+          type: input[`MediaContentType${a}`],
+          payload: {
+            url: input[`MediaUrl${a}`],
+          },
+        });
+      }
+    }
   }
   // Output: reformatted message
-  return adjustedMessageObject;
+  return newMessageObject;
 }
 
 function normalizeSessionsFromRequest(req, conversationClient) {
