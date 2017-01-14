@@ -15,14 +15,18 @@ export class TwilioSMSClient extends BaseClient {
   }
 
   send(constituent, text) {
-    this.client.messages.post({
-      to: constituent.phone,
-      from: this.config.fromNumber,
-      body: text,
-    }, (err) => {
-      if (err) {
-        logger.info(err);
-      }
+    return new Promise((resolve, reject) => {
+      this.client.messages.post({
+        to: constituent.phone,
+        from: this.config.fromNumber,
+        body: text,
+      }, (err, response) => {
+        if (err) {
+          logger.info(err);
+          reject(err);
+        }
+        resolve(response);
+      });
     });
   }
 }
