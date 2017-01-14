@@ -350,7 +350,7 @@ const smallTalkStates = {
   },
 
   complaintStart() {
-    this.messagingClient.send(this.snapshot.constituent, 'You\'re having a problem? Can you describe the whole situation to me? I\'ll do my best to forward it along to the right department.');
+    this.messagingClient.send(this.snapshot.constituent, 'You\'re having a problem? Can you describe the situation to me? I\'ll do my best to forward it to the right city department.');
     this.exit('complaintText');
   },
 
@@ -361,7 +361,7 @@ const smallTalkStates = {
         text,
       };
       this.set('complaint', complaint);
-      this.messagingClient.send(this.snapshot.constituent, 'Great, if it makes sense to send a picture, can you send it? If not, simply say you don\'t have one');
+      this.messagingClient.send(this.snapshot.constituent, 'Can you provide a picture? If not, simply say you don\'t have one');
       this.exit('complaintPicture');
     }
   },
