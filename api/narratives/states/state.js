@@ -1,6 +1,6 @@
 import { logger } from '../../logger';
 import * as interfaces from '../../constants/interfaces';
-import { BaseClient, FacebookMessengerClient } from '../../conversations/clients';
+import { BaseClient, FacebookMessengerClient, TwilioSMSClient } from '../../conversations/clients';
 import { NarrativeStore } from '../models';
 
 export class StateMachine {
@@ -46,6 +46,8 @@ export class NarrativeStoreMachine extends StateMachine {
     // Set the Messaging Client
     if (this.snapshot.data_store.conversationClient === interfaces.FACEBOOK) {
       this.messagingClient = new FacebookMessengerClient();
+    } else if (this.snapshot.data_store.conversationClient === interfaces.TWILIO) {
+      this.messagingClient = new TwilioSMSClient();
     } else {
       this.messagingClient = new BaseClient();
     }
