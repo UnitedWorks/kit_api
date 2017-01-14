@@ -5,11 +5,11 @@ import { NarrativeStore } from '../narratives/models';
 import { Constituent } from '../accounts/models';
 import { inputDirector } from '../narratives/states/helpers';
 
-function getConstituent(senderId) {
+function getConstituent(filterObj) {
   return new Promise((resolve, reject) => {
-    Constituent.where({ facebook_id: senderId }).fetch().then((model) => {
+    Constituent.where(filterObj).fetch().then((model) => {
       if (!model) {
-        new Constituent({ facebook_id: senderId }).save().then((constituent) => {
+        new Constituent(filterObj).save().then((constituent) => {
           resolve(constituent.toJSON());
         });
       } else {
@@ -58,46 +58,62 @@ function normalizeInput(conversationClient, input) {
       };
     }
     delete adjustedMessageObject.mid;
+  } else if (conversationClient === interfaces.TWILIO) {
+    adjustedMessageObject = {
+      type: 'message',
+      payload: {
+        text: input.Body,
+      },
+    };
   }
   // Output: reformatted message
   return adjustedMessageObject;
 }
 
-function normalizeStatesFromRequest(req) {
+function normalizeSessionsFromRequest(req, conversationClient) {
   // Input: Request Object
-  // const requestBy = utils.getOrigin(req.headers.origin);
-  let messageCount = 0;
-  let messageTotal = 0;
-  req.body.entry.forEach((entry) => { messageTotal += entry.messaging.length; });
-  const readyStates = [];
-  // if (requestBy === interfaces.FACEBOOK) {
   return new Promise((resolve) => {
-    req.body.entry.forEach((entry) => {
-      entry.messaging.forEach((input) => {
-        // Does: Get user
-        getConstituent(input.sender.id).then((constituent) => {
-          // Does: Gets narrative_state snapshot and adds to data store's context?
-          setupConstituentState(constituent).then((constituentState) => {
-            const state = constituentState;
-            state.data_store.conversationClient = interfaces.FACEBOOK;
-            state.data_store.input = normalizeInput(interfaces.FACEBOOK, input);
-            readyStates.push(state);
-            messageCount += 1;
-            if (messageCount === messageTotal) {
-              resolve(readyStates);
-            }
+    if (conversationClient === interfaces.FACEBOOK) {
+      let messageCount = 0;
+      let messageTotal = 0;
+      req.body.entry.forEach((entry) => { messageTotal += entry.messaging.length; });
+      const readyStates = [];
+      req.body.entry.forEach((entry) => {
+        entry.messaging.forEach((input) => {
+          // Does: Get user
+          getConstituent({ facebook_id: input.sender.id }).then((constituent) => {
+            // Does: Gets narrative_state snapshot and adds to data store's context?
+            setupConstituentState(constituent).then((constituentState) => {
+              const state = constituentState;
+              state.data_store.conversationClient = conversationClient;
+              state.data_store.input = normalizeInput(conversationClient, input);
+              readyStates.push(state);
+              messageCount += 1;
+              if (messageCount === messageTotal) {
+                resolve(readyStates);
+              }
+            });
           });
         });
       });
-    });
+    } else if (conversationClient === interfaces.TWILIO) {
+      const input = req.body;
+      getConstituent({ phone: input.From }).then((constituent) => {
+        setupConstituentState(constituent).then((constituentState) => {
+          const state = constituentState;
+          state.data_store.conversationClient = conversationClient;
+          state.data_store.input = normalizeInput(conversationClient, input);
+          resolve([state]);
+        });
+      });
+    }
   });
-  // }
 }
 
-export function webhookHitWithMessage(req, res) {
+export function webhookHitWithMessage(req, res, conversationClient) {
   // Input: Request Object
   // Does: Normalizes data format for our state machines
-  normalizeStatesFromRequest(req).then((normalizedStates) => {
+  normalizeSessionsFromRequest(req, conversationClient).then((normalizedStates) => {
     // Follup: Send to state machine
     normalizedStates.forEach((stateSnapShot) => {
       const appSession = { res };

@@ -58,7 +58,7 @@ describe('Conversation Webhook', () => {
   };
   it('should return 200 when sending a web message', done => {
     axios({
-      url: 'http://127.0.0.1:5000/conversations/webhook',
+      url: 'http://127.0.0.1:5000/conversations/webhook/facebook',
       method: 'post',
       data: payload,
       headers: {
@@ -74,7 +74,7 @@ describe('Conversation Webhook', () => {
     modifiedPayload.object = 'page';
     // Test Verification Error
     axios({
-      url: 'http://127.0.0.1:5000/conversations/webhook',
+      url: 'http://127.0.0.1:5000/conversations/webhook/facebook',
       method: 'post',
       data: modifiedPayload,
     }).catch((error) => {

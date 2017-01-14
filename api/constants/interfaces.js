@@ -1,5 +1,4 @@
 export const FACEBOOK = 'facebook';
-export const BRIDGE = 'bridge';
-export const WEB = 'web';
+export const TWILIO = 'twilio';
 
-export const interfaces = [FACEBOOK, BRIDGE, WEB];
+export const interfaces = [FACEBOOK, TWILIO];
