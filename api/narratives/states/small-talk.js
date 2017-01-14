@@ -407,12 +407,15 @@ const smallTalkStates = {
     const complaint = this.get('complaint');
     // If a city has email, use that, otherwise, slack it to us to follow up with the city on
     if (this.get('organization').email) {
-      let message = complaint.text;
+      let message = 'Complaint:\n' + complaint.text;
       if (complaint.location) {
-        message += `( Geo-location: http://maps.google.com/maps?q=${complaint.location.latitude},${complaint.location.longitude}=${complaint.location.latitude},${complaint.location.longitude} )`;
+        message += `\nGeo-location: http://maps.google.com/maps?q=${complaint.location.latitude},${complaint.location.longitude}=${complaint.location.latitude},${complaint.location.longitude}`;
       }
       if (complaint.attachments) {
-        message += `( Attachment: ${complaint.attachments[0].payload.url} )`;
+        message += `\nAttachments:`;
+        complaint.attachments.forEach((attachment, index) => {
+          message += `${index + 1}: ${attachment.type || 'Attachment'} - ${attachment.payload.url}`;
+        });
       }
       new EmailService().send('Constituent Complaint', message, 'mark@unitedworks.us', 'cases@mayor.chat');
     } else {
@@ -421,7 +424,10 @@ const smallTalkStates = {
         message += `\n>*Geo-location*: <http://maps.google.com/maps/place/${complaint.location.latitude},${complaint.location.longitude}|${complaint.location.latitude},${complaint.location.longitude}>`;
       }
       if (complaint.attachments) {
-        message += `\n>*Attachment*: <${complaint.attachments[0].payload.url}|Image>`;
+        message += '\n>*Attachment*:';
+        complaint.attachments.forEach((attachment) => {
+          message += ` <${attachment.payload.url}|${attachment.type || 'Attachment'}>`;
+        });
       }
       new SlackService().send(message);
     }
