@@ -407,12 +407,12 @@ const smallTalkStates = {
     const complaint = this.get('complaint');
     // If a city has email, use that, otherwise, slack it to us to follow up with the city on
     if (this.get('organization').email) {
-      let message = 'Complaint:\n' + complaint.text;
+      let message = `Complaint:\n ${complaint.text}`;
       if (complaint.location) {
         message += `\nGeo-location: http://maps.google.com/maps?q=${complaint.location.latitude},${complaint.location.longitude}=${complaint.location.latitude},${complaint.location.longitude}`;
       }
       if (complaint.attachments) {
-        message += `\nAttachments:`;
+        message += '\nAttachments:';
         complaint.attachments.forEach((attachment, index) => {
           message += `${index + 1}: ${attachment.type || 'Attachment'} - ${attachment.payload.url}`;
         });
@@ -424,7 +424,7 @@ const smallTalkStates = {
         message += `\n>*Geo-location*: <http://maps.google.com/maps/place/${complaint.location.latitude},${complaint.location.longitude}|${complaint.location.latitude},${complaint.location.longitude}>`;
       }
       if (complaint.attachments) {
-        message += '\n>*Attachment*:';
+        message += '\n>*Attachments*:';
         complaint.attachments.forEach((attachment) => {
           message += ` <${attachment.payload.url}|${attachment.type || 'Attachment'}>`;
         });
