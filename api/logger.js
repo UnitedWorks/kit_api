@@ -5,6 +5,7 @@ winston.emitErrs = true;
 export const logger = new winston.Logger({
   transports: [
     new winston.transports.File({
+      name: 'info-file',
       level: 'info',
       filename: './logs/info.log',
       handleExceptions: true,
@@ -15,6 +16,7 @@ export const logger = new winston.Logger({
       timestamp: true,
     }),
     new winston.transports.File({
+      name: 'error-file',
       level: 'error',
       filename: './logs/error.log',
       handleExceptions: true,
@@ -28,14 +30,14 @@ export const logger = new winston.Logger({
       level: 'debug',
       handleExceptions: true,
       json: true,
-      colorize: true
-    })
+      colorize: true,
+    }),
   ],
-  exitOnError: false
+  exitOnError: false,
 });
 
 export const stream = {
   write: (message, encoding) => {
     logger.info(message);
-  }
+  },
 };
