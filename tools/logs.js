@@ -15,5 +15,5 @@ logPaths.forEach((logPath) => {
   if (fs.existsSync(logPath)) {
     fs.unlinkSync(logPath);
   }
-  fs.writeFileSync(logPath);
+  fs.writeFileSync(logPath, '');
 });
