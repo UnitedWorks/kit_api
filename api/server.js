@@ -43,8 +43,14 @@ app.use('/accounts', require('./accounts/routes'));
 app.use('/conversations', require('./conversations/routes'));
 app.use('/knowledge-base', require('./knowledge-base/routes'));
 
-app.get('/logs', (req, res) => {
+app.get('/logs/info', (req, res) => {
   fs.readFile(path.join(__dirname, '..', 'logs/info.log'), 'utf8', (err, data) => {
+    res.status(200).send(data);
+  });
+});
+
+app.get('/logs/error', (req, res) => {
+  fs.readFile(path.join(__dirname, '..', 'logs/error.log'), 'utf8', (err, data) => {
     res.status(200).send(data);
   });
 });

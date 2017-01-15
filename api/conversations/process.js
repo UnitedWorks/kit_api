@@ -11,16 +11,16 @@ function getConstituent(filterObj) {
       if (!model) {
         new Constituent(filterObj).save().then((constituent) => {
           resolve(constituent.toJSON());
-        });
+        }).catch(err => reject(err));
       } else {
         resolve(model.toJSON());
       }
-    });
+    }).catch(err => reject(err));
   });
 }
 
 function setupConstituentState(constituent) {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     NarrativeStore.collection({
       constituent_id: constituent.id,
       // We eventually need to filter interface properties too
@@ -38,7 +38,7 @@ function setupConstituentState(constituent) {
       } else {
         resolve(Object.assign({}, model.toJSON(), { constituent }));
       }
-    });
+    }).catch(err => reject(err));
   });
 }
 
@@ -66,18 +66,19 @@ function normalizeInput(conversationClient, input) {
         text: input.Body,
       },
     };
-    for (let a = 0; a < 10; a += 1) {
-      if (input.hasOwnProperty(`MediaContentType${a}`)) {
-        // Check for existing attachments array
-        if (!newMessageObject.payload.hasOwnProperty('attachments')) {
-          newMessageObject.payload.attachments = [];
+    if (input.NumMedia > 0) {
+      if (!newMessageObject.payload.hasOwnProperty('attachments')) {
+        newMessageObject.payload.attachments = [];
+      }
+      for (let a = 0; a <= 9; a += 1) {
+        if (input.hasOwnProperty(`MediaContentType${a}`)) {
+          newMessageObject.payload.attachments.push({
+            type: input[`MediaContentType${a}`],
+            payload: {
+              url: input[`MediaUrl${a}`],
+            },
+          });
         }
-        newMessageObject.payload.attachments.push({
-          type: input[`MediaContentType${a}`],
-          payload: {
-            url: input[`MediaUrl${a}`],
-          },
-        });
       }
     }
   }
@@ -87,7 +88,7 @@ function normalizeInput(conversationClient, input) {
 
 function normalizeSessionsFromRequest(req, conversationClient) {
   // Input: Request Object
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     if (conversationClient === interfaces.FACEBOOK) {
       let messageCount = 0;
       let messageTotal = 0;
@@ -107,8 +108,8 @@ function normalizeSessionsFromRequest(req, conversationClient) {
               if (messageCount === messageTotal) {
                 resolve(readyStates);
               }
-            });
-          });
+            }).catch(err => reject(err));
+          }).catch(err => reject(err));
         });
       });
     } else if (conversationClient === interfaces.TWILIO) {
@@ -119,8 +120,8 @@ function normalizeSessionsFromRequest(req, conversationClient) {
           state.data_store.conversationClient = conversationClient;
           state.data_store.input = normalizeInput(conversationClient, input);
           resolve([state]);
-        });
-      });
+        }).catch(err => reject(err));
+      }).catch(err => reject(err));
     }
   });
 }
@@ -136,5 +137,5 @@ export function webhookHitWithMessage(req, res, conversationClient) {
         inputDirector(appSession, stateSnapShot);
       }
     });
-  });
+  }).catch(err => logger.error(err));
 }

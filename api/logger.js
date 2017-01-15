@@ -9,30 +9,20 @@ export const logger = new winston.Logger({
       filename: './logs/info.log',
       handleExceptions: true,
       json: true,
-      maxsize: 5242880, //5MB
+      maxsize: 5242880,
       maxFiles: 5,
       colorize: false,
-      timestamp: true
-    }),
-    new winston.transports.File({
-      level: 'warn',
-      filename: './logs/warning.log',
-      handleExceptions: true,
-      json: true,
-      maxsize: 5242880, //5MB
-      maxFiles: 5,
-      colorize: false,
-      timestamp: true
+      timestamp: true,
     }),
     new winston.transports.File({
       level: 'error',
       filename: './logs/error.log',
       handleExceptions: true,
       json: true,
-      maxsize: 5242880, //5MB
+      maxsize: 5242880,
       maxFiles: 5,
       colorize: false,
-      timestamp: true
+      timestamp: true,
     }),
     new winston.transports.Console({
       level: 'debug',
