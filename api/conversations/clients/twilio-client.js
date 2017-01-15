@@ -1,4 +1,3 @@
-import axios from 'axios';
 import twilio from 'twilio';
 import { logger } from '../../logger';
 import BaseClient from './base-client';

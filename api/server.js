@@ -1,23 +1,13 @@
 import * as env from './env';
 import * as environments from './constants/environments'
-import * as interfaces from './constants/interfaces'
 import { logger } from './logger';
 import * as conversations from './conversations/verify';
 import * as clients from './conversations/clients';
 
-const AWS = require('aws-sdk');
 const bodyParser = require('body-parser');
-const crypto = require('crypto');
 const express = require('express');
 const fs = require('fs');
-const morgan = require('morgan');
 const path = require('path');
-const s3 = new AWS.S3({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  region: process.env.AWS_DEFAULT_REGION
-});
-const uuid = require('uuid');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -32,7 +22,7 @@ app.use(bodyParser.urlencoded({
 }));
 
 // Process application/json
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
   res.status(200).send();
