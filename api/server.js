@@ -1,13 +1,12 @@
+import bodyParser from 'body-parser';
+import express from 'express';
+import fs from 'fs';
+import path from 'path';
 import * as env from './env';
-import * as environments from './constants/environments'
+import * as environments from './constants/environments';
 import { logger } from './logger';
 import * as conversations from './conversations/verify';
 import * as clients from './conversations/clients';
-
-const bodyParser = require('body-parser');
-const express = require('express');
-const fs = require('fs');
-const path = require('path');
 
 const app = express();
 const port = process.env.PORT || 5000;
