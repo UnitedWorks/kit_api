@@ -29,7 +29,7 @@ const smallTalkStates = {
   location(aux = {}) {
     logger.info('State: Location');
     const input = this.get('input').payload;
-    if (aux.hasOwnProperty('previous')) {
+    if (Object.prototype.hasOwnProperty.call(aux, 'previous')) {
       switch (aux.previous) {
         case 'gettingStarted':
           this.messagingClient.send(this.snapshot.constituent, 'But before I can help out, what city and state do you live in?');
@@ -94,9 +94,11 @@ const smallTalkStates = {
       const entities = nlpData.entities;
       logger.info(nlpData);
 
-      if (entities.hasOwnProperty(TAGS.COMPLAINT)) { // Complaint
+      // Complaint
+      if (Object.prototype.hasOwnProperty.call(entities, TAGS.COMPLAINT)) {
         this.fire('complaintStart');
-      } else if (entities.hasOwnProperty(TAGS.SANITATION)) { // Sanitation Services
+      // Sanitation Services
+      } else if (Object.prototype.hasOwnProperty.call(entities, TAGS.SANITATION)) {
         const value = entities[TAGS.SANITATION][0].value;
         let answerRequest;
         if (value === TAGS.COMPOST) {
@@ -117,7 +119,7 @@ const smallTalkStates = {
             label: 'sanitation-electronics-disposal',
             organization_id: this.get('organization').id,
           }, { withRelated: false });
-        } else if (entities.hasOwnProperty(TAGS.SCHEDULES)) {
+        } else if (Object.prototype.hasOwnProperty.call(entities, TAGS.SCHEDULES)) {
           switch (value) {
             // Request Garbage
             case TAGS.GARBAGE:
@@ -134,7 +136,6 @@ const smallTalkStates = {
               }, { withRelated: false });
               break;
             default:
-              break;
           }
         }
         // Handle
@@ -150,7 +151,8 @@ const smallTalkStates = {
             this.exit('start');
           });
         }
-      } else if (entities.hasOwnProperty(TAGS.SOCIAL_SERVICES)) { // Human Services
+      // Human Services
+      } else if (Object.prototype.hasOwnProperty.call(entities, TAGS.SOCIAL_SERVICES)) {
         const value = entities[TAGS.SOCIAL_SERVICES][0].value;
         const orgSources = this.datastore.organization.narrativeSources;
         // Shelter Search
@@ -262,7 +264,8 @@ const smallTalkStates = {
             });
           }
         }
-      } else if (entities.hasOwnProperty(TAGS.HEALTH)) { // Medical Services
+      // Medical Services
+      } else if (Object.prototype.hasOwnProperty.call(entities, TAGS.HEALTH)) {
         const value = entities[TAGS.HEALTH][0].value;
         const orgSources = this.datastore.organization.narrativeSources;
         // Clinics
@@ -302,7 +305,8 @@ const smallTalkStates = {
             });
           }
         }
-      } else if (entities.hasOwnProperty(TAGS.EMPLOYMENT)) { // Employment Services
+      // Employment Services
+      } else if (Object.prototype.hasOwnProperty.call(entities, TAGS.EMPLOYMENT)) {
         const value = entities[TAGS.EMPLOYMENT][0].value;
         const orgSources = this.datastore.organization.narrativeSources;
         // Employment Asssistance
@@ -465,6 +469,7 @@ export default class SmallTalkMachine extends NarrativeStoreMachine {
           break;
         case 'REGISTER_YOUR_CITY':
           break;
+        default:
       }
     }
 
@@ -477,7 +482,7 @@ export default class SmallTalkMachine extends NarrativeStoreMachine {
       case 'action':
         handleAction();
         break;
+      default:
     }
-
   }
 }

@@ -46,12 +46,12 @@ function normalizeInput(conversationClient, input) {
   let newMessageObject;
   // Input: interface, message, state
   if (conversationClient === interfaces.FACEBOOK) {
-    if (input.hasOwnProperty('message')) {
+    if (Object.prototype.hasOwnProperty.call(input, 'message')) {
       newMessageObject = {
         type: 'message',
         payload: input.message,
       };
-    } else if (input.hasOwnProperty('postback')) {
+    } else if (Object.prototype.hasOwnProperty.call(input, 'postback')) {
       newMessageObject = {
         type: 'action',
         payload: input.postback,
@@ -67,11 +67,11 @@ function normalizeInput(conversationClient, input) {
       },
     };
     if (input.NumMedia > 0) {
-      if (!newMessageObject.payload.hasOwnProperty('attachments')) {
+      if (!Object.prototype.hasOwnProperty.call(newMessageObject.payload, 'attachments')) {
         newMessageObject.payload.attachments = [];
       }
       for (let a = 0; a <= 9; a += 1) {
-        if (input.hasOwnProperty(`MediaContentType${a}`)) {
+        if (Object.prototype.hasOwnProperty.call(input, `MediaContentType${a}`)) {
           newMessageObject.payload.attachments.push({
             type: input[`MediaContentType${a}`],
             payload: {
