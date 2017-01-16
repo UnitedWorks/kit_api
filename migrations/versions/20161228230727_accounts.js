@@ -30,6 +30,7 @@ exports.up = function (knex, Promise) {
       table.string('website');
       table.enum('category', ['public', 'ngo', 'private']);
       table.enum('type', ['admin', 'division']);
+      table.boolean('activated').defaultTo(false);
       table.integer('location_id')
         .unsigned().references('id').inTable('locations');
       table.integer('parent_organization_id')
