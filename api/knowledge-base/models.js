@@ -1,9 +1,22 @@
 import { bookshelf } from '../orm';
-import * as AccountModels from '../accounts/models';
+
+const _ = require('lodash');
 
 // Information Entries - Referenced in knowledge and non-knowledge base tables
 export const Location = bookshelf.Model.extend({
   tableName: 'locations',
+  parse: (attr) => {
+    return _.reduce(attr, (record, val, key) => {
+      record[_.camelCase(key)] = val;
+      return record;
+    }, {});
+  },
+  format: (attr) => {
+    return _.reduce(attr, (record, val, key) => {
+      record[_.snakeCase(key)] = val;
+      return record;
+    }, {});
+  },
 });
 
 export const Schedule = bookshelf.Model.extend({

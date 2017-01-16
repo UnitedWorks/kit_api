@@ -1,6 +1,5 @@
 import { knex } from '../orm';
-import { logger } from '../logger';
-import { KnowledgeAnswer, KnowledgeAnswerEvents, KnowledgeAnswerFacilitys, KnowledgeAnswerServices } from './models';
+import { KnowledgeAnswer, KnowledgeAnswerEvents, KnowledgeAnswerFacilitys, KnowledgeAnswerServices, Location } from './models';
 
 export const getAnswers = (session, params, options) => {
   const filters = Object.assign({}, params);
@@ -49,5 +48,29 @@ export const makeAnswerRelation = (answerModel, events = [], services = [], faci
       runSave(serviceRelationsArray),
       runSave(facilityRelationsArray),
     ]);
+  });
+};
+
+export const saveLocation = (locationModel, options = {}) => {
+  return new Promise((resolve, reject) => {
+    const newLocationModel = {
+      latitude: locationModel.latitude,
+      longitude: locationModel.longitude,
+      formattedAddress: locationModel.formattedAddress,
+      streetNumber: locationModel.streetNumber,
+      streetName: locationModel.streetName,
+      city: locationModel.city,
+      zipcode: locationModel.zipcode,
+      country: locationModel.country,
+      countryCode: locationModel.countryCode,
+      administrativeLevels: locationModel.administrativeLevels,
+      extra: locationModel.extra,
+    };
+    if (Object.prototype.hasOwnProperty.call(locationModel, 'id')) {
+      newLocationModel.id = locationModel.id;
+    }
+    Location.forge(newLocationModel).save().then((data) => {
+      resolve(options.toJSON ? data.toJSON() : data);
+    }).catch(err => reject(err));
   });
 };
