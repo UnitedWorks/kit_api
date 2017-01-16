@@ -90,8 +90,9 @@ const smallTalkStates = {
           }).then((organizationModel) => {
             this.set('organization', organizationModel);
             new SlackService({
-              icon_emoji: ':round_pushpin:',
-            }).send(`>*Unregistered City Request*: ${organizationModel.get('name')} (ID: ${organizationModel.get('id')})`);
+              username: 'Unregistered City',
+              icon: 'round_pushpin',
+            }).send(`>*City Requested*: ${organizationModel.get('name')}\n>*ID*: ${organizationModel.get('id')}`);
             this.messagingClient.send(this.snapshot.constituent, 'Oh no! Your city isn\'t registered. I will let them know you\'re interested.');
             this.exit('start');
           });
