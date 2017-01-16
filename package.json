@@ -7,7 +7,6 @@
     "migrate-production": "NODE_ENVIRONMENT=production knex migrate:latest",
     "rollback-local": "NODE_ENVIRONMENT=local knex migrate:rollback",
     "seed-local": "NODE_ENVIRONMENT=local knex seed:run",
-    "seed-production": "NODE_ENVIRONMENT=production knex seed:run",
     "start": "npm run start-production",
     "start-local": "NODE_ENVIRONMENT=local nodemon api/start.js",
     "start-production": "NODE_ENVIRONMENT=production node api/start.js",
