@@ -26,3 +26,9 @@ export const JOB_TRAINING = 'job training';
 
 // Complaint Values
 export const COMPLAINT = 'complaint';
+
+// Administrative Values
+export const CITY = 'city';
+
+// Transaction Values
+export const CHANGE = 'change';
