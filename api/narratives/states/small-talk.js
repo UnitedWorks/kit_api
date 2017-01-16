@@ -346,6 +346,16 @@ const smallTalkStates = {
             });
           }
         }
+      } else if (Object.prototype.hasOwnProperty.call(entities, TAGS.TRANSACTION)) {
+        const transaction = entities[TAGS.TRANSACTION][0].value;
+        if (transaction === TAGS.CHANGE) {
+          if (Object.prototype.hasOwnProperty.call(entities, TAGS.ADMINISTRATION)) {
+            const administration = entities[TAGS.ADMINISTRATION][0].value;
+            if (administration === TAGS.CITY) {
+              this.fire('location', null, { previous: 'start' });
+            }
+          }
+        }
       } else {
         this.messagingClient.send(this.snapshot.constituent, 'I\'m not sure I understanding. Can you try phrase that differently?');
         this.exit('start');

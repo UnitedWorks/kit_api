@@ -28,7 +28,9 @@ export const JOB_TRAINING = 'job training';
 export const COMPLAINT = 'complaint';
 
 // Administrative Values
+export const ADMINISTRATION = 'administration';
 export const CITY = 'city';
 
 // Transaction Values
+export const TRANSACTION = 'transaction';
 export const CHANGE = 'change';
