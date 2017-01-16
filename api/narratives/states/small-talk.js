@@ -160,7 +160,7 @@ const smallTalkStates = {
               const message = answer.url ? `${answer.answer} (More info at ${answer.url})` : `${answer.answer}`;
               this.messagingClient.send(this.snapshot.constituent, message);
             } else {
-              this.messagingClient.send(this.snapshot.constituent, 'Unfortunately, I don\'t have an answer for that');
+              this.messagingClient.send(this.snapshot.constituent, `Unfortunately, I can't answer that for your city (${this.get('organization').name}).`);
             }
             this.exit('start');
           });
