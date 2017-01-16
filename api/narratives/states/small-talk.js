@@ -74,7 +74,9 @@ const smallTalkStates = {
       collection.toJSON().forEach((document) => {
         if (document.location.city === constituentLocation.city) {
           this.set('organization', document);
-          const message = `Got it! I'll make sure my answers relate to ${constituentLocation.city}. Where were we?`;
+          const message = document.activated ?
+            `Got it! I'll make sure my answers relate to ${constituentLocation.city}. Where were we?` :
+            'Oh no! Your city isn\'t registered. I will let them know you\'re interested and do my best to help you.';
           this.messagingClient.send(this.snapshot.constituent, message);
           this.exit('start');
           cityFound = true;
@@ -93,7 +95,7 @@ const smallTalkStates = {
               username: 'Unregistered City',
               icon: 'round_pushpin',
             }).send(`>*City Requested*: ${organizationModel.get('name')}\n>*ID*: ${organizationModel.get('id')}`);
-            this.messagingClient.send(this.snapshot.constituent, 'Oh no! Your city isn\'t registered. I will let them know you\'re interested.');
+            this.messagingClient.send(this.snapshot.constituent, 'Oh no! Your city isn\'t registered. I will let them know you\'re interested and do my best to help you.');
             this.exit('start');
           });
         });
