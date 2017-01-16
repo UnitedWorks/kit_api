@@ -1,12 +1,13 @@
 import axios from 'axios';
 import { logger } from '../../logger';
+import * as TAGS from '../../constants/nlp-tagging';
+import * as SOURCES from '../../constants/narrative-sources';
 import { NarrativeStoreMachine } from './state';
 import { nlp } from '../../services/nlp';
 import { geocoder } from '../../services/geocoder';
 import { Organization } from '../../accounts/models';
-import * as TAGS from '../../constants/nlp-tagging';
-import * as SOURCES from '../../constants/narrative-sources';
-import { getAnswers } from '../../knowledge-base/helpers';
+import { saveOrganization } from '../../accounts/helpers';
+import { getAnswers, saveLocation } from '../../knowledge-base/helpers';
 import { hasSource } from './helpers';
 import SlackService from '../../services/slack';
 import EmailService from '../../services/email';
@@ -80,8 +81,21 @@ const smallTalkStates = {
         }
       });
       if (!cityFound) {
-        this.messagingClient.send(this.snapshot.constituent, 'Oh no! Your city isn\'t registered. I will let them know you\'re interested.');
-        this.exit('start');
+        saveLocation(constituentLocation).then((locationModel) => {
+          saveOrganization({
+            name: locationModel.get('city'),
+            category: 'public',
+            type: 'admin',
+            location_id: locationModel.get('id'),
+          }).then((organizationModel) => {
+            this.set('organization', organizationModel);
+            new SlackService({
+              icon_emoji: ':round_pushpin:',
+            }).send(`>*Unregistered City Request*: ${organizationModel.get('name')} (ID: ${organizationModel.get('id')})`);
+            this.messagingClient.send(this.snapshot.constituent, 'Oh no! Your city isn\'t registered. I will let them know you\'re interested.');
+            this.exit('start');
+          });
+        });
       }
     });
   },
