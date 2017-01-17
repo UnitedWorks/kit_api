@@ -71,12 +71,18 @@ const smallTalkStates = {
     const constituentLocation = this.get('location');
     Organization.collection().fetch({ withRelated: ['location', 'narrativeSources'] }).then((collection) => {
       let cityFound = false;
-      collection.toJSON().forEach((document) => {
-        if (document.location.city === constituentLocation.city) {
-          this.set('organization', document);
-          const message = document.activated ?
+      collection.toJSON().forEach((organizationModel) => {
+        if (organizationModel.location.city === constituentLocation.city) {
+          this.set('organization', organizationModel);
+          const message = organizationModel.activated ?
             `Got it! I'll make sure my answers relate to ${constituentLocation.city}. Where were we?` :
             'Oh no! Your city isn\'t registered. I will let them know you\'re interested and do my best to help you.';
+          if (!organizationModel.activated) {
+            new SlackService({
+              username: 'Inactive City',
+              icon: 'round_pushpin',
+            }).send(`>*City Requested*: ${organizationModel.name}\n>*ID*: ${organizationModel.id}`);
+          }
           this.messagingClient.send(this.snapshot.constituent, message);
           this.exit('start');
           cityFound = true;
@@ -374,6 +380,10 @@ const smallTalkStates = {
           }
         }
       } else {
+        new SlackService({
+          username: 'Misunderstood Request',
+          icon: 'question',
+        }).send(`>*Request Message*: ${input.text}\n>*Constituent ID*: ${this.snapshot.constituent.id}`);
         this.messagingClient.send(this.snapshot.constituent, 'I\'m not sure I understanding. Can you try phrase that differently?');
         this.exit('start');
       }

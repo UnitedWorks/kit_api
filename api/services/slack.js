@@ -8,7 +8,7 @@ export default class SlackService {
     this.webhook = webhook || process.env.SLACK_ALERT_COMMUNITY_WEBOOK;
     this.payload = {
       channel: payload.channel || process.env.SLACK_ALERT_COMMUNITY_CHANNEL,
-      username: env.get() === environments.PRODUCTION ? payload.username || 'Constituent Alert' : payload.username || 'Local Environment Alert',
+      username: env.get() === environments.PRODUCTION ? payload.username || 'Constituent Alert' : `Local: ${payload.username || 'Environment Alert'}`,
       icon_emoji: env.get() === environments.PRODUCTION ? `:${payload.icon}:` || ':rage:' : ':wrench:',
     };
   }
