@@ -21,11 +21,11 @@ export default class BaseClient {
     }
     // Make sure message is shorter than API's max length if it exists
     if (Object.prototype.hasOwnProperty.call(this.config, 'maxCharacters') && (text.length > this.config.maxCharacters)) {
-      const sentences = text.split('\n');
+      const sentences = text.split('.');
       let rebuiltSentence = '';
       sentences.forEach((sentence) => {
         if (rebuiltSentence.length + sentence.length < this.config.maxCharacters) {
-          rebuiltSentence = rebuiltSentence.concat(sentence);
+          rebuiltSentence = rebuiltSentence.concat(`${sentence}.`);
         } else {
           this.messageQuene.push({
             constituent,
