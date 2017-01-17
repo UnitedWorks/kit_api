@@ -474,7 +474,10 @@ const smallTalkStates = {
           message += ` <${attachment.payload.url}|${attachment.type || 'Attachment'}>`;
         });
       }
-      new SlackService().send(message);
+      new SlackService({
+        username: 'Constituent Complaint',
+        icon: 'rage',
+      }).send(message);
     }
     this.messagingClient.send(this.snapshot.constituent, 'I just sent your message along. I\'ll try to let you know when it\'s been addressed.');
     this.exit('start');
