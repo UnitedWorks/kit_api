@@ -19,26 +19,26 @@ export default class BaseClient {
       });
       return;
     }
-    // No messages? Just add
-    const queneLength = this.messageQuene.length;
-    if (queneLength === 0) {
+    // Make sure message is shorter than API's max length if it exists
+    if (Object.prototype.hasOwnProperty.call(this.config, 'maxCharacters') && (text.length > this.config.maxCharacters)) {
+      const sentences = text.split('\n');
+      let rebuiltSentence = '';
+      sentences.forEach((sentence) => {
+        if (rebuiltSentence.length + sentence.length < this.config.maxCharacters) {
+          rebuiltSentence = rebuiltSentence.concat(sentence);
+        } else {
+          this.messageQuene.push({
+            constituent,
+            rebuiltSentence,
+          });
+          rebuiltSentence = '';
+        }
+      });
+    } else {
       this.messageQuene.push({
         constituent,
         text,
       });
-    }
-    // If last message text appended with new message text, is > than maxCharacters. New message
-    if (queneLength > 0) {
-      if ((this.messageQuene[queneLength - 1].text.length + text.length) > this.config.maxCharacters) {
-        this.messageQuene.push({
-          constituent,
-          text,
-        });
-      } else {
-        // Otherwise, concat text.
-        console.log(this.messageQuene[queneLength - 1].text.concat(` ${text}`))
-        this.messageQuene[queneLength - 1].text = this.messageQuene[queneLength - 1].text.concat(` ${text}`);
-      }
     }
   }
 
@@ -47,6 +47,7 @@ export default class BaseClient {
     return new Promise((resolve, reject) => {
       function recursiveRun(quene) {
         if (quene.length === 0) {
+          self.messageQuene = [];
           return resolve();
         }
         return self.send(quene[0].constituent, quene[0].text, quene[0].attachment).then(() => {
