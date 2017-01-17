@@ -13,10 +13,6 @@ const persistentMenu = {
     type: 'postback',
     title: 'Change my city',
     payload: 'CHANGE_CITY',
-  }, {
-    type: 'postback',
-    title: 'Register my city',
-    payload: 'REGISTER_YOUR_CITY',
   }],
 };
 
@@ -42,22 +38,23 @@ export const configureExternalInterfaces = () => {
 };
 
 export class FacebookMessengerClient extends BaseClient {
-  init() {
+  constructor() {
+    super();
     const defaults = {
-      verify_token: process.env.FB_VERIFY_TOKEN,
-      page_token: process.env.FB_PAGE_TOKEN,
-      app_secret: process.env.FB_APP_SECRET,
-      graph_uri: 'https://graph.facebook.com',
+      verifyToken: process.env.FB_VERIFY_TOKEN,
+      pageToken: process.env.FB_PAGE_TOKEN,
+      appSecret: process.env.FB_APP_SECRET,
+      graphURI: 'https://graph.facebook.com',
+      maxCharacters: 640,
     };
-
     this.config = Object.assign({}, defaults, this.config);
   }
 
   callAPI(messageData) {
     return new Promise((resolve, reject) => {
-      axios.post(`${this.config.graph_uri}/v2.6/me/messages`, messageData, {
+      axios.post(`${this.config.graphURI}/v2.6/me/messages`, messageData, {
         params: {
-          access_token: this.config.page_token,
+          access_token: this.config.pageToken,
         },
       }).then((response) => {
         // this.isTyping(messageData.recipient.id, false);
@@ -86,18 +83,13 @@ export class FacebookMessengerClient extends BaseClient {
       },
       message: {},
     };
-
-    if (text) {
-      sendData.message.text = text;
-    }
-
+    if (text) sendData.message.text = text;
     if (attachment) {
       sendData.message.attachment = {
         type: attachment.type,
         url: attachment.url,
       };
     }
-
     return new Promise((resolve) => {
       let fakeTiming = text ? text.length * 60 : 800;
       if (fakeTiming > 2000) fakeTiming = 2000;
