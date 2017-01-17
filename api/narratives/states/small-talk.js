@@ -42,6 +42,11 @@ const smallTalkStates = {
       }
     } else {
       nlp.message(input.text, {}).then((nlpData) => {
+        if (!Object.prototype.hasOwnProperty.call(nlpData.entities, 'location')) {
+          this.messagingClient.send(this.snapshot.constituent, 'Sorry, I didn\'t catch that. What city or state?');
+          this.exit('location');
+          return;
+        }
         geocoder.geocode(nlpData.entities.location[0].value).then((geoData) => {
           this.set('nlp', nlpData.entities);
           this.set('location', geoData[Object.keys(geoData)[0]]);
@@ -189,13 +194,13 @@ const smallTalkStates = {
             }).then((response) => {
               const body = response.data;
               const resources = body.resources;
-              const counter = resources.length > 3 ? 3 : resources.length;
-              let message = 'Here are some shelters we\'ve found in your city: \n\n';
+              const counter = resources.length > 5 ? 5 : resources.length;
+              this.messagingClient.addToQuene('Here are some places we\'ve found close to your location:\n');
               for (let i = counter; i > 0; i -= 1) {
                 const resource = resources[i];
-                message += `${resource.name} \n ${resource.website} \n ${resource.short_description || resource.long_description || ''} \n\n`;
+                this.messagingClient.addToQuene(this.snapshot.constituent, `${resource.name}\n${resource.phones[0] ? `${resource.phones[0].number}\n` : ''}${resource.website ? `${resource.website}\n` : ''}${resource.short_description || resource.long_description || ''}\n`.trim());
               }
-              this.messagingClient.send(this.snapshot.constituent, message);
+              this.messagingClient.runQuene();
             });
           } else {
             getAnswers({}, {
@@ -224,13 +229,13 @@ const smallTalkStates = {
             }).then((response) => {
               const body = response.data;
               const resources = body.resources;
-              const counter = resources.length > 3 ? 3 : resources.length;
-              let message = 'Here is what we\'ve found in your city: \n\n';
+              const counter = resources.length > 5 ? 5 : resources.length;
+              this.messagingClient.addToQuene('Here are some places we\'ve found close to your location:\n');
               for (let i = counter; i > 0; i -= 1) {
                 const resource = resources[i];
-                message += `${resource.name} \n ${resource.website} \n ${resource.short_description || resource.long_description || ''} \n\n`;
+                this.messagingClient.addToQuene(this.snapshot.constituent, `${resource.name}\n${resource.phones[0] ? `${resource.phones[0].number}\n` : ''}${resource.website ? `${resource.website}\n` : ''}${resource.short_description || resource.long_description || ''}\n`.trim());
               }
-              this.messagingClient.send(this.snapshot.constituent, message);
+              this.messagingClient.runQuene();
             });
           } else {
             getAnswers({}, {
@@ -261,13 +266,13 @@ const smallTalkStates = {
             }).then((response) => {
               const body = response.data;
               const resources = body.resources;
-              const counter = resources.length > 2 ? 2 : resources.length;
-              let message = 'Here are some places we\'ve found close to your location: \n\n';
+              const counter = resources.length > 5 ? 5 : resources.length;
+              this.messagingClient.addToQuene(this.snapshot.constituent, 'Here are some places we\'ve found close to your location:\n');
               for (let i = counter; i > 0; i -= 1) {
                 const resource = resources[i];
-                message += `${resource.name} \n ${resource.website} \n ${resource.short_description || resource.long_description || ''} \n\n`;
+                this.messagingClient.addToQuene(this.snapshot.constituent, `${resource.name}\n${resource.phones[0] ? `${resource.phones[0].number}\n` : ''}${resource.website ? `${resource.website}\n` : ''}${resource.short_description || resource.long_description || ''}\n`.trim());
               }
-              this.messagingClient.send(this.snapshot.constituent, message);
+              this.messagingClient.runQuene();
             });
           } else {
             getAnswers({}, {
@@ -302,13 +307,13 @@ const smallTalkStates = {
             }).then((response) => {
               const body = response.data;
               const resources = body.resources;
-              const counter = resources.length > 3 ? 3 : resources.length;
-              let message = 'Here are some places we\'ve found close to your location: \n\n';
+              const counter = resources.length > 5 ? 5 : resources.length;
+              this.messagingClient.addToQuene('Here are some places we\'ve found close to your location:\n');
               for (let i = counter; i > 0; i -= 1) {
                 const resource = resources[i];
-                message += `${resource.name} \n ${resource.website} \n ${resource.short_description || resource.long_description || ''} \n\n`;
+                this.messagingClient.addToQuene(this.snapshot.constituent, `${resource.name}\n${resource.phones[0] ? `${resource.phones[0].number}\n` : ''}${resource.website ? `${resource.website}\n` : ''}${resource.short_description || resource.long_description || ''}\n`.trim());
               }
-              this.messagingClient.send(this.snapshot.constituent, message);
+              this.messagingClient.runQuene();
             });
           } else {
             getAnswers({}, {
@@ -343,13 +348,13 @@ const smallTalkStates = {
             }).then((response) => {
               const body = response.data;
               const resources = body.resources;
-              const counter = resources.length > 3 ? 3 : resources.length;
-              let message = 'Here are some places we\'ve found close to your location: \n\n';
+              const counter = resources.length > 5 ? 5 : resources.length;
+              this.messagingClient.addToQuene('Here are some places we\'ve found close to your location:\n');
               for (let i = counter; i > 0; i -= 1) {
                 const resource = resources[i];
-                message += `${resource.name} \n ${resource.website} \n ${resource.short_description || resource.long_description || ''} \n\n`;
+                this.messagingClient.addToQuene(this.snapshot.constituent, `${resource.name}\n${resource.phones[0] ? `${resource.phones[0].number}\n` : ''}${resource.website ? `${resource.website}\n` : ''}${resource.short_description || resource.long_description || ''}\n`.trim());
               }
-              this.messagingClient.send(this.snapshot.constituent, message);
+              this.messagingClient.runQuene();
             });
           } else {
             getAnswers({}, {

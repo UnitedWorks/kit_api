@@ -9,7 +9,6 @@ export class TwilioSMSClient extends BaseClient {
       sid: process.env.TWILIO_KEY_SID,
       secret: process.env.TWILIO_KEY_SECRET,
       fromNumber: process.env.TWILIO_FROM_NUMBER,
-      maxCharacters: 160,
     };
     this.client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_ACCOUNT_AUTH_TOKEN);
     this.config = Object.assign({}, defaults, this.config);
