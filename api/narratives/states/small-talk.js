@@ -18,12 +18,11 @@ const smallTalkStates = {
 
   gettingStarted() {
     logger.info('State: Getting Started');
-    this.messagingClient.send(this.snapshot.constituent, 'Hey there! I\'m the Mayor').then(() => {
-      this.messagingClient.send(this.snapshot.constituent, 'Sort of... Truthfully, I\'m an AI bot that helps you connect with the city and your community').then(() => {
-        this.messagingClient.send(this.snapshot.constituent, 'I can tell you the trash schedule, report potholes, or try and help with any problems or injustices you\'re facing.').then(() => {
-          this.fire('location', null, { previous: 'gettingStarted' });
-        });
-      });
+    this.messagingClient.addToQuene(this.snapshot.constituent, 'Hey there! I\'m the Mayor');
+    this.messagingClient.addToQuene(this.snapshot.constituent, 'Sort of... Truthfully, I\'m an AI bot that helps you connect with the city and your community');
+    this.messagingClient.addToQuene(this.snapshot.constituent, 'I can tell you the trash schedule, report potholes, or try and help with any problems or injustices you\'re facing.');
+    this.messagingClient.runQuene().then(() => {
+      this.fire('location', null, { previous: 'gettingStarted' });
     });
   },
 
