@@ -13,7 +13,6 @@ import { createCase } from '../../cases/helpers';
 import { CaseCategory } from '../../cases/models';
 import { hasSource } from './helpers';
 import SlackService from '../../services/slack';
-import EmailService from '../../services/email';
 
 const smallTalkStates = {
   init() {
@@ -474,7 +473,7 @@ const smallTalkStates = {
 
   complaintSubmit() {
     const complaint = this.get('complaint');
-    createCase(complaint.headline, complaint.data, complaint.category.id, this.snapshot.constituent.id, this.get('organization').id).then(() => {
+    createCase(complaint.headline, complaint.data, complaint.category, this.snapshot.constituent, this.get('organization')).then(() => {
       this.messagingClient.send(this.snapshot.constituent, 'I just sent your message along. I\'ll try to let you know when it\'s been addressed.');
       this.exit('start');
     });
