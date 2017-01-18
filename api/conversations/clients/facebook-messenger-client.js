@@ -60,7 +60,8 @@ export class FacebookMessengerClient extends BaseClient {
         // this.isTyping(messageData.recipient.id, false);
         logger.info('Successfully called Send API for recipient %s', response.data.recipient_id);
         resolve();
-      }).catch(() => {
+      }).catch((err) => {
+        logger.error(`${err.response.data.error.code}: ${err.response.data.error.message}`);
         reject();
       });
     });
@@ -76,7 +77,7 @@ export class FacebookMessengerClient extends BaseClient {
     this.callAPI(sendData);
   }
 
-  send(constituent, text, attachment) {
+  send(constituent, text, attachment, quickReplies) {
     const sendData = {
       recipient: {
         id: constituent.facebook_id,
@@ -89,6 +90,13 @@ export class FacebookMessengerClient extends BaseClient {
         type: attachment.type,
         url: attachment.url,
       };
+    }
+    if (quickReplies) {
+      // FACEBOOK PLATFORM THROWING AN UNKNOWN ERROR FOR MY QUICK REPLIES
+      // sendData.message.quick_replies = quickReplies;
+      quickReplies.forEach((reply, index) => {
+        sendData.message.text += index === 0 ? ` ${reply.title}` : `, ${reply.title}`;
+      });
     }
     return new Promise((resolve) => {
       let fakeTiming = text ? text.length * 60 : 800;

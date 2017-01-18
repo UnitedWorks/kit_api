@@ -2,12 +2,15 @@ import axios from 'axios';
 import { logger } from '../../logger';
 import * as TAGS from '../../constants/nlp-tagging';
 import * as SOURCES from '../../constants/narrative-sources';
+import { PRIMARY_CATEGORIES as PRIMARY_CASE_CATEGORIES } from '../../constants/case-categories';
 import { NarrativeStoreMachine } from './state';
 import { nlp } from '../../services/nlp';
 import { geocoder } from '../../services/geocoder';
 import { Organization } from '../../accounts/models';
 import { saveOrganization } from '../../accounts/helpers';
 import { getAnswers, saveLocation } from '../../knowledge-base/helpers';
+import { createCase } from '../../cases/helpers';
+import { CaseCategory } from '../../cases/models';
 import { hasSource } from './helpers';
 import SlackService from '../../services/slack';
 import EmailService from '../../services/email';
@@ -80,7 +83,7 @@ const smallTalkStates = {
           this.set('organization', organizationModel);
           const message = organizationModel.activated ?
             `Got it! I'll make sure my answers relate to ${constituentLocation.city}. Where were we?` :
-            'Oh no! Your city isn\'t registered. I will let them know you\'re interested and do my best to help you.';
+            'Oh no! Your city isn\'t registered. I can still take complaints, but may not have all the answers to your questions.';
           if (!organizationModel.activated) {
             new SlackService({
               username: 'Inactive City',
@@ -394,18 +397,39 @@ const smallTalkStates = {
     });
   },
 
-  complaintStart() {
-    this.messagingClient.send(this.snapshot.constituent, 'You\'re having a problem? Can you describe the situation to me? I\'ll do my best to forward it to the right city department.');
-    this.exit('complaintText');
+  complaintStart(aux = {}) {
+    const quickReplies = PRIMARY_CASE_CATEGORIES.map((label) => {
+      return {
+        content_type: 'text',
+        title: label,
+      };
+    });
+    this.messagingClient.send(this.snapshot.constituent, aux.message || 'What type of problem do you have?', null, quickReplies)
+      .then(() => {
+        this.exit('complaintCategory');
+      });
+  },
+
+  complaintCategory() {
+    const category = this.get('input').payload.text;
+    CaseCategory.where({ parent_category_id: null }).fetchAll().then((data) => {
+      let foundModel;
+      let generalModel;
+      data.models.forEach((model) => {
+        if (model.get('label') === 'General') generalModel = model.toJSON();
+        if (model.get('label') === category) foundModel = model.toJSON();
+      });
+      const complaint = { category: foundModel || generalModel };
+      this.set('complaint', complaint);
+      this.messagingClient.send(this.snapshot.constituent, 'Can you describe the problem for me?');
+      this.exit('complaintText');
+    });
   },
 
   complaintText() {
-    const text = this.get('input').payload.text;
-    if (text) {
-      const complaint = {
-        text,
-      };
-      this.set('complaint', complaint);
+    const headline = this.get('input').payload.text;
+    if (headline) {
+      this.set('complaint', Object.assign({}, this.get('complaint'), { headline }));
       this.messagingClient.send(this.snapshot.constituent, 'Can you provide a picture? If not, simply say you don\'t have one');
       this.exit('complaintPicture');
     }
@@ -450,37 +474,10 @@ const smallTalkStates = {
 
   complaintSubmit() {
     const complaint = this.get('complaint');
-    // If a city has email, use that, otherwise, slack it to us to follow up with the city on
-    if (this.get('organization').email) {
-      let message = `Complaint:\n ${complaint.text}`;
-      if (complaint.location) {
-        message += `\nGeo-location: http://maps.google.com/maps?q=${complaint.location.latitude},${complaint.location.longitude}=${complaint.location.latitude},${complaint.location.longitude}`;
-      }
-      if (complaint.attachments) {
-        message += '\nAttachments:';
-        complaint.attachments.forEach((attachment, index) => {
-          message += `${index + 1}: ${attachment.type || 'Attachment'} - ${attachment.payload.url}`;
-        });
-      }
-      new EmailService().send('Constituent Complaint', message, 'mark@unitedworks.us', 'cases@mayor.chat');
-    } else {
-      let message = `>*City*: ${this.get('organization').name}\n>*Constituent ID*: ${this.snapshot.constituent_id}\n>*Complaint*: ${complaint.text}`;
-      if (complaint.location) {
-        message += `\n>*Geo-location*: <http://maps.google.com/maps/place/${complaint.location.latitude},${complaint.location.longitude}|${complaint.location.latitude},${complaint.location.longitude}>`;
-      }
-      if (complaint.attachments) {
-        message += '\n>*Attachments*:';
-        complaint.attachments.forEach((attachment) => {
-          message += ` <${attachment.payload.url}|${attachment.type || 'Attachment'}>`;
-        });
-      }
-      new SlackService({
-        username: 'Constituent Complaint',
-        icon: 'rage',
-      }).send(message);
-    }
-    this.messagingClient.send(this.snapshot.constituent, 'I just sent your message along. I\'ll try to let you know when it\'s been addressed.');
-    this.exit('start');
+    createCase(complaint.headline, complaint.data, complaint.category.id, this.snapshot.constituent.id, this.get('organization').id).then(() => {
+      this.messagingClient.send(this.snapshot.constituent, 'I just sent your message along. I\'ll try to let you know when it\'s been addressed.');
+      this.exit('start');
+    });
   },
 };
 
