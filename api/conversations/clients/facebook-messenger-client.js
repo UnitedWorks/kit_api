@@ -7,8 +7,12 @@ const persistentMenu = {
   thread_state: 'existing_thread',
   call_to_actions: [{
     type: 'postback',
-    title: 'Make a Complaint',
-    payload: 'MAKE_COMPLAINT',
+    title: 'Make a Request',
+    payload: 'MAKE_REQUEST',
+  }, {
+    type: 'postback',
+    title: 'My Requests',
+    payload: 'GET_REQUESTS',
   }, {
     type: 'postback',
     title: 'Change my city',

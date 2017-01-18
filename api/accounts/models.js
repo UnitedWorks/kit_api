@@ -26,6 +26,9 @@ export const Constituent = bookshelf.Model.extend({
   organizations: function () {
     return this.belongsToMany(Organization, 'organizations_constituents');
   },
+  cases: function() {
+    return this.hasMany(CaseModels.Case, 'constituent_id');
+  }
 });
 
 export const Organization = bookshelf.Model.extend({

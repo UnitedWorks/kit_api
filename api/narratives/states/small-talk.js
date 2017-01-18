@@ -6,7 +6,7 @@ import { PRIMARY_CATEGORIES as PRIMARY_CASE_CATEGORIES } from '../../constants/c
 import { NarrativeStoreMachine } from './state';
 import { nlp } from '../../services/nlp';
 import { geocoder } from '../../services/geocoder';
-import { Organization } from '../../accounts/models';
+import { Constituent, Organization } from '../../accounts/models';
 import { saveOrganization } from '../../accounts/helpers';
 import { getAnswers, saveLocation } from '../../knowledge-base/helpers';
 import { createCase } from '../../cases/helpers';
@@ -125,7 +125,12 @@ const smallTalkStates = {
 
       // Complaint
       if (Object.prototype.hasOwnProperty.call(entities, TAGS.COMPLAINT)) {
-        this.fire('complaintStart');
+        if (Object.prototype.hasOwnProperty.call(entities, TAGS.COMPLAINT) ||
+        Object.prototype.hasOwnProperty.call(entities, TAGS.TRANSACTION)) {
+          this.fire('getRequests');
+        } else {
+          this.fire('complaintStart')
+        }
       // Sanitation Services
       } else if (Object.prototype.hasOwnProperty.call(entities, TAGS.SANITATION)) {
         const value = entities[TAGS.SANITATION][0].value;
@@ -396,6 +401,16 @@ const smallTalkStates = {
     });
   },
 
+  getRequests() {
+    Constituent.where({ id: this.snapshot.constituent.id }).fetch({ withRelated: ['cases'] }).then((constituentModel) => {
+      constituentModel.toJSON().cases.forEach((constituentCase) => {
+        const message = `#${constituentCase.id} (${constituentCase.status.toUpperCase()}) - ${constituentCase.title.length > 30 ? constituentCase.title.slice(0, 27).concat('...') : constituentCase.title}`;
+        this.messagingClient.addToQuene(constituentModel.toJSON(), message);
+      });
+      this.messagingClient.runQuene();
+    });
+  },
+
   complaintStart(aux = {}) {
     const quickReplies = PRIMARY_CASE_CATEGORIES.map((label) => {
       return {
@@ -498,8 +513,11 @@ export default class SmallTalkMachine extends NarrativeStoreMachine {
 
     function handleAction() {
       switch (self.snapshot.data_store.input.payload.payload) {
-        case 'MAKE_COMPLAINT':
+        case 'MAKE_REQUEST':
           self.fire('complaintStart');
+          break;
+        case 'GET_REQUESTS':
+          self.fire('getRequests');
           break;
         case 'GET_STARTED':
           self.fire('gettingStarted');
@@ -507,9 +525,6 @@ export default class SmallTalkMachine extends NarrativeStoreMachine {
         case 'CHANGE_CITY':
           self.fire('location', null, { previous: self.current || self.previous });
           break;
-        case 'REGISTER_YOUR_CITY':
-          break;
-        default:
       }
     }
 

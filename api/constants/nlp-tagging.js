@@ -34,3 +34,4 @@ export const CITY = 'city';
 // Transaction Values
 export const TRANSACTION = 'transaction';
 export const CHANGE = 'change';
+export const STATUS = 'status';
