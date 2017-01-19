@@ -141,5 +141,6 @@ export function webhookHitWithMessage(req, res, conversationClient) {
 }
 
 export function webhookHitWithEmail(req) {
-  logger.info(req.body);
+  logger.info(req);
+  logger.info(JSON.stringify(req));
 }
