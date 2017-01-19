@@ -418,10 +418,9 @@ const smallTalkStates = {
         title: label,
       };
     });
-    this.messagingClient.send(this.snapshot.constituent, aux.message || 'What type of problem do you have?', null, quickReplies)
-      .then(() => {
-        this.exit('complaintCategory');
-      });
+    this.messagingClient.send(this.snapshot.constituent, aux.message || 'What type of problem do you have?', null, quickReplies).then(() => {
+      this.exit('complaintCategory');
+    });
   },
 
   complaintCategory() {

@@ -27,6 +27,7 @@ router.route('/webhook/twilio')
 router.route('/webhook/email')
   .post((req, res) => {
     logger.info('Email Webhook Pinged', req.body);
+    process.webhookHitWithEmail(req);
     res.status(200).send();
   });
 

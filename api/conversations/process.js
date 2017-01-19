@@ -139,3 +139,7 @@ export function webhookHitWithMessage(req, res, conversationClient) {
     });
   }).catch(err => logger.error(err));
 }
+
+export function webhookHitWithEmail(req) {
+  logger.info(req.body);
+}
