@@ -404,7 +404,7 @@ const smallTalkStates = {
   getRequests() {
     Constituent.where({ id: this.snapshot.constituent.id }).fetch({ withRelated: ['cases'] }).then((constituentModel) => {
       constituentModel.toJSON().cases.forEach((constituentCase) => {
-        const message = `#${constituentCase.id} (${constituentCase.status.toUpperCase()}) - ${constituentCase.title.length > 30 ? constituentCase.title.slice(0, 27).concat('...') : constituentCase.title}`;
+        const message = `#${constituentCase.id} (${constituentCase.status}) - ${constituentCase.title.length > 24 ? constituentCase.title.slice(0, 21).concat('...') : constituentCase.title}`;
         this.messagingClient.addToQuene(constituentModel.toJSON(), message);
       });
       this.messagingClient.runQuene();
