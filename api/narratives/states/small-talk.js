@@ -125,11 +125,10 @@ const smallTalkStates = {
 
       // Complaint
       if (Object.prototype.hasOwnProperty.call(entities, TAGS.COMPLAINT)) {
-        if (Object.prototype.hasOwnProperty.call(entities, TAGS.COMPLAINT) ||
-        Object.prototype.hasOwnProperty.call(entities, TAGS.TRANSACTION)) {
+        if (Object.prototype.hasOwnProperty.call(entities, TAGS.TRANSACTION)) {
           this.fire('getRequests');
         } else {
-          this.fire('complaintStart')
+          this.fire('complaintStart');
         }
       // Sanitation Services
       } else if (Object.prototype.hasOwnProperty.call(entities, TAGS.SANITATION)) {

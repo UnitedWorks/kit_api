@@ -19,7 +19,7 @@ export const newCaseNotification = (caseObj, organization) => {
       });
     }
     returnedOrg.toJSON().representatives.forEach((rep) => {
-      new EmailService().send(`Constituent Complaint #${caseObj.id}: ${caseObj.title}`, emailMessage, rep.email, 'cases@mayor.chat');
+      new EmailService().send(`Constituent Complaint #${caseObj.id}: ${caseObj.title}`, emailMessage, rep.email, 'cases@kit.community');
     });
     // Slack Notification
     let slackMessage = `>*City*: ${returnedOrg.name}\n>*Constituent ID*: ${caseObj.constituent_id}\n>*Complaint*: ${caseObj.title}`;
