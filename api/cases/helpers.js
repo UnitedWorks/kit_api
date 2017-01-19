@@ -1,4 +1,5 @@
 import formidable from 'formidable';
+import { knex } from '../orm';
 import { logger } from '../logger';
 import * as AccountModels from '../accounts/models';
 import { Case, OrganizationsCases } from './models';
@@ -77,8 +78,10 @@ export function webhookHitWithEmail(req) {
       const caseId = Number(result[1]);
       if (caseId) {
         logger.info(`Email Action: Close Case #${caseId}`);
-        Case({ id: caseId }).save({ status: 'closed' }, { method: 'update', patch: true }).then((model) => {
-          logger.info(`Case Resolved for Constituent #${model.get('constituent_id')}`);
+        new Case({ id: caseId }).save({ status: 'closed', closedAt: knex.raw('now()') }, { method: 'update', patch: true }).then((updatedCaseModel) => {
+          updatedCaseModel.refresh().then((refreshedCaseModel) => {
+            logger.info(`Case Resolved for Constituent #${refreshedCaseModel.get('constituentId')}`);
+          });
         });
       }
     }
