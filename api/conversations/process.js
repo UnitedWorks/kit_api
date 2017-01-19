@@ -1,3 +1,4 @@
+import formidable from 'formidable';
 import uuid from 'uuid/v4';
 import { logger } from '../logger';
 import * as interfaces from '../constants/interfaces';
@@ -141,6 +142,10 @@ export function webhookHitWithMessage(req, res, conversationClient) {
 }
 
 export function webhookHitWithEmail(req) {
-  logger.info(req);
-  logger.info(JSON.stringify(req));
+  const form = new formidable.IncomingForm();
+  form.parse(req, (err, fields, files) => {
+    if (err) logger.error(err);
+    logger.info(fields);
+    logger.info(files);
+  });
 }
