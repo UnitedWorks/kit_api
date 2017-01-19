@@ -3,6 +3,7 @@ import { knex } from '../orm';
 import { logger } from '../logger';
 import * as AccountModels from '../accounts/models';
 import { Case, OrganizationsCases } from './models';
+import { FacebookMessengerClient, TwilioSMSClient} from '../conversations/clients'
 import SlackService from '../services/slack';
 import EmailService from '../services/email';
 
@@ -79,8 +80,14 @@ export function webhookHitWithEmail(req) {
       if (caseId) {
         logger.info(`Email Action: Close Case #${caseId}`);
         new Case({ id: caseId }).save({ status: 'closed', closedAt: knex.raw('now()') }, { method: 'update', patch: true }).then((updatedCaseModel) => {
-          updatedCaseModel.refresh().then((refreshedCaseModel) => {
+          updatedCaseModel.refresh({ withRelated: ['constituent'] }).then((refreshedCaseModel) => {
             logger.info(`Case Resolved for Constituent #${refreshedCaseModel.get('constituentId')}`);
+            const constituent = refreshedCaseModel.toJSON().constituent;
+            if (constituent.facebook_id) {
+              new FacebookMessengerClient().send(constituent, `Your case (#${refreshedCaseModel.id}) has been taken care of!`);
+            } else if (constituent.phone) {
+              new TwilioSMSClient().send(constituent, `Your case (#${refreshedCaseModel.id}) has been taken care of!`);
+            }
           });
         });
       }
