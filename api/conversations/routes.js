@@ -24,11 +24,4 @@ router.route('/webhook/twilio')
     res.status(200).send();
   });
 
-router.route('/webhook/email')
-  .post((req, res) => {
-    logger.info('Email Webhook Pinged', req.body);
-    process.webhookHitWithEmail(req);
-    res.status(200).send();
-  });
-
 module.exports = router;

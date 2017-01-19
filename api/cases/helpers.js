@@ -1,3 +1,4 @@
+import formidable from 'express-formidable';
 import { logger } from '../logger';
 import * as AccountModels from '../accounts/models';
 import { Case, OrganizationsCases } from './models';
@@ -59,3 +60,10 @@ export const createCase = (title, data, category, constituent, organization) => 
     });
   });
 };
+
+export function webhookHitWithEmail(req) {
+  const form = new formidable.IncomingForm();
+  form.parse(req, (err, fields, files) => {
+    logger.info(fields);
+  });
+}
