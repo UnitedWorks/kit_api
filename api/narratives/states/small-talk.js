@@ -486,7 +486,7 @@ const smallTalkStates = {
 
   complaintSubmit() {
     const complaint = this.get('complaint');
-    createCase(complaint.headline, complaint.data, complaint.category, this.snapshot.constituent, this.get('organization')).then(() => {
+    createCase(complaint.headline, complaint.data, complaint.category, this.snapshot.constituent, this.get('organization'), complaint.location, complaint.attachments).then(() => {
       this.messagingClient.send(this.snapshot.constituent, 'I just sent your message along. I\'ll try to let you know when it\'s been addressed.');
       this.exit('start');
     });

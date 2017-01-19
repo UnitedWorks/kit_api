@@ -24,7 +24,7 @@ export const newCaseNotification = (caseObj, organization) => {
       new EmailService().send(`Constituent Complaint #${caseObj.id}: ${caseObj.title}`, emailMessage, rep.email, 'cases@kit.community');
     });
     // Slack Notification
-    let slackMessage = `>*City*: ${returnedOrg.name}\n>*Constituent ID*: ${caseObj.constituent_id}\n>*Complaint*: ${caseObj.title}`;
+    let slackMessage = `>*City/Organization*: ${returnedOrg.get('name')}\n>*Constituent ID*: ${caseObj.constituent_id}\n>*Complaint*: ${caseObj.title}`;
     if (caseObj.location) {
       slackMessage += `\n>*Geo-location*: <http://maps.google.com/maps/place/${caseObj.location.latitude},${caseObj.location.longitude}|${caseObj.location.latitude},${caseObj.location.longitude}>`;
     }
@@ -38,7 +38,7 @@ export const newCaseNotification = (caseObj, organization) => {
   });
 };
 
-export const createCase = (title, data, category, constituent, organization) => {
+export const createCase = (title, data, category, constituent, organization, location, attachments) => {
   return new Promise((resolve, reject) => {
     const newCase = {
       status: 'open',
@@ -53,7 +53,10 @@ export const createCase = (title, data, category, constituent, organization) => 
         case_id: caseResponse.get('id'),
         organization_id: organization.id,
       }).save().then(() => {
-        newCaseNotification(caseResponse.toJSON(), organization);
+        newCaseNotification(Object.assign(caseResponse.toJSON(), {
+          location,
+          attachments,
+        }), organization);
         resolve();
       });
     }).catch((err) => {
