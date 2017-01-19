@@ -63,21 +63,23 @@ export const createCase = (title, data, category, constituent, organization) => 
 
 export function webhookHitWithEmail(req) {
   const form = new formidable.IncomingForm();
-  const emailData = {};
   form.parse(req, (err, fields) => {
+    // Pull Data off Fields
+    const emailData = {};
     Object.keys(fields).forEach((key) => {
-      logger.info(`Email Field ${key}: fields[key]`);
+      logger.info(`Email Field ${key}: ${fields[key]}`);
       emailData[key] = fields[key];
     });
-  });
-  if (emailData.subject) {
-    const regex = /Constituent Complaint #(\d+):/i;
-    const result = regex.exec(emailData.subject);
-    const caseId = result[result.lastIndex];
-    if (caseId) {
-      Case({ id: caseId }).save({ status: 'closed' }, { method: 'update', patch: true }).then((model) => {
-        logger.info(`Case Resolved for Constituent #${model.get('constituent_id')}`);
-      });
+    // Handle Email Actions by Parsing Subject
+    if (emailData.subject) {
+      const regex = /Constituent Complaint #(\d+):/i;
+      const result = regex.exec(emailData.subject);
+      const caseId = result[result.lastIndex];
+      if (caseId) {
+        Case({ id: caseId }).save({ status: 'closed' }, { method: 'update', patch: true }).then((model) => {
+          logger.info(`Case Resolved for Constituent #${model.get('constituent_id')}`);
+        });
+      }
     }
-  }
+  });
 }
