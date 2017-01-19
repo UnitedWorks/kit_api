@@ -1,4 +1,4 @@
-import formidable from 'express-formidable';
+import formidable from 'formidable';
 import { logger } from '../logger';
 import * as AccountModels from '../accounts/models';
 import { Case, OrganizationsCases } from './models';
