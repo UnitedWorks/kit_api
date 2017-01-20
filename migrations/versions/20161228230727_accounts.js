@@ -46,7 +46,7 @@ exports.up = function (knex, Promise) {
     })
     .createTable('representatives', (table) => {
       table.increments('id').primary();
-      table.string('name').notNullable();
+      table.string('name');
       table.string('title');
       table.string('email').notNullable();
       table.string('phone');
