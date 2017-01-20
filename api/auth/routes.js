@@ -12,11 +12,11 @@ const router = new Router();
  * @param {String} address - Provided string to find, create, and associate a location
  * @param {Object} organization - Organiation object
  * @param {String} organization.name - Formal organization name (ex: City of New Brunswick)
- * @param {String} organization.website - General website
- * @param {String} organization.email - General contact email
- * @param {String} organization.phone - General contact phone
+ * @param {String} [organization.website] - General website
+ * @param {String} [organization.email] - General contact email
+ * @param {String} [organization.phone] - General contact phone
  * @param {String} organization.category - Enum: 'public', 'private', 'ngo'
- * @param {String} organization.type - Enum: 'admin', 'division'
+ * @param {String} [organization.type] - Enum: 'admin', 'division'
  * @return {Object} Organization document on 'organization'
  */
 router.post('/signup/organization', (req, res) => {
@@ -30,10 +30,10 @@ router.post('/signup/organization', (req, res) => {
       logger.error(errorMessage);
       res.status(400).send(errorMessage);
     }
-    saveLocation(geoData[0], { toJSON: true }).then((location) => {
+    saveLocation(geoData[0], { returnJSON: true }).then((location) => {
       const orgWithLocation = Object.assign(organization, { location_id: location.id });
       // Create organization
-      createOrganization(orgWithLocation, { toJSON: true }).then((newOrganization) => {
+      createOrganization(orgWithLocation, { returnJSON: true }).then((newOrganization) => {
         new SlackService({ username: 'Welcome', icon: 'capitol' }).send(`Organization *${newOrganization.name}* just signed up!`);
         res.status(200).json({ organization: newOrganization });
       }).catch(error => res.status(400).send(error));
@@ -44,19 +44,19 @@ router.post('/signup/organization', (req, res) => {
 /**
  * Create a representative and associate with an organization
  * @param {Object} representative - Representative Object
- * @param {String} representative.name - Representative's full name
- * @param {String} representative.title - Job title
+ * @param {String} [representative.name] - Representative's full name
+ * @param {String} [representative.title] - Job title
  * @param {String} representative.email - Work email
- * @param {String} representative.phone - Phone number (eventually should be an object)
- * @param {Object} organization - Organization to associate the representative with
- * @param {Object} organization.id - Organization identifier
+ * @param {String} [representative.phone] - Phone number (eventually should be an object)
+ * @param {Object} [organization] - Organization to associate the representative with
+ * @param {Number} [organization.id] - Organization identifier
  * @return {Object} Representative document on 'representative'
  */
 router.post('/signup/representative', (req, res) => {
   logger.info('Signup Requested - Representative');
   const rep = req.body.representative;
   const org = req.body.organization;
-  createRepresentative(rep, org, { toJSON: true }).then((newRepresentative) => {
+  createRepresentative(rep, org, { returnJSON: true }).then((newRepresentative) => {
     new SlackService({ username: 'Welcome', icon: 'capitol' })
       .send(`Representative *${newRepresentative.name}* (${newRepresentative.email}) joined *${newRepresentative.organization.name}*!`);
     res.status(200).json(newRepresentative);
