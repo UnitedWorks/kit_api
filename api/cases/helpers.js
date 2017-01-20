@@ -16,7 +16,7 @@ export const newCaseNotification = (caseObj, organization) => {
     }
     emailMessage += `Complaint: ${caseObj.title}<br/>`;
     if (caseObj.location) {
-      emailMessage += `Geo-location: http://maps.google.com/maps?q=${caseObj.location.latitude},${caseObj.location.longitude}=${caseObj.location.latitude},${caseObj.location.longitude}<br/>`;
+      emailMessage += `Geo-location: http://maps.google.com/maps/place/${caseObj.location.latitude},${caseObj.location.longitude}<br/>`;
     }
     if (caseObj.attachments) {
       emailMessage += 'Attachments:<br/>';
