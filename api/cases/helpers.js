@@ -3,19 +3,23 @@ import { knex } from '../orm';
 import { logger } from '../logger';
 import * as AccountModels from '../accounts/models';
 import { Case, OrganizationsCases } from './models';
-import { FacebookMessengerClient, TwilioSMSClient} from '../conversations/clients'
+import { FacebookMessengerClient, TwilioSMSClient } from '../conversations/clients'
 import SlackService from '../services/slack';
 import EmailService from '../services/email';
 
 export const newCaseNotification = (caseObj, organization) => {
   AccountModels.Organization.where({ id: organization.id }).fetch({ withRelated: ['representatives'] }).then((returnedOrg) => {
     // Emails
-    let emailMessage = `Complaint:\n ${caseObj.title}`;
+    let emailMessage = '';
+    if (caseObj.category) {
+      emailMessage += `Category: ${caseObj.category.label}<br/>`;
+    }
+    emailMessage += `Complaint: ${caseObj.title}<br/>`;
     if (caseObj.location) {
-      emailMessage += `\nGeo-location: http://maps.google.com/maps?q=${caseObj.location.latitude},${caseObj.location.longitude}=${caseObj.location.latitude},${caseObj.location.longitude}`;
+      emailMessage += `Geo-location: http://maps.google.com/maps?q=${caseObj.location.latitude},${caseObj.location.longitude}=${caseObj.location.latitude},${caseObj.location.longitude}<br/>`;
     }
     if (caseObj.attachments) {
-      emailMessage += '\nAttachments:';
+      emailMessage += 'Attachments:<br/>';
       caseObj.attachments.forEach((attachment, index) => {
         emailMessage += `${index + 1}: ${attachment.type || 'Attachment'} - ${attachment.payload.url}`;
       });
@@ -24,7 +28,7 @@ export const newCaseNotification = (caseObj, organization) => {
       new EmailService().send(`Constituent Complaint #${caseObj.id}: ${caseObj.title}`, emailMessage, rep.email, 'cases@kit.community');
     });
     // Slack Notification
-    let slackMessage = `>*City/Organization*: ${returnedOrg.get('name')}\n>*Constituent ID*: ${caseObj.constituent_id}\n>*Complaint*: ${caseObj.title}`;
+    let slackMessage = `>*City/Organization*: ${returnedOrg.get('name')}\n>*Category*: ${caseObj.category.label}\n>*Constituent ID*: ${caseObj.constituent_id}\n>*Complaint*: ${caseObj.title}`;
     if (caseObj.location) {
       slackMessage += `\n>*Geo-location*: <http://maps.google.com/maps/place/${caseObj.location.latitude},${caseObj.location.longitude}|${caseObj.location.latitude},${caseObj.location.longitude}>`;
     }
@@ -48,16 +52,17 @@ export const createCase = (title, data, category, constituent, organization, loc
       data,
     };
     Case.forge(newCase).save().then((caseResponse) => {
-      logger.info(caseResponse);
-      OrganizationsCases.forge({
-        case_id: caseResponse.get('id'),
-        organization_id: organization.id,
-      }).save().then(() => {
-        newCaseNotification(Object.assign(caseResponse.toJSON(), {
-          location,
-          attachments,
-        }), organization);
-        resolve();
+      caseResponse.refresh({ withRelated: ['category'] }).then((refreshedCaseModel) => {
+        OrganizationsCases.forge({
+          case_id: refreshedCaseModel.get('id'),
+          organization_id: organization.id,
+        }).save().then(() => {
+          newCaseNotification(Object.assign(refreshedCaseModel.toJSON(), {
+            location,
+            attachments,
+          }), organization);
+          resolve();
+        });
       });
     }).catch((err) => {
       logger.error(err);
