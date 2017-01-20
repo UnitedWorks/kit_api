@@ -12,7 +12,7 @@ router.get('/organizations', (req, res) => {
 });
 
 router.post('/organizations/add-representative', (req, res) => {
-  helpers.addRepToOrganization(req.body.representative, req.body.organization)
+  helpers.addRepToOrganization(req.body.representative, req.body.organization, { returnJSON: true })
     .then(response => res.status(200).send(response))
     .catch(err => res.status(400).send(err));
 });
