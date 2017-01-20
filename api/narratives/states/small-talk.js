@@ -85,7 +85,7 @@ const smallTalkStates = {
             'Oh no! Your city isn\'t registered. I can still take complaints, but may not have all the answers to your questions.';
           if (!organizationModel.activated) {
             new SlackService({
-              username: 'Inactive City',
+              username: 'Inactive City Requested',
               icon: 'round_pushpin',
             }).send(`>*City Requested*: ${organizationModel.name}\n>*ID*: ${organizationModel.id}`);
           }
