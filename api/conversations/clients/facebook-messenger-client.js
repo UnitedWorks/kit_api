@@ -31,14 +31,10 @@ const startingMenu = {
 export const configureExternalInterfaces = () => {
   // Send FB the persistent menu settings for the sake of it
   axios.post(`https://graph.facebook.com/v2.6/me/thread_settings?access_token=${process.env.FB_PAGE_TOKEN}`, persistentMenu)
-    .catch((error) => {
-      if (error) logger.info(error);
-    });
+    .catch(error => logger.error(error));
   // Send FB the getting started settings for the sake of it
   axios.post(`https://graph.facebook.com/v2.6/me/thread_settings?access_token=${process.env.FB_PAGE_TOKEN}`, startingMenu)
-    .catch((error) => {
-      if (error) logger.info(error);
-    });
+    .catch(error => logger.error(error));
 };
 
 export class FacebookMessengerClient extends BaseClient {
@@ -65,7 +61,7 @@ export class FacebookMessengerClient extends BaseClient {
         logger.info('Successfully called Send API for recipient %s', response.data.recipient_id);
         resolve();
       }).catch((err) => {
-        logger.error(`${err.response.data.error.code}: ${err.response.data.error.message}`);
+        logger.error(`${err}`);
         reject();
       });
     });

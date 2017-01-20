@@ -34,7 +34,7 @@ export class TwilioSMSClient extends BaseClient {
       setTimeout(() => {
         this.client.messages.post(message, (err, response) => {
           if (err) {
-            logger.info(err);
+            logger.error(err);
             reject(err);
           }
           resolve(response);
