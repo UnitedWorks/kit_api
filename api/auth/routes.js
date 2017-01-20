@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { logger } from '../logger';
 import { geocoder } from '../services/geocoder';
+import SlackService from '../services/slack';
 import { saveLocation } from '../knowledge-base/helpers'
 import { createOrganization, createRepresentative } from '../accounts/helpers';
 
@@ -32,11 +33,12 @@ router.post('/signup/organization', (req, res) => {
     saveLocation(geoData[0], { toJSON: true }).then((location) => {
       const orgWithLocation = Object.assign(organization, { location_id: location.id });
       // Create organization
-      createOrganization(orgWithLocation).then((newOrganization) => {
+      createOrganization(orgWithLocation, { toJSON: true }).then((newOrganization) => {
+        new SlackService({ username: 'Welcome', icon: 'capitol' }).send(`Organization *${newOrganization.name}* just signed up!`);
         res.status(200).json({ organization: newOrganization });
-      });
-    });
-  });
+      }).catch(error => res.status(400).send(error));
+    }).catch(error => res.status(400).send(error));
+  }).catch(error => res.status(400).send(error));
 });
 
 /**
@@ -54,9 +56,11 @@ router.post('/signup/representative', (req, res) => {
   logger.info('Signup Requested - Representative');
   const rep = req.body.representative;
   const org = req.body.organization;
-  createRepresentative(rep, org).then((newRepresentative) => {
+  createRepresentative(rep, org, { toJSON: true }).then((newRepresentative) => {
+    new SlackService({ username: 'Welcome', icon: 'capitol' })
+      .send(`Representative *${newRepresentative.name}* (${newRepresentative.email}) joined *${newRepresentative.organization.name}*!`);
     res.status(200).json(newRepresentative);
-  });
+  }).catch(error => res.status(400).send(error));
 });
 
 module.exports = router;
