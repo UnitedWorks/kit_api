@@ -42,15 +42,13 @@ exports.up = function (knex, Promise) {
       table.string('email');
       table.string('phone');
       table.string('facebook_id');
-      table.string('twitter_id');
-      table.string('twitter_handle');
       table.dateTime('created_at').defaultTo(knex.raw('now()'));
     })
     .createTable('representatives', (table) => {
       table.increments('id').primary();
-      table.string('name');
+      table.string('name').notNullable();
       table.string('title');
-      table.string('email');
+      table.string('email').notNullable();
       table.string('phone');
       table.string('password');
       table.string('salt');
