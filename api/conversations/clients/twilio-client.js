@@ -14,22 +14,27 @@ export class TwilioSMSClient extends BaseClient {
     this.config = Object.assign({}, defaults, this.config);
   }
 
-  send(constituent, text, attachment) {
+  send(constituent, text, attachment, quickReplies) {
     return new Promise((resolve, reject) => {
       const message = {
         to: constituent.phone,
         from: this.config.fromNumber,
-        body: text,
+        body: text || '',
       };
       if (attachment) {
         message.mediaUrl = attachment.url;
+      }
+      if (quickReplies) {
+        quickReplies.forEach((reply, index) => {
+          message.body += index === 0 ? reply.title : `, ${reply.title}`;
+        });
       }
       let fakeTiming = text ? text.length * 60 : 800;
       if (fakeTiming > 2000) fakeTiming = 2000;
       setTimeout(() => {
         this.client.messages.post(message, (err, response) => {
           if (err) {
-            logger.info(err);
+            logger.error(err);
             reject(err);
           }
           resolve(response);

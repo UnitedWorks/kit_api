@@ -2,33 +2,33 @@ import { logger } from '../logger';
 
 export default class EmailService {
 
-	constructor() {
-		this.service = require('sendgrid');
-	}
+  constructor() {
+    this.service = require('sendgrid');
+  }
 
-	send(subject, content, toEmail, fromEmail) {
-		var helper = this.service.mail;
+  send(subject, content, toEmail, fromEmail) {
+    const helper = this.service.mail;
 
-		var from_email = new helper.Email(fromEmail || process.env.EMAIL_FROM);
-		var to_email = new helper.Email(toEmail || process.env.EMAIL_TO);
-		var content = new helper.Content('text/html', content);
-		var mail = new helper.Mail(from_email, subject, to_email, content);
+    const from = new helper.Email(fromEmail || process.env.EMAIL_FROM);
+    const to = new helper.Email(toEmail || process.env.EMAIL_TO);
+    const html = new helper.Content('text/html', content);
+    const mail = new helper.Mail(from, subject, to, html);
 
-	  logger.info('Sending email:', content);
+    logger.info('Sending email:', content);
 
-		var sg = this.service(process.env.SENDGRID_API_KEY);
-		var request = sg.emptyRequest({
-			method: 'POST',
-			path: '/v3/mail/send',
-			body: mail.toJSON()
-		});
+    const sg = this.service(process.env.SENDGRID_API_KEY);
+    const request = sg.emptyRequest({
+      method: 'POST',
+      path: '/v3/mail/send',
+      body: mail.toJSON(),
+    });
 
-		sg.API(request, (err, response) => {
-		  if (err) logger.error(err);
-			logger.info(response.statusCode);
-			logger.info(response.body);
-			logger.info(response.headers);
-		});
-	}
+    sg.API(request, (err, response) => {
+      if (err) logger.error(err);
+      logger.info(response.statusCode);
+      logger.info(response.body);
+      logger.info(response.headers);
+    });
+  }
 
 }

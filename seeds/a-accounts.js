@@ -4,35 +4,39 @@ exports.seed = (knex, Promise) => {
   // Deletes ALL existing entries
   return new Promise.all([
     // Clear relationships between orgs and other entities
-    knex.select().table('organizations_constituents').del(),
-    knex.select().table('organizations_narrative_sources').del(),
-    knex.select().table('narrative_sessions').del(),
-    knex.select().table('knowledge_answers_knowledge_events').del(),
-    knex.select().table('knowledge_answers_knowledge_services').del(),
-    knex.select().table('knowledge_answers_knowledge_facilitys').del(),
+    knex('organizations_constituents').del(),
+    knex('organizations_narrative_sources').del(),
+    knex('narrative_sessions').del(),
+    knex('knowledge_answers_knowledge_events').del(),
+    knex('knowledge_answers_knowledge_services').del(),
+    knex('knowledge_answers_knowledge_facilitys').del(),
+    knex('case_category_representative_assignments').del(),
+    knex('organizations_cases').del(),
+    knex('representatives_cases').del(),
   ])
   .then(() => {
       // Clearing knowledge entities in a particular order because of relationships
-      return knex.select().table('knowledge_events').del().then(() => {
-        return knex.select().table('knowledge_services').del().then(() => {
-          return knex.select().table('knowledge_facilitys').del();
+      return knex('knowledge_events').del().then(() => {
+        return knex('knowledge_services').del().then(() => {
+          return knex('knowledge_facilitys').del();
         });
       });
   })
   .then(() => {
       // Clearing organizations first CASCADE deletes representatives with associated foreign keys
       return Promise.all([
-        knex.select().table('knowledge_answers').del(),
-        knex.select().table('organizations').del(),
+        knex('knowledge_answers').del(),
+        knex('organizations').del(),
       ]);
   })
   .then(() => {
       // Then we clear unassociated representatives
       return Promise.all([
-        knex.select().table('locations').del(),
-        knex.select().table('schedules').del(),
-        knex.select().table('representatives').del(),
-        knex.select().table('constituents').del(),
+        knex('locations').del(),
+        knex('schedules').del(),
+        knex('organizations').del(),
+        knex('representatives').del(),
+        knex('constituents').del(),
       ]);
   })
   .then(() => {
@@ -152,56 +156,13 @@ exports.seed = (knex, Promise) => {
     // Seed Representatives
     return Promise.all([
       knex('representatives').insert({
-        name: 'Billy Bob',
-        email: 'bills@bob.com',
-        password: '123456',
-        organization_id: idsObj.organizationIds[0],
-      }, 'id'),
-      knex('representatives').insert({
-        name: 'Debbie Debs',
-        email: 'debs@debbie.com',
-        password: '123456',
+        name: 'Mark Hansen',
+        email: 'markhansen09@gmail.com',
         organization_id: idsObj.organizationIds[1],
       }, 'id'),
     ]).then((ids) => {
       idsObj.representativeIds = [].concat(...ids);
       return idsObj;
-    });
-  })
-  .then((passedObj) => {
-    // Add Constituents
-    const idsObj = passedObj;
-    const constituentInserts = [];
-    constituentInserts.push(knex('constituents').insert({
-      email: 'x@markthemark.com',
-      phone: '9737239567',
-      facebook_id: 1,
-      twitter_handle: 'youmustfight',
-    }, 'id'));
-    constituentInserts.push(knex('constituents').insert({
-      email: 'markhansen09@gmail.com',
-      phone: '9737239567',
-      facebook_id: 2,
-      twitter_handle: 'unitedworks',
-    }, 'id'));
-    return Promise.all(constituentInserts).then((ids) => {
-      idsObj.constituentIds = [].concat(...ids);
-      return idsObj;
-    });
-  })
-  .then((passedObj) => {
-    // Add Relations
-    return Promise.all([
-      knex('organizations_constituents').insert({
-        organization_id: passedObj.organizationIds[0],
-        constituent_id: passedObj.constituentIds[0],
-      }),
-      knex('organizations_constituents').insert({
-        organization_id: passedObj.organizationIds[1],
-        constituent_id: passedObj.constituentIds[1],
-      }),
-    ]).then(() => {
-      return passedObj;
     });
   })
   .then((passedObj) => {

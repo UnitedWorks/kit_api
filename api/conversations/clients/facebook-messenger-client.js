@@ -7,8 +7,12 @@ const persistentMenu = {
   thread_state: 'existing_thread',
   call_to_actions: [{
     type: 'postback',
-    title: 'Make a Complaint',
-    payload: 'MAKE_COMPLAINT',
+    title: 'Make a Request',
+    payload: 'MAKE_REQUEST',
+  }, {
+    type: 'postback',
+    title: 'My Requests',
+    payload: 'GET_REQUESTS',
   }, {
     type: 'postback',
     title: 'Change my city',
@@ -27,14 +31,10 @@ const startingMenu = {
 export const configureExternalInterfaces = () => {
   // Send FB the persistent menu settings for the sake of it
   axios.post(`https://graph.facebook.com/v2.6/me/thread_settings?access_token=${process.env.FB_PAGE_TOKEN}`, persistentMenu)
-    .catch((error) => {
-      if (error) logger.info(error);
-    });
+    .catch(error => logger.error(error));
   // Send FB the getting started settings for the sake of it
   axios.post(`https://graph.facebook.com/v2.6/me/thread_settings?access_token=${process.env.FB_PAGE_TOKEN}`, startingMenu)
-    .catch((error) => {
-      if (error) logger.info(error);
-    });
+    .catch(error => logger.error(error));
 };
 
 export class FacebookMessengerClient extends BaseClient {
@@ -60,7 +60,8 @@ export class FacebookMessengerClient extends BaseClient {
         // this.isTyping(messageData.recipient.id, false);
         logger.info('Successfully called Send API for recipient %s', response.data.recipient_id);
         resolve();
-      }).catch(() => {
+      }).catch((err) => {
+        logger.error(`${err}`);
         reject();
       });
     });
@@ -76,7 +77,7 @@ export class FacebookMessengerClient extends BaseClient {
     this.callAPI(sendData);
   }
 
-  send(constituent, text, attachment) {
+  send(constituent, text, attachment, quickReplies) {
     const sendData = {
       recipient: {
         id: constituent.facebook_id,
@@ -89,6 +90,13 @@ export class FacebookMessengerClient extends BaseClient {
         type: attachment.type,
         url: attachment.url,
       };
+    }
+    if (quickReplies) {
+      // FACEBOOK PLATFORM THROWING AN UNKNOWN ERROR FOR MY QUICK REPLIES
+      // sendData.message.quick_replies = quickReplies;
+      quickReplies.forEach((reply, index) => {
+        sendData.message.text += index === 0 ? ` ${reply.title}` : `, ${reply.title}`;
+      });
     }
     return new Promise((resolve) => {
       let fakeTiming = text ? text.length * 60 : 800;
