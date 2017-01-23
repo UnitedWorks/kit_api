@@ -16,9 +16,15 @@ export const createRepresentative = (rep, org, options = {}) => {
     }
     Representative.forge(repObj).save(null, { method: 'insert' })
       .then((createdRep) => {
-        createdRep.refresh({ withRelated: ['organization'] })
-          .then(populatedRep => resolve(options.returnJSON ? populatedRep.toJSON() : populatedRep))
-          .catch(err => reject(err));
+        if (!org) {
+          resolve(options.returnJSON ? createdRep.toJSON() : createdRep);
+        } else {
+          createdRep.refresh({ withRelated: ['organization'] })
+            .then((populatedRep) => {
+              resolve(options.returnJSON ? populatedRep.toJSON() : populatedRep);
+            })
+            .catch(err => reject(err));
+        }
       }).catch(err => reject(err));
   });
 };

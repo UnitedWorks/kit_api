@@ -54,8 +54,7 @@ exports.up = function (knex, Promise) {
       table.string('salt');
       table.boolean('email_confirmed').defaultTo(false);
       table.integer('organization_id')
-        .unsigned().references('id').inTable('organizations')
-        .onDelete('CASCADE');
+        .unsigned().references('id').inTable('organizations');
       table.dateTime('created_at').defaultTo(knex.raw('now()'));
     })
     .createTable('organizations_constituents', (table) => {

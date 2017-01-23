@@ -33,7 +33,6 @@ app.get('/', (req, res) => {
 
 // API
 app.use('/accounts', require('./accounts/routes'));
-app.use('/auth', require('./auth/routes'));
 app.use('/cases', require('./cases/routes'));
 app.use('/conversations', require('./conversations/routes'));
 app.use('/knowledge-base', require('./knowledge-base/routes'));
