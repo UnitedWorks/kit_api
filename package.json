@@ -3,14 +3,14 @@
   "version": "0.1.0",
   "description": "API for conversations, cases, cities, and integrations with external services.",
   "scripts": {
-    "migrate-local": "NODE_ENVIRONMENT=local knex migrate:latest",
-    "migrate-production": "NODE_ENVIRONMENT=production knex migrate:latest",
-    "rollback-local": "NODE_ENVIRONMENT=local knex migrate:rollback",
-    "seed-local": "NODE_ENVIRONMENT=local knex seed:run",
-    "start": "npm run start-production",
-    "start-local": "NODE_ENVIRONMENT=local nodemon api/start.js",
-    "start-production": "NODE_ENVIRONMENT=production node api/start.js",
-    "test": "NODE_ENVIRONMENT=test mocha tests/start.js"
+    "migrate-local": "cross-env NODE_ENV=local knex migrate:latest",
+    "migrate-production": "cross-env NODE_ENV=production knex migrate:latest",
+    "rollback-local": "cross-env NODE_ENV=local knex migrate:rollback",
+    "seed-local": "cross-env NODE_ENV=local knex seed:run",
+    "start": "cross-env npm run start-production",
+    "start-local": "cross-env NODE_ENV=local nodemon api/start.js",
+    "start-production": "cross-env NODE_ENV=production node api/start.js",
+    "test": "cross-env NODE_ENV=test mocha tests/start.js"
   },
   "contributors": [
     {
@@ -41,6 +41,7 @@
     "body-parser": "^1.15.2",
     "bookshelf": "^0.10.3",
     "cors": "^2.8.1",
+    "cross-env": "^3.1.4",
     "crypto": "0.0.3",
     "dotenv": "^2.0.0",
     "express": "^4.14.0",

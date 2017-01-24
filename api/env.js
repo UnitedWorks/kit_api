@@ -13,8 +13,8 @@ function getArg(flag) {
 function getEnv() {
   let env;
   // Check Environment
-  if (process.env.NODE_ENVIRONMENT) {
-    env = process.env.NODE_ENVIRONMENT;
+  if (process.env.NODE_ENV) {
+    env = process.env.NODE_ENV;
   // Check Command Line
   } else if (getArg('-env')) {
     env = getArg('-env');
