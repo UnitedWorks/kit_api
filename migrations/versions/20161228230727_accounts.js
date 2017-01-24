@@ -48,7 +48,7 @@ exports.up = function (knex, Promise) {
       table.increments('id').primary();
       table.string('name');
       table.string('title');
-      table.string('email').notNullable();
+      table.string('email').notNullable().unique();
       table.string('phone');
       table.string('password');
       table.string('salt');
