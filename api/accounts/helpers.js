@@ -31,7 +31,10 @@ export const createRepresentative = (rep, org, options = {}) => {
 
 export const updateRepresentative = (update, options) => {
   return new Promise((resolve, reject) => {
-    Representative.where({ id: update.id }).save(update, { patch: true, method: 'update' })
+    const filter = {};
+    if (update.id) filter.id = update.id;
+    if (update.email) filter.email = update.email;
+    Representative.where(filter).save(update, { patch: true, method: 'update' })
       .then((updatedRepModel) => {
         resolve(options.returnJSON ? updatedRepModel.toJSON() : updatedRepModel);
       }).catch(err => reject(err));
