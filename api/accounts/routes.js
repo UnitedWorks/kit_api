@@ -59,9 +59,9 @@ router.post('/organizations/add-representative', (req, res) => {
 
 // Representatives
 router.get('/representative', (req, res) => {
-  Representative.where(req.query).fetchOne().then((reps) => {
-    res.status(200).send(reps);
-  });
+  Representative.where(req.query).fetch({ withRelated: ['organization'] })
+    .then(representative => res.status(200).send({ representative }))
+    .catch(err => res.status(400).send(err));
 });
 
 /**
