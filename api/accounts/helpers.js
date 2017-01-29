@@ -42,6 +42,7 @@ export const updateRepresentative = (update, options) => {
 };
 
 export const addRepToOrganization = (rep, org, options) => {
+  if (!rep.id) return createRepresentative(rep, org, options);
   return new Promise((resolve, reject) => {
     Representative.where({ id: rep.id }).save({ organization_id: org.id }, { patch: true, method: 'update' })
       .then((updatedRepModel) => {

@@ -53,7 +53,9 @@ router.post('/organization', (req, res) => {
 
 router.post('/organizations/add-representative', (req, res) => {
   helpers.addRepToOrganization(req.body.representative, req.body.organization, { returnJSON: true })
-    .then(response => res.status(200).send(response))
+    .then(response => res.status(200).send({
+      representative: response,
+    }))
     .catch(err => res.status(400).send(err));
 });
 
@@ -61,6 +63,12 @@ router.post('/organizations/add-representative', (req, res) => {
 router.get('/representative', (req, res) => {
   Representative.where(req.query).fetch({ withRelated: ['organization'] })
     .then(representative => res.status(200).send({ representative }))
+    .catch(err => res.status(400).send(err));
+});
+
+router.get('/representatives', (req, res) => {
+  Representative.where(req.query).fetchAll({ withRelated: ['organization'] })
+    .then(representatives => res.status(200).send({ representatives }))
     .catch(err => res.status(400).send(err));
 });
 
