@@ -56,7 +56,7 @@ describe('Conversation Webhook', () => {
       }]
     }]
   };
-  it('should return 200 when sending a web message', done => {
+  it('should return 200 when sending a web message', (done) => {
     axios({
       url: 'http://127.0.0.1:5000/conversations/webhook/facebook',
       method: 'post',
@@ -66,19 +66,6 @@ describe('Conversation Webhook', () => {
       }
     }).then((response) => {
       assert.equal(200, response.status);
-      done();
-    });
-  });
-  it('should return error when trying to send a Facebook message', (done) => {
-    const modifiedPayload = payload;
-    modifiedPayload.object = 'page';
-    // Test Verification Error
-    axios({
-      url: 'http://127.0.0.1:5000/conversations/webhook/facebook',
-      method: 'post',
-      data: modifiedPayload,
-    }).catch((error) => {
-      expect(error).to.be.an('error');
       done();
     });
   });

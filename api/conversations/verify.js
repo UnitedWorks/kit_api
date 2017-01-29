@@ -13,9 +13,7 @@ import * as environments from '../constants/environments';
  */
 export function verifyRequestSignature(req, res, buf) {
   const origin = utils.getOrigin(req.headers.origin);
-  if (origin === environments.LOCAL || origin === environments.TEST) {
-    // If on local testing with postman, a local dashboard, or website, bypass.
-  } else {
+  if (origin !== environments.LOCAL || origin !== environments.TEST) {
     // If hit by Facebook
     const signature = req.headers['x-hub-signature'];
     if (!signature) {
@@ -26,7 +24,7 @@ export function verifyRequestSignature(req, res, buf) {
       const expectedHash = crypto.createHmac('sha1', process.env.FB_APP_SECRET)
         .update(buf)
         .digest('hex');
-      if (signatureHash != expectedHash) {
+      if (signatureHash !== expectedHash) {
         throw new Error("Couldn't validate the request signature.");
       }
     }
