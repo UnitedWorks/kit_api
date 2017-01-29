@@ -6,16 +6,10 @@ import path from 'path';
 import * as env from './env';
 import * as environments from './constants/environments';
 import { logger } from './logger';
-import * as conversations from './conversations/verify';
 import * as clients from './conversations/clients';
 
 const app = express();
 const port = process.env.PORT || 5000;
-
-// Facebook required verifications
-app.use('/conversations/webhook/facebook', bodyParser.json({
-  verify: conversations.verifyRequestSignature,
-}));
 
 // Process application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({

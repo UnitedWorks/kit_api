@@ -13,7 +13,7 @@ import * as environments from '../constants/environments';
  */
 export function verifyRequestSignature(req, res, buf) {
   const origin = utils.getOrigin(req.headers.origin);
-  if (origin === environments.LOCAL || origin === environments.PRODUCTION) {
+  if (origin === environments.LOCAL) {
     // If on local testing with postman, a local dashboard, or website, bypass.
   } else {
     // If hit by Facebook

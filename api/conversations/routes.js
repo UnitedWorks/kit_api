@@ -1,3 +1,4 @@
+import bodyParser from 'body-parser';
 import { Router } from 'express';
 import { logger } from '../logger';
 import * as process from './process';
@@ -5,6 +6,10 @@ import * as verify from './verify';
 import * as conversationClient from '../constants/interfaces';
 
 const router = new Router();
+
+router.use('/webhook/facebook', bodyParser.json({
+  verify: verify.verifyRequestSignature,
+}));
 
 router.route('/webhook/facebook')
   .get((req, res) => {
