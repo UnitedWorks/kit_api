@@ -12,7 +12,8 @@ import * as clients from './conversations/clients';
 const app = express();
 const port = process.env.PORT || 5000;
 
-app.use(bodyParser.json({
+// Facebook required verifications
+app.use('/conversations/webhook/facebook', bodyParser.json({
   verify: conversations.verifyRequestSignature,
 }));
 
