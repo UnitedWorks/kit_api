@@ -42,22 +42,19 @@ exports.up = function (knex, Promise) {
       table.string('email');
       table.string('phone');
       table.string('facebook_id');
-      table.string('twitter_id');
-      table.string('twitter_handle');
       table.dateTime('created_at').defaultTo(knex.raw('now()'));
     })
     .createTable('representatives', (table) => {
       table.increments('id').primary();
       table.string('name');
       table.string('title');
-      table.string('email');
+      table.string('email').notNullable().unique();
       table.string('phone');
       table.string('password');
       table.string('salt');
       table.boolean('email_confirmed').defaultTo(false);
       table.integer('organization_id')
-        .unsigned().references('id').inTable('organizations')
-        .onDelete('CASCADE');
+        .unsigned().references('id').inTable('organizations');
       table.dateTime('created_at').defaultTo(knex.raw('now()'));
     })
     .createTable('organizations_constituents', (table) => {

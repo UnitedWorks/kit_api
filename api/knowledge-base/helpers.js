@@ -70,7 +70,7 @@ export const saveLocation = (locationModel, options = {}) => {
       newLocationModel.id = locationModel.id;
     }
     Location.forge(newLocationModel).save().then((data) => {
-      resolve(options.toJSON ? data.toJSON() : data);
+      resolve(options.returnJSON ? data.toJSON() : data);
     }).catch(err => reject(err));
   });
 };

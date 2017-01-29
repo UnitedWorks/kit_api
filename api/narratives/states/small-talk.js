@@ -7,7 +7,7 @@ import { NarrativeStoreMachine } from './state';
 import { nlp } from '../../services/nlp';
 import { geocoder } from '../../services/geocoder';
 import { Constituent, Organization } from '../../accounts/models';
-import { saveOrganization } from '../../accounts/helpers';
+import { createOrganization } from '../../accounts/helpers';
 import { getAnswers, saveLocation } from '../../knowledge-base/helpers';
 import { createCase } from '../../cases/helpers';
 import { CaseCategory } from '../../cases/models';
@@ -85,7 +85,7 @@ const smallTalkStates = {
             'Oh no! Your city isn\'t registered. I can still take complaints, but may not have all the answers to your questions.';
           if (!organizationModel.activated) {
             new SlackService({
-              username: 'Inactive City',
+              username: 'Inactive City Requested',
               icon: 'round_pushpin',
             }).send(`>*City Requested*: ${organizationModel.name}\n>*ID*: ${organizationModel.id}`);
           }
@@ -96,7 +96,7 @@ const smallTalkStates = {
       });
       if (!cityFound) {
         saveLocation(constituentLocation).then((locationModel) => {
-          saveOrganization({
+          createOrganization({
             name: locationModel.get('city'),
             category: 'public',
             type: 'admin',

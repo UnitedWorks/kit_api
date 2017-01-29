@@ -14,7 +14,7 @@ describe('Node Server', () => {
 
 describe('Environment Variables', () => {
   it('should be in test environment', () => {
-    assert.equal(process.env.NODE_ENVIRONMENT, 'test', 'in test environment');
+    assert.equal(process.env.NODE_ENV, 'test', 'in test environment');
   });
   it('should have ApiAi values', () => {
     assert.isDefined(process.env.API_AI_CLIENT_ACCESS_TOKEN, 'ApiAi is defined');

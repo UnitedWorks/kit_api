@@ -2,7 +2,7 @@
 require('babel-core/register');
 
 // Setup Logs
-require('../tools/logs');
+require('../tools/setup-logs');
 
 // Setup Environment
 require('./env').setup();

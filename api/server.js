@@ -1,4 +1,5 @@
 import bodyParser from 'body-parser';
+import cors from 'cors';
 import express from 'express';
 import fs from 'fs';
 import path from 'path';
@@ -22,6 +23,9 @@ app.use(bodyParser.urlencoded({
 
 // Process application/json
 app.use(bodyParser.json());
+
+// Handle Cross Origin Options
+app.use(cors());
 
 app.get('/', (req, res) => {
   res.status(200).send();
