@@ -11,6 +11,11 @@ import * as clients from './conversations/clients';
 const app = express();
 const port = process.env.PORT || 5000;
 
+app.use('/', (req, res, next) => {
+  logger.info(req);
+  next();
+});
+
 // Process application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({
   extended: false,
