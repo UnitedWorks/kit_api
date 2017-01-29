@@ -12,7 +12,7 @@ router.post('/webhook/email', (req, res) => {
 
 router.post('/webhook/event', (req, res) => {
   logger.info('Case Event Webhook Pinged');
-  logger.info(req.body);
+  process.webhookEmailEvent(req);
   res.status(200).send();
 });
 
