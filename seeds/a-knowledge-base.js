@@ -57,7 +57,7 @@ exports.seed = function(knex, Promise) {
       name: 'Job Training Center',
       description: 'Walk in center for education, job search help, and other resources.',
       type_id: 21,
-      category_id: 4,
+      knowledge_category_id: 4,
       schedule_id: obj.scheduleIds[0], // Refers to hours of operation
       location_id: obj.locationIds[0], // Geolocation of facility
       organization_id: obj.organizationIds.jerseyCity,
@@ -66,7 +66,7 @@ exports.seed = function(knex, Promise) {
       name: 'Midtown Precinct North',
       description: 'Your classic neighborhood police station downtown',
       type_id: 22,
-      category_id: 8,
+      knowledge_category_id: 8,
       schedule_id: obj.scheduleIds[1],
       location_id: obj.locationIds[1],
       organization_id: obj.organizationIds.jerseyCity,
@@ -82,16 +82,16 @@ exports.seed = function(knex, Promise) {
     servicesInserts.push(knex('knowledge_services').insert({
       name: 'Computer Training',
       description: 'Introduction to word and data processing programs',
-      facility_id: obj.facilityIds[0], // Refers to the job center
-      category_id: 4,
+      knowledge_facility_id: obj.facilityIds[0], // Refers to the job center
+      knowledge_category_id: 4,
       schedule_id: obj.scheduleIds[2], // Refers to the schedule of the class
       organization_id: obj.organizationIds.jerseyCity,
     }, 'id'));
     servicesInserts.push(knex('knowledge_services').insert({
       name: 'Scared straight',
       description: 'A program that everyone thought was a good idea',
-      facility_id: obj.facilityIds[0],
-      category_id: 8,
+      knowledge_facility_id: obj.facilityIds[0],
+      knowledge_category_id: 8,
       schedule_id: obj.scheduleIds[4],
       organization_id: obj.organizationIds.jerseyCity,
     }, 'id'));
@@ -106,7 +106,7 @@ exports.seed = function(knex, Promise) {
     eventsInserts.push(knex('knowledge_events').insert({
       name: 'Computer Training Information Session',
       description: 'A quick overview',
-      facility_id: obj.facilityIds[0], // Refers to the job center
+      knowledge_facility_id: obj.facilityIds[0], // Refers to the job center
       schedule_id: obj.scheduleIds[3], // Refers to a single time period
       service_id: obj.serviceIds[0], // Refers to the computer training course
       organization_id: obj.organizationIds.jerseyCity,
@@ -114,7 +114,7 @@ exports.seed = function(knex, Promise) {
     eventsInserts.push(knex('knowledge_events').insert({
       name: 'Middleschool PS111 visits the jail',
       description: 'Get it out of their system?',
-      facility_id: obj.facilityIds[1],
+      knowledge_facility_id: obj.facilityIds[1],
       schedule_id: obj.scheduleIds[5],
       service_id: obj.serviceIds[1],
       organization_id: obj.organizationIds.jerseyCity,
@@ -131,7 +131,7 @@ exports.seed = function(knex, Promise) {
       label: 'employment-job-training',
       question: 'Where can I get basic job training?',
       answer: 'The city provides training for jobs around the year. Be sure to visit a job center or check our website',
-      category_id: obj.categoryIds[3],
+      knowledge_category_id: obj.categoryIds[3],
       organization_id: obj.organizationIds.jerseyCity,
       url: 'http://www1.nyc.gov/nyc-resources/service/2984/nyc-job-training-guide',
     }, 'id'));
@@ -146,7 +146,7 @@ exports.seed = function(knex, Promise) {
       label: 'sanitation-garbage-schedule',
       question: 'What day is trash pickup?',
       answer: 'Trash alternates based on districts and address. Please refer to our schedule.',
-      category_id: obj.categoryIds[1],
+      knowledge_category_id: obj.categoryIds[1],
       organization_id: obj.organizationIds.jerseyCity,
       url: 'http://www.cityofjerseycity.com/public_works.aspx?id=878',
     }, 'id'));
@@ -154,7 +154,7 @@ exports.seed = function(knex, Promise) {
       label: 'sanitation-garbage-schedule',
       question: 'What day is trash pickup?',
       answer: 'Trash pickup is every Wednesday, starting at 5:00 AM',
-      category_id: obj.categoryIds[1],
+      knowledge_category_id: obj.categoryIds[1],
       organization_id: obj.organizationIds.newBrunswick,
       url: 'http://thecityofnewbrunswick.org/public-works/trash-and-recycling-info/',
     }, 'id'));
@@ -162,7 +162,7 @@ exports.seed = function(knex, Promise) {
       label: 'sanitation-garbage-schedule',
       question: 'What day is trash pickup?',
       answer: 'Trash pickup is every Friday',
-      category_id: obj.categoryIds[1],
+      knowledge_category_id: obj.categoryIds[1],
       organization_id: obj.organizationIds.hanover,
       url: 'http://www.hanovertownship.org/garbage.html',
     }, 'id'));
@@ -171,7 +171,7 @@ exports.seed = function(knex, Promise) {
       label: 'sanitation-recycling-schedule',
       question: 'Which day is recycling?',
       answer: 'Recycling alternates based on districts and address. Please refer to our schedule.',
-      category_id: obj.categoryIds[1],
+      knowledge_category_id: obj.categoryIds[1],
       organization_id: obj.organizationIds.jerseyCity,
       url: 'http://www.cityofjerseycity.com/uploadedFiles/Waste%20Disposal%20and%20Recycling%20Rules%202016.pdf',
     }, 'id'));
@@ -179,7 +179,7 @@ exports.seed = function(knex, Promise) {
       label: 'sanitation-recycling-schedule',
       question: 'Which day is recycling?',
       answer: 'Recycling pickup is every Wednesday, starting at 5:00 AM',
-      category_id: obj.categoryIds[1],
+      knowledge_category_id: obj.categoryIds[1],
       organization_id: obj.organizationIds.newBrunswick,
       url: 'http://thecityofnewbrunswick.org/blog/2015/12/16/2016-trash-and-recycling-schedules-now-available/',
     }, 'id'));
@@ -187,7 +187,7 @@ exports.seed = function(knex, Promise) {
       label: 'sanitation-recycling-schedule',
       question: 'Which day is recycling?',
       answer: 'Recycling pickup is every Friday',
-      category_id: obj.categoryIds[1],
+      knowledge_category_id: obj.categoryIds[1],
       organization_id: obj.organizationIds.hanover,
       url: 'http://www.hanovertownship.com/Portals/1/DPW/2017%20recycling%20schedule.pdf',
     }, 'id'));
@@ -196,7 +196,7 @@ exports.seed = function(knex, Promise) {
       label: 'sanitation-compost',
       question: 'When do you collect compost?',
       answer: 'Composting is collected in select locations. You can find more info on our partner website.',
-      category_id: obj.categoryIds[1],
+      knowledge_category_id: obj.categoryIds[1],
       organization_id: obj.organizationIds.jerseyCity,
       url: 'http://sustainablejc.org/wordpress/projects/community-composting/',
     }, 'id'));
@@ -205,7 +205,7 @@ exports.seed = function(knex, Promise) {
       label: 'sanitation-bulk-pickup',
       question: 'How can I request bulk item pickup?',
       answer: 'To schedule bulk pickup with the Department of Public Works, simply call 201-547-4400',
-      category_id: obj.categoryIds[1],
+      knowledge_category_id: obj.categoryIds[1],
       organization_id: obj.organizationIds.jerseyCity,
     }, 'id'));
     // Sanitation - Electronics
@@ -213,7 +213,7 @@ exports.seed = function(knex, Promise) {
       label: 'sanitation-electronics-disposal',
       question: 'Where can I dispose of electronics?',
       answer: 'Electronics disposal is handled by the county at this time. Please refer to their websites and locations.',
-      category_id: obj.categoryIds[1],
+      knowledge_category_id: obj.categoryIds[1],
       organization_id: obj.organizationIds.jerseyCity,
       url: 'http://www.hcia.org/index.php?option=com_content&view=article&id=31&Itemid=34',
     }, 'id'));
