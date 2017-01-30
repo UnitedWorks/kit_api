@@ -106,5 +106,9 @@ export function webhookHitWithEmail(req) {
 }
 
 export function webhookEmailEvent(req) {
-  logger.info(`Email Event: ${JSON.stringify(req.body)}`);
+  logger.info('Email Events');
+  logger.info(JSON.strngify(req.body));
+  req.body.forEach((event) => {
+    logger.info(`${event.event} - ${event.email}`);
+  });
 }
