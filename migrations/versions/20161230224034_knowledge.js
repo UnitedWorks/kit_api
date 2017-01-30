@@ -70,10 +70,6 @@ exports.up = function(knex, Promise) {
     })
     .createTable('knowledge_answers', (table) => {
       table.increments('id').primary();
-      table.integer('knowledge_question_id')
-        .unsigned().references('id').inTable('organizations');
-      table.integer('organization_id')
-        .unsigned().references('id').inTable('organizations');
       table.text('answer');
       table.string('url');
       table.dateTime('created_at').defaultTo(knex.raw('now()'));
@@ -86,7 +82,6 @@ exports.up = function(knex, Promise) {
         .unsigned().references('id').inTable('organizations');
       table.integer('knowledge_answer_id')
         .unsigned().references('id').inTable('knowledge_answers');
-      table.dateTime('created_at').defaultTo(knex.raw('now()'));
     })
     .createTable('knowledge_answers_knowledge_events', (table) => {
       table.increments('id').primary();
