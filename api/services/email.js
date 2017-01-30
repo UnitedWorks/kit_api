@@ -21,13 +21,13 @@ export default class EmailService {
           value: content,
         },
       ],
-      unique_args: {},
+      custom_args: {},
     };
 
     Object.keys(customAttributes).forEach((key) => {
       // ATM, numbers passed into unique args breaks the API. ARGGGGGGG
       // https://github.com/sendgrid/sendgrid-nodejs/issues/351
-      emailRequestObj.unique_args[key] = String(customAttributes[key]);
+      emailRequestObj.custom_args[key] = String(customAttributes[key]);
     });
 
     logger.info(`Sending Case Email to '${toEmail}'`);
