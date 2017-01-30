@@ -31,12 +31,12 @@ exports.seed = (knex, Promise) => {
         knex('knowledge_answers').del(),
         knex('representatives').del(),
         knex('cases').del(),
+        knex('locations').del(),
       ]);
   })
   .then(() => {
       // Then we clear unassociated representatives
       return Promise.all([
-        knex('locations').del(),
         knex('schedules').del(),
         knex('organizations').del(),
         knex('constituents').del(),
