@@ -111,13 +111,21 @@ export function webhookEmailEvent(req) {
     if (event.event === 'open') {
       if (event.case_id) {
         logger.info(`Email Event: Case ${event.case_id} read by ${event.email}`);
-        Case.where({ id: event.case_id }).fetch({ withRelated: ['constituent'] }).then((caseObj) => {
-          const constituent = caseObj.toJSON().constituent;
-          if (constituent.facebook_id) {
-            new FacebookMessengerClient().send(constituent, `Your case #${caseObj.id} has been seen by someone in government! We will let you know when it's addressed.`);
-          } else if (constituent.phone) {
-            new TwilioSMSClient().send(constituent, `Your case #${caseObj.id} has been seen in government! We will let you know when it's addressed.`);
+        Case.where({ id: event.case_id }).fetch({ withRelated: ['constituent'] }).then((fetchedCase) => {
+          const constituent = fetchedCase.toJSON().constituent;
+          if (!fetchedCase.toJSON().lastViewed) {
+            if (constituent.facebook_id) {
+              new FacebookMessengerClient().send(constituent, `Your case #${fetchedCase.id} has been seen by someone in government! We will let you know when it's addressed.`);
+            } else if (constituent.phone) {
+              new TwilioSMSClient().send(constituent, `Your case #${fetchedCase.id} has been seen in government! We will let you know when it's addressed.`);
+            }
           }
+          fetchedCase.save({
+            last_viewed: knex.raw('now()'),
+          }, {
+            method: 'update',
+            patch: true,
+          });
         });
       }
     }
