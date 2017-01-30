@@ -110,5 +110,17 @@ export function webhookEmailEvent(req) {
   logger.info(JSON.stringify(req.body));
   req.body.forEach((event) => {
     logger.info(`Email Event: ${event.event} - ${event.email}`);
+    if (event.event === 'open') {
+      if (event.case_id) {
+        Case.where({ id: event.case_id }).fetch({ withRelated: ['constituent'] }).then((caseObj) => {
+          const constituent = caseObj.toJSON().constituent;
+          if (constituent.facebook_id) {
+            new FacebookMessengerClient().send(constituent, `Your case #${caseObj.id} has been seen. We will let you know when it's resolved.`);
+          } else if (constituent.phone) {
+            new TwilioSMSClient().send(constituent, `Your case #${caseObj.id} has been seen. We will let you know when it's resolved`);
+          }
+        });
+      }
+    }
   });
 }
