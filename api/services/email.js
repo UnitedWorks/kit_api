@@ -28,9 +28,7 @@ export default class EmailService {
       headers: {
         Authorization: `Bearer ${process.env.SENDGRID_API_KEY}`,
       },
-    })
-    .then(response => logger.info(response))
-    .catch(error => logger.error(error));
+    }).catch(error => logger.error(error));
   }
 
 }
