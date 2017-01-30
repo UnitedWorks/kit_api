@@ -17,7 +17,7 @@ export default class EmailService {
       },
       content: [
         {
-          type: 'plain/html',
+          type: 'text/html',
           value: content,
         },
       ],
