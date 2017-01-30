@@ -26,7 +26,8 @@ exports.seed = (knex, Promise) => {
       // Clearing organizations first CASCADE deletes representatives with associated foreign keys
       return Promise.all([
         knex('knowledge_answers').del(),
-        knex('organizations').del(),
+        knex('representatives').del(),
+        knex('cases').del(),
       ]);
   })
   .then(() => {
@@ -35,7 +36,6 @@ exports.seed = (knex, Promise) => {
         knex('locations').del(),
         knex('schedules').del(),
         knex('organizations').del(),
-        knex('representatives').del(),
         knex('constituents').del(),
       ]);
   })
