@@ -17,6 +17,7 @@ exports.up = function(knex, Promise) {
         .unsigned().references('id').inTable('constituents');
       table.jsonb('data');
       table.dateTime('created_at').defaultTo(knex.raw('now()'));
+      table.dateTime('last_viewed');
       table.dateTime('closed_at');
     })
     .createTable('organizations_cases', (table) => {
