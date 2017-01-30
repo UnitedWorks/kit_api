@@ -21,7 +21,7 @@ export default class EmailService {
           value: content,
         },
       ],
-      // unique_args: customAttributes,
+      unique_args: customAttributes,
     };
 
     axios.post('https://api.sendgrid.com/v3/mail/send', emailRequestObj, {
