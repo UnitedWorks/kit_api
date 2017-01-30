@@ -1,5 +1,6 @@
 import lodash from 'lodash';
 import { bookshelf } from '../orm';
+import { Organization } from '../accounts/models';
 
 // Information Entries - Referenced in knowledge and non-knowledge base tables
 export const Location = bookshelf.Model.extend({
@@ -103,10 +104,20 @@ export const KnowledgeAnswerServices = bookshelf.Model.extend({
   tableName: 'knowledge_answers_knowledge_services',
 });
 
-export const KnowledgeAnswer = bookshelf.Model.extend({
-  tableName: 'knowledge_answers',
+export const KnowledgeQuestion = bookshelf.Model.extend({
+  tableName: 'knowledge_questions',
   category: function() {
     return this.belongsTo(KnowledgeCategory, 'category_id');
+  },
+});
+
+export const KnowledgeAnswer = bookshelf.Model.extend({
+  tableName: 'knowledge_answers',
+  question: function() {
+    return this.belongsTo(KnowledgeQuestion, 'knowledge_questions_organizations_knowledge_answers');
+  },
+  organization: function() {
+    return this.belongsTo(Organization, 'knowledge_questions_organizations_knowledge_answers')
   },
   events: function() {
     return this.belongsToMany(KnowledgeEvent, 'knowledge_answers_knowledge_events');
@@ -116,5 +127,18 @@ export const KnowledgeAnswer = bookshelf.Model.extend({
   },
   services: function() {
     return this.belongsToMany(KnowledgeService, 'knowledge_answers_knowledge_services');
+  },
+});
+
+export const OrganizationQuestionAnswers = bookshelf.Model.extend({
+  tableName: 'knowledge_questions_organizations_knowledge_answers',
+  answer: function() {
+    return this.belongsTo(KnowledgeAnswer, 'knowledge_answer_id');
+  },
+  organization: function() {
+    return this.belongsTo(Organization, 'organization_id');
+  },
+  question: function() {
+    return this.belongsTo(KnowledgeQuestion, 'knowledge_question_id');
   },
 });

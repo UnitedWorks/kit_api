@@ -1,11 +1,34 @@
 import { knex } from '../orm';
-import { KnowledgeAnswer, KnowledgeAnswerEvents, KnowledgeAnswerFacilitys, KnowledgeAnswerServices, Location } from './models';
+import { KnowledgeAnswer, KnowledgeQuestion, KnowledgeAnswerEvents, KnowledgeAnswerFacilitys,
+  KnowledgeAnswerServices, Location, OrganizationQuestionAnswers } from './models';
 
-export const getAnswers = (session, params, options) => {
-  const filters = Object.assign({}, params);
-  return KnowledgeAnswer.where(filters).fetchAll({
+export const getAnswers = (session, params = {}, options) => {
+  return KnowledgeAnswer.where(params).fetchAll({
     withRelated: ['category', 'events', 'facilities', 'services'],
   });
+};
+
+export const getQuestions = (params = {}) => {
+  return KnowledgeQuestion
+    .query((qb) => {
+      if (params.organization_id) {
+        qb.leftOuterJoin(
+          'knowledge_questions_organizations_knowledge_answers',
+          'knowledge_questions.id',
+          'knowledge_questions_organizations_knowledge_answers.knowledge_question_id');
+        // qb.where({ organization_id: params.organization_id });
+      }
+    })
+    // .fetchAll({ withRelated: ['category'] })
+    .fetchAll()
+    .then((results) => {
+      return results
+    })
+    .catch((error) => {
+      console.log('------');
+      console.log(error);
+      console.log('------');
+    });
 };
 
 const runSave = (collection) => {
