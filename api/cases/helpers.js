@@ -3,7 +3,7 @@ import { knex } from '../orm';
 import { logger } from '../logger';
 import * as AccountModels from '../accounts/models';
 import { Case, OrganizationsCases } from './models';
-import { FacebookMessengerClient, TwilioSMSClient } from '../conversations/clients'
+import { FacebookMessengerClient, TwilioSMSClient } from '../conversations/clients';
 import SlackService from '../services/slack';
 import EmailService from '../services/email';
 
