@@ -136,37 +136,37 @@ const smallTalkStates = {
         let answerRequest;
         if (value === TAGS.COMPOST) {
           // Request Compost Dumping
-          answerRequest = getAnswer({}, {
+          answerRequest = getAnswer({
             label: 'sanitation-compost',
             organization_id: this.get('organization').id,
-          }, { withRelated: false });
+          }, { withRelated: false, returnJSON: true });
         } else if (value === TAGS.BULK) {
           // Request Bulk Pickup
-          answerRequest = getAnswer({}, {
+          answerRequest = getAnswer({
             label: 'sanitation-bulk-pickup',
             organization_id: this.get('organization').id,
-          }, { withRelated: false });
+          }, { withRelated: false, returnJSON: true });
         } else if (value === TAGS.ELECTRONICS) {
           // Request Electronics
-          answerRequest = getAnswer({}, {
+          answerRequest = getAnswer({
             label: 'sanitation-electronics-disposal',
             organization_id: this.get('organization').id,
-          }, { withRelated: false });
+          }, { withRelated: false, returnJSON: true });
         } else if (Object.prototype.hasOwnProperty.call(entities, TAGS.SCHEDULES)) {
           switch (value) {
             // Request Garbage
             case TAGS.GARBAGE:
-              answerRequest = getAnswer({}, {
+              answerRequest = getAnswer({
                 label: 'sanitation-garbage-schedule',
                 organization_id: this.get('organization').id,
-              }, { withRelated: false });
+              }, { withRelated: false, returnJSON: true });
               break;
             // Request Recycling
             case TAGS.RECYCLING:
-              answerRequest = getAnswer({}, {
+              answerRequest = getAnswer({
                 label: 'sanitation-recycling-schedule',
                 organization_id: this.get('organization').id,
-              }, { withRelated: false });
+              }, { withRelated: false, returnJSON: true });
               break;
             default:
           }
@@ -174,15 +174,14 @@ const smallTalkStates = {
         // Handle
         if (answerRequest) {
           answerRequest.then((payload) => {
-            // Check if we got a payload and can get an answer off it
-            // Probably shouldnt be done this way incase the answer converts objects instead
-            if (payload !== null && payload.toJSON().answer) {
-              const answer = payload.toJSON().answer;
-              const message = answer.url ? `${answer.text} (More info at ${answer.url})` : `${answer.text}`;
-              this.messagingClient.send(this.snapshot.constituent, message);
+            let message;
+            if (payload.answer) {
+              const answer = payload.answer;
+              message = answer.url ? `${answer.text} (More info at ${answer.url})` : `${answer.text}`;
             } else {
-              this.messagingClient.send(this.snapshot.constituent, `Unfortunately, I can't answer that for your city (${this.get('organization').name}).`);
+              message = `Unfortunately, I can't answer that for your city (${this.get('organization').name}).`;
             }
+            this.messagingClient.send(this.snapshot.constituent, message);
             this.exit('start');
           });
         }
@@ -211,16 +210,16 @@ const smallTalkStates = {
               this.messagingClient.runQuene();
             });
           } else {
-            getAnswer({}, {
+            getAnswer({
               label: 'social-services-shelters',
               organization_id: this.get('organization').id,
-            }, { withRelated: true }).then((payload) => {
-              const answer = payload.toJSON()[0];
+            }, { withRelated: true, returnJSON: true }).then((payload) => {
               let message;
-              if (payload.length === 0) {
-                message = 'I\'m sorry. I can\'t find anything in our database. I\'m going to let the city know about your need.';
-              } else {
+              if (payload.answer) {
+                const answer = payload.answer;
                 message = answer.url ? `${answer.text} (More info at ${answer.url})` : `${answer.text}`;
+              } else {
+                message = 'I\'m sorry. I can\'t find anything in our database. I\'m going to let the city know about your need.';
               }
               this.messagingClient.send(this.snapshot.constituent, message);
             });
@@ -246,16 +245,16 @@ const smallTalkStates = {
               this.messagingClient.runQuene();
             });
           } else {
-            getAnswer({}, {
+            getAnswer({
               label: 'social-services-food-assistance',
               organization_id: this.get('organization').id,
-            }, { withRelated: true }).then((payload) => {
-              const answer = payload.toJSON()[0];
+            }, { withRelated: true, returnJSON: true }).then((payload) => {
               let message;
-              if (payload.length === 0) {
-                message = 'I\'m sorry. I can\'t find anything in our database. I\'m going to let the city know about your need.';
-              } else {
+              if (payload.answer) {
+                const answer = payload.answer;
                 message = answer.url ? `${answer.text} (More info at ${answer.url})` : `${answer.text}`;
+              } else {
+                message = 'I\'m sorry. I can\'t find anything in our database. I\'m going to let the city know about your need.';
               }
               this.messagingClient.send(this.snapshot.constituent, message);
               this.exit('start');
@@ -283,16 +282,16 @@ const smallTalkStates = {
               this.messagingClient.runQuene();
             });
           } else {
-            getAnswer({}, {
+            getAnswer({
               label: 'social-services-hygiene',
               organization_id: this.get('organization').id,
-            }, { withRelated: true }).then((payload) => {
-              const answer = payload.toJSON()[0];
+            }, { withRelated: true, returnJSON: true }).then((payload) => {
               let message;
-              if (payload.length === 0) {
-                message = 'I\'m sorry. I can\'t find anything in our database. I\'m going to let the city know about your need.';
-              } else {
+              if (payload.answer) {
+                const answer = payload.answer;
                 message = answer.url ? `${answer.text} (More info at ${answer.url})` : `${answer.text}`;
+              } else {
+                message = 'I\'m sorry. I can\'t find anything in our database. I\'m going to let the city know about your need.';
               }
               this.messagingClient.send(this.snapshot.constituent, message);
               this.exit('start');
@@ -324,16 +323,16 @@ const smallTalkStates = {
               this.messagingClient.runQuene();
             });
           } else {
-            getAnswer({}, {
+            getAnswer({
               label: 'health-clinic',
               organization_id: this.get('organization').id,
-            }, { withRelated: true }).then((payload) => {
-              const answer = payload.toJSON()[0];
+            }, { withRelated: true, returnJSON: true }).then((payload) => {
               let message;
-              if (payload.length === 0) {
-                message = 'I\'m sorry. I can\'t find anything in our database. I\'m going to let the city know about your need.';
-              } else {
+              if (payload.answer) {
+                const answer = payload.answer;
                 message = answer.url ? `${answer.text} (More info at ${answer.url})` : `${answer.text}`;
+              } else {
+                message = 'I\'m sorry. I can\'t find anything in our database. I\'m going to let the city know about your need.';
               }
               this.messagingClient.send(this.snapshot.constituent, message);
               this.exit('start');
@@ -365,16 +364,16 @@ const smallTalkStates = {
               this.messagingClient.runQuene();
             });
           } else {
-            getAnswer({}, {
+            getAnswer({
               label: 'employment-job-training',
               organization_id: this.get('organization').id,
-            }, { withRelated: true }).then((payload) => {
-              const answer = payload.toJSON()[0];
+            }, { withRelated: true, returnJSON: true }).then((payload) => {
               let message;
-              if (payload.length === 0) {
-                message = 'I\'m sorry. I can\'t find anything in our database. I\'m going to let the city know about your need.';
-              } else {
+              if (payload.answer) {
+                const answer = payload.answer;
                 message = answer.url ? `${answer.text} (More info at ${answer.url})` : `${answer.text}`;
+              } else {
+                message = 'I\'m sorry. I can\'t find anything in our database. I\'m going to let the city know about your need.';
               }
               this.messagingClient.send(this.snapshot.constituent, message);
               this.exit('start');

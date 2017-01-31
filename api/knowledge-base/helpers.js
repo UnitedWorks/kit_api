@@ -2,7 +2,7 @@ import { knex } from '../orm';
 import { KnowledgeAnswer, KnowledgeQuestion, KnowledgeAnswerEvents, KnowledgeAnswerFacilitys,
   KnowledgeAnswerServices, Location, OrganizationQuestionAnswers } from './models';
 
-export const getAnswer = (session, params = {}, options) => {
+export const getAnswer = (params = {}, options) => {
   if (!params.organization_id) throw Error('No organization_id provided to getAnswer method');
   if (!params.label) throw Error('No label provided to getAnswer method');
   return KnowledgeQuestion.query((qb) => {
@@ -16,8 +16,10 @@ export const getAnswer = (session, params = {}, options) => {
       });
   })
   .fetch({ withRelated: ['answer'] })
-  .then(results => results)
-  .catch(error => error);
+  .then((results) => {
+    if (results) return options.returnJSON ? results.toJSON() : results;
+    return {};
+  }).catch(error => error);
 };
 
 export const getAnswers = (session, params = {}, options) => {
