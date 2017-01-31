@@ -81,9 +81,6 @@ export class FacebookMessengerClient extends BaseClient {
   }
 
   send(text, attachment, quickReplies) {
-    console.log('=========')
-    console.log(this.config)
-    console.log('=========')
     const sendData = {
       recipient: {
         id: this.config.constituent.facebook_id,
