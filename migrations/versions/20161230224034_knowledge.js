@@ -67,12 +67,14 @@ exports.up = function(knex, Promise) {
         .unsigned().references('id').inTable('knowledge_categorys');
       table.text('question');
       table.dateTime('created_at').defaultTo(knex.raw('now()'));
+      table.dateTime('updated_at');
     })
     .createTable('knowledge_answers', (table) => {
       table.increments('id').primary();
       table.text('answer');
       table.string('url');
       table.dateTime('created_at').defaultTo(knex.raw('now()'));
+      table.dateTime('updated_at');
     })
     // Junction Tables
     .createTable('knowledge_questions_organizations_knowledge_answers', (table) => {
