@@ -71,13 +71,14 @@ exports.up = function(knex, Promise) {
     })
     .createTable('knowledge_answers', (table) => {
       table.increments('id').primary();
-      table.text('answer');
+      table.text('text');
       table.string('url');
       table.dateTime('created_at').defaultTo(knex.raw('now()'));
       table.dateTime('updated_at');
     })
     // Junction Tables
     .createTable('knowledge_questions_organizations_knowledge_answers', (table) => {
+      table.increments('id').primary();
       table.integer('knowledge_question_id')
         .unsigned().references('id').inTable('knowledge_questions');
       table.integer('organization_id')

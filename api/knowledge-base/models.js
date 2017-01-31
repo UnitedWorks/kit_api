@@ -35,7 +35,7 @@ export const KnowledgeFacilityType = bookshelf.Model.extend({
 export const KnowledgeFacility = bookshelf.Model.extend({
   tableName: 'knowledge_facilitys',
   category: function() {
-    return this.belongsTo(KnowledgeCategory, 'category_id');
+    return this.belongsTo(KnowledgeCategory, 'knowledge_category_id');
   },
   events: function() {
     return this.hasMany(KnowledgeEvent, 'knowledge_facility_id');
@@ -57,7 +57,7 @@ export const KnowledgeFacility = bookshelf.Model.extend({
 export const KnowledgeService = bookshelf.Model.extend({
   tableName: 'knowledge_services',
   category: function() {
-    return this.belongsTo(KnowledgeCategory, 'category_id');
+    return this.belongsTo(KnowledgeCategory, 'knowledge_category_id');
   },
   events: function() {
     return this.hasMany(KnowledgeEvent, 'service_id');
@@ -76,7 +76,7 @@ export const KnowledgeService = bookshelf.Model.extend({
 export const KnowledgeEvent = bookshelf.Model.extend({
   tableName: 'knowledge_events',
   category: function() {
-    return this.belongsTo(KnowledgeCategory, 'category_id');
+    return this.belongsTo(KnowledgeCategory, 'knowledge_category_id');
   },
   facility: function() {
     return this.hasOne(KnowledgeFacility, 'id');
@@ -106,13 +106,17 @@ export const KnowledgeAnswerServices = bookshelf.Model.extend({
 
 export const KnowledgeQuestion = bookshelf.Model.extend({
   tableName: 'knowledge_questions',
+  answer: function() {
+    return this.belongsTo(KnowledgeAnswer, 'knowledge_answer_id');
+  },
   category: function() {
-    return this.belongsTo(KnowledgeCategory, 'category_id');
+    return this.belongsTo(KnowledgeCategory, 'knowledge_category_id');
   },
 });
 
 export const KnowledgeAnswer = bookshelf.Model.extend({
   tableName: 'knowledge_answers',
+  hasTimestamps: true,
   question: function() {
     return this.belongsTo(KnowledgeQuestion, 'knowledge_questions_organizations_knowledge_answers');
   },

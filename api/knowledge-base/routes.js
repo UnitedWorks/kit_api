@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { logger } from '../logger';
 import { KnowledgeAnswer, KnowledgeCategory, KnowledgeEvent, KnowledgeFacility,
   KnowledgeFacilityType, KnowledgeService } from './models';
-import { getAnswers, getQuestions, makeAnswerRelation } from './helpers';
+import { getAnswers, getQuestions, makeAnswerRelation, makeAnswer } from './helpers';
 
 const router = new Router();
 
@@ -192,12 +192,17 @@ router.route('/services')
 /**
  * Questions Endpoint
  */
-router.route('/questions')
-  .get((req, res) => {
-    getQuestions(req.query)
-      .then(questions => res.status(200).send({ questions }))
-      .catch(error => res.status(400).send(error));
-  });
+router.get('/questions', (req, res) => {
+  getQuestions(req.query)
+    .then(questions => res.status(200).send({ questions }))
+    .catch(error => res.status(400).send(error));
+});
+
+router.post('/questions/make-answer', (req, res) => {
+  makeAnswer(req.body.organization, req.body.question, req.body.answer, { returnJSON: true })
+    .then(answer => res.status(200).send({ answer }))
+    .catch(error => res.status(400).send(error));
+});
 
 /**
  * Answers Endpoint
