@@ -38,7 +38,7 @@ export const configureExternalInterfaces = () => {
 };
 
 export class FacebookMessengerClient extends BaseClient {
-  constructor() {
+  constructor(config) {
     super();
     const defaults = {
       verifyToken: process.env.FB_VERIFY_TOKEN,
@@ -47,7 +47,7 @@ export class FacebookMessengerClient extends BaseClient {
       graphURI: 'https://graph.facebook.com',
       maxCharacters: 640,
     };
-    this.config = Object.assign({}, defaults, this.config);
+    this.config = Object.assign({}, defaults, config, this.config);
   }
 
   callAPI(messageData) {
@@ -70,20 +70,23 @@ export class FacebookMessengerClient extends BaseClient {
     });
   }
 
-  isTyping(constituent, isTyping) {
+  isTyping(isTyping) {
     const sendData = {
       recipient: {
-        id: constituent.facebook_id,
+        id: this.config.constituent.facebook_id,
       },
       sender_action: isTyping ? 'typing_on' : 'typing_off',
     };
     this.callAPI(sendData);
   }
 
-  send(constituent, text, attachment, quickReplies) {
+  send(text, attachment, quickReplies) {
+    console.log('=========')
+    console.log(this.config)
+    console.log('=========')
     const sendData = {
       recipient: {
-        id: constituent.facebook_id,
+        id: this.config.constituent.facebook_id,
       },
       message: {},
     };
@@ -104,10 +107,10 @@ export class FacebookMessengerClient extends BaseClient {
     return new Promise((resolve) => {
       let fakeTiming = text ? text.length * 60 : 800;
       if (fakeTiming > 2000) fakeTiming = 2000;
-      this.isTyping(constituent, true);
+      this.isTyping(true);
       setTimeout(() => {
         this.callAPI(sendData).then(() => {
-          this.isTyping(constituent, false);
+          this.isTyping(false);
           resolve();
         });
       }, fakeTiming);

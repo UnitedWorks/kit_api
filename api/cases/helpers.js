@@ -94,9 +94,9 @@ export function webhookHitWithEmail(req) {
             logger.info(`Case Resolved for Constituent #${refreshedCaseModel.get('constituentId')}`);
             const constituent = refreshedCaseModel.toJSON().constituent;
             if (constituent.facebook_id) {
-              new FacebookMessengerClient().send(constituent, `Your case (#${refreshedCaseModel.id}) has been taken care of!`);
+              new FacebookMessengerClient({ constituent }).send(`Your case (#${refreshedCaseModel.id}) has been taken care of!`);
             } else if (constituent.phone) {
-              new TwilioSMSClient().send(constituent, `Your case (#${refreshedCaseModel.id}) has been taken care of!`);
+              new TwilioSMSClient({ constituent }).send(`Your case (#${refreshedCaseModel.id}) has been taken care of!`);
             }
           });
         });
@@ -115,9 +115,9 @@ export function webhookEmailEvent(req) {
           const constituent = fetchedCase.toJSON().constituent;
           if (!fetchedCase.toJSON().lastViewed) {
             if (constituent.facebook_id) {
-              new FacebookMessengerClient().send(constituent, `Your case #${fetchedCase.id} has been seen by someone in government! We will let you know when it's addressed.`);
+              new FacebookMessengerClient({ constituent }).send(`Your case #${fetchedCase.id} has been seen by someone in government! We will let you know when it's addressed.`);
             } else if (constituent.phone) {
-              new TwilioSMSClient().send(constituent, `Your case #${fetchedCase.id} has been seen in government! We will let you know when it's addressed.`);
+              new TwilioSMSClient({ constituent }).send(`Your case #${fetchedCase.id} has been seen in government! We will let you know when it's addressed.`);
             }
           }
           fetchedCase.save({

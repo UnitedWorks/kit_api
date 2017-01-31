@@ -20,9 +20,9 @@ const smallTalkStates = {
 
   gettingStarted() {
     logger.info('State: Getting Started');
-    this.messagingClient.addToQuene(this.snapshot.constituent, 'Hey there! I\'m the Mayor');
-    this.messagingClient.addToQuene(this.snapshot.constituent, 'Sort of... Truthfully, I\'m an AI bot that helps you connect with the city and your community');
-    this.messagingClient.addToQuene(this.snapshot.constituent, 'I can tell you the trash schedule, report potholes, or try and help with any problems or injustices you\'re facing.');
+    this.messagingClient.addToQuene('Hey there! I\'m the Mayor');
+    this.messagingClient.addToQuene('Sort of... Truthfully, I\'m an AI bot that helps you connect with the city and your community');
+    this.messagingClient.addToQuene('I can tell you the trash schedule, report potholes, or try and help with any problems or injustices you\'re facing.');
     this.messagingClient.runQuene().then(() => {
       this.fire('location', null, { previous: 'gettingStarted' });
     });
@@ -34,18 +34,18 @@ const smallTalkStates = {
     if (Object.prototype.hasOwnProperty.call(aux, 'previous')) {
       switch (aux.previous) {
         case 'gettingStarted':
-          this.messagingClient.send(this.snapshot.constituent, 'But before I can help out, what city and state do you live in?');
+          this.messagingClient.send('But before I can help out, what city and state do you live in?');
           this.exit('location');
           break;
         default:
-          this.messagingClient.send(this.snapshot.constituent, 'Which city do you want to connect to and get info from?');
+          this.messagingClient.send('Which city do you want to connect to and get info from?');
           this.exit('location');
           break;
       }
     } else {
       nlp.message(input.text, {}).then((nlpData) => {
         if (!Object.prototype.hasOwnProperty.call(nlpData.entities, 'location')) {
-          this.messagingClient.send(this.snapshot.constituent, 'Sorry, I didn\'t catch that. What city or state?');
+          this.messagingClient.send('Sorry, I didn\'t catch that. What city or state?');
           this.exit('location');
           return;
         }
@@ -55,14 +55,14 @@ const smallTalkStates = {
           const numberOfLocations = Object.keys(geoData).length;
           if (numberOfLocations > 1) {
             const message = `Did you mean ${geoData['0'].formattedAddress}? If not, give a bit more detail.`;
-            this.messagingClient.send(this.snapshot.constituent, message);
+            this.messagingClient.send(message);
             this.exit('location');
           } else if (numberOfLocations === 1) {
             this.set('location', geoData[0]);
             this.fire('setOrganization');
           } else {
             const message = this.previous !== 'location' ? 'What city are you located in?' : 'Hmm, I`m not familiar with that city. I might need a state or zipcode.';
-            this.messagingClient.send(this.snapshot.constituent, message);
+            this.messagingClient.send(message);
             this.exit('location');
           }
         }).catch(logger.info);
@@ -89,7 +89,7 @@ const smallTalkStates = {
               icon: 'round_pushpin',
             }).send(`>*City Requested*: ${organizationModel.name}\n>*ID*: ${organizationModel.id}`);
           }
-          this.messagingClient.send(this.snapshot.constituent, message);
+          this.messagingClient.send(message);
           this.exit('start');
           cityFound = true;
         }
@@ -107,7 +107,7 @@ const smallTalkStates = {
               username: 'Unregistered City',
               icon: 'round_pushpin',
             }).send(`>*City Requested*: ${organizationModel.get('name')}\n>*ID*: ${organizationModel.get('id')}`);
-            this.messagingClient.send(this.snapshot.constituent, 'Oh no! Your city isn\'t registered. I will let them know you\'re interested and do my best to help you.');
+            this.messagingClient.send('Oh no! Your city isn\'t registered. I will let them know you\'re interested and do my best to help you.');
             this.exit('start');
           });
         });
@@ -181,7 +181,7 @@ const smallTalkStates = {
             } else {
               message = `Unfortunately, I can't answer that for your city (${this.get('organization').name}).`;
             }
-            this.messagingClient.send(this.snapshot.constituent, message);
+            this.messagingClient.send(message);
             this.exit('start');
           });
         }
@@ -202,10 +202,10 @@ const smallTalkStates = {
               const body = response.data;
               const resources = body.resources;
               const counter = resources.length > 5 ? 5 : resources.length;
-              this.messagingClient.addToQuene(this.snapshot.constituent, 'Here are some places we\'ve found close to your location:\n');
+              this.messagingClient.addToQuene('Here are some places we\'ve found close to your location:\n');
               for (let i = counter; i > 0; i -= 1) {
                 const resource = resources[i];
-                this.messagingClient.addToQuene(this.snapshot.constituent, `${resource.name}\n${resource.phones[0] ? `${resource.phones[0].number}\n` : ''}${resource.website ? `${resource.website}\n` : ''}${resource.short_description || resource.long_description || ''}\n`.trim());
+                this.messagingClient.addToQuene(`${resource.name}\n${resource.phones[0] ? `${resource.phones[0].number}\n` : ''}${resource.website ? `${resource.website}\n` : ''}${resource.short_description || resource.long_description || ''}\n`.trim());
               }
               this.messagingClient.runQuene();
             });
@@ -221,7 +221,7 @@ const smallTalkStates = {
               } else {
                 message = 'I\'m sorry. I can\'t find anything in our database. I\'m going to let the city know about your need.';
               }
-              this.messagingClient.send(this.snapshot.constituent, message);
+              this.messagingClient.send(message);
             });
           }
         }
@@ -237,10 +237,10 @@ const smallTalkStates = {
               const body = response.data;
               const resources = body.resources;
               const counter = resources.length > 5 ? 5 : resources.length;
-              this.messagingClient.addToQuene(this.snapshot.constituent, 'Here are some places we\'ve found close to your location:\n');
+              this.messagingClient.addToQuene('Here are some places we\'ve found close to your location:\n');
               for (let i = counter; i > 0; i -= 1) {
                 const resource = resources[i];
-                this.messagingClient.addToQuene(this.snapshot.constituent, `${resource.name}\n${resource.phones[0] ? `${resource.phones[0].number}\n` : ''}${resource.website ? `${resource.website}\n` : ''}${resource.short_description || resource.long_description || ''}\n`.trim());
+                this.messagingClient.addToQuene(`${resource.name}\n${resource.phones[0] ? `${resource.phones[0].number}\n` : ''}${resource.website ? `${resource.website}\n` : ''}${resource.short_description || resource.long_description || ''}\n`.trim());
               }
               this.messagingClient.runQuene();
             });
@@ -256,7 +256,7 @@ const smallTalkStates = {
               } else {
                 message = 'I\'m sorry. I can\'t find anything in our database. I\'m going to let the city know about your need.';
               }
-              this.messagingClient.send(this.snapshot.constituent, message);
+              this.messagingClient.send(message);
               this.exit('start');
             });
           }
@@ -274,10 +274,10 @@ const smallTalkStates = {
               const body = response.data;
               const resources = body.resources;
               const counter = resources.length > 5 ? 5 : resources.length;
-              this.messagingClient.addToQuene(this.snapshot.constituent, 'Here are some places we\'ve found close to your location:\n');
+              this.messagingClient.addToQuene('Here are some places we\'ve found close to your location:\n');
               for (let i = counter; i > 0; i -= 1) {
                 const resource = resources[i];
-                this.messagingClient.addToQuene(this.snapshot.constituent, `${resource.name}\n${resource.phones[0] ? `${resource.phones[0].number}\n` : ''}${resource.website ? `${resource.website}\n` : ''}${resource.short_description || resource.long_description || ''}\n`.trim());
+                this.messagingClient.addToQuene(`${resource.name}\n${resource.phones[0] ? `${resource.phones[0].number}\n` : ''}${resource.website ? `${resource.website}\n` : ''}${resource.short_description || resource.long_description || ''}\n`.trim());
               }
               this.messagingClient.runQuene();
             });
@@ -293,7 +293,7 @@ const smallTalkStates = {
               } else {
                 message = 'I\'m sorry. I can\'t find anything in our database. I\'m going to let the city know about your need.';
               }
-              this.messagingClient.send(this.snapshot.constituent, message);
+              this.messagingClient.send(message);
               this.exit('start');
             });
           }
@@ -315,10 +315,10 @@ const smallTalkStates = {
               const body = response.data;
               const resources = body.resources;
               const counter = resources.length > 5 ? 5 : resources.length;
-              this.messagingClient.addToQuene(this.snapshot.constituent, 'Here are some places we\'ve found close to your location:\n');
+              this.messagingClient.addToQuene('Here are some places we\'ve found close to your location:\n');
               for (let i = counter; i > 0; i -= 1) {
                 const resource = resources[i];
-                this.messagingClient.addToQuene(this.snapshot.constituent, `${resource.name}\n${resource.phones[0] ? `${resource.phones[0].number}\n` : ''}${resource.website ? `${resource.website}\n` : ''}${resource.short_description || resource.long_description || ''}\n`.trim());
+                this.messagingClient.addToQuene(`${resource.name}\n${resource.phones[0] ? `${resource.phones[0].number}\n` : ''}${resource.website ? `${resource.website}\n` : ''}${resource.short_description || resource.long_description || ''}\n`.trim());
               }
               this.messagingClient.runQuene();
             });
@@ -334,7 +334,7 @@ const smallTalkStates = {
               } else {
                 message = 'I\'m sorry. I can\'t find anything in our database. I\'m going to let the city know about your need.';
               }
-              this.messagingClient.send(this.snapshot.constituent, message);
+              this.messagingClient.send(message);
               this.exit('start');
             });
           }
@@ -356,10 +356,10 @@ const smallTalkStates = {
               const body = response.data;
               const resources = body.resources;
               const counter = resources.length > 5 ? 5 : resources.length;
-              this.messagingClient.addToQuene(this.snapshot.constituent, 'Here are some places we\'ve found close to your location:\n');
+              this.messagingClient.addToQuene('Here are some places we\'ve found close to your location:\n');
               for (let i = counter; i > 0; i -= 1) {
                 const resource = resources[i];
-                this.messagingClient.addToQuene(this.snapshot.constituent, `${resource.name}\n${resource.phones[0] ? `${resource.phones[0].number}\n` : ''}${resource.website ? `${resource.website}\n` : ''}${resource.short_description || resource.long_description || ''}\n`.trim());
+                this.messagingClient.addToQuene(`${resource.name}\n${resource.phones[0] ? `${resource.phones[0].number}\n` : ''}${resource.website ? `${resource.website}\n` : ''}${resource.short_description || resource.long_description || ''}\n`.trim());
               }
               this.messagingClient.runQuene();
             });
@@ -375,7 +375,7 @@ const smallTalkStates = {
               } else {
                 message = 'I\'m sorry. I can\'t find anything in our database. I\'m going to let the city know about your need.';
               }
-              this.messagingClient.send(this.snapshot.constituent, message);
+              this.messagingClient.send(message);
               this.exit('start');
             });
           }
@@ -395,7 +395,7 @@ const smallTalkStates = {
           username: 'Misunderstood Request',
           icon: 'question',
         }).send(`>*Request Message*: ${input.text}\n>*Constituent ID*: ${this.snapshot.constituent.id}`);
-        this.messagingClient.send(this.snapshot.constituent, 'I\'m not sure I understanding. Can you try phrase that differently?');
+        this.messagingClient.send('I\'m not sure I understanding. Can you try phrase that differently?');
         this.exit('start');
       }
     });
@@ -418,7 +418,7 @@ const smallTalkStates = {
         title: label,
       };
     });
-    this.messagingClient.send(this.snapshot.constituent, aux.message || 'What type of problem do you have?', null, quickReplies).then(() => {
+    this.messagingClient.send(aux.message || 'What type of problem do you have?', null, quickReplies).then(() => {
       this.exit('complaintCategory');
     });
   },
@@ -434,7 +434,7 @@ const smallTalkStates = {
       });
       const complaint = { category: foundModel || generalModel };
       this.set('complaint', complaint);
-      this.messagingClient.send(this.snapshot.constituent, 'Can you describe the problem for me?');
+      this.messagingClient.send('Can you describe the problem for me?');
       this.exit('complaintText');
     });
   },
@@ -443,7 +443,7 @@ const smallTalkStates = {
     const headline = this.get('input').payload.text;
     if (headline) {
       this.set('complaint', Object.assign({}, this.get('complaint'), { headline }));
-      this.messagingClient.send(this.snapshot.constituent, 'Can you provide a picture? If not, simply say you don\'t have one');
+      this.messagingClient.send('Can you provide a picture? If not, simply say you don\'t have one');
       this.exit('complaintPicture');
     }
   },
@@ -451,13 +451,13 @@ const smallTalkStates = {
   complaintPicture() {
     const payload = this.get('input').payload;
     if (payload.attachments) {
-      this.messagingClient.send(this.snapshot.constituent, 'Thank you!');
+      this.messagingClient.send('Thank you!');
       const updatedComplaint = Object.assign({}, this.get('complaint'), {
         attachments: payload.attachments,
       });
       this.set('complaint', updatedComplaint);
     }
-    this.messagingClient.send(this.snapshot.constituent, 'Can you send your location? That can simply be an address or a pin on the map.');
+    this.messagingClient.send('Can you send your location? That can simply be an address or a pin on the map.');
     this.exit('complaintLocation');
   },
 
@@ -488,7 +488,7 @@ const smallTalkStates = {
   complaintSubmit() {
     const complaint = this.get('complaint');
     createCase(complaint.headline, complaint.data, complaint.category, this.snapshot.constituent, this.get('organization'), complaint.location, complaint.attachments).then(() => {
-      this.messagingClient.send(this.snapshot.constituent, 'I just sent your message along. I\'ll try to let you know when it\'s been addressed.');
+      this.messagingClient.send('I just sent your message along. I\'ll try to let you know when it\'s been addressed.');
       this.exit('start');
     });
   },

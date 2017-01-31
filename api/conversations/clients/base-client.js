@@ -9,11 +9,11 @@ export default class BaseClient {
     }
   }
 
-  addToQuene(constituent, text, attachment) {
+  addToQuene(text, attachment) {
     // If has attachment, new message
     if (attachment) {
       this.messageQuene.push({
-        constituent,
+        constituent: this.config.constituent,
         text,
         attachment,
       });
@@ -28,7 +28,7 @@ export default class BaseClient {
           rebuiltSentence = rebuiltSentence.concat(`${sentence}.`);
         } else {
           this.messageQuene.push({
-            constituent,
+            constituent: this.config.constituent,
             rebuiltSentence,
           });
           rebuiltSentence = '';
@@ -36,7 +36,7 @@ export default class BaseClient {
       });
     } else {
       this.messageQuene.push({
-        constituent,
+        constituent: this.config.constituent,
         text,
       });
     }
@@ -50,7 +50,7 @@ export default class BaseClient {
           self.messageQuene = [];
           return resolve();
         }
-        return self.send(quene[0].constituent, quene[0].text, quene[0].attachment).then(() => {
+        return self.send(quene[0].text, quene[0].attachment).then(() => {
           return recursiveRun(quene.slice(1));
         });
       }

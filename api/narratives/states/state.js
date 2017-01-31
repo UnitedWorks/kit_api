@@ -44,10 +44,13 @@ export class NarrativeStoreMachine extends StateMachine {
     this.snapshot = snapshot;
 
     // Set the Messaging Client
+    const clientConfig = {
+      constituent: this.snapshot.constituent,
+    }
     if (this.snapshot.data_store.conversationClient === interfaces.FACEBOOK) {
-      this.messagingClient = new FacebookMessengerClient();
+      this.messagingClient = new FacebookMessengerClient(clientConfig);
     } else if (this.snapshot.data_store.conversationClient === interfaces.TWILIO) {
-      this.messagingClient = new TwilioSMSClient();
+      this.messagingClient = new TwilioSMSClient(clientConfig);
     } else {
       this.messagingClient = new BaseClient();
     }
