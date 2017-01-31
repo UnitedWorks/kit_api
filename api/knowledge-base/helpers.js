@@ -23,11 +23,7 @@ export const getQuestions = (params = {}) => {
     answer: qb => qb.select('*').from('knowledge_answers'),
   }] })
   .then(results => results)
-  .catch((error) => {
-    console.log('------');
-    console.log(error);
-    console.log('------');
-  });
+  .catch(error => error);
 };
 
 export const makeAnswer = (organization, question, answer, options) => {
