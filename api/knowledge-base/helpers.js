@@ -2,6 +2,24 @@ import { knex } from '../orm';
 import { KnowledgeAnswer, KnowledgeQuestion, KnowledgeAnswerEvents, KnowledgeAnswerFacilitys,
   KnowledgeAnswerServices, Location, OrganizationQuestionAnswers } from './models';
 
+export const getAnswer = (session, params = {}, options) => {
+  if (!params.organization_id) throw Error('No organization_id provided to getAnswer method');
+  if (!params.label) throw Error('No label provided to getAnswer method');
+  return KnowledgeQuestion.query((qb) => {
+    qb.select(['knowledge_questions.id', 'knowledge_questions.label',
+      'knowledge_questions_organizations_knowledge_answers.knowledge_answer_id',
+      'knowledge_questions_organizations_knowledge_answers.organization_id'])
+      .where('knowledge_questions.label', '=', params.label)
+      .join('knowledge_questions_organizations_knowledge_answers', function() {
+        this.on('knowledge_questions.id', '=', 'knowledge_questions_organizations_knowledge_answers.knowledge_question_id')
+          .andOn('knowledge_questions_organizations_knowledge_answers.organization_id', '=', params.organization_id);
+      });
+  })
+  .fetch({ withRelated: ['answer'] })
+  .then(results => results)
+  .catch(error => error);
+};
+
 export const getAnswers = (session, params = {}, options) => {
   return KnowledgeAnswer.where(params).fetchAll({
     withRelated: ['category', 'events', 'facilities', 'services'],
