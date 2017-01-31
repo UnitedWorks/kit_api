@@ -202,7 +202,7 @@ const smallTalkStates = {
               const body = response.data;
               const resources = body.resources;
               const counter = resources.length > 5 ? 5 : resources.length;
-              this.messagingClient.addToQuene('Here are some places we\'ve found close to your location:\n');
+              this.messagingClient.addToQuene(this.snapshot.constituent, 'Here are some places we\'ve found close to your location:\n');
               for (let i = counter; i > 0; i -= 1) {
                 const resource = resources[i];
                 this.messagingClient.addToQuene(this.snapshot.constituent, `${resource.name}\n${resource.phones[0] ? `${resource.phones[0].number}\n` : ''}${resource.website ? `${resource.website}\n` : ''}${resource.short_description || resource.long_description || ''}\n`.trim());
@@ -237,7 +237,7 @@ const smallTalkStates = {
               const body = response.data;
               const resources = body.resources;
               const counter = resources.length > 5 ? 5 : resources.length;
-              this.messagingClient.addToQuene('Here are some places we\'ve found close to your location:\n');
+              this.messagingClient.addToQuene(this.snapshot.constituent, 'Here are some places we\'ve found close to your location:\n');
               for (let i = counter; i > 0; i -= 1) {
                 const resource = resources[i];
                 this.messagingClient.addToQuene(this.snapshot.constituent, `${resource.name}\n${resource.phones[0] ? `${resource.phones[0].number}\n` : ''}${resource.website ? `${resource.website}\n` : ''}${resource.short_description || resource.long_description || ''}\n`.trim());
@@ -315,7 +315,7 @@ const smallTalkStates = {
               const body = response.data;
               const resources = body.resources;
               const counter = resources.length > 5 ? 5 : resources.length;
-              this.messagingClient.addToQuene('Here are some places we\'ve found close to your location:\n');
+              this.messagingClient.addToQuene(this.snapshot.constituent, 'Here are some places we\'ve found close to your location:\n');
               for (let i = counter; i > 0; i -= 1) {
                 const resource = resources[i];
                 this.messagingClient.addToQuene(this.snapshot.constituent, `${resource.name}\n${resource.phones[0] ? `${resource.phones[0].number}\n` : ''}${resource.website ? `${resource.website}\n` : ''}${resource.short_description || resource.long_description || ''}\n`.trim());
@@ -356,7 +356,7 @@ const smallTalkStates = {
               const body = response.data;
               const resources = body.resources;
               const counter = resources.length > 5 ? 5 : resources.length;
-              this.messagingClient.addToQuene('Here are some places we\'ve found close to your location:\n');
+              this.messagingClient.addToQuene(this.snapshot.constituent, 'Here are some places we\'ve found close to your location:\n');
               for (let i = counter; i > 0; i -= 1) {
                 const resource = resources[i];
                 this.messagingClient.addToQuene(this.snapshot.constituent, `${resource.name}\n${resource.phones[0] ? `${resource.phones[0].number}\n` : ''}${resource.website ? `${resource.website}\n` : ''}${resource.short_description || resource.long_description || ''}\n`.trim());
