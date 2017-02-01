@@ -1,10 +1,74 @@
 import { knex } from '../orm';
-import { KnowledgeAnswer, KnowledgeAnswerEvents, KnowledgeAnswerFacilitys, KnowledgeAnswerServices, Location } from './models';
+import { KnowledgeAnswer, KnowledgeQuestion, KnowledgeAnswerEvents, KnowledgeAnswerFacilitys,
+  KnowledgeAnswerServices, Location, OrganizationQuestionAnswers } from './models';
 
-export const getAnswers = (session, params, options) => {
-  const filters = Object.assign({}, params);
-  return KnowledgeAnswer.where(filters).fetchAll({
+export const getAnswer = (params = {}, options) => {
+  if (!params.organization_id) throw Error('No organization_id provided to getAnswer method');
+  if (!params.label) throw Error('No label provided to getAnswer method');
+  return KnowledgeQuestion.query((qb) => {
+    qb.select(['knowledge_questions.id', 'knowledge_questions.label',
+      'knowledge_questions_organizations_knowledge_answers.knowledge_answer_id',
+      'knowledge_questions_organizations_knowledge_answers.organization_id'])
+      .where('knowledge_questions.label', '=', params.label)
+      .join('knowledge_questions_organizations_knowledge_answers', function() {
+        this.on('knowledge_questions.id', '=', 'knowledge_questions_organizations_knowledge_answers.knowledge_question_id')
+          .andOn('knowledge_questions_organizations_knowledge_answers.organization_id', '=', params.organization_id);
+      });
+  })
+  .fetch({ withRelated: ['answer'] })
+  .then((results) => {
+    if (results) return options.returnJSON ? results.toJSON() : results;
+    return {};
+  }).catch(error => error);
+};
+
+export const getAnswers = (session, params = {}, options) => {
+  return KnowledgeAnswer.where(params).fetchAll({
     withRelated: ['category', 'events', 'facilities', 'services'],
+  });
+};
+
+export const getQuestions = (params = {}) => {
+  return KnowledgeQuestion.query((qb) => {
+    qb.select(['knowledge_questions.id', 'knowledge_questions.label',
+      'knowledge_questions.question', 'knowledge_questions.knowledge_category_id',
+      'knowledge_questions_organizations_knowledge_answers.knowledge_answer_id',
+      'knowledge_questions_organizations_knowledge_answers.organization_id',
+    ]).leftJoin(
+      'knowledge_questions_organizations_knowledge_answers',
+      'knowledge_questions.id',
+      'knowledge_questions_organizations_knowledge_answers.knowledge_question_id');
+  })
+  .fetchAll({ withRelated: ['category', {
+    answer: qb => qb.select('*').from('knowledge_answers'),
+  }] })
+  .then(results => results)
+  .catch(error => error);
+};
+
+export const makeAnswer = (organization, question, answer, options) => {
+  return OrganizationQuestionAnswers.where({
+    organization_id: organization.id,
+    knowledge_question_id: question.id,
+  }).fetch().then((fetchedJunction) => {
+    // If no junction found, forge answer and make junction relation
+    if (fetchedJunction == null) {
+      return KnowledgeAnswer.forge(answer).save(null, { method: 'insert' })
+        .then((returnedAnswer) => {
+          return OrganizationQuestionAnswers.forge({
+            organization_id: organization.id,
+            knowledge_question_id: question.id,
+            knowledge_answer_id: returnedAnswer.id,
+          }).save().then(() => {
+            return options.returnJSON ? returnedAnswer.toJSON() : returnedAnswer;
+          });
+        });
+    }
+    // Otherwise, just update answer
+    return KnowledgeAnswer.where({ id: answer.id }).save(answer, { method: 'update', patch: true })
+      .then((returnedAnswer) => {
+        return options.returnJSON ? returnedAnswer.toJSON() : returnedAnswer;
+      });
   });
 };
 

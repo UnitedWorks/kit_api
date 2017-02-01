@@ -3,7 +3,7 @@ import { logger } from '../../logger';
 import BaseClient from './base-client';
 
 export class TwilioSMSClient extends BaseClient {
-  constructor() {
+  constructor(config) {
     super();
     const defaults = {
       sid: process.env.TWILIO_KEY_SID,
@@ -11,13 +11,13 @@ export class TwilioSMSClient extends BaseClient {
       fromNumber: process.env.TWILIO_FROM_NUMBER,
     };
     this.client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_ACCOUNT_AUTH_TOKEN);
-    this.config = Object.assign({}, defaults, this.config);
+    this.config = Object.assign({}, defaults, config, this.config);
   }
 
-  send(constituent, text, attachment, quickReplies) {
+  send(text, attachment, quickReplies) {
     return new Promise((resolve, reject) => {
       const message = {
-        to: constituent.phone,
+        to: this.config.constituent.phone,
         from: this.config.fromNumber,
         body: text || '',
       };
