@@ -516,16 +516,16 @@ export default class SmallTalkMachine extends NarrativeStoreMachine {
       switch (self.snapshot.data_store.input.payload.payload) {
         case 'MAKE_REQUEST':
           self.fire('complaintStart');
-          break;
+          return true;
         case 'GET_REQUESTS':
           self.fire('getRequests');
-          break;
+          return true;
         case 'GET_STARTED':
           self.fire('gettingStarted');
-          break;
+          return true;
         case 'CHANGE_CITY':
           self.fire('location', null, { previous: self.current || self.previous });
-          break;
+          return true;
         default:
           return false;
       }
@@ -533,14 +533,13 @@ export default class SmallTalkMachine extends NarrativeStoreMachine {
 
     // Initialize
     const actionType = self.snapshot.data_store.input.type;
-    console.log(self.snapshot.data_store.input)
     switch (actionType) {
       case 'message':
         handleMessage();
         break;
       case 'action':
-        const runAction = handleAction()
-        if (!runAction) {
+        const checkForAction = handleAction();
+        if (!checkForAction) {
           handleMessage();
         }
         break;
