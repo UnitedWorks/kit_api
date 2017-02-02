@@ -31,24 +31,30 @@ router.post('/organization', (req, res) => {
   logger.info('Creation Requested - Organization');
   const address = req.body.address;
   const organization = req.body.organization;
+  if (!organization.type) organization.type = 'admin';
   // Get location
   geocoder.geocode(`${address.city} ${address.state}`).then((geoData) => {
-    if (geoData.length > 1) {
-      const errorMessage = 'Found more than one location, be more specific';
+    const cityOnlyGeoData = geoData.filter(location => location.city);
+    if (cityOnlyGeoData.length > 1) {
+      const errorMessage = 'Found more than one location, be more specific.';
+      logger.error(errorMessage);
+      res.status(400).send(errorMessage);
+    } else if (cityOnlyGeoData.length === 0) {
+      const errorMessage = 'No locations found.';
       logger.error(errorMessage);
       res.status(400).send(errorMessage);
     }
-    saveLocation(geoData[0], { returnJSON: true })
-      .then((location) => {
-        const orgWithLocation = Object.assign(organization, { location_id: location.id });
-        // Create organization
-        helpers.createOrganization(orgWithLocation, { returnJSON: true })
-          .then((newOrganization) => {
+    helpers.checkForAdminOrganizationAtLocation(cityOnlyGeoData[0]).then(() => {
+        saveLocation(cityOnlyGeoData[0], { returnJSON: true }).then((location) => {
+          const orgWithLocation = Object.assign(organization, { location_id: location.id });
+          // Create organization
+          helpers.createOrganization(orgWithLocation, { returnJSON: true }).then((newOrganization) => {
             new SlackService({ username: 'Welcome', icon: 'capitol' }).send(`Organization *${newOrganization.name}* just signed up!`);
             res.status(200).json({ organization: newOrganization });
           }).catch(error => res.status(400).send(error));
+        }).catch(error => res.status(400).send(error));
       }).catch(error => res.status(400).send(error));
-  }).catch(error => res.status(400).send(error));
+    }).catch(error => res.status(400).send(error));
 });
 
 router.post('/organizations/add-representative', (req, res) => {

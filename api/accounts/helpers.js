@@ -1,3 +1,4 @@
+import { knex } from '../orm';
 import { Organization, Representative } from './models';
 
 export const createOrganization = (organizationModel, options = {}) => {
@@ -5,6 +6,23 @@ export const createOrganization = (organizationModel, options = {}) => {
     Organization.forge(organizationModel).save(null, { method: 'insert' })
       .then(model => resolve(options.returnJSON ? model.toJSON() : model))
       .catch(err => reject(err));
+  });
+};
+
+export const checkForAdminOrganizationAtLocation = (geoData) => {
+  return new Promise((resolve, reject) => {
+    knex('organizations')
+      .select('*')
+      .join('locations', 'organizations.location_id', 'locations.id')
+      .where('city', '=', geoData.city)
+      .whereRaw("administrative_levels->>'level1short'=?", geoData.administrativeLevels.level1short)
+      .then((res) => {
+        if (res.length > 0) {
+          reject('A city in that state seems to have already been registered.');
+        }
+        resolve();
+      })
+      .catch(error => reject(error));
   });
 };
 
