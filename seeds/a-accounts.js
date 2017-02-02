@@ -15,33 +15,37 @@ exports.seed = (knex, Promise) => {
     knex('representatives_cases').del(),
   ])
   .then(() => {
-      // Clearing knowledge entities in a particular order because of relationships
-      return knex('knowledge_events').del().then(() => {
-        return knex('knowledge_services').del().then(() => {
-          return knex('knowledge_facilitys').del().then(() => {
-            return knex('knowledge_questions_organizations_knowledge_answers').del();
-          });
+    // Clearing knowledge entities in a particular order because of relationships
+    return knex('knowledge_events').del().then(() => {
+      return knex('knowledge_services').del().then(() => {
+        return knex('knowledge_facilitys').del().then(() => {
+          return knex('knowledge_questions_organizations_knowledge_answers').del();
         });
       });
+    });
   })
   .then(() => {
-      // Clearing organizations first CASCADE deletes representatives with associated foreign keys
-      return Promise.all([
-        knex('knowledge_questions').del(),
-        knex('knowledge_answers').del(),
-        knex('representatives').del(),
-        knex('cases').del(),
-        knex('locations').del(),
-      ]);
+    // Clearing organizations first CASCADE deletes representatives with associated foreign keys
+    return Promise.all([
+      knex('knowledge_questions').del(),
+      knex('knowledge_answers').del(),
+      knex('representatives').del(),
+      knex('cases').del(),
+    ]);
   })
   .then(() => {
-      // Then we clear unassociated representatives
-      return Promise.all([
-        knex('schedules').del(),
-        knex('organizations').del(),
-        knex('constituents').del(),
-        knex('knowledge_categorys').del(),
-      ]);
+    // Then we clear unassociated representatives
+    return Promise.all([
+      knex('schedules').del(),
+      knex('organizations').del(),
+      knex('constituents').del(),
+      knex('knowledge_categorys').del(),
+    ]);
+  })
+  .then(() => {
+    return Promise.all([
+      knex('locations').del(),
+    ]);
   })
   .then(() => {
     // Seed Locations
