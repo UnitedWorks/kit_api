@@ -416,6 +416,7 @@ const smallTalkStates = {
       return {
         content_type: 'text',
         title: label,
+        payload: label,
       };
     });
     this.messagingClient.send(aux.message || 'What type of problem do you have?', null, quickReplies).then(() => {
@@ -424,7 +425,8 @@ const smallTalkStates = {
   },
 
   complaintCategory() {
-    const category = this.get('input').payload.text;
+    // Check for text answer or passed quick_reply payload
+    const category = this.get('input').payload.text || this.get('input').payload.payload;
     CaseCategory.where({ parent_category_id: null }).fetchAll().then((data) => {
       let foundModel;
       let generalModel;
@@ -514,16 +516,18 @@ export default class SmallTalkMachine extends NarrativeStoreMachine {
       switch (self.snapshot.data_store.input.payload.payload) {
         case 'MAKE_REQUEST':
           self.fire('complaintStart');
-          break;
+          return true;
         case 'GET_REQUESTS':
           self.fire('getRequests');
-          break;
+          return true;
         case 'GET_STARTED':
           self.fire('gettingStarted');
-          break;
+          return true;
         case 'CHANGE_CITY':
           self.fire('location', null, { previous: self.current || self.previous });
-          break;
+          return true;
+        default:
+          return false;
       }
     }
 
@@ -534,9 +538,11 @@ export default class SmallTalkMachine extends NarrativeStoreMachine {
         handleMessage();
         break;
       case 'action':
-        handleAction();
+        const checkForAction = handleAction();
+        if (!checkForAction) {
+          handleMessage();
+        }
         break;
-      default:
     }
   }
 }

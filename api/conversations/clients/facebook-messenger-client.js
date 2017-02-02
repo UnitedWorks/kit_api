@@ -95,11 +95,7 @@ export class FacebookMessengerClient extends BaseClient {
       };
     }
     if (quickReplies) {
-      // FACEBOOK PLATFORM THROWING AN UNKNOWN ERROR FOR MY QUICK REPLIES
-      // sendData.message.quick_replies = quickReplies;
-      quickReplies.forEach((reply, index) => {
-        sendData.message.text += index === 0 ? ` ${reply.title}` : `, ${reply.title}`;
-      });
+      sendData.message.quick_replies = quickReplies;
     }
     return new Promise((resolve) => {
       let fakeTiming = text ? text.length * 60 : 800;

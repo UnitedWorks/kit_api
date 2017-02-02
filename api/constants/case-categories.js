@@ -1,4 +1,4 @@
-export const QUALITY_OF_LIFE = 'Qualify of Life';
+export const QUALITY_OF_LIFE = 'Quality of Life';
 export const WINTER_CONDITIONS = 'Winter Conditions';
 export const TAXI_CAR_SERVICE = 'Taxi and Car Service';
 export const VEHICLES_PARKING = 'Vehicles and Parking';
