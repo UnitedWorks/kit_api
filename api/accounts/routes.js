@@ -31,7 +31,7 @@ router.post('/organization', (req, res) => {
   logger.info('Creation Requested - Organization');
   const address = req.body.address;
   if (!address.city || !address.state || !address.zipcode || !address.country) {
-    res.status(400).send(`Missing key on address payload. Check for 'city', 'state', 'zipcode', and 'country'`)
+    res.status(400).send("Missing address 'city', 'state', 'zipcode', or 'country'");
   }
   const organization = req.body.organization;
   if (!organization.type) organization.type = 'admin';
@@ -71,8 +71,13 @@ router.post('/organizations/add-representative', (req, res) => {
 // Representatives
 router.get('/representative', (req, res) => {
   Representative.where(req.query).fetch({ withRelated: ['organization'] })
-    .then(representative => res.status(200).send({ representative }))
-    .catch(err => res.status(400).send(err));
+    .then((representative) => {
+      if (representative) {
+        res.status(200).send({ representative });
+      } else {
+        res.status(400).send('No representative found');
+      }
+    }).catch(err => res.status(400).send(err));
 });
 
 router.get('/representatives', (req, res) => {

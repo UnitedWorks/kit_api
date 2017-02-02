@@ -1,4 +1,5 @@
 import { knex } from '../orm';
+import { logger } from '../logger';
 import { Organization, Representative } from './models';
 
 export const createOrganization = (organizationModel, options = {}) => {
@@ -44,7 +45,10 @@ export const createRepresentative = (rep, org, options = {}) => {
             })
             .catch(err => reject(err));
         }
-      }).catch(err => reject(err));
+      }).catch((err) => {
+        logger.error(err);
+        reject('This email looks like its in use, contact us with further issues.');
+      });
   });
 };
 
