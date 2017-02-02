@@ -416,6 +416,7 @@ const smallTalkStates = {
       return {
         content_type: 'text',
         title: label,
+        payload: label,
       };
     });
     this.messagingClient.send(aux.message || 'What type of problem do you have?', null, quickReplies).then(() => {
@@ -424,7 +425,8 @@ const smallTalkStates = {
   },
 
   complaintCategory() {
-    const category = this.get('input').payload.text;
+    // Check for text answer or passed quick_reply payload
+    const category = this.get('input').payload.text || this.get('input').payload.payload;
     CaseCategory.where({ parent_category_id: null }).fetchAll().then((data) => {
       let foundModel;
       let generalModel;
