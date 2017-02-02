@@ -6,6 +6,7 @@ import { Case, OrganizationsCases } from './models';
 import { FacebookMessengerClient, TwilioSMSClient } from '../conversations/clients';
 import SlackService from '../services/slack';
 import EmailService from '../services/email';
+import { SEND_GRID_EVENT_OPEN } from '../constants/sendgrid';
 
 export const newCaseNotification = (caseObj, organization) => {
   AccountModels.Organization.where({ id: organization.id }).fetch({ withRelated: ['representatives'] }).then((returnedOrg) => {
@@ -107,8 +108,26 @@ export function webhookHitWithEmail(req) {
 
 export function webhookEmailEvent(req) {
   logger.info(`Email Events: ${JSON.stringify(req.body)}`);
-  req.body.forEach((event) => {
-    if (event.event === 'open') {
+
+  // Deduplicate open events
+  const messageEventIds = {};
+  const events = req.body.filter((event) => {
+    // Create array for IDs if it doesnt exist
+    if (!messageEventIds[event.event]) {
+      messageEventIds[event.event] = [];
+    }
+    // Check for id
+    if (messageEventIds[event.event].includes(event.sg_message_id)) {
+      return false;
+    }
+    // If none found, say this event is ok and include id for future checks
+    messageEventIds[event.event].push(event.sg_message_id);
+    return true;
+  });
+
+  // Run methods on events
+  events.forEach((event) => {
+    if (event.event === SEND_GRID_EVENT_OPEN) {
       if (event.case_id) {
         logger.info(`Email Event: Case ${event.case_id} read by ${event.email}`);
         Case.where({ id: event.case_id }).fetch({ withRelated: ['constituent'] }).then((fetchedCase) => {
