@@ -526,19 +526,24 @@ export default class SmallTalkMachine extends NarrativeStoreMachine {
         case 'CHANGE_CITY':
           self.fire('location', null, { previous: self.current || self.previous });
           break;
+        default:
+          return false;
       }
     }
 
     // Initialize
     const actionType = self.snapshot.data_store.input.type;
+    console.log(self.snapshot.data_store.input)
     switch (actionType) {
       case 'message':
         handleMessage();
         break;
       case 'action':
-        handleAction();
+        const runAction = handleAction()
+        if (!runAction) {
+          handleMessage();
+        }
         break;
-      default:
     }
   }
 }
