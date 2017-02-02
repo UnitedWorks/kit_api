@@ -16,6 +16,7 @@ export const checkForAdminOrganizationAtLocation = (geoData) => {
       .join('locations', 'organizations.location_id', 'locations.id')
       .where('city', '=', geoData.city)
       .whereRaw("administrative_levels->>'level1short'=?", geoData.administrativeLevels.level1short)
+      .whereRaw("administrative_levels->>'level2short'=?", geoData.administrativeLevels.level2short)
       .then((res) => {
         if (res.length > 0) {
           reject('A city in that state seems to have already been registered.');

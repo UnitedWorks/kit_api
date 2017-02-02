@@ -30,10 +30,13 @@ router.get('/organizations', (req, res) => {
 router.post('/organization', (req, res) => {
   logger.info('Creation Requested - Organization');
   const address = req.body.address;
+  if (!address.city || !address.state || !address.zipcode || !address.country) {
+    res.status(400).send(`Missing key on address payload. Check for 'city', 'state', 'zipcode', and 'country'`)
+  }
   const organization = req.body.organization;
   if (!organization.type) organization.type = 'admin';
   // Get location
-  geocoder.geocode(`${address.city} ${address.state}`).then((geoData) => {
+  geocoder.geocode(`${address.city} ${address.state}, ${address.zipcode}, ${address.country}`).then((geoData) => {
     const cityOnlyGeoData = geoData.filter(location => location.city);
     if (cityOnlyGeoData.length > 1) {
       const errorMessage = 'Found more than one location, be more specific.';
