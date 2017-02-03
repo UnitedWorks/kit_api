@@ -31,8 +31,14 @@ const smallTalkStates = {
     });
   },
 
-  setOrganization() {
+  setOrganization(aux) {
     logger.info('State: Set Organization');
+    // If menu action, simply pose question
+    if (aux && aux.menuAction) {
+      this.messagingClient.send('Ok! Tell me the city name or postcode.');
+      this.exit('setOrganization');
+      return;
+    }
     //
     // Get input, process it, and get a geolocation
     //
@@ -568,7 +574,7 @@ export default class SmallTalkMachine extends NarrativeStoreMachine {
           self.fire('intro');
           return true;
         case 'CHANGE_CITY':
-          self.fire('location', null, { previous: self.current || self.previous });
+          self.fire('setOrganization', null, { menuAction: true });
           return true;
         case 'WHAT_CAN_I_ASK':
           self.fire('whatCanIAsk');
