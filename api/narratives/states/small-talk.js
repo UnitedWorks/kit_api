@@ -113,7 +113,7 @@ const smallTalkStates = {
       const input = this.get('input').payload.text || this.get('input').payload.payload;
       nlp.message(input, {}).then((nlpData) => {
         if (nlpData.entities.confirm_deny[0].value === 'Yes') {
-          this.messagingClient.send('Oh yeah? Some of the best mayors are around there. Including me of course.');
+          this.messagingClient.addToQuene('Oh yeah? Some of the best mayors are around there. Including me of course.');
           // If city is activated, suggest asking a question or complaint
           // If not, tell them they can only leave complaints/suggestions!
           const quickReplies = [
@@ -121,11 +121,13 @@ const smallTalkStates = {
             { content_type: 'text', title: 'Make a Request', payload: 'MAKE_REQUEST' },
           ];
           if (this.get('organization').activated) {
-            this.messagingClient.send('Your community is among the best! It looks like they\'ve given me answers to some common questions and requests.', null, quickReplies);
+            this.messagingClient.addToQuene('Your community is among the best! It looks like they\'ve given me answers to some common questions and requests.', null, quickReplies);
           } else {
-            this.messagingClient.send('You\'re community hasn\'t yet given me answers to common questions, but I\'ve let them know. They can still accept requests, suggestions, or complaints!', null, quickReplies);
+            this.messagingClient.addToQuene('You\'re community hasn\'t yet given me answers to common questions, but I\'ve let them know. They can still accept requests, suggestions, or complaints!', null, quickReplies);
           }
-          this.exit('start');
+          this.messagingClient.runQuene().then(() => {
+            this.exit('start');
+          });
         } else if (nlpData.entities.confirm_deny[0].value === 'No') {
           this.messagingClient.send('Oh! Can you tell me your city and state again?');
           this.exit('setOrganization');

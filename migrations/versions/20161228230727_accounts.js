@@ -40,7 +40,7 @@ exports.up = function (knex, Promise) {
     .createTable('constituents', (table) => {
       table.increments('id').primary();
       table.string('first_name');
-      table.string('last_name');
+      table.string('name');
       table.string('email');
       table.string('phone');
       table.string('facebook_id');
@@ -48,8 +48,7 @@ exports.up = function (knex, Promise) {
     })
     .createTable('representatives', (table) => {
       table.increments('id').primary();
-      table.string('first_name');
-      table.string('last_name');
+      table.string('name');
       table.string('title');
       table.string('email').notNullable().unique();
       table.string('phone');
