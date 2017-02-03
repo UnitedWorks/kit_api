@@ -7,7 +7,7 @@ import { NarrativeStoreMachine } from './state';
 import { nlp } from '../../services/nlp';
 import { geocoder } from '../../services/geocoder';
 import { Constituent, Organization } from '../../accounts/models';
-import { createOrganization } from '../../accounts/helpers';
+import { createOrganization, getAdminOrganizationAtLocation } from '../../accounts/helpers';
 import { getAnswer, saveLocation } from '../../knowledge-base/helpers';
 import { createCase } from '../../cases/helpers';
 import { CaseCategory } from '../../cases/models';
@@ -67,49 +67,74 @@ const smallTalkStates = {
         // Match with Organization
         //
         this.set('nlp', nlpData.entities);
-        this.set('location', geoData[Object.keys(geoData)[0]]);
+        this.set('location', filteredGeoData[0]);
         const constituentLocation = this.get('location');
-        Organization.collection().fetch({ withRelated: ['location', 'narrativeSources'] }).then((collection) => {
-          let cityFound = false;
-          collection.toJSON().forEach((organizationModel) => {
-            if (organizationModel.location.city === constituentLocation.city) {
-              this.set('organization', organizationModel);
-              const message = organizationModel.activated ?
-                `Got it! I'll make sure my answers relate to ${constituentLocation.city}. Where were we?` :
-                'Oh no! Your city isn\'t registered. I can still take complaints, but may not have all the answers to your questions.';
-              if (!organizationModel.activated) {
-                new SlackService({
-                  username: 'Inactive City Requested',
-                  icon: 'round_pushpin',
-                }).send(`>*City Requested*: ${organizationModel.name}\n>*ID*: ${organizationModel.id}`);
-              }
-              this.messagingClient.send(message);
-              this.exit('start');
-              cityFound = true;
-            }
-          });
-          if (!cityFound) {
-            saveLocation(constituentLocation).then((locationModel) => {
-              createOrganization({
-                name: locationModel.get('city'),
-                category: 'public',
-                type: 'admin',
-                location_id: locationModel.get('id'),
-              }).then((organizationModel) => {
-                this.set('organization', organizationModel);
-                new SlackService({
-                  username: 'Unregistered City',
-                  icon: 'round_pushpin',
-                }).send(`>*City Requested*: ${organizationModel.get('name')}\n>*ID*: ${organizationModel.get('id')}`);
-                this.messagingClient.send('Oh no! Your city isn\'t registered. I will let them know you\'re interested and do my best to help you.');
-                this.exit('start');
-              });
-            });
-          }
-        });
 
+        getAdminOrganizationAtLocation(constituentLocation).then((orgModel) => {
+          this.set('organization', orgModel);
+          if (!orgModel.activated) {
+            new SlackService({
+              username: 'Inactive City Requested',
+              icon: 'round_pushpin',
+            }).send(`>*City Requested*: ${orgModel.name}\n>*ID*: ${orgModel.id}`);
+          }
+          this.fire('setOrganizationConfirm', null, { locationText: `${orgModel.city}, ${orgModel.administrative_levels.level1short}` });
+        }).catch(() => {
+          saveLocation(constituentLocation).then((locationModel) => {
+            createOrganization({
+              name: locationModel.get('city'),
+              category: 'public',
+              type: 'admin',
+              location_id: locationModel.get('id'),
+            }).then((orgModel) => {
+              this.set('organization', orgModel);
+              new SlackService({
+                username: 'Unregistered City',
+                icon: 'round_pushpin',
+              }).send(`>*City Requested*: ${orgModel.get('name')}\n>*ID*: ${orgModel.get('id')}`);
+              this.fire('setOrganizationConfirm', null, { locationText: `${orgModel.location.city}, ${orgModel.location.administrativeLevels.level1short}` });
+            });
+          });
+        });
       }).catch(logger.error);
     }).catch(logger.error);
+  },
+
+  setOrganizationConfirm(aux) {
+    logger.info('State: Set Organization Confirmation');
+    if (aux) {
+      const quickReplies = [
+        { content_type: 'text', title: 'Yep!', payload: 'Yep!' },
+        { content_type: 'text', title: 'No', payload: 'No' }
+      ];
+      this.messagingClient.send(`Oh, ${aux.locationText}? Is that the right city?`, null, quickReplies);
+      this.exit('setOrganizationConfirm');
+    } else {
+      const input = this.get('input').payload.text || this.get('input').payload.payload;
+      nlp.message(input, {}).then((nlpData) => {
+        if (nlpData.entities.confirm_deny[0].value === 'Yes') {
+          this.messagingClient.send('Oh yeah? Some of the best mayors are around there. Including me of course.');
+          // If city is activated, suggest asking a question or complaint
+          // If not, tell them they can only leave complaints/suggestions!
+          const quickReplies = [
+            { content_type: 'text', title: 'What can I ask?', payload: 'WHAT_CAN_I_ASK' },
+            { content_type: 'text', title: 'Make a Request', payload: 'MAKE_REQUEST' },
+          ];
+          if (this.get('organization').activated) {
+            this.messagingClient.send('Your community is among the best! It looks like they\'ve given me answers to some common questions and requests.', null, quickReplies);
+          } else {
+            this.messagingClient.send('You\'re community hasn\'t yet given me answers to common questions, but I\'ve let them know. They can still accept requests, suggestions, or complaints!', null, quickReplies);
+          }
+          this.exit('start');
+        } else if (nlpData.entities.confirm_deny[0].value === 'No') {
+          this.messagingClient.send('Oh! Can you tell me your city and state again?');
+          this.exit('setOrganization');
+        } else {
+          this.messagingClient.send('Sorry, I didn\'t catch whether that was correct.');
+          this.exit('setOrganizationConfirm');
+        }
+      });
+    }
   },
 
   start() {
@@ -119,6 +144,19 @@ const smallTalkStates = {
       this.set('nlp', nlpData.entities);
       const entities = nlpData.entities;
       logger.info(nlpData);
+
+      // Help
+      if (Object.prototype.hasOwnProperty.call(entities, TAGS.HELP)) {
+        if (entities[TAGS.HELP][0].value === TAGS.WHAT_CAN_I_ASK) {
+          this.messagingClient.addToQuene('You can ask questions about all sorts of things like... "Where can I pay this parking ticket?", "Where can I get a dog license for this cute pup", and "When the next local election is coming up?"');
+          if (this.get('organization').activated) {
+            this.messagingClient.addToQuene('Your city is active, so if you ask a question I can\'t asnwer, I\'ll let them know!');
+          } else {
+            this.messagingClient.addToQuene('However, your city has not yet signed up, so I won\'t be able to answer questions for you. I can however forward along complaints or suggestions you have!');
+          }
+          this.messagingClient.runQuene();
+        }
+      }
 
       // Complaint
       if (Object.prototype.hasOwnProperty.call(entities, TAGS.COMPLAINT)) {

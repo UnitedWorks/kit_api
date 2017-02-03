@@ -7,7 +7,7 @@ const persistentMenu = {
   thread_state: 'existing_thread',
   call_to_actions: [{
     type: 'postback',
-    title: 'Make a Request',
+    title: 'Make a Request / Complaint',
     payload: 'MAKE_REQUEST',
   }, {
     type: 'postback',
@@ -104,7 +104,6 @@ export class FacebookMessengerClient extends BaseClient {
       // if (fakeTiming > 2000) fakeTiming = 2000;
       // this.isTyping(true);
       // setTimeout(() => {
-      console.log(sendData)
         this.callAPI(sendData).then(() => {
           // this.isTyping(false);
           resolve();

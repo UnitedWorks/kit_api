@@ -10,6 +10,24 @@ export const createOrganization = (organizationModel, options = {}) => {
   });
 };
 
+export const getAdminOrganizationAtLocation = (geoData) => {
+  return new Promise((resolve, reject) => {
+    knex('organizations')
+      .select('*')
+      .join('locations', 'organizations.location_id', 'locations.id')
+      .where('city', '=', geoData.city)
+      .whereRaw("administrative_levels->>'level1short'=?", geoData.administrativeLevels.level1short)
+      .whereRaw("administrative_levels->>'level2short'=?", geoData.administrativeLevels.level2short)
+      .then((res) => {
+        if (res.length === 1) {
+          resolve(JSON.parse(JSON.stringify(res[0])));
+        }
+        reject('No organization found at provided location.');
+      })
+      .catch(error => reject(error));
+  });
+};
+
 export const checkForAdminOrganizationAtLocation = (geoData) => {
   return new Promise((resolve, reject) => {
     knex('organizations')
