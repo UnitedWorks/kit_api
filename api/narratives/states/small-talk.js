@@ -140,7 +140,7 @@ const smallTalkStates = {
   whatCanIAsk() {
     this.messagingClient.addToQuene('You can ask questions about all sorts of things like... "Where can I pay this parking ticket?", "Where can I get a dog license for this cute pup", and "When the next local election is coming up?"');
     if (this.get('organization').activated) {
-      this.messagingClient.addToQuene('Your city is active, so if you ask a question I can\'t asnwer, I\'ll let them know!');
+      this.messagingClient.addToQuene('Your city is active, so if you ask a question I can\'t asnwer, I\'ll let them know! You can also leave requests and complaints.');
     } else {
       this.messagingClient.addToQuene('However, your city has not yet signed up, so I won\'t be able to answer questions for you. I can however forward along complaints or suggestions you have!');
     }
