@@ -91,22 +91,25 @@ export class FacebookMessengerClient extends BaseClient {
     if (attachment) {
       sendData.message.attachment = {
         type: attachment.type,
-        url: attachment.url,
+        payload: {
+          url: attachment.url,
+        },
       };
     }
     if (quickReplies) {
       sendData.message.quick_replies = quickReplies;
     }
     return new Promise((resolve) => {
-      let fakeTiming = text ? text.length * 60 : 800;
-      if (fakeTiming > 2000) fakeTiming = 2000;
-      this.isTyping(true);
-      setTimeout(() => {
+      // let fakeTiming = text ? text.length * 60 : 800;
+      // if (fakeTiming > 2000) fakeTiming = 2000;
+      // this.isTyping(true);
+      // setTimeout(() => {
+      console.log(sendData)
         this.callAPI(sendData).then(() => {
-          this.isTyping(false);
+          // this.isTyping(false);
           resolve();
         });
-      }, fakeTiming);
+      // }, fakeTiming);
     });
   }
 }
