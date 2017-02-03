@@ -1,5 +1,3 @@
-import { logger } from '../../logger';
-
 export default class BaseClient {
   constructor(config) {
     this.config = config;

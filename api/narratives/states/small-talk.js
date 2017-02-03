@@ -23,7 +23,7 @@ const smallTalkStates = {
     this.messagingClient.addToQuene('Oh, hey there! I\'m the Mayor and I\'m here to help you engage your city.');
     this.messagingClient.addToQuene(null, {
       type: 'image',
-      url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t1.0-9/15170831_140291449785947_1315179748138007081_n.jpg?oh=1fafc50ce2942158270383f856a5adc2&oe=58FEC044',
+      url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/16422989_187757401706018_5896478987148979475_o.png?oh=e1edeead1710b85f3d42e669685f3d59&oe=590603C2',
     });
     this.messagingClient.addToQuene('I\'ll tell you about school closings, available benefits, and help you get a dog license for that cute pup. Tell me the name of your city or postcode.');
     this.messagingClient.runQuene().then(() => {
@@ -138,6 +138,10 @@ const smallTalkStates = {
   },
 
   whatCanIAsk() {
+    this.messagingClient.addToQuene(null, {
+      type: 'image',
+      url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/16463485_187743068374118_731666577286732253_o.png?oh=145d7d19e62113f3d2a56a74f1632d13&oe=590ABC31',
+    });
     this.messagingClient.addToQuene('You can ask questions about all sorts of things like... "Where can I pay this parking ticket?", "Where can I get a dog license for this cute pup", and "When the next local election is coming up?"');
     if (this.get('organization').activated) {
       this.messagingClient.addToQuene('Your city is active, so if you ask a question I can\'t asnwer, I\'ll let them know! You can also leave requests and complaints.');
