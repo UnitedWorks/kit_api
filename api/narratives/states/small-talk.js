@@ -105,7 +105,7 @@ const smallTalkStates = {
     if (aux) {
       const quickReplies = [
         { content_type: 'text', title: 'Yep!', payload: 'Yep!' },
-        { content_type: 'text', title: 'No', payload: 'No' }
+        { content_type: 'text', title: 'No', payload: 'No' },
       ];
       this.messagingClient.send(`Oh, ${aux.locationText}? Is that the right city?`, null, quickReplies);
       this.exit('setOrganizationConfirm');
@@ -137,6 +137,17 @@ const smallTalkStates = {
     }
   },
 
+  whatCanIAsk() {
+    this.messagingClient.addToQuene('You can ask questions about all sorts of things like... "Where can I pay this parking ticket?", "Where can I get a dog license for this cute pup", and "When the next local election is coming up?"');
+    if (this.get('organization').activated) {
+      this.messagingClient.addToQuene('Your city is active, so if you ask a question I can\'t asnwer, I\'ll let them know!');
+    } else {
+      this.messagingClient.addToQuene('However, your city has not yet signed up, so I won\'t be able to answer questions for you. I can however forward along complaints or suggestions you have!');
+    }
+    this.messagingClient.runQuene();
+    this.exit('start');
+  },
+
   start() {
     logger.info('State: Start');
     const input = this.get('input').payload;
@@ -148,18 +159,10 @@ const smallTalkStates = {
       // Help
       if (Object.prototype.hasOwnProperty.call(entities, TAGS.HELP)) {
         if (entities[TAGS.HELP][0].value === TAGS.WHAT_CAN_I_ASK) {
-          this.messagingClient.addToQuene('You can ask questions about all sorts of things like... "Where can I pay this parking ticket?", "Where can I get a dog license for this cute pup", and "When the next local election is coming up?"');
-          if (this.get('organization').activated) {
-            this.messagingClient.addToQuene('Your city is active, so if you ask a question I can\'t asnwer, I\'ll let them know!');
-          } else {
-            this.messagingClient.addToQuene('However, your city has not yet signed up, so I won\'t be able to answer questions for you. I can however forward along complaints or suggestions you have!');
-          }
-          this.messagingClient.runQuene();
+          this.fire('whatCanIAsk');
         }
-      }
-
       // Complaint
-      if (Object.prototype.hasOwnProperty.call(entities, TAGS.COMPLAINT)) {
+      } else if (Object.prototype.hasOwnProperty.call(entities, TAGS.COMPLAINT)) {
         if (Object.prototype.hasOwnProperty.call(entities, TAGS.TRANSACTION)) {
           this.fire('getRequests');
         } else {
@@ -560,6 +563,9 @@ export default class SmallTalkMachine extends NarrativeStoreMachine {
           return true;
         case 'CHANGE_CITY':
           self.fire('location', null, { previous: self.current || self.previous });
+          return true;
+        case 'WHAT_CAN_I_ASK':
+          self.fire('whatCanIAsk');
           return true;
         default:
           return false;

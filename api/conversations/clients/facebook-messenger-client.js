@@ -17,6 +17,10 @@ const persistentMenu = {
     type: 'postback',
     title: 'Change my city',
     payload: 'CHANGE_CITY',
+  }, {
+    type: 'postback',
+    title: 'What can I ask?',
+    payload: 'WHAT_CAN_I_ASK',
   }],
 };
 
