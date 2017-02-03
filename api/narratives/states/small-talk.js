@@ -18,101 +18,98 @@ const smallTalkStates = {
   init() {
   },
 
-  gettingStarted() {
+  intro() {
     logger.info('State: Getting Started');
-    this.messagingClient.addToQuene('Hey there! I\'m the Mayor');
-    this.messagingClient.addToQuene('Sort of... Truthfully, I\'m an AI bot that helps you connect with the city and your community');
-    this.messagingClient.addToQuene('I can tell you the trash schedule, report potholes, or try and help with any problems or injustices you\'re facing.');
-    this.messagingClient.runQuene().then(() => {
-      this.fire('location', null, { previous: 'gettingStarted' });
+    this.messagingClient.addToQuene('Oh, hey there! I\'m the Mayor and I\'m here to help you engage your city.');
+    this.messagingClient.addToQuene(null, {
+      type: 'image',
+      url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t1.0-9/15170831_140291449785947_1315179748138007081_n.jpg?oh=1fafc50ce2942158270383f856a5adc2&oe=58FEC044',
     });
-  },
-
-  location(aux = {}) {
-    logger.info('State: Location');
-    const input = this.get('input').payload;
-    if (Object.prototype.hasOwnProperty.call(aux, 'previous')) {
-      switch (aux.previous) {
-        case 'gettingStarted':
-          this.messagingClient.send('But before I can help out, what city and state do you live in?');
-          this.exit('location');
-          break;
-        default:
-          this.messagingClient.send('Which city do you want to connect to and get info from?');
-          this.exit('location');
-          break;
-      }
-    } else {
-      nlp.message(input.text, {}).then((nlpData) => {
-        if (!Object.prototype.hasOwnProperty.call(nlpData.entities, 'location')) {
-          this.messagingClient.send('Sorry, I didn\'t catch that. What city or state?');
-          this.exit('location');
-          return;
-        }
-        geocoder.geocode(nlpData.entities.location[0].value).then((geoData) => {
-          this.set('nlp', nlpData.entities);
-          this.set('location', geoData[Object.keys(geoData)[0]]);
-          const numberOfLocations = Object.keys(geoData).length;
-          if (numberOfLocations > 1) {
-            const message = `Did you mean ${geoData['0'].formattedAddress}? If not, give a bit more detail.`;
-            this.messagingClient.send(message);
-            this.exit('location');
-          } else if (numberOfLocations === 1) {
-            this.set('location', geoData[0]);
-            this.fire('setOrganization');
-          } else {
-            const message = this.previous !== 'location' ? 'What city are you located in?' : 'Hmm, I`m not familiar with that city. I might need a state or zipcode.';
-            this.messagingClient.send(message);
-            this.exit('location');
-          }
-        }).catch(logger.info);
-      }).catch(logger.info);
-    }
+    this.messagingClient.addToQuene('I\'ll tell you about school closings, available benefits, and help you get a dog license for that cute pup. Tell me the name of your city or postcode.');
+    this.messagingClient.runQuene().then(() => {
+      this.exit('setOrganization');
+    });
   },
 
   setOrganization() {
     logger.info('State: Set Organization');
-    // When a geolocation is found for the user, see if a matching city is found for an organization
-    // I think this function should be improved to require administrative level matching
-    const constituentLocation = this.get('location');
-    Organization.collection().fetch({ withRelated: ['location', 'narrativeSources'] }).then((collection) => {
-      let cityFound = false;
-      collection.toJSON().forEach((organizationModel) => {
-        if (organizationModel.location.city === constituentLocation.city) {
-          this.set('organization', organizationModel);
-          const message = organizationModel.activated ?
-            `Got it! I'll make sure my answers relate to ${constituentLocation.city}. Where were we?` :
-            'Oh no! Your city isn\'t registered. I can still take complaints, but may not have all the answers to your questions.';
-          if (!organizationModel.activated) {
-            new SlackService({
-              username: 'Inactive City Requested',
-              icon: 'round_pushpin',
-            }).send(`>*City Requested*: ${organizationModel.name}\n>*ID*: ${organizationModel.id}`);
-          }
-          this.messagingClient.send(message);
-          this.exit('start');
-          cityFound = true;
-        }
-      });
-      if (!cityFound) {
-        saveLocation(constituentLocation).then((locationModel) => {
-          createOrganization({
-            name: locationModel.get('city'),
-            category: 'public',
-            type: 'admin',
-            location_id: locationModel.get('id'),
-          }).then((organizationModel) => {
-            this.set('organization', organizationModel);
-            new SlackService({
-              username: 'Unregistered City',
-              icon: 'round_pushpin',
-            }).send(`>*City Requested*: ${organizationModel.get('name')}\n>*ID*: ${organizationModel.get('id')}`);
-            this.messagingClient.send('Oh no! Your city isn\'t registered. I will let them know you\'re interested and do my best to help you.');
-            this.exit('start');
-          });
-        });
+    //
+    // Get input, process it, and get a geolocation
+    //
+    const input = this.get('input').payload.text || this.get('input').payload.payload;
+    nlp.message(input, {}).then((nlpData) => {
+      // If no location is recognized by NLP, request again
+      if (!Object.prototype.hasOwnProperty.call(nlpData.entities, 'location')) {
+        this.messagingClient.send('Sorry, did you say a city or state? Can you tell me what city, state, and zipcode you\'re from?');
+        this.exit('setOrganization');
       }
-    });
+      geocoder.geocode(nlpData.entities.location[0].value).then((geoData) => {
+        // If more than one location is matched with our geolocation look up, ask for detail
+        const filteredGeoData = geoData.filter(location => location.city);
+        if (filteredGeoData.length > 1) {
+          const quickReplies = filteredGeoData.map((location) => {
+            const formattedText = `${location.city}, ${location.administrativeLevels.level1short}`;
+            return {
+              content_type: 'text',
+              title: formattedText,
+              payload: formattedText,
+            };
+          });
+          this.messagingClient.send(`Hmm, which ${nlpData.entities.location[0].value} are you?`, null, quickReplies);
+          this.exit('setOrganization');
+          return;
+        } else if (filteredGeoData.length === 0) {
+          this.messagingClient.send('Hmm, I can\'t find that city, can you try again?');
+          this.exit('setOrganization');
+          return;
+        }
+        //
+        // Match with Organization
+        //
+        this.set('nlp', nlpData.entities);
+        this.set('location', geoData[Object.keys(geoData)[0]]);
+        const constituentLocation = this.get('location');
+        Organization.collection().fetch({ withRelated: ['location', 'narrativeSources'] }).then((collection) => {
+          let cityFound = false;
+          collection.toJSON().forEach((organizationModel) => {
+            if (organizationModel.location.city === constituentLocation.city) {
+              this.set('organization', organizationModel);
+              const message = organizationModel.activated ?
+                `Got it! I'll make sure my answers relate to ${constituentLocation.city}. Where were we?` :
+                'Oh no! Your city isn\'t registered. I can still take complaints, but may not have all the answers to your questions.';
+              if (!organizationModel.activated) {
+                new SlackService({
+                  username: 'Inactive City Requested',
+                  icon: 'round_pushpin',
+                }).send(`>*City Requested*: ${organizationModel.name}\n>*ID*: ${organizationModel.id}`);
+              }
+              this.messagingClient.send(message);
+              this.exit('start');
+              cityFound = true;
+            }
+          });
+          if (!cityFound) {
+            saveLocation(constituentLocation).then((locationModel) => {
+              createOrganization({
+                name: locationModel.get('city'),
+                category: 'public',
+                type: 'admin',
+                location_id: locationModel.get('id'),
+              }).then((organizationModel) => {
+                this.set('organization', organizationModel);
+                new SlackService({
+                  username: 'Unregistered City',
+                  icon: 'round_pushpin',
+                }).send(`>*City Requested*: ${organizationModel.get('name')}\n>*ID*: ${organizationModel.get('id')}`);
+                this.messagingClient.send('Oh no! Your city isn\'t registered. I will let them know you\'re interested and do my best to help you.');
+                this.exit('start');
+              });
+            });
+          }
+        });
+
+      }).catch(logger.error);
+    }).catch(logger.error);
   },
 
   start() {
@@ -504,7 +501,7 @@ export default class SmallTalkMachine extends NarrativeStoreMachine {
     // Handlers
     function handleMessage() {
       if (typeof self.snapshot.state_machine_current_state !== 'string' && typeof self.snapshot.organization_id !== 'string') {
-        self.fire('gettingStarted');
+        self.fire('intro');
       } else if (self.current) {
         self.fire(self.current);
       } else {
@@ -521,7 +518,7 @@ export default class SmallTalkMachine extends NarrativeStoreMachine {
           self.fire('getRequests');
           return true;
         case 'GET_STARTED':
-          self.fire('gettingStarted');
+          self.fire('intro');
           return true;
         case 'CHANGE_CITY':
           self.fire('location', null, { previous: self.current || self.previous });
