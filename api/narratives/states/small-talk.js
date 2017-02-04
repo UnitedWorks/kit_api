@@ -127,12 +127,11 @@ const smallTalkStates = {
           // If not, tell them they can only leave complaints/suggestions!
           const quickReplies = [
             { content_type: 'text', title: 'What can I ask?', payload: 'WHAT_CAN_I_ASK' },
-            { content_type: 'text', title: 'Make a Request', payload: 'MAKE_REQUEST' },
           ];
           if (this.get('organization').activated) {
-            this.messagingClient.addToQuene('Your community is among the best! It looks like they\'ve given me answers to some common questions and requests.', null, quickReplies);
+            this.messagingClient.addToQuene('It looks like they\'ve given me answers to some questions and requests.', null, quickReplies);
           } else {
-            this.messagingClient.addToQuene('You\'re community hasn\'t yet given me answers to common questions, but I\'ve let them know. They can still accept requests, suggestions, or complaints!', null, quickReplies);
+            this.messagingClient.addToQuene('You\'re community hasn\'t yet given me answers to any questions yet, but I\'ve let them know.', null, quickReplies);
           }
           this.messagingClient.runQuene().then(() => {
             this.exit('start');
@@ -149,15 +148,18 @@ const smallTalkStates = {
   },
 
   whatCanIAsk() {
+    const quickReplies = [
+      { content_type: 'text', title: 'Make a Request!', payload: 'MAKE_REQUEST' },
+    ];
     this.messagingClient.addToQuene(null, {
       type: 'image',
       url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/16463485_187743068374118_731666577286732253_o.png?oh=145d7d19e62113f3d2a56a74f1632d13&oe=590ABC31',
     });
     this.messagingClient.addToQuene('You can ask questions about all sorts of things like... "Where can I pay this parking ticket?", "Where can I get a dog license for this cute pup", and "When the next local election is coming up?"');
     if (this.get('organization').activated) {
-      this.messagingClient.addToQuene('Your city is active, so if you ask a question I can\'t asnwer, I\'ll let them know! You can also leave requests and complaints.');
+      this.messagingClient.addToQuene('If you ask a question I can\'t asnwer, I\'ll let your city know! You can also send your city requests and complaints.', null, quickReplies);
     } else {
-      this.messagingClient.addToQuene('However, your city has not yet signed up, so I won\'t be able to answer questions for you. I can however forward along complaints or suggestions you have!');
+      this.messagingClient.addToQuene('Since your city hasn\'t signed up yet, I won\'t be able to answer every question for you :( I will be able to send your city requests and complaints though!', null, quickReplies);
     }
     this.messagingClient.runQuene();
     this.exit('start');
