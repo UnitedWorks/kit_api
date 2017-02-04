@@ -26,7 +26,7 @@ export const getAdminOrganizationAtLocation = (geoData, options = {}) => {
               resolve(options.returnJSON ? model.toJSON() : model);
             });
         } else {
-          reject('No organization found at provided location.');
+          resolve(null);
         }
       })
       .catch(error => reject(error));
@@ -43,9 +43,10 @@ export const checkForAdminOrganizationAtLocation = (geoData) => {
       .whereRaw("administrative_levels->>'level2short'=?", geoData.administrativeLevels.level2short)
       .then((res) => {
         if (res.length > 0) {
-          reject('A city in that state seems to have already been registered.');
+          resolve(true);
+        } else {
+          resolve(false);
         }
-        resolve();
       })
       .catch(error => reject(error));
   });
