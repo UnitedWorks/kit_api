@@ -10,19 +10,24 @@ export const createOrganization = (organizationModel, options = {}) => {
   });
 };
 
-export const getAdminOrganizationAtLocation = (geoData) => {
+export const getAdminOrganizationAtLocation = (geoData, options = {}) => {
   return new Promise((resolve, reject) => {
-    knex('organizations')
-      .select('*')
-      .join('locations', 'organizations.location_id', 'locations.id')
+    const subquery = knex('locations')
+      .select('id')
       .where('city', '=', geoData.city)
       .whereRaw("administrative_levels->>'level1short'=?", geoData.administrativeLevels.level1short)
-      .whereRaw("administrative_levels->>'level2short'=?", geoData.administrativeLevels.level2short)
+      .whereRaw("administrative_levels->>'level2short'=?", geoData.administrativeLevels.level2short);
+    knex.select('*').from('organizations').whereIn('location_id', subquery)
       .then((res) => {
         if (res.length === 1) {
-          resolve(JSON.parse(JSON.stringify(res[0])));
+          const orgJSON = JSON.parse(JSON.stringify(res[0]));
+          Organization.where({ id: orgJSON.id }).fetch({ withRelated: ['location'] })
+            .then((model) => {
+              resolve(options.returnJSON ? model.toJSON() : model);
+            });
+        } else {
+          reject('No organization found at provided location.');
         }
-        reject('No organization found at provided location.');
       })
       .catch(error => reject(error));
   });

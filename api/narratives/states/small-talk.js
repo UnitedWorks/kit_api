@@ -76,32 +76,33 @@ const smallTalkStates = {
         this.set('location', filteredGeoData[0]);
         const constituentLocation = this.get('location');
 
-        getAdminOrganizationAtLocation(constituentLocation).then((orgModel) => {
-          this.set('organization', orgModel);
-          if (!orgModel.activated) {
-            new SlackService({
-              username: 'Inactive City Requested',
-              icon: 'round_pushpin',
-            }).send(`>*City Requested*: ${orgModel.name}\n>*ID*: ${orgModel.id}`);
-          }
-          this.fire('setOrganizationConfirm', null, { locationText: `${orgModel.city}, ${orgModel.administrative_levels.level1short}` });
-        }).catch(() => {
-          saveLocation(constituentLocation).then((locationModel) => {
-            createOrganization({
-              name: locationModel.get('city'),
-              category: 'public',
-              type: 'admin',
-              location_id: locationModel.get('id'),
-            }).then((orgModel) => {
-              this.set('organization', orgModel);
+        getAdminOrganizationAtLocation(constituentLocation, { returnJSON: true })
+          .then((orgModel) => {
+            this.set('organization', orgModel);
+            if (!orgModel.activated) {
               new SlackService({
-                username: 'Unregistered City',
+                username: 'Inactive City Requested',
                 icon: 'round_pushpin',
-              }).send(`>*City Requested*: ${orgModel.get('name')}\n>*ID*: ${orgModel.get('id')}`);
-              this.fire('setOrganizationConfirm', null, { locationText: `${orgModel.location.city}, ${orgModel.location.administrativeLevels.level1short}` });
+              }).send(`>*City Requested*: ${orgModel.name}\n>*ID*: ${orgModel.id}`);
+            }
+            this.fire('setOrganizationConfirm', null, { locationText: `${orgModel.location.city}, ${orgModel.location.administrativeLevels.level1short}` });
+          }).catch((err) => {
+            saveLocation(constituentLocation).then((locationModel) => {
+              createOrganization({
+                name: locationModel.get('city'),
+                category: 'public',
+                type: 'admin',
+                location_id: locationModel.get('id'),
+              }).then((orgModel) => {
+                this.set('organization', orgModel);
+                new SlackService({
+                  username: 'Unregistered City',
+                  icon: 'round_pushpin',
+                }).send(`>*City Requested*: ${orgModel.get('name')}\n>*ID*: ${orgModel.get('id')}`);
+                this.fire('setOrganizationConfirm', null, { locationText: `${locationModel.get('city')}, ${locationModel.get('administrativeLevels').level1short}` });
+              });
             });
           });
-        });
       }).catch(logger.error);
     }).catch(logger.error);
   },

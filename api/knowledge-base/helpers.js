@@ -12,6 +12,7 @@ export const getAnswer = (params = {}, options) => {
       .where('knowledge_questions.label', '=', params.label)
       .join('knowledge_questions_organizations_knowledge_answers', function () {
         this.on('knowledge_questions.id', '=', 'knowledge_questions_organizations_knowledge_answers.knowledge_question_id')
+          .andOn('knowledge_questions_organizations_knowledge_answers.organization_id', '=', params.organization_id);
       });
   })
   .fetch({ withRelated: ['answer'] })
@@ -40,7 +41,6 @@ export const getQuestions = (params = {}) => {
       const resolvedQuestions = [];
       allQuestions.toJSON().map((question) => {
         answeredQuestions.toJSON().forEach((answeredQuestion) => {
-          console.log(answeredQuestion.label, question.label);
           if (answeredQuestion.label === question.label) {
             resolvedQuestions.push(answeredQuestion);
           }
