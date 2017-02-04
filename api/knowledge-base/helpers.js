@@ -10,7 +10,7 @@ export const getAnswer = (params = {}, options) => {
       'knowledge_questions_organizations_knowledge_answers.knowledge_answer_id',
       'knowledge_questions_organizations_knowledge_answers.organization_id'])
       .where('knowledge_questions.label', '=', params.label)
-      .join('knowledge_questions_organizations_knowledge_answers', function() {
+      .join('knowledge_questions_organizations_knowledge_answers', function () {
         this.on('knowledge_questions.id', '=', 'knowledge_questions_organizations_knowledge_answers.knowledge_question_id')
           .andOn('knowledge_questions_organizations_knowledge_answers.organization_id', '=', params.organization_id);
       });
@@ -22,28 +22,34 @@ export const getAnswer = (params = {}, options) => {
   }).catch(error => error);
 };
 
-export const getAnswers = (session, params = {}, options) => {
+export const getAnswers = (params = {}, options) => {
   return KnowledgeAnswer.where(params).fetchAll({
     withRelated: ['category', 'events', 'facilities', 'services'],
   });
 };
 
 export const getQuestions = (params = {}) => {
-  return KnowledgeQuestion.query((qb) => {
-    qb.select(['knowledge_questions.id', 'knowledge_questions.label',
-      'knowledge_questions.question', 'knowledge_questions.knowledge_category_id',
-      'knowledge_questions_organizations_knowledge_answers.knowledge_answer_id',
-      'knowledge_questions_organizations_knowledge_answers.organization_id',
-    ]).leftJoin(
-      'knowledge_questions_organizations_knowledge_answers',
-      'knowledge_questions.id',
-      'knowledge_questions_organizations_knowledge_answers.knowledge_question_id');
-  })
-  .fetchAll({ withRelated: ['category', {
-    answer: qb => qb.select('*').from('knowledge_answers'),
-  }] })
-  .then(results => results)
-  .catch(error => error);
+  return KnowledgeQuestion.fetchAll({ withRelated: ['category'] }).then((allQuestions) => {
+    return KnowledgeQuestion.query((qb) => {
+      qb.select('*').leftOuterJoin('knowledge_questions_organizations_knowledge_answers', function () {
+        this.on('knowledge_questions.id', '=', 'knowledge_questions_organizations_knowledge_answers.knowledge_question_id');
+      })
+      .where('knowledge_questions_organizations_knowledge_answers.organization_id', '=', params.organization_id);
+    })
+    .fetchAll({ withRelated: ['category', 'answer'] })
+    .then((answeredQuestions) => {
+      const resolvedQuestions = [];
+      allQuestions.toJSON().map((question) => {
+        answeredQuestions.toJSON().forEach((answeredQuestion) => {
+          if (answeredQuestion.label === question.label) {
+            resolvedQuestions.push(answeredQuestion);
+          }
+        });
+        resolvedQuestions.push(question);
+      });
+      return resolvedQuestions;
+    }).catch(error => error);
+  }).catch(error => error);
 };
 
 export const makeAnswer = (organization, question, answer, options) => {

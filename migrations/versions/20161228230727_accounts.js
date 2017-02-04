@@ -39,6 +39,8 @@ exports.up = function (knex, Promise) {
     })
     .createTable('constituents', (table) => {
       table.increments('id').primary();
+      table.string('first_name');
+      table.string('name');
       table.string('email');
       table.string('phone');
       table.string('facebook_id');

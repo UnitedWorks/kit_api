@@ -10,6 +10,29 @@ export const createOrganization = (organizationModel, options = {}) => {
   });
 };
 
+export const getAdminOrganizationAtLocation = (geoData, options = {}) => {
+  return new Promise((resolve, reject) => {
+    const subquery = knex('locations')
+      .select('id')
+      .where('city', '=', geoData.city)
+      .whereRaw("administrative_levels->>'level1short'=?", geoData.administrativeLevels.level1short)
+      .whereRaw("administrative_levels->>'level2short'=?", geoData.administrativeLevels.level2short);
+    knex.select('*').from('organizations').whereIn('location_id', subquery)
+      .then((res) => {
+        if (res.length === 1) {
+          const orgJSON = JSON.parse(JSON.stringify(res[0]));
+          Organization.where({ id: orgJSON.id }).fetch({ withRelated: ['location'] })
+            .then((model) => {
+              resolve(options.returnJSON ? model.toJSON() : model);
+            });
+        } else {
+          resolve(null);
+        }
+      })
+      .catch(error => reject(error));
+  });
+};
+
 export const checkForAdminOrganizationAtLocation = (geoData) => {
   return new Promise((resolve, reject) => {
     knex('organizations')
@@ -20,9 +43,10 @@ export const checkForAdminOrganizationAtLocation = (geoData) => {
       .whereRaw("administrative_levels->>'level2short'=?", geoData.administrativeLevels.level2short)
       .then((res) => {
         if (res.length > 0) {
-          reject('A city in that state seems to have already been registered.');
+          resolve(true);
+        } else {
+          resolve(false);
         }
-        resolve();
       })
       .catch(error => reject(error));
   });

@@ -47,17 +47,22 @@ router.post('/organization', (req, res) => {
       logger.error(errorMessage);
       res.status(400).send(errorMessage);
     }
-    helpers.checkForAdminOrganizationAtLocation(cityOnlyGeoData[0]).then(() => {
+    helpers.checkForAdminOrganizationAtLocation(cityOnlyGeoData[0]).then((orgExists) => {
+      if (orgExists) {
+        res.status(400).send('A city in that state seems to have already been registered.');
+      } else {
         saveLocation(cityOnlyGeoData[0], { returnJSON: true }).then((location) => {
           const orgWithLocation = Object.assign(organization, { location_id: location.id });
           // Create organization
-          helpers.createOrganization(orgWithLocation, { returnJSON: true }).then((newOrganization) => {
-            new SlackService({ username: 'Welcome', icon: 'capitol' }).send(`Organization *${newOrganization.name}* just signed up!`);
-            res.status(200).json({ organization: newOrganization });
-          }).catch(error => res.status(400).send(error));
+          helpers.createOrganization(orgWithLocation, { returnJSON: true })
+            .then((newOrganization) => {
+              new SlackService({ username: 'Welcome', icon: 'capitol' }).send(`Organization *${newOrganization.name}* just signed up!`);
+              res.status(200).json({ organization: newOrganization });
+            }).catch(error => res.status(400).send(error));
         }).catch(error => res.status(400).send(error));
-      }).catch(error => res.status(400).send(error));
+      }
     }).catch(error => res.status(400).send(error));
+  }).catch(error => res.status(400).send(error));
 });
 
 router.post('/organizations/add-representative', (req, res) => {

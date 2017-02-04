@@ -215,7 +215,7 @@ router.route('/answers')
   .get((req, res) => {
     const session = { req };
     const params = req.query;
-    getAnswers(session, params, {}).then((payload) => {
+    getAnswers(params, {}).then((payload) => {
       res.status(200).send({
         answers: payload,
       });

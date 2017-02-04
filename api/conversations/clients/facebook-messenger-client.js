@@ -7,7 +7,7 @@ const persistentMenu = {
   thread_state: 'existing_thread',
   call_to_actions: [{
     type: 'postback',
-    title: 'Make a Request',
+    title: 'Make a Request / Complaint',
     payload: 'MAKE_REQUEST',
   }, {
     type: 'postback',
@@ -17,6 +17,10 @@ const persistentMenu = {
     type: 'postback',
     title: 'Change my city',
     payload: 'CHANGE_CITY',
+  }, {
+    type: 'postback',
+    title: 'What can I ask?',
+    payload: 'WHAT_CAN_I_ASK',
   }],
 };
 
@@ -91,22 +95,24 @@ export class FacebookMessengerClient extends BaseClient {
     if (attachment) {
       sendData.message.attachment = {
         type: attachment.type,
-        url: attachment.url,
+        payload: {
+          url: attachment.url,
+        },
       };
     }
     if (quickReplies) {
       sendData.message.quick_replies = quickReplies;
     }
     return new Promise((resolve) => {
-      let fakeTiming = text ? text.length * 60 : 800;
-      if (fakeTiming > 2000) fakeTiming = 2000;
-      this.isTyping(true);
-      setTimeout(() => {
+      // let fakeTiming = text ? text.length * 60 : 800;
+      // if (fakeTiming > 2000) fakeTiming = 2000;
+      // this.isTyping(true);
+      // setTimeout(() => {
         this.callAPI(sendData).then(() => {
-          this.isTyping(false);
+          // this.isTyping(false);
           resolve();
         });
-      }, fakeTiming);
+      // }, fakeTiming);
     });
   }
 }

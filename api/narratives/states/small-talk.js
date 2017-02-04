@@ -7,7 +7,7 @@ import { NarrativeStoreMachine } from './state';
 import { nlp } from '../../services/nlp';
 import { geocoder } from '../../services/geocoder';
 import { Constituent, Organization } from '../../accounts/models';
-import { createOrganization } from '../../accounts/helpers';
+import { createOrganization, getAdminOrganizationAtLocation } from '../../accounts/helpers';
 import { getAnswer, saveLocation } from '../../knowledge-base/helpers';
 import { createCase } from '../../cases/helpers';
 import { CaseCategory } from '../../cases/models';
@@ -18,101 +18,149 @@ const smallTalkStates = {
   init() {
   },
 
-  gettingStarted() {
+  intro() {
     logger.info('State: Getting Started');
-    this.messagingClient.addToQuene('Hey there! I\'m the Mayor');
-    this.messagingClient.addToQuene('Sort of... Truthfully, I\'m an AI bot that helps you connect with the city and your community');
-    this.messagingClient.addToQuene('I can tell you the trash schedule, report potholes, or try and help with any problems or injustices you\'re facing.');
+    this.messagingClient.addToQuene('Oh, hey there! I\'m the Mayor and I\'m here to help you engage your city.');
+    this.messagingClient.addToQuene(null, {
+      type: 'image',
+      url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/16422989_187757401706018_5896478987148979475_o.png?oh=e1edeead1710b85f3d42e669685f3d59&oe=590603C2',
+    });
+    this.messagingClient.addToQuene('I\'ll tell you about school closings, available benefits, and help you get a dog license for that cute pup. Tell me the name of your city or postcode.');
     this.messagingClient.runQuene().then(() => {
-      this.fire('location', null, { previous: 'gettingStarted' });
+      this.exit('setOrganization');
     });
   },
 
-  location(aux = {}) {
-    logger.info('State: Location');
-    const input = this.get('input').payload;
-    if (Object.prototype.hasOwnProperty.call(aux, 'previous')) {
-      switch (aux.previous) {
-        case 'gettingStarted':
-          this.messagingClient.send('But before I can help out, what city and state do you live in?');
-          this.exit('location');
-          break;
-        default:
-          this.messagingClient.send('Which city do you want to connect to and get info from?');
-          this.exit('location');
-          break;
+  setOrganization(aux) {
+    logger.info('State: Set Organization');
+    // If menu action, simply pose question
+    if (aux && aux.freshStart) {
+      this.messagingClient.send('Ok! Tell me the city name or postcode.');
+      this.exit('setOrganization');
+      return;
+    }
+    //
+    // Get input, process it, and get a geolocation
+    //
+    const input = this.get('input').payload.text || this.get('input').payload.payload;
+    nlp.message(input, {}).then((nlpData) => {
+      // If no location is recognized by NLP, request again
+      if (!Object.prototype.hasOwnProperty.call(nlpData.entities, 'location')) {
+        this.messagingClient.send('Sorry, did you say a city or state? Can you tell me what city, state, and zipcode you\'re from?');
+        this.exit('setOrganization');
       }
-    } else {
-      nlp.message(input.text, {}).then((nlpData) => {
-        if (!Object.prototype.hasOwnProperty.call(nlpData.entities, 'location')) {
-          this.messagingClient.send('Sorry, I didn\'t catch that. What city or state?');
-          this.exit('location');
+      geocoder.geocode(nlpData.entities.location[0].value).then((geoData) => {
+        // If more than one location is matched with our geolocation look up, ask for detail
+        const filteredGeoData = geoData.filter(location => location.city);
+        if (filteredGeoData.length > 1) {
+          const quickReplies = filteredGeoData.map((location) => {
+            const formattedText = `${location.city}, ${location.administrativeLevels.level1short}`;
+            return {
+              content_type: 'text',
+              title: formattedText,
+              payload: formattedText,
+            };
+          });
+          this.messagingClient.send(`Hmm, which ${nlpData.entities.location[0].value} are you?`, null, quickReplies);
+          this.exit('setOrganization');
+          return;
+        } else if (filteredGeoData.length === 0) {
+          this.messagingClient.send('Hmm, I can\'t find that city, can you try again?');
+          this.exit('setOrganization');
           return;
         }
-        geocoder.geocode(nlpData.entities.location[0].value).then((geoData) => {
-          this.set('nlp', nlpData.entities);
-          this.set('location', geoData[Object.keys(geoData)[0]]);
-          const numberOfLocations = Object.keys(geoData).length;
-          if (numberOfLocations > 1) {
-            const message = `Did you mean ${geoData['0'].formattedAddress}? If not, give a bit more detail.`;
-            this.messagingClient.send(message);
-            this.exit('location');
-          } else if (numberOfLocations === 1) {
-            this.set('location', geoData[0]);
-            this.fire('setOrganization');
+        //
+        // Match with Organization
+        //
+        this.set('nlp', nlpData.entities);
+        this.set('location', filteredGeoData[0]);
+        const constituentLocation = this.get('location');
+
+        getAdminOrganizationAtLocation(constituentLocation, { returnJSON: true })
+          .then((orgModel) => {
+            if (orgModel) {
+              this.set('organization', orgModel);
+              if (!orgModel.activated) {
+                new SlackService({
+                  username: 'Inactive City Requested',
+                  icon: 'round_pushpin',
+                }).send(`>*City Requested*: ${orgModel.name}\n>*ID*: ${orgModel.id}`);
+              }
+              this.fire('setOrganizationConfirm', null, { locationText: `${orgModel.location.city}, ${orgModel.location.administrativeLevels.level1short}` });
+            } else {
+              saveLocation(constituentLocation).then((locationModel) => {
+                createOrganization({
+                  name: locationModel.get('city'),
+                  category: 'public',
+                  type: 'admin',
+                  location_id: locationModel.get('id'),
+                }).then((orgModel) => {
+                  this.set('organization', orgModel);
+                  new SlackService({
+                    username: 'Unregistered City',
+                    icon: 'round_pushpin',
+                  }).send(`>*City Requested*: ${orgModel.get('name')}\n>*ID*: ${orgModel.get('id')}`);
+                  this.fire('setOrganizationConfirm', null, { locationText: `${locationModel.get('city')}, ${locationModel.get('administrativeLevels').level1short}` });
+                });
+              });
+            }
+          }).catch(logger.error);
+      }).catch(logger.error);
+    }).catch(logger.error);
+  },
+
+  setOrganizationConfirm(aux) {
+    logger.info('State: Set Organization Confirmation');
+    if (aux) {
+      const quickReplies = [
+        { content_type: 'text', title: 'Yep!', payload: 'Yep!' },
+        { content_type: 'text', title: 'No', payload: 'No' },
+      ];
+      this.messagingClient.send(`Oh, ${aux.locationText}? Is that the right city?`, null, quickReplies);
+      this.exit('setOrganizationConfirm');
+    } else {
+      const input = this.get('input').payload.text || this.get('input').payload.payload;
+      nlp.message(input, {}).then((nlpData) => {
+        if (nlpData.entities.confirm_deny[0].value === 'Yes') {
+          this.messagingClient.addToQuene('Oh yeah? Some of the best mayors are around there. Including me of course.');
+          // If city is activated, suggest asking a question or complaint
+          // If not, tell them they can only leave complaints/suggestions!
+          const quickReplies = [
+            { content_type: 'text', title: 'What can I ask?', payload: 'WHAT_CAN_I_ASK' },
+            { content_type: 'text', title: 'Make a Request', payload: 'MAKE_REQUEST' },
+          ];
+          if (this.get('organization').activated) {
+            this.messagingClient.addToQuene('Your community is among the best! It looks like they\'ve given me answers to some common questions and requests.', null, quickReplies);
           } else {
-            const message = this.previous !== 'location' ? 'What city are you located in?' : 'Hmm, I`m not familiar with that city. I might need a state or zipcode.';
-            this.messagingClient.send(message);
-            this.exit('location');
+            this.messagingClient.addToQuene('You\'re community hasn\'t yet given me answers to common questions, but I\'ve let them know. They can still accept requests, suggestions, or complaints!', null, quickReplies);
           }
-        }).catch(logger.info);
-      }).catch(logger.info);
+          this.messagingClient.runQuene().then(() => {
+            this.exit('start');
+          });
+        } else if (nlpData.entities.confirm_deny[0].value === 'No') {
+          this.messagingClient.send('Oh! Can you tell me your city and state again?');
+          this.exit('setOrganization');
+        } else {
+          this.messagingClient.send('Sorry, I didn\'t catch whether that was correct.');
+          this.exit('setOrganizationConfirm');
+        }
+      });
     }
   },
 
-  setOrganization() {
-    logger.info('State: Set Organization');
-    // When a geolocation is found for the user, see if a matching city is found for an organization
-    // I think this function should be improved to require administrative level matching
-    const constituentLocation = this.get('location');
-    Organization.collection().fetch({ withRelated: ['location', 'narrativeSources'] }).then((collection) => {
-      let cityFound = false;
-      collection.toJSON().forEach((organizationModel) => {
-        if (organizationModel.location.city === constituentLocation.city) {
-          this.set('organization', organizationModel);
-          const message = organizationModel.activated ?
-            `Got it! I'll make sure my answers relate to ${constituentLocation.city}. Where were we?` :
-            'Oh no! Your city isn\'t registered. I can still take complaints, but may not have all the answers to your questions.';
-          if (!organizationModel.activated) {
-            new SlackService({
-              username: 'Inactive City Requested',
-              icon: 'round_pushpin',
-            }).send(`>*City Requested*: ${organizationModel.name}\n>*ID*: ${organizationModel.id}`);
-          }
-          this.messagingClient.send(message);
-          this.exit('start');
-          cityFound = true;
-        }
-      });
-      if (!cityFound) {
-        saveLocation(constituentLocation).then((locationModel) => {
-          createOrganization({
-            name: locationModel.get('city'),
-            category: 'public',
-            type: 'admin',
-            location_id: locationModel.get('id'),
-          }).then((organizationModel) => {
-            this.set('organization', organizationModel);
-            new SlackService({
-              username: 'Unregistered City',
-              icon: 'round_pushpin',
-            }).send(`>*City Requested*: ${organizationModel.get('name')}\n>*ID*: ${organizationModel.get('id')}`);
-            this.messagingClient.send('Oh no! Your city isn\'t registered. I will let them know you\'re interested and do my best to help you.');
-            this.exit('start');
-          });
-        });
-      }
+  whatCanIAsk() {
+    this.messagingClient.addToQuene(null, {
+      type: 'image',
+      url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/16463485_187743068374118_731666577286732253_o.png?oh=145d7d19e62113f3d2a56a74f1632d13&oe=590ABC31',
     });
+    this.messagingClient.addToQuene('You can ask questions about all sorts of things like... "Where can I pay this parking ticket?", "Where can I get a dog license for this cute pup", and "When the next local election is coming up?"');
+    if (this.get('organization').activated) {
+      this.messagingClient.addToQuene('Your city is active, so if you ask a question I can\'t asnwer, I\'ll let them know! You can also leave requests and complaints.');
+    } else {
+      this.messagingClient.addToQuene('However, your city has not yet signed up, so I won\'t be able to answer questions for you. I can however forward along complaints or suggestions you have!');
+    }
+    this.messagingClient.runQuene();
+    this.exit('start');
   },
 
   start() {
@@ -123,8 +171,13 @@ const smallTalkStates = {
       const entities = nlpData.entities;
       logger.info(nlpData);
 
+      // Help
+      if (Object.prototype.hasOwnProperty.call(entities, TAGS.HELP)) {
+        if (entities[TAGS.HELP][0].value === TAGS.WHAT_CAN_I_ASK) {
+          this.fire('whatCanIAsk');
+        }
       // Complaint
-      if (Object.prototype.hasOwnProperty.call(entities, TAGS.COMPLAINT)) {
+      } else if (Object.prototype.hasOwnProperty.call(entities, TAGS.COMPLAINT)) {
         if (Object.prototype.hasOwnProperty.call(entities, TAGS.TRANSACTION)) {
           this.fire('getRequests');
         } else {
@@ -386,7 +439,7 @@ const smallTalkStates = {
           if (Object.prototype.hasOwnProperty.call(entities, TAGS.ADMINISTRATION)) {
             const administration = entities[TAGS.ADMINISTRATION][0].value;
             if (administration === TAGS.CITY) {
-              this.fire('location', null, { previous: 'start' });
+              this.fire('setOrganization', null, { freshStart: true });
             }
           }
         }
@@ -504,7 +557,7 @@ export default class SmallTalkMachine extends NarrativeStoreMachine {
     // Handlers
     function handleMessage() {
       if (typeof self.snapshot.state_machine_current_state !== 'string' && typeof self.snapshot.organization_id !== 'string') {
-        self.fire('gettingStarted');
+        self.fire('intro');
       } else if (self.current) {
         self.fire(self.current);
       } else {
@@ -521,10 +574,13 @@ export default class SmallTalkMachine extends NarrativeStoreMachine {
           self.fire('getRequests');
           return true;
         case 'GET_STARTED':
-          self.fire('gettingStarted');
+          self.fire('intro');
           return true;
         case 'CHANGE_CITY':
-          self.fire('location', null, { previous: self.current || self.previous });
+          self.fire('setOrganization', null, { freshStart: true });
+          return true;
+        case 'WHAT_CAN_I_ASK':
+          self.fire('whatCanIAsk');
           return true;
         default:
           return false;

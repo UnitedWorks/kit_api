@@ -35,3 +35,7 @@ export const CITY = 'city';
 export const TRANSACTION = 'transaction';
 export const CHANGE = 'change';
 export const STATUS = 'status';
+
+// Help Tags
+export const HELP = 'help';
+export const WHAT_CAN_I_ASK = 'What can I ask';
