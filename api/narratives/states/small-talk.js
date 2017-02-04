@@ -34,7 +34,7 @@ const smallTalkStates = {
   setOrganization(aux) {
     logger.info('State: Set Organization');
     // If menu action, simply pose question
-    if (aux && aux.menuAction) {
+    if (aux && aux.freshStart) {
       this.messagingClient.send('Ok! Tell me the city name or postcode.');
       this.exit('setOrganization');
       return;
@@ -436,7 +436,7 @@ const smallTalkStates = {
           if (Object.prototype.hasOwnProperty.call(entities, TAGS.ADMINISTRATION)) {
             const administration = entities[TAGS.ADMINISTRATION][0].value;
             if (administration === TAGS.CITY) {
-              this.fire('location', null, { previous: 'start' });
+              self.fire('setOrganization', null, { freshStart: true });
             }
           }
         }
@@ -574,7 +574,7 @@ export default class SmallTalkMachine extends NarrativeStoreMachine {
           self.fire('intro');
           return true;
         case 'CHANGE_CITY':
-          self.fire('setOrganization', null, { menuAction: true });
+          self.fire('setOrganization', null, { freshStart: true });
           return true;
         case 'WHAT_CAN_I_ASK':
           self.fire('whatCanIAsk');
