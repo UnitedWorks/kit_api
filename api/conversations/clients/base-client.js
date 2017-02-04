@@ -7,13 +7,14 @@ export default class BaseClient {
     }
   }
 
-  addToQuene(text, attachment) {
+  addToQuene(text, attachment, quickReplies) {
     // If has attachment, new message
     if (attachment) {
       this.messageQuene.push({
         constituent: this.config.constituent,
         text,
         attachment,
+        quickReplies,
       });
       return;
     }
@@ -36,6 +37,7 @@ export default class BaseClient {
       this.messageQuene.push({
         constituent: this.config.constituent,
         text,
+        quickReplies,
       });
     }
   }
@@ -48,7 +50,7 @@ export default class BaseClient {
           self.messageQuene = [];
           return resolve();
         }
-        return self.send(quene[0].text, quene[0].attachment).then(() => {
+        return self.send(quene[0].text, quene[0].attachment, quene[0].quickReplies).then(() => {
           return recursiveRun(quene.slice(1));
         });
       }
