@@ -436,7 +436,7 @@ const smallTalkStates = {
           if (Object.prototype.hasOwnProperty.call(entities, TAGS.ADMINISTRATION)) {
             const administration = entities[TAGS.ADMINISTRATION][0].value;
             if (administration === TAGS.CITY) {
-              self.fire('setOrganization', null, { freshStart: true });
+              this.fire('setOrganization', null, { freshStart: true });
             }
           }
         }
