@@ -20,12 +20,12 @@ const smallTalkStates = {
 
   intro() {
     logger.info('State: Getting Started');
-    this.messagingClient.addToQuene('Oh, hey there! I\'m the Mayor and I\'m here to help you engage your city.');
+    this.messagingClient.addToQuene('Oh, hey there! I\'m the Mayor and I\'m here to help you engage with your city.');
     this.messagingClient.addToQuene(null, {
       type: 'image',
       url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/16422989_187757401706018_5896478987148979475_o.png?oh=e1edeead1710b85f3d42e669685f3d59&oe=590603C2',
     });
-    this.messagingClient.addToQuene('I\'ll tell you about school closings, available benefits, and help you get a dog license for that cute pup. Tell me the name of your city or postcode.');
+    this.messagingClient.addToQuene('I\'ll tell you about school closings, benefits available to you, and how to get a dog license for that cute pup. Tell me the name of your city or postcode.');
     this.messagingClient.runQuene().then(() => {
       this.exit('setOrganization');
     });
@@ -155,9 +155,9 @@ const smallTalkStates = {
       type: 'image',
       url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/16463485_187743068374118_731666577286732253_o.png?oh=145d7d19e62113f3d2a56a74f1632d13&oe=590ABC31',
     });
-    this.messagingClient.addToQuene('You can ask questions about all sorts of things like... "Where can I pay this parking ticket?", "Where can I get a dog license for this cute pup", and "When the next local election is coming up?"');
+    this.messagingClient.addToQuene('You can ask questions about all sorts of things like... "Where can I pay this parking ticket?," "Where can I get a dog license for this cute pup," and "When the next local election is coming up?"');
     if (this.get('organization').activated) {
-      this.messagingClient.addToQuene('If you ask a question I can\'t asnwer, I\'ll let your city know! You can also send your city requests and complaints.', null, quickReplies);
+      this.messagingClient.addToQuene('If you ask a question I can\'t answer, I\'ll let your city know! You can also send your city requests and complaints.', null, quickReplies);
     } else {
       this.messagingClient.addToQuene('Since your city hasn\'t signed up yet, I won\'t be able to answer every question for you :( I will be able to send your city requests and complaints though!', null, quickReplies);
     }
