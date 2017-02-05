@@ -1,15 +1,7 @@
 import { bookshelf } from '../orm';
 import * as KnowledgeModels from '../knowledge-base/models';
-import * as NarrativeModels from '../narratives/models';
 import * as CaseModels from '../cases/models';
-
-export const OrganizationsConstituents = bookshelf.Model.extend({
-  tableName: 'organizations_constituents',
-});
-
-export const OrganizationIntegrations = bookshelf.Model.extend({
-  tableName: 'organizations_integrations',
-});
+import * as IntegrationModels from '../integrations/models';
 
 export const Representative = bookshelf.Model.extend({
   tableName: 'representatives',
@@ -31,10 +23,6 @@ export const Constituent = bookshelf.Model.extend({
   }
 });
 
-export const Integration = bookshelf.Model.extend({
-  tableName: 'integrations',
-});
-
 export const Organization = bookshelf.Model.extend({
   tableName: 'organizations',
   representatives: function () {
@@ -44,7 +32,7 @@ export const Organization = bookshelf.Model.extend({
     return this.belongsToMany(Constituent, 'organizations_constiuents');
   },
   integrations: function () {
-    return this.belongsToMany(Integration, 'organizations_integrations');
+    return this.belongsToMany(IntegrationModels.Integration, 'organizations_integrations');
   },
   location: function () {
     return this.belongsTo(KnowledgeModels.Location, 'location_id');
@@ -52,4 +40,8 @@ export const Organization = bookshelf.Model.extend({
   cases: function() {
     return this.belongsToMany(CaseModels.Case, 'organizations_cases');
   },
+});
+
+export const OrganizationConstituents = bookshelf.Model.extend({
+  tableName: 'organizations_constituents',
 });

@@ -5,7 +5,8 @@ exports.up = function(knex, Promise) {
     .createTable('integrations', (table) => {
       table.increments('id').primary();
       table.string('name').notNullable();
-      table.text('description');
+      table.string('description');
+      table.string('url');
       // Labels are checked when handling state machine events
       table.string('label').notNullable().unique();
     })
@@ -34,11 +35,19 @@ exports.up = function(knex, Promise) {
         .unsigned().references('id').inTable('organizations');
       table.integer('integration_id')
         .unsigned().references('id').inTable('integrations');
+    })
+    .createTable('integrations_locations', (table) => {
+      table.increments('id').primary();
+      table.integer('integration_id')
+      .unsigned().references('id').inTable('integrations');
+      table.integer('location_id')
+        .unsigned().references('id').inTable('locations');
     });
 };
 
 exports.down = function(knex, Promise) {
   return knex.schema
+    .dropTable('integrations_locations')
     .dropTable('organizations_integrations')
     .dropTable('narrative_sessions')
     .dropTable('integrations');

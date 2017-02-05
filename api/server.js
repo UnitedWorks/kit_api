@@ -32,6 +32,7 @@ app.get('/', (req, res) => {
 app.use('/accounts', require('./accounts/routes'));
 app.use('/cases', require('./cases/routes'));
 app.use('/conversations', require('./conversations/routes'));
+app.use('/integrations', require('./integrations/routes'));
 app.use('/knowledge-base', require('./knowledge-base/routes'));
 
 app.get('/logs/info', (req, res) => {

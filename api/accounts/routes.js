@@ -75,7 +75,7 @@ router.post('/organizations/add-representative', (req, res) => {
 
 // Representatives
 router.get('/representative', (req, res) => {
-  Representative.where(req.query).fetch({ withRelated: ['organization'] })
+  Representative.where(req.query).fetch({ withRelated: ['organization', 'organization.integrations'] })
     .then((representative) => {
       if (representative) {
         res.status(200).send({ representative });
