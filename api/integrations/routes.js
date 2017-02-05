@@ -5,7 +5,11 @@ const router = Router();
 
 // Get Integrations (if org ID is provided, add enabled/disabled boolean? add a available boolean?)
 router.get('/', (req, res) => {
-  helpers.getIntegrations(req.query, { returnJSON: true })
+  helpers.getIntegrations({
+    organization: {
+      id: req.query.organization_id,
+    },
+  }, { returnJSON: true })
     .then(integrations => res.status(200).send({ integrations }))
     .catch(err => res.status(400).send(err));
 });
@@ -46,5 +50,10 @@ router.post('/remove-restriction', (req, res) => {
 });
 
 // Enable/disable integration for org (check against location restrictions ensure its availabile)
+router.post('/set-for-organization', (req, res) => {
+  helpers.setForOrganization(req.body)
+    .then(integration => res.status(200).send({ integration }))
+    .catch(err => res.status(400).send(err));
+});
 
 module.exports = router;

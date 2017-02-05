@@ -1,12 +1,12 @@
 import { Organization } from '../accounts/models';
 import { saveLocation } from '../knowledge-base/helpers';
-import { Integration, IntegrationsLocations } from './models';
+import { Integration, IntegrationsLocations, OrganizationIntegrations } from './models';
 import { geocoder } from '../services/geocoder';
 
 export const getIntegrations = (params, options) => {
-  if (params.organization_id) {
+  if (params.organization.id) {
     return Integration.fetchAll({ withRelated: ['locations'] }).then((integrationModels) => {
-      return Organization.where({ id: params.organization_id }).fetch({ withRelated: ['integrations', 'location'] }).then((orgModel) => {
+      return Organization.where({ id: params.organization.id }).fetch({ withRelated: ['integrations', 'location'] }).then((orgModel) => {
         const mappedIntegrations = integrationModels.toJSON();
         // Diff integrations an organization has, and set 'enabled'/'available' booleans
         return mappedIntegrations.map((baseIntegration) => {
@@ -101,4 +101,32 @@ export const updateIntegration = (params, options) => {
 
 export const deleteIntegration = (params) => {
   return Integration.where({ id: params.integration_id }).destroy({ required: true });
+};
+
+export const setForOrganization = (params) => {
+  return getIntegrations(params, { returnJSON: true }).then((orgIntegrations) => {
+    const integrationToBeSet = orgIntegrations.filter(
+      integration => integration.id === params.integration.id)[0];
+    // If we're trying to enable an unavailable integration, throw error, otherwise go for it
+    if (!integrationToBeSet.available && params.integration.enabled) {
+      throw Error('Integration Unavailable for this Organization');
+    } else {
+      if (params.integration.enabled) {
+        return OrganizationIntegrations.forge({
+          organization_id: params.organization.id,
+          integration_id: integrationToBeSet.id,
+        }).save().then(() => {
+          integrationToBeSet.enabled = true;
+          return integrationToBeSet;
+        });
+      }
+      return OrganizationIntegrations.where({
+        organization_id: params.organization.id,
+        integration_id: integrationToBeSet.id,
+      }).destroy().then(() => {
+        integrationToBeSet.enabled = false;
+        return integrationToBeSet;
+      });
+    }
+  });
 };
