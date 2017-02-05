@@ -10,7 +10,7 @@ const router = new Router();
 
 // Organizations
 router.get('/organizations', (req, res) => {
-  Organization.fetchAll({ withRelated: ['location', 'narrativeSources'] }).then((orgs) => {
+  Organization.fetchAll({ withRelated: ['location', 'integrations'] }).then((orgs) => {
     res.status(200).send({ organizations: orgs });
   });
 });

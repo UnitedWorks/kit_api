@@ -5,7 +5,7 @@ exports.seed = (knex, Promise) => {
   return new Promise.all([
     // Clear relationships between orgs and other entities
     knex('organizations_constituents').del(),
-    knex('organizations_narrative_sources').del(),
+    knex('organizations_integrations').del(),
     knex('narrative_sessions').del(),
     knex('knowledge_answers_knowledge_events').del(),
     knex('knowledge_answers_knowledge_services').del(),

@@ -7,8 +7,8 @@ export const OrganizationsConstituents = bookshelf.Model.extend({
   tableName: 'organizations_constituents',
 });
 
-export const OrganizationNarrativeSources = bookshelf.Model.extend({
-  tableName: 'organizations_narrative_sources',
+export const OrganizationIntegrations = bookshelf.Model.extend({
+  tableName: 'organizations_integrations',
 });
 
 export const Representative = bookshelf.Model.extend({
@@ -31,6 +31,10 @@ export const Constituent = bookshelf.Model.extend({
   }
 });
 
+export const Integration = bookshelf.Model.extend({
+  tableName: 'integrations',
+});
+
 export const Organization = bookshelf.Model.extend({
   tableName: 'organizations',
   representatives: function () {
@@ -39,8 +43,8 @@ export const Organization = bookshelf.Model.extend({
   constituents: function () {
     return this.belongsToMany(Constituent, 'organizations_constiuents');
   },
-  narrativeSources: function () {
-    return this.belongsToMany(NarrativeModels.NarrativeSource, 'organizations_narrative_sources');
+  integrations: function () {
+    return this.belongsToMany(Integration, 'organizations_integrations');
   },
   location: function () {
     return this.belongsTo(KnowledgeModels.Location, 'location_id');

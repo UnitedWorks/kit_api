@@ -2,7 +2,7 @@
 exports.up = function(knex, Promise) {
   return knex.schema
     // Narrative Tables
-    .createTable('narrative_sources', (table) => {
+    .createTable('integrations', (table) => {
       table.increments('id').primary();
       table.string('name').notNullable();
       table.text('description');
@@ -28,18 +28,18 @@ exports.up = function(knex, Promise) {
       table.dateTime('created_at').defaultTo(knex.raw('now()'));
     })
     // Junction Tables
-    .createTable('organizations_narrative_sources', (table) => {
+    .createTable('organizations_integrations', (table) => {
       table.increments('id').primary();
       table.integer('organization_id')
         .unsigned().references('id').inTable('organizations');
-      table.integer('narrative_source_id')
-        .unsigned().references('id').inTable('narrative_sources');
+      table.integer('integration_id')
+        .unsigned().references('id').inTable('integrations');
     });
 };
 
 exports.down = function(knex, Promise) {
   return knex.schema
-    .dropTable('organizations_narrative_sources')
+    .dropTable('organizations_integrations')
     .dropTable('narrative_sessions')
-    .dropTable('narrative_sources');
+    .dropTable('integrations');
 };

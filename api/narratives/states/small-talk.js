@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { logger } from '../../logger';
 import * as TAGS from '../../constants/nlp-tagging';
-import * as SOURCES from '../../constants/narrative-sources';
+import * as INTEGRATIONS from '../../constants/integrations';
 import { PRIMARY_CATEGORIES as PRIMARY_CASE_CATEGORIES } from '../../constants/case-categories';
 import { NarrativeStoreMachine } from './state';
 import { nlp } from '../../services/nlp';
@@ -243,10 +243,10 @@ const smallTalkStates = {
       // Human Services
       } else if (Object.prototype.hasOwnProperty.call(entities, TAGS.SOCIAL_SERVICES)) {
         const value = entities[TAGS.SOCIAL_SERVICES][0].value;
-        const orgSources = this.datastore.organization.narrativeSources;
+        const orgSources = this.datastore.organization.integrations;
         // Shelter Search
         if (value === TAGS.SHELTER) {
-          if (hasSource(orgSources, SOURCES.ASKDARCEL)) {
+          if (hasSource(orgSources, INTEGRATIONS.ASKDARCEL)) {
             axios.get('https://staging.askdarcel.org/api/resources', {
               params: {
                 category_id: 1,
@@ -281,7 +281,7 @@ const smallTalkStates = {
           }
         }
         if (value === TAGS.FOOD) { // Food Assistance
-          if (hasSource(orgSources, SOURCES.ASKDARCEL)) {
+          if (hasSource(orgSources, INTEGRATIONS.ASKDARCEL)) {
             axios.get('https://staging.askdarcel.org/api/resources', {
               params: {
                 category_id: 2,
@@ -318,7 +318,7 @@ const smallTalkStates = {
         }
         // Hygiene Services
         if (value === TAGS.HYGIENE) {
-          if (hasSource(orgSources, SOURCES.ASKDARCEL)) {
+          if (hasSource(orgSources, INTEGRATIONS.ASKDARCEL)) {
             axios.get('https://staging.askdarcel.org/api/resources', {
               params: {
                 category_id: 4,
@@ -356,10 +356,10 @@ const smallTalkStates = {
       // Medical Services
       } else if (Object.prototype.hasOwnProperty.call(entities, TAGS.HEALTH)) {
         const value = entities[TAGS.HEALTH][0].value;
-        const orgSources = this.datastore.organization.narrativeSources;
+        const orgSources = this.datastore.organization.integrations;
         // Clinics
         if (value === TAGS.CLINIC) {
-          if (hasSource(orgSources, SOURCES.ASKDARCEL)) {
+          if (hasSource(orgSources, INTEGRATIONS.ASKDARCEL)) {
             axios.get('https://staging.askdarcel.org/api/resources', {
               params: {
                 category_id: 3,
@@ -397,10 +397,10 @@ const smallTalkStates = {
       // Employment Services
       } else if (Object.prototype.hasOwnProperty.call(entities, TAGS.EMPLOYMENT)) {
         const value = entities[TAGS.EMPLOYMENT][0].value;
-        const orgSources = this.datastore.organization.narrativeSources;
+        const orgSources = this.datastore.organization.integrations;
         // Employment Asssistance
         if (value === TAGS.JOB_TRAINING) {
-          if (hasSource(orgSources, SOURCES.ASKDARCEL)) {
+          if (hasSource(orgSources, INTEGRATIONS.ASKDARCEL)) {
             axios.get('https://staging.askdarcel.org/api/resources', {
               params: {
                 category_id: 5,
