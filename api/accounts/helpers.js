@@ -5,8 +5,11 @@ import { Organization, Representative } from './models';
 export const createOrganization = (organizationModel, options = {}) => {
   return new Promise((resolve, reject) => {
     Organization.forge(organizationModel).save(null, { method: 'insert' })
-      .then(model => resolve(options.returnJSON ? model.toJSON() : model))
-      .catch(err => reject(err));
+      .then((model) => {
+        model.refresh({ withRelated: ['location', 'integrations'] }).then((refreshedModel) => {
+          resolve(options.returnJSON ? refreshedModel.toJSON() : refreshedModel);
+        });
+      }).catch(reject);
   });
 };
 
@@ -21,7 +24,7 @@ export const getAdminOrganizationAtLocation = (geoData, options = {}) => {
       .then((res) => {
         if (res.length === 1) {
           const orgJSON = JSON.parse(JSON.stringify(res[0]));
-          Organization.where({ id: orgJSON.id }).fetch({ withRelated: ['location'] })
+          Organization.where({ id: orgJSON.id }).fetch({ withRelated: ['location', 'integrations'] })
             .then((model) => {
               resolve(options.returnJSON ? model.toJSON() : model);
             });
