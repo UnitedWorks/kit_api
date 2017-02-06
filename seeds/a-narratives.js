@@ -16,6 +16,7 @@ exports.seed = function(knex, Promise) {
     // Add Ask Darcel Source
     const askDarcelInsert = knex('integrations').insert({
       name: 'AskDarcel',
+      type: 'info',
       label: 'askDarcel',
       description: 'A collection of service information for the unhoused.',
       url: 'https://askdarcel.org'

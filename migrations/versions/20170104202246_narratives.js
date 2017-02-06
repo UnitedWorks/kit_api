@@ -23,6 +23,7 @@ exports.up = function(knex, Promise) {
     .createTable('integrations', (table) => {
       table.increments('id').primary();
       table.string('name').notNullable();
+      table.enum('type', ['info', 'cases']).notNullable();
       table.string('description');
       table.string('url');
       // Labels are checked when handling state machine events
