@@ -68,7 +68,9 @@ export const checkIntegration = (organization, integration) => {
       organization_id: organization.id,
       integration_id: integrationModel.get('id'),
     }).fetch().then((foundIntegration) => {
-      if (foundIntegration) return true;
+      if (foundIntegration) {
+        return true;
+      }
       return false;
     });
   });
