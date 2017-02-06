@@ -24,7 +24,9 @@ export const getIntegrations = (params, options) => {
           const orgLocation = orgModel.toJSON().location;
           updatedIntegration.locations.forEach((whiteListedLocation) => {
             if (whiteListedLocation.countryCode === orgLocation.countryCode) {
-              if (whiteListedLocation.administrativeLevels.level1short ===
+              if (!whiteListedLocation.administrativeLevels.level1short) {
+                updatedIntegration.available = true;
+              } else if (whiteListedLocation.administrativeLevels.level1short ===
                   orgLocation.administrativeLevels.level1short) {
                 // If county or city dont exist, its good. If more details, do more checks
                 if (!whiteListedLocation.administrativeLevels.level2short ||
