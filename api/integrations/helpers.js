@@ -88,19 +88,23 @@ export const removeIntegrationRestriction = (params) => {
 };
 
 export const createIntegration = (params, options) => {
-  return Integration.forge(params).save({ method: 'insert' }).then((integrationModel) => {
+  return Integration.forge(params).save(null, { method: 'insert' }).then((integrationModel) => {
     return options.returnJSON ? integrationModel.toJSON() : integrationModel;
   });
 };
 
 export const updateIntegration = (params, options) => {
-  return Integration.forge(params).save({ method: 'update' }).then((integrationModel) => {
+  return Integration.where({ id: params.id }).save({
+    title: params.title,
+    description: params.description,
+    url: params.url,
+  }, { patch: true, method: 'update' }).then((integrationModel) => {
     return options.returnJSON ? integrationModel.toJSON() : integrationModel;
   });
 };
 
 export const deleteIntegration = (params) => {
-  return Integration.where({ id: params.integration_id }).destroy({ required: true });
+  return Integration.where({ id: params.integration.id }).destroy({ required: true });
 };
 
 export const setForOrganization = (params) => {

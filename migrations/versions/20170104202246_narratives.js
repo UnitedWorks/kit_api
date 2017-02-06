@@ -2,14 +2,6 @@
 exports.up = function(knex, Promise) {
   return knex.schema
     // Narrative Tables
-    .createTable('integrations', (table) => {
-      table.increments('id').primary();
-      table.string('name').notNullable();
-      table.string('description');
-      table.string('url');
-      // Labels are checked when handling state machine events
-      table.string('label').notNullable().unique();
-    })
     .createTable('narrative_sessions', (table) => {
       table.increments('id').primary();
       table.string('session_id').unique();
@@ -27,6 +19,14 @@ exports.up = function(knex, Promise) {
       table.jsonb('data_store');
       table.dateTime('updated_at');
       table.dateTime('created_at').defaultTo(knex.raw('now()'));
+    })
+    .createTable('integrations', (table) => {
+      table.increments('id').primary();
+      table.string('name').notNullable();
+      table.string('description');
+      table.string('url');
+      // Labels are checked when handling state machine events
+      table.string('label').notNullable().unique();
     })
     // Junction Tables
     .createTable('organizations_integrations', (table) => {
