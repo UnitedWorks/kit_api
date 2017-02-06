@@ -62,6 +62,18 @@ export const getIntegrations = (params, options) => {
   }
 };
 
+export const checkIntegration = (organization, integration) => {
+  return Integration.where(integration).fetch().then((integrationModel) => {
+    return OrganizationIntegrations.where({
+      organization_id: organization.id,
+      integration_id: integrationModel.get('id'),
+    }).fetch().then((foundIntegration) => {
+      if (foundIntegration) return true;
+      return false;
+    });
+  });
+};
+
 export const addIntegrationRestriction = (params) => {
   if (!params.integration) throw Error('No integration specified');
   if (!params.location) throw Error('No location specified');

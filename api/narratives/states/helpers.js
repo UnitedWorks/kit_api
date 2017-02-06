@@ -1,14 +1,11 @@
 import { logger } from '../../logger';
 import SmallTalkMachine from './small-talk';
+import { checkIntegration } from '../../integrations/helpers';
 
-export const hasSource = (sources, label) => {
-  const listLength = sources.filter((source) => {
-    return source.label === label;
-  }).length;
-  if (listLength > 0) {
-    return true;
-  }
-  return false;
+export const hasSource = (organization, integrationLabel) => {
+  return checkIntegration(organization, { label: integrationLabel })
+    .then(bool => bool)
+    .catch(error => error);
 };
 
 export const stateMachines = {
