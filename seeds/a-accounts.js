@@ -40,6 +40,7 @@ exports.seed = (knex, Promise) => {
       knex('organizations').del(),
       knex('constituents').del(),
       knex('knowledge_categorys').del(),
+      knex('integrations_locations').del(),
     ]);
   })
   .then(() => {

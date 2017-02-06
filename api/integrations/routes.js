@@ -59,8 +59,8 @@ router.post('/remove-restriction', (req, res) => {
  * @param {Object} organization - Organization Model
  * @param {Number} organization.id
  * @param {Object} integration - Integration Model
- * @param {Number} organization.id
- * @param {Boolean} organization.enabled - Desired status
+ * @param {Number} integration.id
+ * @param {Boolean} integration.enabled - Desired status
  * @return {Object} Updated integration on 'integration' key
  */
 router.post('/set-for-organization', (req, res) => {

@@ -21,10 +21,17 @@ exports.seed = function(knex, Promise) {
       description: 'A collection of service information for the unhoused.',
       url: 'https://askdarcel.org'
     }, 'id').then(ids => ids[0]);
+    const voteFoundationInsert = knex('integrations').insert({
+      name: 'US Vote Foundation',
+      type: 'info',
+      label: 'voteFoundation',
+      description: 'Voter registraiton information',
+      url: 'https://www.usvotefoundation.org'
+    })
     const sfSelect = knex.select().where('name', 'San Francisco').from('organizations').then((rows) => {
       return rows[0].id
     });
-    return Promise.join(askDarcelInsert, sfSelect, (askDarcelId, sfId) => {
+    return Promise.join(askDarcelInsert, sfSelect, voteFoundationInsert, (askDarcelId, sfId) => {
       idsObj.sourceIds = {
         askDarcel: askDarcelId,
       };
