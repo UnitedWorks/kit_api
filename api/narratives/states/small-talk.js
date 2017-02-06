@@ -245,7 +245,7 @@ const smallTalkStates = {
         const value = entities[TAGS.SOCIAL_SERVICES][0].value;
         // Shelter Search
         if (value === TAGS.SHELTER) {
-          hasIntegration(this.datastore.organization, INTEGRATIONS.ASKDARCEL).then((integrated) => {
+          hasIntegration(this.datastore.organization, INTEGRATIONS.ASK_DARCEL).then((integrated) => {
             if (integrated) {
               axios.get('https://staging.askdarcel.org/api/resources', {
                 params: {
@@ -282,7 +282,7 @@ const smallTalkStates = {
           });
         }
         if (value === TAGS.FOOD) { // Food Assistance
-          hasIntegration(this.datastore.organization, INTEGRATIONS.ASKDARCEL).then((integrated) => {
+          hasIntegration(this.datastore.organization, INTEGRATIONS.ASK_DARCEL).then((integrated) => {
             if (integrated) {
               axios.get('https://staging.askdarcel.org/api/resources', {
                 params: {
@@ -321,7 +321,7 @@ const smallTalkStates = {
         }
         // Hygiene Services
         if (value === TAGS.HYGIENE) {
-          hasIntegration(this.datastore.organization, INTEGRATIONS.ASKDARCEL).then((integrated) => {
+          hasIntegration(this.datastore.organization, INTEGRATIONS.ASK_DARCEL).then((integrated) => {
             if (integrated) {
               axios.get('https://staging.askdarcel.org/api/resources', {
                 params: {
@@ -363,7 +363,7 @@ const smallTalkStates = {
         const value = entities[TAGS.HEALTH][0].value;
         // Clinics
         if (value === TAGS.CLINIC) {
-          hasIntegration(this.datastore.organization, INTEGRATIONS.ASKDARCEL).then((integrated) => {
+          hasIntegration(this.datastore.organization, INTEGRATIONS.ASK_DARCEL).then((integrated) => {
             if (integrated) {
               axios.get('https://staging.askdarcel.org/api/resources', {
                 params: {
@@ -405,7 +405,7 @@ const smallTalkStates = {
         const value = entities[TAGS.EMPLOYMENT][0].value;
         // Employment Asssistance
         if (value === TAGS.JOB_TRAINING) {
-          hasIntegration(this.datastore.organization, INTEGRATIONS.ASKDARCEL).then((integrated) => {
+          hasIntegration(this.datastore.organization, INTEGRATIONS.ASK_DARCEL).then((integrated) => {
             if (integrated) {
               axios.get('https://staging.askdarcel.org/api/resources', {
                 params: {
