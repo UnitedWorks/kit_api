@@ -5,8 +5,8 @@ exports.seed = function(knex, Promise) {
   return new Promise((resolve) => {
     // Setup
     return Promise.all([
-      knex('organizations_narrative_sources').del(),
-      knex('narrative_sources').del(),
+      knex('organizations_integrations').del(),
+      knex('integrations').del(),
       knex('narrative_sessions').del(),
     ]).then(() => {
       resolve({});
@@ -14,35 +14,50 @@ exports.seed = function(knex, Promise) {
   }).then((passedObj) => {
     const idsObj = passedObj;
     // Add Ask Darcel Source
-    const askDarcelInsert = knex('narrative_sources').insert({
+    const askDarcelInsert = knex('integrations').insert({
       name: 'AskDarcel',
-      description: 'A collection of service information for the unhoused.',
+      type: 'info',
       label: 'askDarcel',
-    }, 'id').then((ids) => { return ids[0] });
+      description: 'A collection of service information for the unhoused.',
+      url: 'https://askdarcel.org',
+    }, 'id').then(ids => ids[0]);
+    const voteFoundationInsert = knex('integrations').insert({
+      name: 'US Vote Foundation',
+      type: 'info',
+      label: 'voteFoundation',
+      description: 'Voter registraiton information.',
+      url: 'https://www.usvotefoundation.org',
+    });
+    const benefitKitchen = knex('integrations').insert({
+      name: 'Benefit Kitchen',
+      type: 'info',
+      label: 'benefitKitchen',
+      description: 'Benefit calculators for state/federal programs.',
+      url: 'http://benefitkitchen.com/',
+    });
     const sfSelect = knex.select().where('name', 'San Francisco').from('organizations').then((rows) => {
-      return rows[0].id
+      return rows[0].id;
     });
-    return Promise.join(askDarcelInsert, sfSelect, (askDarcelId, sfId) => {
-      idsObj.sourceIds = {
-        askDarcel: askDarcelId,
-      };
-      idsObj.organizationIds = {
-        sanFrancisco: sfId,
-      };
-      return idsObj;
-    });
+    return Promise.join(askDarcelInsert, sfSelect, voteFoundationInsert, benefitKitchen,
+      (askDarcelId, sfId) => {
+        idsObj.sourceIds = {
+          askDarcel: askDarcelId,
+        };
+        idsObj.organizationIds = {
+          sanFrancisco: sfId,
+        };
+        return idsObj;
+      });
   }).then((passedObj) => {
     // Add Organization/Source Relations
     const idsObj = passedObj;
-    const sourceRelationInserts = []
-    sourceRelationInserts.push(knex('organizations_narrative_sources').insert({
+    const sourceRelationInserts = [];
+    sourceRelationInserts.push(knex('organizations_integrations').insert({
       organization_id: idsObj.organizationIds.sanFrancisco,
-      narrative_source_id: idsObj.sourceIds.askDarcel,
+      integration_id: idsObj.sourceIds.askDarcel,
     }));
     return Promise.all(sourceRelationInserts).then(() => {
       return passedObj;
     });
-  }).then((passedObj) => {
-    return logger.info(passedObj);
-  });
+  }).then(logger.info);
 };

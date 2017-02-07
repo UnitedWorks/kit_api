@@ -2,13 +2,6 @@
 exports.up = function(knex, Promise) {
   return knex.schema
     // Narrative Tables
-    .createTable('narrative_sources', (table) => {
-      table.increments('id').primary();
-      table.string('name').notNullable();
-      table.text('description');
-      // Labels are checked when handling state machine events
-      table.string('label').notNullable().unique();
-    })
     .createTable('narrative_sessions', (table) => {
       table.increments('id').primary();
       table.string('session_id').unique();
@@ -27,19 +20,36 @@ exports.up = function(knex, Promise) {
       table.dateTime('updated_at');
       table.dateTime('created_at').defaultTo(knex.raw('now()'));
     })
+    .createTable('integrations', (table) => {
+      table.increments('id').primary();
+      table.string('name').notNullable();
+      table.enum('type', ['info', 'cases']).notNullable();
+      table.string('description');
+      table.string('url');
+      // Labels are checked when handling state machine events
+      table.string('label').notNullable().unique();
+    })
     // Junction Tables
-    .createTable('organizations_narrative_sources', (table) => {
+    .createTable('organizations_integrations', (table) => {
       table.increments('id').primary();
       table.integer('organization_id')
         .unsigned().references('id').inTable('organizations');
-      table.integer('narrative_source_id')
-        .unsigned().references('id').inTable('narrative_sources');
+      table.integer('integration_id')
+        .unsigned().references('id').inTable('integrations');
+    })
+    .createTable('integrations_locations', (table) => {
+      table.increments('id').primary();
+      table.integer('integration_id')
+      .unsigned().references('id').inTable('integrations');
+      table.integer('location_id')
+        .unsigned().references('id').inTable('locations');
     });
 };
 
 exports.down = function(knex, Promise) {
   return knex.schema
-    .dropTable('organizations_narrative_sources')
+    .dropTable('integrations_locations')
+    .dropTable('organizations_integrations')
     .dropTable('narrative_sessions')
-    .dropTable('narrative_sources');
+    .dropTable('integrations');
 };
