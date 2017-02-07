@@ -247,7 +247,7 @@ const smallTalkStates = {
         if (value === TAGS.SHELTER) {
           hasIntegration(this.datastore.organization, INTEGRATIONS.ASK_DARCEL).then((integrated) => {
             if (integrated) {
-              axios.get('https://staging.askdarcel.org/api/resources', {
+              axios.get('https://askdarcel.org/api/resources', {
                 params: {
                   category_id: 1,
                   lat: this.get('location').latitude,
@@ -284,7 +284,7 @@ const smallTalkStates = {
         if (value === TAGS.FOOD) { // Food Assistance
           hasIntegration(this.datastore.organization, INTEGRATIONS.ASK_DARCEL).then((integrated) => {
             if (integrated) {
-              axios.get('https://staging.askdarcel.org/api/resources', {
+              axios.get('https://askdarcel.org/api/resources', {
                 params: {
                   category_id: 2,
                   lat: this.get('location').latitude,
@@ -323,7 +323,7 @@ const smallTalkStates = {
         if (value === TAGS.HYGIENE) {
           hasIntegration(this.datastore.organization, INTEGRATIONS.ASK_DARCEL).then((integrated) => {
             if (integrated) {
-              axios.get('https://staging.askdarcel.org/api/resources', {
+              axios.get('https://askdarcel.org/api/resources', {
                 params: {
                   category_id: 4,
                   lat: this.get('location').latitude,
@@ -365,7 +365,7 @@ const smallTalkStates = {
         if (value === TAGS.CLINIC) {
           hasIntegration(this.datastore.organization, INTEGRATIONS.ASK_DARCEL).then((integrated) => {
             if (integrated) {
-              axios.get('https://staging.askdarcel.org/api/resources', {
+              axios.get('https://askdarcel.org/api/resources', {
                 params: {
                   category_id: 3,
                   lat: this.get('location').latitude,
@@ -407,7 +407,7 @@ const smallTalkStates = {
         if (value === TAGS.JOB_TRAINING) {
           hasIntegration(this.datastore.organization, INTEGRATIONS.ASK_DARCEL).then((integrated) => {
             if (integrated) {
-              axios.get('https://staging.askdarcel.org/api/resources', {
+              axios.get('https://askdarcel.org/api/resources', {
                 params: {
                   category_id: 5,
                   lat: this.get('location').latitude,
