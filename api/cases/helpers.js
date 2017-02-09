@@ -1,3 +1,4 @@
+import axios from 'axios';
 import formidable from 'formidable';
 import { knex } from '../orm';
 import { logger } from '../logger';
@@ -70,6 +71,44 @@ export const createCase = (title, data, category, constituent, organization, loc
     }).catch((err) => {
       logger.error(err);
       reject();
+    });
+  });
+};
+
+export const syncSeeClickFixCase = (id) => {
+  return new Promise((resolve, reject) => {
+    if (!id) throw Error('No ID provided for Case Sync');
+    axios.get(`https://seeclickfix.com/api/v2/issues/${id}`).then(({ data }) => {
+      let refreshedStatus;
+      // Sync open/closed status
+      if (data.status.includes('Open', 'Acknowledged')) {
+        refreshedStatus = 'open';
+      } else {
+        refreshedStatus = 'closed';
+      }
+      knex('cases')
+        .where({ see_click_fix_id: id })
+        .update({ status: refreshedStatus })
+        .returning('*')
+        .then(res => JSON.parse(JSON.stringify(res[0])));
+    });
+  });
+}
+
+export const getConstituentCases = (constituent) => {
+  return new Promise((requestResolve, reject) => {
+    AccountModels.Constituent.where({ id: constituent.id }).fetch({ withRelated: ['cases'] }).then((constituentModel) => {
+      const casePromises = [];
+      constituentModel.toJSON().cases.forEach((constituentCase) => {
+        // If case has see_click_fix_id and is open, we need to check for resolution
+        if (constituentCase.seeClickFixId && constituentCase.status === 'open') {
+          casePromises.push(syncSeeClickFixCase(constituentCase.seeClickFixId));
+        } else {
+          casePromises.push(new Promise(caseResolve => caseResolve(constituentCase)));
+        }
+      });
+      // Resolve all fetches
+      Promise.all(casePromises).then(res => requestResolve({ cases: res }));
     });
   });
 };
