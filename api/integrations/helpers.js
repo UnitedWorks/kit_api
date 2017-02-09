@@ -78,6 +78,12 @@ export const checkIntegration = (organization, integration) => {
   });
 };
 
+export const hasIntegration = (organization, integrationLabel) => {
+  return checkIntegration(organization, { label: integrationLabel })
+    .then(bool => bool)
+    .catch(error => error);
+};
+
 export const addIntegrationRestriction = (params) => {
   if (!params.integration) throw Error('No integration specified');
   if (!params.location) throw Error('No location specified');

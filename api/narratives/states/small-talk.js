@@ -9,9 +9,9 @@ import { geocoder } from '../../services/geocoder';
 import { Constituent, Organization } from '../../accounts/models';
 import { createOrganization, getAdminOrganizationAtLocation } from '../../accounts/helpers';
 import { getAnswer, saveLocation } from '../../knowledge-base/helpers';
-import { createCase, getConstituentCases } from '../../cases/helpers';
+import { makeConstituentRequest, getConstituentCases } from '../../cases/helpers';
 import { CaseCategory } from '../../cases/models';
-import { hasIntegration } from './helpers';
+import { hasIntegration } from '../../integrations/helpers';
 import SlackService from '../../services/slack';
 
 const smallTalkStates = {
@@ -553,7 +553,7 @@ const smallTalkStates = {
 
   complaintSubmit() {
     const complaint = this.get('complaint');
-    createCase(complaint.headline, complaint.data, complaint.category, this.snapshot.constituent, this.get('organization'), complaint.location, complaint.attachments).then(() => {
+    makeConstituentRequest(complaint.headline, complaint.data, complaint.category, this.snapshot.constituent, this.get('organization'), complaint.location, complaint.attachments).then(() => {
       this.messagingClient.send('I just sent your message along. I\'ll try to let you know when it\'s been addressed.');
       this.exit('start');
     });

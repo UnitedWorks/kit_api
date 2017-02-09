@@ -8,6 +8,8 @@ import { FacebookMessengerClient, TwilioSMSClient } from '../conversations/clien
 import SlackService from '../services/slack';
 import EmailService from '../services/email';
 import { SEND_GRID_EVENT_OPEN } from '../constants/sendgrid';
+import { hasIntegration } from '../integrations/helpers';
+import * as INTEGRATIONS from '../constants/integrations';
 
 export const newCaseNotification = (caseObj, organization) => {
   AccountModels.Organization.where({ id: organization.id }).fetch({ withRelated: ['representatives'] }).then((returnedOrg) => {
@@ -46,7 +48,43 @@ export const newCaseNotification = (caseObj, organization) => {
   });
 };
 
-export const createCase = (title, data, category, constituent, organization, location, attachments) => {
+export const reportToSeeClickFix = (location, text, images) => {
+  // const apiKey = process.env.SEE_CLICK_FIX_API_KEY;
+  const answers = [];
+  if (text) {
+    answers.push({
+      question_type: 'text',
+      summary: text,
+    });
+  }
+  if (images) {
+    answers.push({
+      question_type: 'file',
+      summary: images[0].payload.url,
+    });
+  }
+  const payload = {
+    address: location.formattedAddress,
+    lat: location.latitude,
+    lng: location.longitude,
+    answers,
+    request_type_id: 'other',
+  };
+  console.log('----------')
+  console.log(payload)
+  console.log('----------')
+  axios.post(`${process.env.SEE_CLICK_FIX_API_URI}/issues`, payload).then((res) => {
+    console.log('===============');
+    console.log(res);
+    console.log('===============');
+  }, {
+    headers: {
+      Authorization: `Bearer ${process.env.SEE_CLICK_FIX_API_KEY}`,
+    }
+  }).catch(logger.error);
+};
+
+export const createCase = (title, data, category, constituent, organization, location, attachments, seeClickFixId) => {
   return new Promise((resolve, reject) => {
     const newCase = {
       status: 'open',
@@ -54,6 +92,7 @@ export const createCase = (title, data, category, constituent, organization, loc
       constituent_id: constituent.id,
       title,
       data,
+      seeClickFixId,
     };
     Case.forge(newCase).save().then((caseResponse) => {
       caseResponse.refresh({ withRelated: ['category'] }).then((refreshedCaseModel) => {
@@ -65,7 +104,7 @@ export const createCase = (title, data, category, constituent, organization, loc
             location,
             attachments,
           }), organization);
-          resolve();
+          resolve(refreshedCaseModel);
         });
       });
     }).catch((err) => {
@@ -75,9 +114,26 @@ export const createCase = (title, data, category, constituent, organization, loc
   });
 };
 
-export const syncSeeClickFixCase = (id) => {
+export const makeConstituentRequest = (headline, data, category, constituent, organization, location, attachments) => {
   return new Promise((resolve, reject) => {
-    if (!id) throw Error('No ID provided for Case Sync');
+    // Check for integrations to push to
+    hasIntegration(organization, INTEGRATIONS.SEE_CLICK_FIX).then((integrated) => {
+      if (integrated) {
+        reportToSeeClickFix(location, headline, attachments).then((scfIssue) => {
+          createCase(headline, data, category, constituent, organization, location, attachments,
+            scfIssue.id).then(caseObj => resolve(caseObj.toJSON()));
+        });
+      } else {
+        createCase(headline, data, category, constituent, organization, location, attachments)
+          .then(caseObj => resolve(caseObj.toJSON()));
+      }
+    });
+  });
+};
+
+export const syncSeeClickFixCase = (scfId) => {
+  return new Promise((resolve, reject) => {
+    if (!scfId) throw Error('No ID provided for Case Sync');
     axios.get(`https://seeclickfix.com/api/v2/issues/${id}`).then(({ data }) => {
       let refreshedStatus;
       // Sync open/closed status
@@ -87,7 +143,7 @@ export const syncSeeClickFixCase = (id) => {
         refreshedStatus = 'closed';
       }
       knex('cases')
-        .where({ see_click_fix_id: id })
+        .where({ see_click_fix_id: scfId })
         .update({ status: refreshedStatus })
         .returning('*')
         .then(res => JSON.parse(JSON.stringify(res[0])));
