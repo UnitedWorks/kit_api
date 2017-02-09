@@ -134,7 +134,7 @@ export const makeConstituentRequest = (headline, data, category, constituent, or
 export const syncSeeClickFixCase = (scfId) => {
   return new Promise((resolve, reject) => {
     if (!scfId) throw Error('No ID provided for Case Sync');
-    axios.get(`https://seeclickfix.com/api/v2/issues/${id}`).then(({ data }) => {
+    axios.get(`${process.env.SEE_CLICK_FIX_API_URI}/issues/${scfId}`).then(({ data }) => {
       let refreshedStatus;
       // Sync open/closed status
       if (data.status.includes('Open', 'Acknowledged')) {
