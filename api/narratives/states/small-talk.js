@@ -9,9 +9,9 @@ import { geocoder } from '../../services/geocoder';
 import { Constituent, Organization } from '../../accounts/models';
 import { createOrganization, getAdminOrganizationAtLocation } from '../../accounts/helpers';
 import { getAnswer, saveLocation } from '../../knowledge-base/helpers';
-import { createCase } from '../../cases/helpers';
+import { makeConstituentRequest, getConstituentCases } from '../../cases/helpers';
 import { CaseCategory } from '../../cases/models';
-import { hasIntegration } from './helpers';
+import { hasIntegration } from '../../integrations/helpers';
 import SlackService from '../../services/slack';
 
 const smallTalkStates = {
@@ -464,12 +464,14 @@ const smallTalkStates = {
   },
 
   getRequests() {
-    Constituent.where({ id: this.snapshot.constituent.id }).fetch({ withRelated: ['cases'] }).then((constituentModel) => {
-      constituentModel.toJSON().cases.forEach((constituentCase) => {
-        const message = `#${constituentCase.id} (${constituentCase.status}) - ${constituentCase.title.length > 24 ? constituentCase.title.slice(0, 21).concat('...') : constituentCase.title}`;
-        this.messagingClient.addToQuene(constituentModel.toJSON(), message);
+    getConstituentCases(this.snapshot.constituent).then(({ cases }) => {
+      cases.forEach((thisCase) => {
+        const message = `${thisCase.status.toUpperCase()} - ${thisCase.title.length > 48 ? thisCase.title.slice(0, 45).concat('...') : thisCase.title} (#${thisCase.id})`;
+        this.messagingClient.addToQuene(message);
       });
-      this.messagingClient.runQuene();
+      this.messagingClient.runQuene().then(() => {
+        this.exit('start');
+      });
     });
   },
 
@@ -551,7 +553,7 @@ const smallTalkStates = {
 
   complaintSubmit() {
     const complaint = this.get('complaint');
-    createCase(complaint.headline, complaint.data, complaint.category, this.snapshot.constituent, this.get('organization'), complaint.location, complaint.attachments).then(() => {
+    makeConstituentRequest(complaint.headline, complaint.data, complaint.category, this.snapshot.constituent, this.get('organization'), complaint.location, complaint.attachments).then(() => {
       this.messagingClient.send('I just sent your message along. I\'ll try to let you know when it\'s been addressed.');
       this.exit('start');
     });
