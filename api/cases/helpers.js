@@ -10,7 +10,7 @@ import EmailService from '../services/email';
 import { SEND_GRID_EVENT_OPEN } from '../constants/sendgrid';
 import { hasIntegration } from '../integrations/helpers';
 import * as INTEGRATIONS from '../constants/integrations';
-import { SEE_CLICK_FIX_CATEGORIES } from '../constants/case-categories';
+import SeeClickFixClient from './clients/see-click-fix-client';
 
 export const newCaseNotification = (caseObj, organization) => {
   AccountModels.Organization.where({ id: organization.id }).fetch({ withRelated: ['representatives'] }).then((returnedOrg) => {
@@ -49,38 +49,6 @@ export const newCaseNotification = (caseObj, organization) => {
   });
 };
 
-export const requestFitsSeeClickFix = (category) => {
-  return SEE_CLICK_FIX_CATEGORIES.includes(category);
-};
-
-export const reportToSeeClickFix = (location, text, images) => {
-  return new Promise((resolve, reject) => {
-    const answers = {};
-    if (text) {
-      answers.summary = text;
-    }
-    if (images) {
-      answers.description = `Image: ${images[0].payload.url}`;
-    }
-    const payload = {
-      address: location.formattedAddress,
-      lat: String(location.latitude),
-      lng: String(location.longitude),
-      answers,
-      request_type_id: 'other',
-      anonymize_reporter: true,
-    };
-    axios.post(`${process.env.SEE_CLICK_FIX_API_URI}/issues`, payload, {
-      auth: {
-        username: process.env.SEE_CLICK_FIX_USER,
-        password: process.env.SEE_CLICK_FIX_PASSWORD,
-      },
-    })
-    .then(res => resolve(res.data))
-    .catch(err => reject(err));
-  });
-};
-
 export const createCase = (title, data, category, constituent, organization, location, attachments, seeClickFixId) => {
   return new Promise((resolve, reject) => {
     const newCase = {
@@ -115,8 +83,8 @@ export const makeConstituentRequest = (headline, data, category, constituent, or
   return new Promise((resolve, reject) => {
     // Check for integrations to push to
     hasIntegration(organization, INTEGRATIONS.SEE_CLICK_FIX).then((integrated) => {
-      if (integrated && requestFitsSeeClickFix(category.label)) {
-        reportToSeeClickFix(location, headline, attachments).then((scfIssue) => {
+      if (integrated && new SeeClickFixClient().requestCategoryAllowed(category.label)) {
+        new SeeClickFixClient().report(location, headline, attachments).then((scfIssue) => {
           createCase(headline, data, category, constituent, organization, location, attachments,
             scfIssue.id).then(caseObj => resolve(caseObj.toJSON()));
         });
@@ -128,26 +96,6 @@ export const makeConstituentRequest = (headline, data, category, constituent, or
   });
 };
 
-export const syncSeeClickFixCase = (scfId) => {
-  return new Promise((resolve, reject) => {
-    if (!scfId) throw Error('No ID provided for Case Sync');
-    axios.get(`${process.env.SEE_CLICK_FIX_API_URI}/issues/${scfId}`).then(({ data }) => {
-      let refreshedStatus;
-      // Sync open/closed status
-      if (data.status.includes('Open', 'Acknowledged')) {
-        refreshedStatus = 'open';
-      } else {
-        refreshedStatus = 'closed';
-      }
-      knex('cases')
-        .where({ see_click_fix_id: scfId })
-        .update({ status: refreshedStatus })
-        .returning('*')
-        .then(res => resolve(JSON.parse(JSON.stringify(res[0]))));
-    });
-  });
-};
-
 export const getConstituentCases = (constituent) => {
   return new Promise((requestResolve, reject) => {
     AccountModels.Constituent.where({ id: constituent.id }).fetch({ withRelated: ['cases'] }).then((constituentModel) => {
@@ -155,7 +103,7 @@ export const getConstituentCases = (constituent) => {
       constituentModel.toJSON().cases.forEach((constituentCase) => {
         // If case has see_click_fix_id and is open, we need to check for resolution
         if (constituentCase.seeClickFixId && constituentCase.status === 'open') {
-          casePromises.push(syncSeeClickFixCase(constituentCase.seeClickFixId));
+          casePromises.push(new SeeClickFixClient().syncCase(constituentCase.seeClickFixId));
         } else {
           casePromises.push(new Promise(caseResolve => caseResolve(constituentCase)));
         }
