@@ -6,7 +6,7 @@ import { nlp } from '../../services/nlp';
 import { NarrativeStoreMachine } from './state';
 import { Constituent } from '../../accounts/models';
 import { getAnswer } from '../../knowledge-base/helpers';
-import { hasIntegration } from './helpers';
+import { hasIntegration, hasEntityValue } from './helpers';
 import SlackService from '../../services/slack';
 import { states as complaintStates } from './complaint-states';
 import { states as votingStates } from './voting-states';
@@ -61,19 +61,48 @@ const smallTalkStates = {
       logger.info(nlpData);
 
       // Help
-      if (Object.prototype.hasOwnProperty.call(entities, TAGS.HELP)) {
-        if (entities[TAGS.HELP][0].value === TAGS.WHAT_CAN_I_ASK) {
-          this.fire('whatCanIAsk');
+      if (hasEntityValue(entities[TAGS.HELP], TAGS.WHAT_CAN_I_ASK)) {
+        this.fire('whatCanIAsk');
+
+      // Voting
+      } else if (entities[TAGS.VOTING]) {
+        // Deadlines
+        if (hasEntityValue(entities[TAGS.VOTING], TAGS.ELECTION)) {
+          if (hasEntityValue(entities[TAGS.SCHEDULES], TAGS.DEADLINE)) {
+            console.log('election deadlines');
+          } else if (hasEntityValue(entities[TAGS.SCHEDULES], TAGS.WHEN)) {
+            console.log('asking when are elections');
+          }
         }
-      // Complaint
-      } else if (Object.prototype.hasOwnProperty.call(entities, TAGS.COMPLAINT)) {
-        if (Object.prototype.hasOwnProperty.call(entities, TAGS.TRANSACTION)) {
-          this.fire('getRequests');
-        } else {
-          this.fire('complaintStart');
+        if (hasEntityValue(entities[TAGS.VOTING], TAGS.EARLY_VOTING)) {
+          console.log('checking early voting');
         }
+        if (hasEntityValue(entities[TAGS.VOTING], TAGS.POLLS)) {
+          if (hasEntityValue(entities[TAGS.LOOKING_FOR], TAGS.WHERE)) {
+            console.log('where are poll locations');
+          } else if (hasEntityValue(entities[TAGS.SCHEDULES], TAGS.WHEN)) {
+            console.log('what time are polls open');
+          }
+        }
+        // Registration
+        if (hasEntityValue(entities[TAGS.VOTING], TAGS.VOTER_REGISTRATION)) {
+          if (hasEntityValue(entities[TAGS.TRANSACTION], TAGS.CHECK)) {
+            console.log('checking voter registration');
+          } else {
+            console.log('getting registered to vote');
+          }
+        }
+        // Absentee ballot (absentee ballot)
+        if (hasEntityValue(entities[TAGS.VOTING], TAGS.ABSENTEE_BALLOT)) {
+          console.log('get a ballot');
+        }
+        // FAQ/Help
+        if (entities[TAGS.HELP]) {
+          console.log('help');
+        }
+
       // Sanitation Services
-      } else if (Object.prototype.hasOwnProperty.call(entities, TAGS.SANITATION)) {
+      } else if (entities[TAGS.SANITATION]) {
         const value = entities[TAGS.SANITATION][0].value;
         let answerRequest;
         if (value === TAGS.COMPOST) {
@@ -94,7 +123,7 @@ const smallTalkStates = {
             label: 'sanitation-electronics-disposal',
             organization_id: this.get('organization').id,
           }, { withRelated: false, returnJSON: true });
-        } else if (Object.prototype.hasOwnProperty.call(entities, TAGS.SCHEDULES)) {
+        } else if (entities[TAGS.SCHEDULES]) {
           switch (value) {
             // Request Garbage
             case TAGS.GARBAGE:
@@ -127,8 +156,9 @@ const smallTalkStates = {
             this.exit('start');
           });
         }
+
       // Human Services
-      } else if (Object.prototype.hasOwnProperty.call(entities, TAGS.SOCIAL_SERVICES)) {
+      } else if (entities[TAGS.SOCIAL_SERVICES]) {
         const value = entities[TAGS.SOCIAL_SERVICES][0].value;
         // Shelter Search
         if (value === TAGS.SHELTER) {
@@ -245,8 +275,9 @@ const smallTalkStates = {
             }
           });
         }
+
       // Medical Services
-      } else if (Object.prototype.hasOwnProperty.call(entities, TAGS.HEALTH)) {
+      } else if (entities[TAGS.HEALTH]) {
         const value = entities[TAGS.HEALTH][0].value;
         // Clinics
         if (value === TAGS.CLINIC) {
@@ -287,8 +318,9 @@ const smallTalkStates = {
             }
           });
         }
+
       // Employment Services
-      } else if (Object.prototype.hasOwnProperty.call(entities, TAGS.EMPLOYMENT)) {
+      } else if (entities[TAGS.EMPLOYMENT]) {
         const value = entities[TAGS.EMPLOYMENT][0].value;
         // Employment Asssistance
         if (value === TAGS.JOB_TRAINING) {
@@ -329,16 +361,29 @@ const smallTalkStates = {
             }
           });
         }
-      } else if (Object.prototype.hasOwnProperty.call(entities, TAGS.TRANSACTION)) {
+      } else if (entities[TAGS.TRANSACTION]) {
         const transaction = entities[TAGS.TRANSACTION][0].value;
         if (transaction === TAGS.CHANGE) {
-          if (Object.prototype.hasOwnProperty.call(entities, TAGS.ADMINISTRATION)) {
+          if (entities[TAGS.ADMINISTRATION]) {
             const administration = entities[TAGS.ADMINISTRATION][0].value;
             if (administration === TAGS.CITY) {
               this.fire('setOrganization', null, { freshStart: true });
             }
           }
         }
+
+      // Relationships
+      } else if (entities[TAGS.RELATIONSHIPS]) {
+        console.log('relationships route hit')
+
+      // Complaint
+      } else if (entities[TAGS.COMPLAINT]) {
+        if (entities[TAGS.TRANSACTION]) {
+          this.fire('getRequests');
+        } else {
+          this.fire('complaintStart');
+        }
+
       } else {
         new SlackService({
           username: 'Misunderstood Request',
