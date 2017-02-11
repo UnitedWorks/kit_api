@@ -49,39 +49,31 @@ export const newCaseNotification = (caseObj, organization) => {
 };
 
 export const reportToSeeClickFix = (location, text, images) => {
-  // const apiKey = process.env.SEE_CLICK_FIX_API_KEY;
-  const answers = [];
-  if (text) {
-    answers.push({
-      question_type: 'text',
-      summary: text,
-    });
-  }
-  if (images) {
-    answers.push({
-      question_type: 'file',
-      summary: images[0].payload.url,
-    });
-  }
-  const payload = {
-    address: location.formattedAddress,
-    lat: location.latitude,
-    lng: location.longitude,
-    answers,
-    request_type_id: 'other',
-  };
-  console.log('----------')
-  console.log(payload)
-  console.log('----------')
-  axios.post(`${process.env.SEE_CLICK_FIX_API_URI}/issues`, payload).then((res) => {
-    console.log('===============');
-    console.log(res);
-    console.log('===============');
-  }, {
-    headers: {
-      Authorization: `Bearer ${process.env.SEE_CLICK_FIX_API_KEY}`,
+  return new Promise((resolve, reject) => {
+    const answers = {};
+    if (text) {
+      answers.summary = text;
     }
-  }).catch(logger.error);
+    if (images) {
+      answers.description = `Image: ${images[0].payload.url}`;
+    }
+    const payload = {
+      address: location.formattedAddress,
+      lat: String(location.latitude),
+      lng: String(location.longitude),
+      answers,
+      request_type_id: 'other',
+      anonymize_reporter: true,
+    };
+    axios.post(`${process.env.SEE_CLICK_FIX_API_URI}/issues`, payload, {
+      auth: {
+        username: process.env.SEE_CLICK_FIX_USER,
+        password: process.env.SEE_CLICK_FIX_PASSWORD,
+      },
+    })
+    .then(res => resolve(res.data))
+    .catch(err => reject(err));
+  });
 };
 
 export const createCase = (title, data, category, constituent, organization, location, attachments, seeClickFixId) => {
@@ -146,10 +138,10 @@ export const syncSeeClickFixCase = (scfId) => {
         .where({ see_click_fix_id: scfId })
         .update({ status: refreshedStatus })
         .returning('*')
-        .then(res => JSON.parse(JSON.stringify(res[0])));
+        .then(res => resolve(JSON.parse(JSON.stringify(res[0]))));
     });
   });
-}
+};
 
 export const getConstituentCases = (constituent) => {
   return new Promise((requestResolve, reject) => {
