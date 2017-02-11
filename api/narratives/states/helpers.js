@@ -1,12 +1,5 @@
 import { logger } from '../../logger';
 import SmallTalkMachine from './small-talk';
-import { checkIntegration } from '../../integrations/helpers';
-
-export const hasIntegration = (organization, integrationLabel) => {
-  return checkIntegration(organization, { label: integrationLabel })
-    .then(bool => bool)
-    .catch(error => error);
-};
 
 export const hasEntityValue = (entities = [], value) => {
   let hasValue = false;

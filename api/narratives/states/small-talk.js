@@ -4,7 +4,6 @@ import * as TAGS from '../../constants/nlp-tagging';
 import * as INTEGRATIONS from '../../constants/integrations';
 import { nlp } from '../../services/nlp';
 import { NarrativeStoreMachine } from './state';
-import { Constituent } from '../../accounts/models';
 import { getAnswer } from '../../knowledge-base/helpers';
 import { hasIntegration, hasEntityValue } from './helpers';
 import SlackService from '../../services/slack';
@@ -396,12 +395,14 @@ const smallTalkStates = {
   },
 
   getRequests() {
-    Constituent.where({ id: this.snapshot.constituent.id }).fetch({ withRelated: ['cases'] }).then((constituentModel) => {
-      constituentModel.toJSON().cases.forEach((constituentCase) => {
-        const message = `#${constituentCase.id} (${constituentCase.status}) - ${constituentCase.title.length > 24 ? constituentCase.title.slice(0, 21).concat('...') : constituentCase.title}`;
-        this.messagingClient.addToQuene(constituentModel.toJSON(), message);
+    getConstituentCases(this.snapshot.constituent).then(({ cases }) => {
+      cases.forEach((thisCase) => {
+        const message = `${thisCase.status.toUpperCase()} - ${thisCase.title.length > 48 ? thisCase.title.slice(0, 45).concat('...') : thisCase.title} (#${thisCase.id})`;
+        this.messagingClient.addToQuene(message);
       });
-      this.messagingClient.runQuene();
+      this.messagingClient.runQuene().then(() => {
+        this.exit('start');
+      });
     });
   },
 };

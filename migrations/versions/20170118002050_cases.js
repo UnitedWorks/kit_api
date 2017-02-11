@@ -9,6 +9,7 @@ exports.up = function(knex, Promise) {
     })
     .createTable('cases', (table) => {
       table.increments('id').primary();
+      table.string('see_click_fix_id');
       table.enum('status', ['open', 'closed']).defaultTo('open');
       table.integer('category_id')
         .unsigned().references('id').inTable('case_categorys');
