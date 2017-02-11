@@ -8,6 +8,14 @@ export const hasIntegration = (organization, integrationLabel) => {
     .catch(error => error);
 };
 
+export const hasEntityValue = (entities = [], value) => {
+  let hasValue = false;
+  entities.forEach((entity) => {
+    if (entity.value === value) hasValue = true;
+  });
+  return hasValue;
+};
+
 export const stateMachines = {
   smallTalk: SmallTalkMachine,
 };

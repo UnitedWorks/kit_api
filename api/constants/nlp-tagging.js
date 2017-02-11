@@ -1,5 +1,12 @@
+// Schedules
 export const SCHEDULES = 'schedules';
-export const LOCATION = 'location';
+export const WHEN = 'when';
+export const DEADLINE = 'deadline';
+export const OPEN = 'open';
+
+// Locations
+export const LOOKING_FOR = 'looking_for';
+export const WHERE = 'where';
 
 // Sanitation Values
 export const SANITATION = 'sanitation';
@@ -35,7 +42,21 @@ export const CITY = 'city';
 export const TRANSACTION = 'transaction';
 export const CHANGE = 'change';
 export const STATUS = 'status';
+export const GET = 'get';
+export const CHECK = 'check';
 
 // Help Tags
 export const HELP = 'help';
 export const WHAT_CAN_I_ASK = 'What can I ask';
+
+// Voting
+export const VOTING = 'voting';
+export const VOTER_REGISTRATION = 'voter registration';
+export const ELECTION = 'election';
+export const EARLY_VOTING = 'early voting';
+export const POLLS = 'polls';
+export const SAMPLE_BALLOT = 'sample ballot';
+export const ABSENTEE_BALLOT = 'absentee ballot';
+
+// Relationships
+export const RELATIONSHIPS = 'relationships';
