@@ -10,6 +10,7 @@ import EmailService from '../services/email';
 import { SEND_GRID_EVENT_OPEN } from '../constants/sendgrid';
 import { hasIntegration } from '../integrations/helpers';
 import * as INTEGRATIONS from '../constants/integrations';
+import { SEE_CLICK_FIX_CATEGORIES } from '../constants/case-categories';
 
 export const newCaseNotification = (caseObj, organization) => {
   AccountModels.Organization.where({ id: organization.id }).fetch({ withRelated: ['representatives'] }).then((returnedOrg) => {
@@ -46,6 +47,10 @@ export const newCaseNotification = (caseObj, organization) => {
     }
     new SlackService({ username: 'Constituent Complaint', icon: 'rage' }).send(slackMessage);
   });
+};
+
+export const requestFitsSeeClickFix = (category) => {
+  return SEE_CLICK_FIX_CATEGORIES.includes(category);
 };
 
 export const reportToSeeClickFix = (location, text, images) => {
@@ -110,7 +115,7 @@ export const makeConstituentRequest = (headline, data, category, constituent, or
   return new Promise((resolve, reject) => {
     // Check for integrations to push to
     hasIntegration(organization, INTEGRATIONS.SEE_CLICK_FIX).then((integrated) => {
-      if (integrated) {
+      if (integrated && requestFitsSeeClickFix(category.label)) {
         reportToSeeClickFix(location, headline, attachments).then((scfIssue) => {
           createCase(headline, data, category, constituent, organization, location, attachments,
             scfIssue.id).then(caseObj => resolve(caseObj.toJSON()));
