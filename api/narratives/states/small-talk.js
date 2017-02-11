@@ -69,36 +69,36 @@ const smallTalkStates = {
         // Deadlines
         if (hasEntityValue(entities[TAGS.VOTING], TAGS.ELECTION)) {
           if (hasEntityValue(entities[TAGS.SCHEDULES], TAGS.DEADLINE)) {
-            console.log('election deadlines');
+            this.fire('electionDeadlines');
           } else if (hasEntityValue(entities[TAGS.SCHEDULES], TAGS.WHEN)) {
-            console.log('asking when are elections');
+            this.fire('electionSchedule');
           }
         }
         if (hasEntityValue(entities[TAGS.VOTING], TAGS.EARLY_VOTING)) {
-          console.log('checking early voting');
+          this.fire('earlyVoting');
         }
         if (hasEntityValue(entities[TAGS.VOTING], TAGS.POLLS)) {
           if (hasEntityValue(entities[TAGS.LOOKING_FOR], TAGS.WHERE)) {
-            console.log('where are poll locations');
+            this.fire('pollLocations');
           } else if (hasEntityValue(entities[TAGS.SCHEDULES], TAGS.WHEN)) {
-            console.log('what time are polls open');
+            this.fire('pollSchedule');
           }
         }
         // Registration
         if (hasEntityValue(entities[TAGS.VOTING], TAGS.VOTER_REGISTRATION)) {
           if (hasEntityValue(entities[TAGS.TRANSACTION], TAGS.CHECK)) {
-            console.log('checking voter registration');
+            this.fire('voterRegistrationCheck');
           } else {
-            console.log('getting registered to vote');
+            this.fire('voterRegistrationGet');
           }
         }
         // Absentee ballot (absentee ballot)
         if (hasEntityValue(entities[TAGS.VOTING], TAGS.ABSENTEE_BALLOT)) {
-          console.log('get a ballot');
+          this.fire('absenteeBallot');
         }
         // FAQ/Help
         if (entities[TAGS.HELP]) {
-          console.log('help');
+          this.fire('electionHelp');
         }
 
       // Sanitation Services
