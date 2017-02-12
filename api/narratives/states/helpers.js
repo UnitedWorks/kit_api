@@ -1,10 +1,10 @@
 import { logger } from '../../logger';
 import SmallTalkMachine from './small-talk';
 
-export const hasEntityValue = (entities = [], value) => {
+export const hasEntityValue = (entities = [], searchValues = []) => {
   let hasValue = false;
   entities.forEach((entity) => {
-    if (entity.value === value) hasValue = true;
+    if (searchValues.includes(entity.value)) hasValue = true;
   });
   return hasValue;
 };

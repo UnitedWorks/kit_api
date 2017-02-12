@@ -60,39 +60,39 @@ const smallTalkStates = {
       logger.info(nlpData);
 
       // Help
-      if (hasEntityValue(entities[TAGS.HELP], TAGS.WHAT_CAN_I_ASK)) {
+      if (hasEntityValue(entities[TAGS.HELP], [TAGS.WHAT_CAN_I_ASK])) {
         this.fire('whatCanIAsk');
 
       // Voting
       } else if (entities[TAGS.VOTING]) {
         // Deadlines
-        if (hasEntityValue(entities[TAGS.VOTING], TAGS.ELECTION)) {
-          if (hasEntityValue(entities[TAGS.SCHEDULES], TAGS.DEADLINE)) {
+        if (hasEntityValue(entities[TAGS.VOTING], [TAGS.ELECTION])) {
+          if (hasEntityValue(entities[TAGS.SCHEDULES], [TAGS.DEADLINE])) {
             this.fire('electionDeadlines');
-          } else if (hasEntityValue(entities[TAGS.SCHEDULES], TAGS.WHEN)) {
+          } else if (hasEntityValue(entities[TAGS.SCHEDULES], [TAGS.WHEN, TAGS.SCHEDULES])) {
             this.fire('electionSchedule');
           }
         }
-        if (hasEntityValue(entities[TAGS.VOTING], TAGS.EARLY_VOTING)) {
+        if (hasEntityValue(entities[TAGS.VOTING], [TAGS.EARLY_VOTING])) {
           this.fire('earlyVoting');
         }
-        if (hasEntityValue(entities[TAGS.VOTING], TAGS.POLLS)) {
-          if (hasEntityValue(entities[TAGS.LOOKING_FOR], TAGS.WHERE)) {
+        if (hasEntityValue(entities[TAGS.VOTING], [TAGS.POLLS])) {
+          if (hasEntityValue(entities[TAGS.LOOKING_FOR], [TAGS.WHERE])) {
             this.fire('pollLocations');
-          } else if (hasEntityValue(entities[TAGS.SCHEDULES], TAGS.WHEN)) {
+          } else if (hasEntityValue(entities[TAGS.SCHEDULES], [TAGS.WHEN])) {
             this.fire('pollSchedule');
           }
         }
         // Registration
-        if (hasEntityValue(entities[TAGS.VOTING], TAGS.VOTER_REGISTRATION)) {
-          if (hasEntityValue(entities[TAGS.TRANSACTION], TAGS.CHECK)) {
+        if (hasEntityValue(entities[TAGS.VOTING], [TAGS.VOTER_REGISTRATION])) {
+          if (hasEntityValue(entities[TAGS.TRANSACTION], [TAGS.CHECK])) {
             this.fire('voterRegistrationCheck');
           } else {
             this.fire('voterRegistrationGet');
           }
         }
         // Absentee ballot (absentee ballot)
-        if (hasEntityValue(entities[TAGS.VOTING], TAGS.ABSENTEE_BALLOT)) {
+        if (hasEntityValue(entities[TAGS.VOTING], [TAGS.ABSENTEE_BALLOT])) {
           this.fire('absenteeBallot');
         }
         // FAQ/Help

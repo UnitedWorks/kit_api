@@ -1,9 +1,25 @@
+import { logger } from '../../logger';
+import VotingClient from '../clients/voting-client';
+
 export const states = {
   electionDeadlines() {
-    console.log('election deadlines');
+    logger.info('State: electionDeadlines');
   },
   electionSchedule() {
-    console.log('asking when are elections');
+    logger.info('State: electionSchedule');
+    new VotingClient({ location: this.get('location') }).getElections().then((elections) => {
+      if (elections.length === 0) {
+        this.messagingClient.send('There are no upcoming elections!');
+      } else {
+        this.messagingClient.addToQuene('Your upcoming elections:');
+        elections.forEach((election) => {
+          const registrationDate = election.dates.filter(date => date.kind === 'DRD')[0].date_human_readable;
+          const message = `${election.title}\nElection Date: ${new Date(election.election_date).toDateString()}\n${registrationDate ? `Register By: ${registrationDate}` : ''}`.trim();
+          this.messagingClient.addToQuene(message);
+        });
+        this.messagingClient.runQuene().then(() => this.exit('start'));
+      }
+    });
   },
   earlyVoting() {
     console.log('checking early voting');
