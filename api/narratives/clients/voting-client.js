@@ -26,14 +26,14 @@ export default class VotingClient {
   setLocationIds() {
     // Axios is doing something weird with '+' signs
     const stateRequest = this.axios.get(`${this.localElectionsAPI}/locations?location_type=state&location_name=${this.locations.usVote.state}`);
-    const countyRequest = this.axios.get(`${this.localElectionsAPI}/locations?location_type=county&location_name=${this.locations.usVote.county}`);
-    return Promise.all([stateRequest, countyRequest]).then((res) => {
+    // const countyRequest = this.axios.get(`${this.localElectionsAPI}/locations?location_type=county&location_name=${this.locations.usVote.county}`);
+    return Promise.all([stateRequest]).then((res) => {
       if (res[0].data.objects.length > 0) this.locations.usVote.stateId = res[0].data.objects[0].id;
-      if (res[1].data.objects.length > 0) {
-        this.locations.usVote.countyId = res[1].data.objects.filter((location) => {
-          return location.state_id === this.locations.usVote.stateId;
-        })[0].id;
-      }
+      // if (res[1].data.objects.length > 0) {
+      //   this.locations.usVote.countyId = res[1].data.objects.filter((location) => {
+      //     return location.state_id === this.locations.usVote.stateId;
+      //   })[0].id;
+      // }
     });
   }
 
