@@ -63,12 +63,22 @@ export const states = {
 
   voterRegistrationCheck() {
     logger.info('State: voterRegistrationCheck');
+    const quickActions = [];
     new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
       info.lookup_tools.forEach((tool) => {
         if (tool.lookup_tool.kind === 'registration_status') {
-          this.messagingClient.send(`This should help you check your registration: ${tool.url}`);
+          quickActions.push({
+            type: 'web_url',
+            url: tool.url,
+            title: 'Am I registered?',
+            webview_height_ratio: 'tall',
+          });
         }
       });
+      this.messagingClient.send('Here\'s a way to check registration:', {
+        type: 'template',
+        templateType: 'button',
+      }, quickActions);
     });
   },
 
@@ -179,7 +189,7 @@ export const states = {
       });
       this.messagingClient.addToQuene(eligibleMessage);
       // More info
-      const quickReplies = ['Voter ID Needed', 'State Elections Website'].map((label) => {
+      const quickReplies = ['Voter ID Requirements', 'Register to Vote'].map((label) => {
         return { content_type: 'text', title: label, payload: label };
       });
       this.messagingClient.addToQuene('Here are Some other ways I can help you with voting: ', null, quickReplies);
@@ -211,7 +221,7 @@ export const states = {
 
   electionHelp() {
     logger.info('State: electionHelp');
-    const quickReplies = ['Upcoming Elections', 'Voting Requirements', 'Voting Registration'].map((label) => {
+    const quickReplies = ['Upcoming Elections', 'Voting Requirements', 'Register to Vote'].map((label) => {
       return { content_type: 'text', title: label, payload: label };
     });
     this.messagingClient.send('How can I help you with voting or the elections?', null, quickReplies);
