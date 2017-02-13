@@ -52,7 +52,7 @@ export default class BaseClient {
         }
         return self.send(quene[0].text, quene[0].attachment, quene[0].quickReplies).then(() => {
           return recursiveRun(quene.slice(1));
-        });
+        }).catch(err => reject(err));
       }
       recursiveRun(self.messageQuene);
     });

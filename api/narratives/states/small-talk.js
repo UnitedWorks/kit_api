@@ -5,7 +5,7 @@ import * as INTEGRATIONS from '../../constants/integrations';
 import { nlp } from '../../services/nlp';
 import { NarrativeStoreMachine } from './state';
 import { getAnswer } from '../../knowledge-base/helpers';
-import { hasIntegration, hasEntityValue } from './helpers';
+import { hasIntegration, entityValueIs } from './helpers';
 import SlackService from '../../services/slack';
 import { states as complaintStates } from './complaint-states';
 import { states as votingStates } from './voting-states';
@@ -60,44 +60,57 @@ const smallTalkStates = {
       logger.info(nlpData);
 
       // Help
-      if (hasEntityValue(entities[TAGS.HELP], [TAGS.WHAT_CAN_I_ASK])) {
-        this.fire('whatCanIAsk');
+      if (entityValueIs(entities[TAGS.HELP], [TAGS.WHAT_CAN_I_ASK])) {
+        return this.fire('whatCanIAsk');
 
       // Voting
       } else if (entities[TAGS.VOTING]) {
         // Deadlines
-        if (hasEntityValue(entities[TAGS.VOTING], [TAGS.ELECTION])) {
-          if (hasEntityValue(entities[TAGS.SCHEDULES], [TAGS.DEADLINE])) {
-            this.fire('electionDeadlines');
-          } else if (hasEntityValue(entities[TAGS.SCHEDULES], [TAGS.WHEN, TAGS.SCHEDULES])) {
-            this.fire('electionSchedule');
+        if (entityValueIs(entities[TAGS.VOTING], [TAGS.ELECTION])) {
+          if (entityValueIs(entities[TAGS.SCHEDULES], [TAGS.DEADLINE])) {
+            return this.fire('electionDeadlines');
+          } else if (entityValueIs(entities[TAGS.SCHEDULES], [TAGS.WHEN, TAGS.SCHEDULES])) {
+            return this.fire('electionSchedule');
           }
         }
-        if (hasEntityValue(entities[TAGS.VOTING], [TAGS.EARLY_VOTING])) {
-          this.fire('earlyVoting');
+        if (entityValueIs(entities[TAGS.VOTING], [TAGS.EARLY_VOTING])) {
+          return this.fire('earlyVoting');
         }
-        if (hasEntityValue(entities[TAGS.VOTING], [TAGS.POLLS])) {
-          if (hasEntityValue(entities[TAGS.LOOKING_FOR], [TAGS.WHERE])) {
-            this.fire('pollLocations');
-          } else if (hasEntityValue(entities[TAGS.SCHEDULES], [TAGS.WHEN])) {
-            this.fire('pollSchedule');
+        if (entityValueIs(entities[TAGS.VOTING], [TAGS.POLLS])) {
+          if (entityValueIs(entities[TAGS.LOOKING_FOR], [TAGS.WHERE])) {
+            return this.fire('pollLocations');
+          } else if (entityValueIs(entities[TAGS.SCHEDULES], [TAGS.WHEN])) {
+            return this.fire('pollSchedule');
           }
         }
         // Registration
-        if (hasEntityValue(entities[TAGS.VOTING], [TAGS.VOTER_REGISTRATION])) {
-          if (hasEntityValue(entities[TAGS.TRANSACTION], [TAGS.CHECK])) {
-            this.fire('voterRegistrationCheck');
-          } else {
-            this.fire('voterRegistrationGet');
+        if (entityValueIs(entities[TAGS.VOTING], [TAGS.VOTER_REGISTRATION])) {
+          if (entityValueIs(entities[TAGS.TRANSACTION], [TAGS.CHECK])) {
+            return this.fire('voterRegistrationCheck');
+          } else if (entities[TAGS.HELP]) {
+            return this.fire('voterRegistrationHelp');
           }
+          return this.fire('voterRegistrationGet');
         }
-        // Absentee ballot (absentee ballot)
-        if (hasEntityValue(entities[TAGS.VOTING], [TAGS.ABSENTEE_BALLOT])) {
-          this.fire('absenteeBallot');
+        // Documentation
+        if (entityValueIs(entities[TAGS.DOCUMENT], [TAGS.ID])) {
+          return this.fire('voterIdRequirements');
+        }
+        // Absentee ballot
+        if (entityValueIs(entities[TAGS.VOTING], [TAGS.ABSENTEE_BALLOT])) {
+          return this.fire('absenteeBallot');
+        }
+        // Sample ballot
+        if (entityValueIs(entities[TAGS.VOTING], [TAGS.SAMPLE_BALLOT])) {
+          return this.fire('sampleBallot');
         }
         // FAQ/Help
         if (entities[TAGS.HELP]) {
-          this.fire('electionHelp');
+          return this.fire('electionHelp');
+        }
+        // Problem
+        if (entities[TAGS.COMPLAINT]) {
+          return this.fire('electionProblem');
         }
 
       // Sanitation Services
