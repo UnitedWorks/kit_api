@@ -10,14 +10,16 @@ export default class VotingClient {
       },
     });
     // Setup config variables
+    const level2 = config.location.administrativeLevels.level2long;
+    const level1 = config.location.administrativeLevels.level1long;
     this.locations = {
       google: {
-        county: config.location.administrativeLevels.level2long.toLowerCase().replace(/\s/g, '_'),
-        state: config.location.administrativeLevels.level1short.toLowerCase(),
+        county: level2 ? level2.toLowerCase().replace(/\s/g, '_') : null,
+        state: level1 ? level1.toLowerCase() : null,
       },
       usVote: {
-        county: config.location.administrativeLevels.level2long.toLowerCase().replace(/\s/g, '+'),
-        state: config.location.administrativeLevels.level1long.toLowerCase().replace(/\s/g, '+'),
+        county: level2 ? level2.toLowerCase().replace(/\s/g, '+') : null,
+        state: level1 ? level1.toLowerCase().replace(/\s/g, '+') : null,
         city: config.location.city.toLowerCase().replace(/\s/, '+'),
       },
     };
@@ -81,6 +83,9 @@ export default class VotingClient {
         registerBy = thisDate.getTime();
       }
     });
+    if (Date.now() > registerBy) {
+      return null;
+    }
     return options.returnString ? new Date(registerBy).toDateString() : new Date(registerBy);
   }
 

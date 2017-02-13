@@ -109,9 +109,11 @@ export const states = {
       const stateInfo = data[0];
       const electionsInfo = data[1];
 
-      this.messagingClient.addToQuene(
-        VotingClient.extractRegistrationDetails(stateInfo.voting_general_info));
-      this.messagingClient.addToQuene(`Your next election registration deadline is ${VotingClient.getClosestRegistrationDeadline(electionsInfo, { returnString: true })}`);
+      this.messagingClient.addToQuene(VotingClient.extractRegistrationDetails(
+        stateInfo.voting_general_info));
+      const registrationDeadline = VotingClient.getClosestRegistrationDeadline(electionsInfo,
+        { returnString: true });
+      if (registrationDeadline) this.messagingClient.addToQuene(`Your next election registration deadline is ${registrationDeadline}`);
       const elements = [{
         title: 'Get Registered!',
         image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/16586922_193481711133587_230696876501689696_o.png?oh=673cb117bfa13f9bc3f603f07f6ba459&oe=5949437E',
