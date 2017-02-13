@@ -51,14 +51,21 @@ export const WHAT_CAN_I_ASK = 'what can I ask';
 export const INFO = 'info';
 
 // Voting
-export const VOTE = 'vote';
+// KEYWORDS
 export const VOTING = 'voting';
-export const VOTER_REGISTRATION = 'voter registration';
-export const ELECTION = 'election';
-export const EARLY_VOTING = 'early voting';
-export const POLLS = 'polls';
+// INTENTS
+export const REGISTER_TO_VOTE = 'register to vote';
+export const CHECK_VOTER_REGISTRATION = 'check voter registration';
+export const VOTING_DEADLINES = 'voting deadlines';
+export const LIST_ELECTIONS = 'list elections';
+export const POLL_INFO = 'poll info';
+export const VOTER_ID = 'voter id';
+export const VOTER_ELIGIBILITY = 'voter eligibility';
+export const VOTER_PROBLEM = 'voter problem';
 export const SAMPLE_BALLOT = 'sample ballot';
-export const ABSENTEE_BALLOT = 'absentee ballot';
+export const ABSENTEE_VOTE = 'absentee vote';
+export const VOTER_ASSISTANCE = 'voter assistance';
+export const EARLY_VOTING = 'early voting';
 
 // Relationships
 export const RELATIONSHIP_HOUSING = 'relationship_housing';

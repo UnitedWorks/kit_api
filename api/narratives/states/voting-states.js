@@ -1,9 +1,10 @@
 import { logger } from '../../logger';
 import VotingClient from '../clients/voting-client';
+import * as US_VOTE_CONSTANTS from '../../constants/voting-foundation';
 
 export const states = {
-  electionDeadlines() {
-    logger.info('State: electionDeadlines');
+  votingDeadlines() {
+    logger.info('State: votingDeadlines');
     new VotingClient({ location: this.get('location') }).getElections().then((elections) => {
       if (elections.length === 0) {
         this.messagingClient.addToQuene('There are no upcoming elections!');
@@ -44,11 +45,6 @@ export const states = {
     });
   },
 
-  earlyVoting() {
-    logger.info('State: earlyVoting');
-    this.messagingClient.send('I don\'t have that information yet. :(');
-  },
-
   pollInfo() {
     logger.info('State: pollInfo');
     const votingClientInstance = new VotingClient({ location: this.get('location') });
@@ -59,7 +55,7 @@ export const states = {
 
       const quickActions = [];
       stateInfo.lookup_tools.forEach((tool) => {
-        if (tool.lookup_tool.kind === 'polling_location') {
+        if (tool.lookup_tool.kind === US_VOTE_CONSTANTS.POLLING_LOCATION) {
           quickActions.push({
             type: 'web_url',
             url: tool.url,
@@ -67,7 +63,7 @@ export const states = {
             webview_height_ratio: 'tall',
           });
         }
-        if (tool.lookup_tool.kind === 'election_information') {
+        if (tool.lookup_tool.kind === US_VOTE_CONSTANTS.ELECTION_INFORMATION) {
           quickActions.push({
             type: 'web_url',
             url: tool.url,
@@ -76,7 +72,7 @@ export const states = {
           });
         }
       });
-      this.messagingClient.send(`${VotingClient.extractPollDetails(stateInfo.voting_general_info) || 'This is what I found to help with poll information.'}`, {
+      this.messagingClient.send(`This what I know about the polls. ${VotingClient.extractPollDetails(stateInfo.voting_general_info)}`, {
         type: 'template',
         templateType: 'button',
       }, quickActions);
@@ -88,7 +84,7 @@ export const states = {
     const quickActions = [];
     new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
       info.lookup_tools.forEach((tool) => {
-        if (tool.lookup_tool.kind === 'registration_status') {
+        if (tool.lookup_tool.kind === US_VOTE_CONSTANTS.REGISTRATION_STATUS) {
           quickActions.push({
             type: 'web_url',
             url: tool.url,
@@ -106,7 +102,7 @@ export const states = {
 
   voterRegistrationGet() {
     logger.info('State: voterRegistrationGet');
-    this.messagingClient.addToQuene('Alright, let\'s get you registered!');
+    this.messagingClient.addToQuene('Let\'s get you registered!');
     const votingClientInstance = new VotingClient({ location: this.get('location') });
     Promise.all([
       votingClientInstance.getGeneralStateInfo(),
@@ -121,12 +117,12 @@ export const states = {
         { returnString: true });
       if (registrationDeadline) this.messagingClient.addToQuene(`Your next election registration deadline is ${registrationDeadline}`);
       const elements = [{
-        title: 'Get Registered!',
-        image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/16586922_193481711133587_230696876501689696_o.png?oh=673cb117bfa13f9bc3f603f07f6ba459&oe=5949437E',
+        title: 'Register to Vote',
+        // image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/16586922_193481711133587_230696876501689696_o.png?oh=673cb117bfa13f9bc3f603f07f6ba459&oe=5949437E',
         buttons: [],
       }];
       stateInfo.lookup_tools.forEach((tool) => {
-        if (tool.lookup_tool.kind === 'registration_status') {
+        if (tool.lookup_tool.kind === US_VOTE_CONSTANTS.REGISTRATION_STATUS) {
           elements[0].buttons.push({
             type: 'web_url',
             url: tool.url,
@@ -142,7 +138,7 @@ export const states = {
             webview_height_ratio: 'tall',
           });
         }
-        if (tool.lookup_tool.kind === 'election_information') {
+        if (tool.lookup_tool.kind === US_VOTE_CONSTANTS.ELECTION_INFORMATION) {
           elements[0].default_action = {
             type: 'web_url',
             url: tool.url,
@@ -159,14 +155,6 @@ export const states = {
     });
   },
 
-  voterRegistrationHelp() {
-    logger.info('State: voterRegistrationHelp');
-    const quickReplies = ['Register to Vote', 'Check Voter Registration', 'Voter ID Requirements'].map((label) => {
-      return { content_type: 'text', title: label, payload: label };
-    });
-    this.messagingClient.send('How can I help you with voter registration?', null, quickReplies);
-  },
-
   sampleBallot() {
     logger.info('State: sampleBallot');
     new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
@@ -178,12 +166,30 @@ export const states = {
     });
   },
 
-  voterAssistance() {
-    logger.info('State: voterAssistance');
-    const quickReplies = ['Where is my poll?', 'Get Upcoming Elections', 'Voter Issue Help'].map((label) => {
-      return { content_type: 'text', title: label, payload: label };
+  absenteeVote() {
+    logger.info('State: absenteeVote');
+    new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
+      const absenteeVotingDetails = VotingClient.extractAbsenteeVoteDetails(
+        info.voting_general_info);
+      if (absenteeVotingDetails) {
+        this.messagingClient.send(`${absenteeVotingDetails}`);
+      } else {
+        this.messagingClient.send('Hmm, your state doesn\'t seem to allow absentee voting.');
+      }
     });
-    this.messagingClient.send('How can I help you with voting?', null, quickReplies);
+  },
+
+  earlyVoting() {
+    logger.info('State: earlyVoting');
+    new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
+      const earlyVotingDetails = VotingClient.extractEarlyVotingDetails(
+        info.voting_general_info);
+      if (earlyVotingDetails) {
+        this.messagingClient.send(`${earlyVotingDetails}`);
+      } else {
+        this.messagingClient.send('Hmm, it doesn\'t seem that your state allows early voting.');
+      }
+    });
   },
 
   voterIdRequirements() {
@@ -199,11 +205,10 @@ export const states = {
           });
         }
       });
-      this.messagingClient.addToQuene(idMessage);
-      const quickReplies = ['Register to Vote', 'Check Voter Registration', 'Upcoming Elections'].map((label) => {
+      const quickReplies = ['Register to Vote', 'Check Registration', 'Upcoming Elections'].map((label) => {
         return { content_type: 'text', title: label, payload: label };
       });
-      this.messagingClient.addToQuene('Since we\'re on the topic, are you ready for the next election?', null, quickReplies);
+      this.messagingClient.addToQuene(idMessage, null, quickReplies);
       this.messagingClient.runQuene().then(() => this.exit('start'));
     });
   },
@@ -216,22 +221,21 @@ export const states = {
       info.eligibility_requirements[0].items.forEach(({ item }, index) => {
         eligibleMessage = eligibleMessage.concat(`${index + 1}) ${item.name}. `);
       });
-      eligibleMessage = eligibleMessage.concat(`\n${info.eligibility_requirements[1].header} `);
-      info.eligibility_requirements[1].items.forEach(({ item }, index) => {
-        eligibleMessage = eligibleMessage.concat(`${index + 1}) ${item.name}. `);
-      });
       this.messagingClient.addToQuene(eligibleMessage);
-      // More info
-      const quickReplies = ['Voter ID Requirements', 'Register to Vote'].map((label) => {
+      let notEligibleMessage = `\n${info.eligibility_requirements[1].header} `;
+      info.eligibility_requirements[1].items.forEach(({ item }, index) => {
+        notEligibleMessage = notEligibleMessage.concat(`${index + 1}) ${item.name}. `);
+      });
+      const quickActions = ['Check Registration', 'Register to Vote', 'Upcoming Elections'].map((label) => {
         return { content_type: 'text', title: label, payload: label };
       });
-      this.messagingClient.addToQuene('Here are Some other ways I can help you with voting: ', null, quickReplies);
+      this.messagingClient.addToQuene(notEligibleMessage, null, quickActions);
       this.messagingClient.runQuene().then(() => this.exit('start'));
     });
   },
 
-  electionProblem() {
-    logger.info('State: electionProblem');
+  voterProblem() {
+    logger.info('State: voterProblem');
     const quickActions = [{
       type: 'phone_number',
       title: 'Call English Hotline',
@@ -252,13 +256,43 @@ export const states = {
     this.exit('start');
   },
 
-  electionHelp() {
-    logger.info('State: electionHelp');
-    const quickReplies = ['Upcoming Elections', 'Voting Requirements', 'Register to Vote'].map((label) => {
-      return { content_type: 'text', title: label, payload: label };
+  voterAssistance() {
+    logger.info('State: voterAssistance');
+    const votingClientInstance = new VotingClient({ location: this.get('location') });
+    Promise.all([
+      votingClientInstance.getGeneralStateInfo(),
+    ]).then((data) => {
+      const stateInfo = data[0];
+
+      const elements = [{
+        title: 'Voting Help Menu',
+        image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/16586922_193481711133587_230696876501689696_o.png?oh=673cb117bfa13f9bc3f603f07f6ba459&oe=5949437E',
+        buttons: [{
+          type: 'postback',
+          title: 'Check Voter Registration',
+          payload: 'Check Voter Registration',
+        }, {
+          type: 'postback',
+          title: 'Register to Vote',
+          payload: 'Register to Vote',
+        }],
+      }];
+      stateInfo.lookup_tools.forEach((tool) => {
+        if (tool.lookup_tool.kind === US_VOTE_CONSTANTS.ELECTION_INFORMATION) {
+          elements[0].buttons.push({
+            type: 'web_url',
+            url: tool.url,
+            webview_height_ratio: 'tall',
+          });
+        }
+      });
+      this.messagingClient.addToQuene(null, {
+        type: 'template',
+        templateType: 'generic',
+        elements,
+      });
+      this.messagingClient.runQuene();
     });
-    this.messagingClient.send('How can I help you with voting or the elections?', null, quickReplies);
-    this.exit('start');
   },
 
 };

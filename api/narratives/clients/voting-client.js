@@ -100,8 +100,18 @@ export default class VotingClient {
   }
 
   static extractPollDetails(generalInfoTextBlock) {
-    const pollOptions = /(Polling [a-z0-9\s]+\.)/gmi.exec(generalInfoTextBlock.replace(/(?:\r\n|\r|\n)/g, ''));
+    const pollOptions = /(Polling [a-z0-9\s-/]+\.)/gmi.exec(generalInfoTextBlock.replace(/(?:\r\n|\r|\n)/g, ''));
     return pollOptions !== null ? pollOptions[1] : null;
+  }
+
+  static extractAbsenteeVoteDetails(generalInfoTextBlock) {
+    const absenteeDescription = /Absentee Voting([a-z0-9\s-/]+\.)/gmi.exec(generalInfoTextBlock.replace(/(?:\r\n|\r|\n)/g, ''));
+    return absenteeDescription !== null ? absenteeDescription[1] : null;
+  }
+
+  static extractEarlyVotingDetails(generalInfoTextBlock) {
+    const earlyVotingDescription = /Early Voting ([a-z0-9\s-/]+\.)/gmi.exec(generalInfoTextBlock.replace(/(?:\r\n|\r|\n)/g, ''));
+    return earlyVotingDescription !== null ? earlyVotingDescription[1] : null;
   }
 
 }

@@ -66,49 +66,50 @@ const smallTalkStates = {
       // Voting
       } else if (entities[TAGS.VOTING]) {
         // Deadlines
-        if (entityValueIs(entities[TAGS.VOTING], [TAGS.ELECTION])) {
-          if (entityValueIs(entities[TAGS.SCHEDULES], [TAGS.DEADLINE])) {
-            return this.fire('electionDeadlines');
-          } else if (entityValueIs(entities[TAGS.SCHEDULES], [TAGS.WHEN, TAGS.SCHEDULES])) {
-            return this.fire('electionSchedule');
-          }
+        if (entityValueIs(entities[TAGS.VOTING], [TAGS.VOTING_DEADLINES])) {
+          return this.fire('votingDeadlines');
         }
-        if (entityValueIs(entities[TAGS.VOTING], [TAGS.EARLY_VOTING])) {
-          return this.fire('earlyVoting');
+        // Elections
+        if (entityValueIs(entities[TAGS.VOTING], [TAGS.LIST_ELECTIONS])) {
+          return this.fire('electionSchedule');
         }
         // Registration
-        if (entityValueIs(entities[TAGS.VOTING], [TAGS.VOTER_REGISTRATION])) {
-          if (entityValueIs(entities[TAGS.TRANSACTION], [TAGS.CHECK])) {
-            return this.fire('voterRegistrationCheck');
-          } else if (entityValueIs(entities[TAGS.TRANSACTION], [TAGS.GET])) {
-            return this.fire('voterRegistrationGet');
-          }
-          return this.fire('voterRegistrationHelp');
+        if (entityValueIs(entities[TAGS.VOTING], [TAGS.REGISTER_TO_VOTE])) {
+          return this.fire('voterRegistrationGet');
         }
-        // Documentation
-        if (entityValueIs(entities[TAGS.DOCUMENT], [TAGS.ID])) {
+        if (entityValueIs(entities[TAGS.VOTING], [TAGS.CHECK_VOTER_REGISTRATION])) {
+          return this.fire('voterRegistrationCheck');
+        }
+        // Poll info
+        if (entityValueIs(entities[TAGS.VOTING], [TAGS.POLL_INFO])) {
+          return this.fire('pollInfo');
+        }
+        // Rules
+        if (entityValueIs(entities[TAGS.VOTING], [TAGS.VOTER_ID])) {
           return this.fire('voterIdRequirements');
         }
-        // Absentee ballot
-        if (entityValueIs(entities[TAGS.VOTING], [TAGS.ABSENTEE_BALLOT])) {
-          return this.fire('absenteeBallot');
+        if (entityValueIs(entities[TAGS.VOTING], [TAGS.VOTER_ELIGIBILITY])) {
+          return this.fire('stateVotingRules');
         }
         // Sample ballot
         if (entityValueIs(entities[TAGS.VOTING], [TAGS.SAMPLE_BALLOT])) {
           return this.fire('sampleBallot');
         }
-        if (entityValueIs(entities[TAGS.VOTING], [TAGS.POLLS, TAGS.VOTING, TAGS.VOTE])
-          && (entityValueIs(entities[TAGS.LOOKING_FOR], [TAGS.WHERE])
-          || entityValueIs(entities[TAGS.SCHEDULES], [TAGS.WHEN]))) {
-          return this.fire('pollInfo');
+        // Absentee ballot
+        if (entityValueIs(entities[TAGS.VOTING], [TAGS.ABSENTEE_VOTE])) {
+          return this.fire('absenteeVote');
         }
-        // FAQ/Help
-        if (entities[TAGS.HELP]) {
-          return this.fire('electionHelp');
+        // Early Voting
+        if (entityValueIs(entities[TAGS.VOTING], [TAGS.EARLY_VOTING])) {
+          return this.fire('earlyVoting');
         }
         // Problem
-        if (entities[TAGS.COMPLAINT]) {
-          return this.fire('electionProblem');
+        if (entityValueIs(entities[TAGS.VOTING], [TAGS.VOTER_PROBLEM])) {
+          return this.fire('voterProblem');
+        }
+        // FAQ/Help
+        if (entityValueIs(entities[TAGS.VOTING], [TAGS.VOTER_ASSISTANCE])) {
+          return this.fire('voterAssistance');
         }
         // Fallback
         return this.fire('failedRequest', null, { input });
