@@ -93,14 +93,24 @@ export class FacebookMessengerClient extends BaseClient {
     };
     // Handle templates differently than text, images, and quick replies
     if (attachment && attachment.type === 'template') {
-      sendData.message.attachment = {
-        type: 'template',
-        payload: {
-          template_type: attachment.templateType,
-          text,
-          buttons: quickActions,
-        },
-      };
+      if (attachment.templateType === 'button') {
+        sendData.message.attachment = {
+          type: 'template',
+          payload: {
+            template_type: attachment.templateType,
+            text,
+            buttons: quickActions,
+          },
+        };
+      } else if (attachment.templateType === 'generic') {
+        sendData.message.attachment = {
+          type: 'template',
+          payload: {
+            template_type: attachment.templateType,
+            elements: attachment.elements,
+          },
+        };
+      }
     } else {
       if (text) sendData.message.text = text;
       if (attachment) {

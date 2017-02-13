@@ -87,10 +87,10 @@ const smallTalkStates = {
         if (entityValueIs(entities[TAGS.VOTING], [TAGS.VOTER_REGISTRATION])) {
           if (entityValueIs(entities[TAGS.TRANSACTION], [TAGS.CHECK])) {
             return this.fire('voterRegistrationCheck');
-          } else if (entities[TAGS.HELP]) {
-            return this.fire('voterRegistrationHelp');
+          } else if (entityValueIs(entities[TAGS.TRANSACTION], [TAGS.GET])) {
+            return this.fire('voterRegistrationGet');
           }
-          return this.fire('voterRegistrationGet');
+          return this.fire('voterRegistrationHelp');
         }
         // Documentation
         if (entityValueIs(entities[TAGS.DOCUMENT], [TAGS.ID])) {
@@ -162,7 +162,7 @@ const smallTalkStates = {
               const answer = payload.answer;
               message = answer.url ? `${answer.text} (More info at ${answer.url})` : `${answer.text}`;
             } else {
-              message = `Unfortunately, I can't answer that for your city (${this.get('organization').name}).`;
+              message = `:( Unfortunately your city (${this.get('organization').name}) hasn't given me an answer for that yet.`;
             }
             this.messagingClient.send(message);
             this.exit('start');
