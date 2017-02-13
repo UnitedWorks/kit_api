@@ -6,6 +6,7 @@ import { nlp } from '../../services/nlp';
 import { NarrativeStoreMachine } from './state';
 import { getAnswer } from '../../knowledge-base/helpers';
 import { hasIntegration, entityValueIs } from './helpers';
+import { getConstituentCases } from '../../cases/helpers';
 import SlackService from '../../services/slack';
 import { states as complaintStates } from './complaint-states';
 import { states as votingStates } from './voting-states';
