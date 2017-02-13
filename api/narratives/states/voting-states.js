@@ -11,7 +11,13 @@ export const states = {
         const quickReplies = ['Register to Vote', 'Voting Rules'].map((label) => {
           return { content_type: 'text', title: label, payload: label };
         });
-        this.messagingClient.addToQuene(`Register by ${VotingClient.getClosestRegistrationDeadline(elections, { returnString: true })} to participate in upcoming elections`, null, quickReplies);
+        const registrationDeadline = VotingClient.getClosestRegistrationDeadline(elections,
+          { returnString: true });
+        if (registrationDeadline) {
+          this.messagingClient.addToQuene(`Your next election registration deadline is ${registrationDeadline}`, null, quickReplies);
+        } else {
+          this.messagingClient.addToQuene('You have no upcoming deadlines, but that doesn\'t mean you shouldn\'t register.', null, quickReplies);
+        }
       }
       this.messagingClient.runQuene().then(() => this.exit('start'));
     });
