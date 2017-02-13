@@ -123,4 +123,14 @@ export const states = {
     }
   },
 
+  failedRequest(aux = {}) {
+    new SlackService({
+      username: 'Misunderstood Request',
+      icon: 'question',
+    }).send(`>*Request Message*: ${aux.input.text}\n>*Constituent ID*: ${this.snapshot.constituent.id}`);
+    const message = 'Ah shoot, I\'m still learning so I don\'t understand that request yet. Can you give more description? <3';
+    this.messagingClient.send(message);
+    this.exit('start');
+  },
+
 };

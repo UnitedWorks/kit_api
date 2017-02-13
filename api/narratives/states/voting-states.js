@@ -8,17 +8,10 @@ export const states = {
       if (elections.length === 0) {
         this.messagingClient.addToQuene('There are no upcoming elections!');
       } else {
-        let registerBy = null;
-        elections.forEach((election) => {
-          const thisDate = new Date(election.dates.filter(date => date.kind === 'DRD')[0].date);
-          if (registerBy === null || thisDate.getTime() < registerBy) {
-            registerBy = thisDate.getTime();
-          }
-        });
         const quickReplies = ['Register to Vote', 'Voting Rules'].map((label) => {
           return { content_type: 'text', title: label, payload: label };
         });
-        this.messagingClient.addToQuene(`Register by ${new Date(registerBy).toDateString()} to participate in upcoming elections`, null, quickReplies);
+        this.messagingClient.addToQuene(`Register by ${VotingClient.getClosestRegistrationDeadline(elections, { returnString: true })} to participate in upcoming elections`, null, quickReplies);
       }
       this.messagingClient.runQuene().then(() => this.exit('start'));
     });
@@ -50,14 +43,37 @@ export const states = {
     this.messagingClient.send('I don\'t have that information yet. :(');
   },
 
-  pollLocations() {
-    logger.info('State: pollLocations');
-    new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
-      info.lookup_tools.forEach((tool) => {
+  pollInfo() {
+    logger.info('State: pollInfo');
+    const votingClientInstance = new VotingClient({ location: this.get('location') });
+    Promise.all([
+      votingClientInstance.getGeneralStateInfo(),
+    ]).then((data) => {
+      const stateInfo = data[0];
+
+      const quickActions = [];
+      stateInfo.lookup_tools.forEach((tool) => {
         if (tool.lookup_tool.kind === 'polling_location') {
-          this.messagingClient.send(`This should help you find your polls: ${tool.url}`);
+          quickActions.push({
+            type: 'web_url',
+            url: tool.url,
+            title: 'Poll Location Finder',
+            webview_height_ratio: 'tall',
+          });
+        }
+        if (tool.lookup_tool.kind === 'election_information') {
+          quickActions.push({
+            type: 'web_url',
+            url: tool.url,
+            title: 'State Election Website',
+            webview_height_ratio: 'tall',
+          });
         }
       });
+      this.messagingClient.send(`${VotingClient.extractPollDetails(stateInfo.voting_general_info) || 'This is what I found to help with poll information.'}`, {
+        type: 'template',
+        templateType: 'button',
+      }, quickActions);
     });
   },
 
@@ -84,14 +100,24 @@ export const states = {
 
   voterRegistrationGet() {
     logger.info('State: voterRegistrationGet');
-    this.messagingClient.send(`Let\'s get you registered!`);
-    const elements = [{
-      title: 'Get Registered!',
-      image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/16586922_193481711133587_230696876501689696_o.png?oh=673cb117bfa13f9bc3f603f07f6ba459&oe=5949437E',
-      buttons: []
-    }];
-    new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
-      info.lookup_tools.forEach((tool) => {
+    this.messagingClient.addToQuene('Alright, let\'s get you registered!');
+    const votingClientInstance = new VotingClient({ location: this.get('location') });
+    Promise.all([
+      votingClientInstance.getGeneralStateInfo(),
+      votingClientInstance.getElections(),
+    ]).then((data) => {
+      const stateInfo = data[0];
+      const electionsInfo = data[1];
+
+      this.messagingClient.addToQuene(
+        VotingClient.extractRegistrationDetails(stateInfo.voting_general_info));
+      this.messagingClient.addToQuene(`Your next election registration deadline is ${VotingClient.getClosestRegistrationDeadline(electionsInfo, { returnString: true })}`);
+      const elements = [{
+        title: 'Get Registered!',
+        image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/16586922_193481711133587_230696876501689696_o.png?oh=673cb117bfa13f9bc3f603f07f6ba459&oe=5949437E',
+        buttons: [],
+      }];
+      stateInfo.lookup_tools.forEach((tool) => {
         if (tool.lookup_tool.kind === 'registration_status') {
           elements[0].buttons.push({
             type: 'web_url',
@@ -116,13 +142,12 @@ export const states = {
           };
         }
       });
-      const registrationInfo = /(You can register .+): (.+) You must have/gmi.exec(info.voting_general_info.replace(/(?:\r\n|\r|\n)/g, ''))[2].trim();
-      elements[0].subtitle = `Register ${registrationInfo}`;
-      this.messagingClient.send(null, {
+      this.messagingClient.addToQuene(null, {
         type: 'template',
         templateType: 'generic',
         elements,
       });
+      this.messagingClient.runQuene();
     });
   },
 
@@ -147,7 +172,7 @@ export const states = {
 
   voterAssistance() {
     logger.info('State: voterAssistance');
-    const quickReplies = ['Find a Poll', 'Get Upcoming Elections', 'Voter Issue Hotline'].map((label) => {
+    const quickReplies = ['Where is my poll?', 'Get Upcoming Elections', 'Voter Issue Help'].map((label) => {
       return { content_type: 'text', title: label, payload: label };
     });
     this.messagingClient.send('How can I help you with voting?', null, quickReplies);

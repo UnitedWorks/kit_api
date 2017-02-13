@@ -77,13 +77,6 @@ const smallTalkStates = {
         if (entityValueIs(entities[TAGS.VOTING], [TAGS.EARLY_VOTING])) {
           return this.fire('earlyVoting');
         }
-        if (entityValueIs(entities[TAGS.VOTING], [TAGS.POLLS])) {
-          if (entityValueIs(entities[TAGS.LOOKING_FOR], [TAGS.WHERE])) {
-            return this.fire('pollLocations');
-          } else if (entityValueIs(entities[TAGS.SCHEDULES], [TAGS.WHEN])) {
-            return this.fire('pollSchedule');
-          }
-        }
         // Registration
         if (entityValueIs(entities[TAGS.VOTING], [TAGS.VOTER_REGISTRATION])) {
           if (entityValueIs(entities[TAGS.TRANSACTION], [TAGS.CHECK])) {
@@ -104,6 +97,11 @@ const smallTalkStates = {
         // Sample ballot
         if (entityValueIs(entities[TAGS.VOTING], [TAGS.SAMPLE_BALLOT])) {
           return this.fire('sampleBallot');
+        }
+        if (entityValueIs(entities[TAGS.VOTING], [TAGS.POLLS, TAGS.VOTING, TAGS.VOTE])
+          && (entityValueIs(entities[TAGS.LOOKING_FOR], [TAGS.WHERE])
+          || entityValueIs(entities[TAGS.SCHEDULES], [TAGS.WHEN]))) {
+          return this.fire('pollInfo');
         }
         // FAQ/Help
         if (entities[TAGS.HELP]) {
