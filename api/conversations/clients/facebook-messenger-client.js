@@ -81,38 +81,44 @@ export class FacebookMessengerClient extends BaseClient {
       },
       sender_action: isTyping ? 'typing_on' : 'typing_off',
     };
-    this.callAPI(sendData);
+    return this.callAPI(sendData);
   }
 
-  send(text, attachment, quickReplies) {
+  send(text, attachment, quickActions) {
     const sendData = {
       recipient: {
         id: this.config.constituent.facebook_id,
       },
       message: {},
     };
-    if (text) sendData.message.text = text;
-    if (attachment) {
+    // Handle templates differently than text, images, and quick replies
+    if (attachment && attachment.type === 'template') {
       sendData.message.attachment = {
-        type: attachment.type,
+        type: 'template',
         payload: {
-          url: attachment.url,
+          template_type: attachment.templateType,
+          text,
+          buttons: quickActions,
         },
       };
+    } else {
+      if (text) sendData.message.text = text;
+      if (attachment) {
+        sendData.message.attachment = {
+          type: attachment.type,
+          payload: {
+            url: attachment.url,
+          },
+        };
+      }
+      if (quickActions) {
+        sendData.message.quick_replies = quickActions;
+      }
     }
-    if (quickReplies) {
-      sendData.message.quick_replies = quickReplies;
-    }
+
     return new Promise((resolve) => {
-      // let fakeTiming = text ? text.length * 60 : 800;
-      // if (fakeTiming > 2000) fakeTiming = 2000;
-      // this.isTyping(true);
-      // setTimeout(() => {
-        this.callAPI(sendData).then(() => {
-          // this.isTyping(false);
-          resolve();
-        });
-      // }, fakeTiming);
+      this.isTyping(false);
+      this.callAPI(sendData).then(() => resolve());
     });
   }
 }

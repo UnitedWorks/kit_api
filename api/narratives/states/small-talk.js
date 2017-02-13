@@ -460,6 +460,7 @@ export default class SmallTalkMachine extends NarrativeStoreMachine {
 
     // Initialize
     const actionType = self.snapshot.data_store.input.type;
+    this.messagingClient.isTyping(true);
     switch (actionType) {
       case 'message':
         handleMessage();

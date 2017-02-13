@@ -135,6 +135,23 @@ export const states = {
 
   electionProblem() {
     logger.info('State: electionProblem');
+    const quickActions = [{
+      type: 'phone_number',
+      title: 'Call English Hotline',
+      payload: '+18666878683',
+    }, {
+      type: 'phone_number',
+      title: 'Call Spanish Hotline',
+      payload: '+18888398682',
+    }, {
+      type: 'phone_number',
+      title: 'Call for Other',
+      payload: '+18882748683',
+    }];
+    this.messagingClient.send('Is someone preventing you from voting? Call any of the below numbers:', {
+      type: 'template',
+      templateType: 'button',
+    }, quickActions);
     this.exit('start');
   },
 

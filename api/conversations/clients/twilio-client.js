@@ -14,7 +14,7 @@ export class TwilioSMSClient extends BaseClient {
     this.config = Object.assign({}, defaults, config, this.config);
   }
 
-  send(text, attachment, quickReplies) {
+  send(text, attachment, quickActions) {
     return new Promise((resolve, reject) => {
       const message = {
         to: this.config.constituent.phone,
@@ -24,8 +24,8 @@ export class TwilioSMSClient extends BaseClient {
       if (attachment) {
         message.mediaUrl = attachment.url;
       }
-      if (quickReplies) {
-        quickReplies.forEach((reply, index) => {
+      if (quickActions) {
+        quickActions.forEach((reply, index) => {
           message.body += index === 0 ? reply.title : `, ${reply.title}`;
         });
       }
