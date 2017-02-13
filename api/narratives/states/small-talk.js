@@ -113,6 +113,8 @@ const smallTalkStates = {
         if (entities[TAGS.COMPLAINT]) {
           return this.fire('electionProblem');
         }
+        // Fallback
+        return this.fire('failedRequest', null, { input });
 
       // Sanitation Services
       } else if (entities[TAGS.SANITATION]) {
@@ -398,12 +400,7 @@ const smallTalkStates = {
         }
 
       } else {
-        new SlackService({
-          username: 'Misunderstood Request',
-          icon: 'question',
-        }).send(`>*Request Message*: ${input.text}\n>*Constituent ID*: ${this.snapshot.constituent.id}`);
-        this.messagingClient.send('I\'m not sure I understanding. Can you try phrase that differently?');
-        this.exit('start');
+        this.fire('failedRequest', null, { input });
       }
     });
   },

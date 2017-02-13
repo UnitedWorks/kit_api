@@ -73,4 +73,30 @@ export default class VotingClient {
     });
   }
 
+  static getClosestRegistrationDeadline(elections, options = {}) {
+    let registerBy = null;
+    elections.forEach((election) => {
+      const thisDate = new Date(election.dates.filter(date => date.kind === 'DRD')[0].date);
+      if (registerBy === null || thisDate.getTime() < registerBy) {
+        registerBy = thisDate.getTime();
+      }
+    });
+    return options.returnString ? new Date(registerBy).toDateString() : new Date(registerBy);
+  }
+
+  static extractRegistrationDetails(generalInfoTextBlock) {
+    const registrationOptions = /(You can register .+): (.+) You must have/gmi.exec(generalInfoTextBlock.replace(/(?:\r\n|\r|\n)/g, ''))[2]
+      .trim().split('*').filter(string => string.length > 0);
+    let registrationMessage = '';
+    registrationOptions.forEach((option, index) => {
+      registrationMessage = registrationMessage.concat(`${option.trim()}${index === registrationOptions.length - 1 ? '' : ', '}`);
+    });
+    return `You can register ${registrationMessage}`;
+  }
+
+  static extractPollDetails(generalInfoTextBlock) {
+    const pollOptions = /(Polling [a-z0-9\s]+\.)/gmi.exec(generalInfoTextBlock.replace(/(?:\r\n|\r|\n)/g, ''));
+    return pollOptions !== null ? pollOptions[1] : null;
+  }
+
 }

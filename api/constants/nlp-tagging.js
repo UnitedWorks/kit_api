@@ -51,6 +51,7 @@ export const WHAT_CAN_I_ASK = 'what can I ask';
 export const INFO = 'info';
 
 // Voting
+export const VOTE = 'vote';
 export const VOTING = 'voting';
 export const VOTER_REGISTRATION = 'voter registration';
 export const ELECTION = 'election';
