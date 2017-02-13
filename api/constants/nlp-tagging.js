@@ -47,7 +47,8 @@ export const CHECK = 'check';
 
 // Help Tags
 export const HELP = 'help';
-export const WHAT_CAN_I_ASK = 'What can I ask';
+export const WHAT_CAN_I_ASK = 'what can I ask';
+export const INFO = 'info';
 
 // Voting
 export const VOTING = 'voting';
@@ -59,4 +60,9 @@ export const SAMPLE_BALLOT = 'sample ballot';
 export const ABSENTEE_BALLOT = 'absentee ballot';
 
 // Relationships
-export const RELATIONSHIPS = 'relationships';
+export const RELATIONSHIP_HOUSING = 'relationship_housing';
+export const RELATIONSHIP_POLITICAL = 'relationship_political';
+
+// Documents
+export const DOCUMENT = 'document';
+export const ID = 'id';

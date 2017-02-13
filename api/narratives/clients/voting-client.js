@@ -63,4 +63,14 @@ export default class VotingClient {
     });
   }
 
+  getGeneralStateInfo() {
+    return this.setLocationIds().then(() => {
+      return this.axios.get(`${this.localElectionsAPI}/state_voter_information`, {
+        params: {
+          state_id: this.locations.usVote.stateId,
+        },
+      }).then(res => res.data.objects[0]);
+    });
+  }
+
 }
