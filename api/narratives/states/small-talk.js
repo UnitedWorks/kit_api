@@ -63,6 +63,10 @@ const smallTalkStates = {
       if (entityValueIs(entities[TAGS.HELP], [TAGS.WHAT_CAN_I_ASK])) {
         return this.fire('whatCanIAsk');
 
+      // Benefits
+      } else if (entities[TAGS.BENEFITS]) {
+        return this.messagingClient.send('I\'m proud to be working with Benefit Kitchen to help you learn about state and federal programs. More is coming, but for now you can visit their website! https://benefitkitchen.com/signup');
+
       // Voting
       } else if (entities[TAGS.VOTING]) {
         // Deadlines

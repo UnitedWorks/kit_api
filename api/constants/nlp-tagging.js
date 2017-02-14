@@ -67,6 +67,10 @@ export const ABSENTEE_VOTE = 'absentee vote';
 export const VOTER_ASSISTANCE = 'voter assistance';
 export const EARLY_VOTING = 'early voting';
 
+// Benefits
+// KEYWORDS
+export const BENEFITS = 'benefits';
+
 // Relationships
 export const RELATIONSHIP_HOUSING = 'relationship_housing';
 export const RELATIONSHIP_POLITICAL = 'relationship_political';
