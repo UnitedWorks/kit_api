@@ -1,6 +1,7 @@
 import { logger } from '../../logger';
 import VotingClient from '../clients/voting-client';
 import * as US_VOTE_CONSTANTS from '../../constants/voting-foundation';
+import { getPlacesUrl } from '../../utils';
 
 export const states = {
   votingDeadlines() {
@@ -268,26 +269,68 @@ export const states = {
 
   voterProblem() {
     logger.info('State: voterProblem');
-    const quickActions = [{
-      type: 'phone_number',
-      title: 'Call English Hotline',
-      payload: '+18666878683',
-    }, {
-      type: 'phone_number',
-      title: 'Call Spanish Hotline',
-      payload: '+18888398682',
-    }, {
-      type: 'phone_number',
-      title: 'Call for Other',
-      payload: '+18882748683',
-    }];
-    this.messagingClient.send({
-      type: 'template',
-      templateType: 'button',
-      text: 'Is someone preventing you from voting? Call any of the below numbers:',
-      buttons: quickActions,
+    new VotingClient({ location: this.get('location') }).getLocalElectionOffice().then((info) => {
+
+      // { countyIds: [ '265', '1450', '2322', '2268', '1985' ],
+      // municipalityIds: [ 10772, 10773, 10774, 10775, 10776 ] }
+      if (info.office) {
+        const officeElements = [{
+          title: info.office.express_address.address_to || 'Elections Office',
+          buttons: [],
+        }];
+        if (info.office.email) {
+          officeElements[0].buttons.push({
+            type: 'web_url',
+            title: 'Send Email',
+            url: `mailto:${info.office.email}`,
+          });
+        }
+        if (info.office.website) {
+          officeElements[0].buttons.push({
+            type: 'web_url',
+            title: 'Website',
+            url: info.office.website,
+            webview_height_ratio: 'tall',
+          });
+        }
+        if (info.office.hours) officeElements[0].subtitle = `Hours: ${info.office.hours}`;
+        if (info.office.mailing_address) {
+          officeElements[0].buttons.push({
+            type: 'web_url',
+            title: 'View Location',
+            url: getPlacesUrl(`${info.office.mailing_address.street1} ${info.office.mailing_address.city} ${info.office.mailing_address.state} ${info.office.mailing_address.zip}}`),
+          });
+        }
+        this.messagingClient.addToQuene('If you just need more information or help, here\'s a nearby election office');
+        this.messagingClient.addToQuene({
+          type: 'template',
+          templateType: 'generic',
+          elements: officeElements,
+        });
+      } else {
+        this.messagingClient.addToQuene('Unfortunately, I was unable to find an elections office for you :(');
+      }
+      const quickActions = [{
+        type: 'phone_number',
+        title: 'Call English Hotline',
+        payload: '+18666878683',
+      }, {
+        type: 'phone_number',
+        title: 'Call Spanish Hotline',
+        payload: '+18888398682',
+      }, {
+        type: 'phone_number',
+        title: 'Call for Other',
+        payload: '+18882748683',
+      }];
+      this.messagingClient.addToQuene({
+        type: 'template',
+        templateType: 'button',
+        text: 'Is someone preventing you from voting? You can get help from one of these hotlines:',
+        buttons: quickActions,
+      });
+      this.messagingClient.runQuene().then(() => this.exit('start'));
     });
-    this.exit('start');
   },
 
   voterAssistance() {

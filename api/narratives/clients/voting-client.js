@@ -3,16 +3,23 @@ import axios from 'axios';
 export default class VotingClient {
   constructor(config) {
     // Setup ENV
-    this.localElectionsAPI = process.env.US_VOTE_LOCAL_ELECTIONS_API_URL;
-    this.axios = axios.create({
+    this.LE_API = process.env.US_VOTE_LOCAL_ELECTIONS_API_URL;
+    this.localElectionsAxios = axios.create({
       headers: {
-        'Authorization': `Token ${process.env.US_VOTE_LOCAL_ELECTIONS_API_KEY}`,
+        Authorization: `Token ${process.env.US_VOTE_LOCAL_ELECTIONS_API_KEY}`,
+      },
+    });
+    this.EOD_API = process.env.US_VOTE_ELECTION_OFFICIAL_DIRECTORY_API_URL;
+    this.electionOfficialsDirectoryAxios = axios.create({
+      headers: {
+        Authorization: `Token ${process.env.US_VOTE_ELECTION_OFFICIAL_DIRECTORY_API_KEY}`,
       },
     });
     // Setup config variables
     const level2 = config.location.administrativeLevels.level2long;
     const level1 = config.location.administrativeLevels.level1long;
     this.locations = {
+      original: config.location,
       google: {
         county: level2 ? level2.toLowerCase().replace(/\s/g, '_') : null,
         state: level1 ? level1.toLowerCase() : null,
@@ -27,33 +34,27 @@ export default class VotingClient {
 
   setLocationIds() {
     // Axios is doing something weird with '+' signs
-    const stateRequest = this.axios.get(`${this.localElectionsAPI}/locations?location_type=state&location_name=${this.locations.usVote.state}`);
-    // const countyRequest = this.axios.get(`${this.localElectionsAPI}/locations?location_type=county&location_name=${this.locations.usVote.county}`);
+    const stateRequest = this.localElectionsAxios.get(`${this.LE_API}/locations?location_type=state&location_name=${this.locations.usVote.state}`);
     return Promise.all([stateRequest]).then((res) => {
       if (res[0].data.objects.length > 0) this.locations.usVote.stateId = res[0].data.objects[0].id;
-      // if (res[1].data.objects.length > 0) {
-      //   this.locations.usVote.countyId = res[1].data.objects.filter((location) => {
-      //     return location.state_id === this.locations.usVote.stateId;
-      //   })[0].id;
-      // }
     });
   }
 
   getElections() {
     return this.setLocationIds().then(() => {
-      const stateElections = this.axios.get(`${this.localElectionsAPI}/elections`, {
+      const stateElections = this.localElectionsAxios.get(`${this.LE_API}/elections`, {
         params: {
           state_id: this.locations.usVote.stateId,
           election_level_id: '1',
         },
       });
-      const federalElections = this.axios.get(`${this.localElectionsAPI}/elections`, {
+      const federalElections = this.localElectionsAxios.get(`${this.LE_API}/elections`, {
         params: {
           state_id: this.locations.usVote.stateId,
           election_level_id: '18',
         },
       });
-      const cityElections = this.axios.get(`${this.localElectionsAPI}/elections`, {
+      const cityElections = this.localElectionsAxios.get(`${this.LE_API}/elections`, {
         params: {
           state_id: this.locations.usVote.stateId,
           election_name: this.locations.usVote.city,
@@ -67,7 +68,7 @@ export default class VotingClient {
 
   getGeneralStateInfo() {
     return this.setLocationIds().then(() => {
-      return this.axios.get(`${this.localElectionsAPI}/state_voter_information`, {
+      return this.localElectionsAxios.get(`${this.LE_API}/state_voter_information`, {
         params: {
           state_id: this.locations.usVote.stateId,
         },
@@ -119,6 +120,63 @@ export default class VotingClient {
   static extractEarlyVotingDetails(generalInfoTextBlock) {
     const earlyVotingDescription = /Early Voting ([a-z0-9\s-/]+\.)/gmi.exec(generalInfoTextBlock.replace(/(?:\r\n|\r|\n)/g, ''));
     return earlyVotingDescription !== null ? earlyVotingDescription[1] : null;
+  }
+
+  getRegionIds() {
+    const regionIds = {
+      countyIds: [],
+      municipalityIds: [],
+    };
+    let regionQueryURL = `${this.EOD_API}/regions?state_name=${this.locations.usVote.state}`;
+    if (this.locations.usVote.county) {
+      regionQueryURL = regionQueryURL.concat(`&county_name__icontains=${this.locations.usVote.county.slice(0, this.locations.usVote.county.indexOf('+'))}`);
+    } else {
+      regionQueryURL = regionQueryURL.concat(`&region_name__icontains=${this.locations.usVote.city}`);
+    }
+    return this.electionOfficialsDirectoryAxios.get(regionQueryURL).then(({ data }) => {
+      function pushRegion(region) {
+        regionIds.municipalityIds.push(region.id);
+        const countyId = /\d+$/.exec(region.county)[0];
+        if (!regionIds.countyIds.includes(countyId)) {
+          regionIds.countyIds.push(countyId);
+        }
+      }
+      // If we have more than one result, save county id, and try filtering for municipality
+      if (data.objects.length === 1) {
+        pushRegion(data.objects[0]);
+        return regionIds;
+      }
+      data.objects.filter(object => object.region_name.includes(this.locations.original.city))
+        .forEach(region => pushRegion(region));
+      return regionIds;
+    });
+  }
+
+  getLocalElectionOffice() {
+    return this.getRegionIds().then((ids) => {
+      if ((ids.countyIds.length + ids.municipalityIds.length) > 10) throw Error('Too many IDs returned');
+      const municipalityRequests = [];
+      ids.municipalityIds.forEach((id) => {
+        municipalityRequests.push(this.electionOfficialsDirectoryAxios.get(`${this.EOD_API}/offices?region=${id}`));
+      });
+      // Check Municipalities first
+      return Promise.all(municipalityRequests).then((muniResults) => {
+        const foundOffices = muniResults.filter(response => response.data.objects.length > 0);
+        if (typeof foundOffices[0] === 'object') {
+          return { office: foundOffices[0].data.objects[0] };
+        }
+        const countyRequests = [];
+        ids.countyIds.forEach((id) => {
+          countyRequests.push(this.electionOfficialsDirectoryAxios.get(`${this.EOD_API}/offices?region=${id}`));
+        });
+        return Promise.all(countyRequests).then((countyResults) => {
+          const foundCountyOffices = countyResults.filter(
+            response => response.data.objects.length > 0);
+          return typeof foundCountyOffices[0] === 'object' ?
+            { office: foundCountyOffices[0].data.objects[0] } : null;
+        });
+      });
+    });
   }
 
 }
