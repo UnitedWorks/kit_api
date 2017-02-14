@@ -270,21 +270,12 @@ export const states = {
   voterProblem() {
     logger.info('State: voterProblem');
     new VotingClient({ location: this.get('location') }).getLocalElectionOffice().then((info) => {
-
-      // { countyIds: [ '265', '1450', '2322', '2268', '1985' ],
-      // municipalityIds: [ 10772, 10773, 10774, 10775, 10776 ] }
       if (info.office) {
+        console.log(info.office);
         const officeElements = [{
           title: info.office.express_address.address_to || 'Elections Office',
           buttons: [],
         }];
-        if (info.office.email) {
-          officeElements[0].buttons.push({
-            type: 'web_url',
-            title: 'Send Email',
-            url: `mailto:${info.office.email}`,
-          });
-        }
         if (info.office.website) {
           officeElements[0].buttons.push({
             type: 'web_url',
@@ -301,7 +292,7 @@ export const states = {
             url: getPlacesUrl(`${info.office.mailing_address.street1} ${info.office.mailing_address.city} ${info.office.mailing_address.state} ${info.office.mailing_address.zip}}`),
           });
         }
-        this.messagingClient.addToQuene('If you just need more information or help, here\'s a nearby election office');
+        this.messagingClient.addToQuene('If you need more help, here\'s a nearby election office:');
         this.messagingClient.addToQuene({
           type: 'template',
           templateType: 'generic',
@@ -326,7 +317,7 @@ export const states = {
       this.messagingClient.addToQuene({
         type: 'template',
         templateType: 'button',
-        text: 'Is someone preventing you from voting? You can get help from one of these hotlines:',
+        text: 'If someone is preventing you from voting call these hotlines:',
         buttons: quickActions,
       });
       this.messagingClient.runQuene().then(() => this.exit('start'));
