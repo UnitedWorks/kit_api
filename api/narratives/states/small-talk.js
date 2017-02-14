@@ -394,7 +394,6 @@ const smallTalkStates = {
 
       // Relationships
       } else if (entities[TAGS.RELATIONSHIPS]) {
-        console.log('relationships route hit')
 
       // Complaint
       } else if (entities[TAGS.COMPLAINT]) {

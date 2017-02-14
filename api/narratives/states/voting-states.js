@@ -99,7 +99,7 @@ export const states = {
       this.messagingClient.send({
         type: 'template',
         templateType: 'button',
-        title: `This what I know about the polls. ${VotingClient.extractPollDetails(stateInfo.voting_general_info)}`,
+        text: `This what I know about the polls. ${VotingClient.extractPollDetails(stateInfo.voting_general_info)}`,
         buttons: quickActions,
       });
     });
@@ -122,7 +122,7 @@ export const states = {
       this.messagingClient.send({
         type: 'template',
         templateType: 'button',
-        title: `Here's a way to check if your registered in ${this.get('location').administrativeLevels.level1short}:`,
+        text: `Here's a way to check if your registered in ${this.get('location').administrativeLevels.level1short}:`,
         buttons: quickActions,
       });
     });
@@ -284,7 +284,7 @@ export const states = {
     this.messagingClient.send({
       type: 'template',
       templateType: 'button',
-      title: 'Is someone preventing you from voting? Call any of the below numbers:',
+      text: 'Is someone preventing you from voting? Call any of the below numbers:',
       buttons: quickActions,
     });
     this.exit('start');

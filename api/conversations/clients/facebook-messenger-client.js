@@ -99,8 +99,8 @@ export class FacebookMessengerClient extends BaseClient {
           type: 'template',
           payload: {
             template_type: content.templateType,
-            content,
-            buttons: quickActions,
+            text: content.text,
+            buttons: content.buttons,
           },
         };
       } else if (content.templateType === 'generic' || content.templateType === 'list') {
@@ -124,9 +124,6 @@ export class FacebookMessengerClient extends BaseClient {
       };
     }
     if (quickActions) sendData.message.quick_replies = quickActions;
-    console.log('-----')
-    console.log(sendData)
-    console.log('-----')
     return new Promise((resolve) => {
       this.isTyping(false);
       this.callAPI(sendData).then(() => resolve());

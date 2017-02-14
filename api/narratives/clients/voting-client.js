@@ -90,11 +90,18 @@ export default class VotingClient {
   }
 
   static extractRegistrationDetails(generalInfoTextBlock) {
-    const registrationOptions = /(You can register .+): (.+) You must have/gmi.exec(generalInfoTextBlock.replace(/(?:\r\n|\r|\n)/g, ''))[2]
-      .trim().split('*').filter(string => string.length > 0);
+    const textHeaders = generalInfoTextBlock.replace(/#{2}/gm, '').split('\n').filter(line => line.includes('#'));
+    let slicedSection;
+    textHeaders.forEach((header, index) => {
+      if (header.includes('Registration')) {
+        slicedSection = generalInfoTextBlock.slice(
+          generalInfoTextBlock.indexOf(header),
+          generalInfoTextBlock.indexOf(textHeaders[index + 1]));
+      }
+    });
     let registrationMessage = '';
-    registrationOptions.forEach((option, index) => {
-      registrationMessage = registrationMessage.concat(`${option.trim()}${index === registrationOptions.length - 1 ? '' : ', '}`);
+    slicedSection.split('\n').filter(line => line.includes('*')).forEach((option, index, array) => {
+      registrationMessage = registrationMessage.concat(`${option.replace(/\*/, '').trim()}${index === array.length - 1 ? '' : ', '}`);
     });
     return `You can register ${registrationMessage}`;
   }
