@@ -271,7 +271,6 @@ export const states = {
     logger.info('State: voterProblem');
     new VotingClient({ location: this.get('location') }).getLocalElectionOffice().then((info) => {
       if (info.office) {
-        console.log(info.office);
         const officeElements = [{
           title: info.office.express_address.address_to || 'Elections Office',
           buttons: [],
