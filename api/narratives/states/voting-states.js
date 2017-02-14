@@ -31,15 +31,39 @@ export const states = {
       if (elections.length === 0) {
         this.messagingClient.addToQuene('There are no upcoming elections!');
       } else {
+        let earliestRegistrationDate;
         elections.forEach((election) => {
-          const registrationDate = election.dates.filter(date => date.kind === 'DRD')[0].date_human_readable;
-          const message = `${election.title}\nElection Date: ${new Date(election.election_date).toDateString()}\n${registrationDate ? `Must Be Registered by: ${registrationDate}` : ''}`.trim();
-          this.messagingClient.addToQuene(message);
+          const elements = [];
+          elements.push({
+            title: election.title,
+            subtitle: new Date(election.election_date).toDateString(),
+            image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/16586922_193481711133587_230696876501689696_o.png?oh=673cb117bfa13f9bc3f603f07f6ba459&oe=5949437E',
+          });
+          election.dates.filter(date => ['DRD', 'DBRD', 'EVF'].includes(date.kind)).map((electionDate) => {
+            if (electionDate.date_type.default === true) {
+              if (electionDate.kind === 'DRD') earliestRegistrationDate = new Date(electionDate.date);
+              elements.push({
+                title: US_VOTE_CONSTANTS[electionDate.kind],
+                subtitle: electionDate.date_human_readable,
+              });
+            }
+          });
+          this.messagingClient.addToQuene({
+            type: 'template',
+            templateType: 'list',
+            elements,
+            buttons: [{
+              type: 'web_url',
+              title: election.urls[0].name,
+              url: election.urls[0].url,
+              webview_height_ratio: 'tall',
+            }],
+          });
         });
-        const quickReplies = ['Register to Vote', 'Check Voter Registration'].map((label) => {
+        const quickReplies = ['Register to Vote', 'Am I Registered?'].map((label) => {
           return { content_type: 'text', title: label, payload: label };
         });
-        this.messagingClient.addToQuene('Are you ready for the election?', null, quickReplies);
+        this.messagingClient.addToQuene(`You have ${Math.floor((earliestRegistrationDate.getTime() - Date.now())/86400000)} days left to register. Are you ready for the elections?`, null, quickReplies);
       }
       this.messagingClient.runQuene().then(() => this.exit('start'));
     });
@@ -72,10 +96,12 @@ export const states = {
           });
         }
       });
-      this.messagingClient.send(`This what I know about the polls. ${VotingClient.extractPollDetails(stateInfo.voting_general_info)}`, {
+      this.messagingClient.send({
         type: 'template',
         templateType: 'button',
-      }, quickActions);
+        title: `This what I know about the polls. ${VotingClient.extractPollDetails(stateInfo.voting_general_info)}`,
+        buttons: quickActions,
+      });
     });
   },
 
@@ -88,15 +114,17 @@ export const states = {
           quickActions.push({
             type: 'web_url',
             url: tool.url,
-            title: 'Am I registered?',
+            title: 'Check Registration',
             webview_height_ratio: 'tall',
           });
         }
       });
-      this.messagingClient.send('Here\'s a way to check registration:', {
+      this.messagingClient.send({
         type: 'template',
         templateType: 'button',
-      }, quickActions);
+        title: `Here's a way to check if your registered in ${this.get('location').administrativeLevels.level1short}:`,
+        buttons: quickActions,
+      });
     });
   },
 
@@ -117,8 +145,7 @@ export const states = {
         { returnString: true });
       if (registrationDeadline) this.messagingClient.addToQuene(`Your next election registration deadline is ${registrationDeadline}`);
       const elements = [{
-        title: 'Register to Vote',
-        // image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/16586922_193481711133587_230696876501689696_o.png?oh=673cb117bfa13f9bc3f603f07f6ba459&oe=5949437E',
+        title: `Register to Vote in ${this.get('location').administrativeLevels.level1short}`,
         buttons: [],
       }];
       stateInfo.lookup_tools.forEach((tool) => {
@@ -126,11 +153,11 @@ export const states = {
           elements[0].buttons.push({
             type: 'web_url',
             url: tool.url,
-            title: 'Am I registered?',
+            title: 'Check Registration',
             webview_height_ratio: 'tall',
           });
         }
-        if (tool.lookup_tool.kind === 'online_registration') {
+        if (tool.lookup_tool.kind === US_VOTE_CONSTANTS.ONLINE_REGISTRATION) {
           elements[0].buttons.push({
             type: 'web_url',
             url: tool.url,
@@ -139,14 +166,19 @@ export const states = {
           });
         }
         if (tool.lookup_tool.kind === US_VOTE_CONSTANTS.ELECTION_INFORMATION) {
-          elements[0].default_action = {
+          const baseOptions = {
             type: 'web_url',
             url: tool.url,
             webview_height_ratio: 'tall',
           };
+          elements[0].default_action = baseOptions;
+          elements[0].buttons.push({
+            ...baseOptions,
+            title: 'Election Website',
+          });
         }
       });
-      this.messagingClient.addToQuene(null, {
+      this.messagingClient.addToQuene({
         type: 'template',
         templateType: 'generic',
         elements,
@@ -249,10 +281,12 @@ export const states = {
       title: 'Call for Other',
       payload: '+18882748683',
     }];
-    this.messagingClient.send('Is someone preventing you from voting? Call any of the below numbers:', {
+    this.messagingClient.send({
       type: 'template',
       templateType: 'button',
-    }, quickActions);
+      title: 'Is someone preventing you from voting? Call any of the below numbers:',
+      buttons: quickActions,
+    });
     this.exit('start');
   },
 
@@ -266,7 +300,6 @@ export const states = {
 
       const elements = [{
         title: 'Voting Help Menu',
-        image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/16586922_193481711133587_230696876501689696_o.png?oh=673cb117bfa13f9bc3f603f07f6ba459&oe=5949437E',
         buttons: [{
           type: 'postback',
           title: 'Check Voter Registration',
@@ -286,7 +319,7 @@ export const states = {
           });
         }
       });
-      this.messagingClient.addToQuene(null, {
+      this.messagingClient.addToQuene({
         type: 'template',
         templateType: 'generic',
         elements,

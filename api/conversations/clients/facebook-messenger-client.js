@@ -84,35 +84,40 @@ export class FacebookMessengerClient extends BaseClient {
     return this.callAPI(sendData);
   }
 
-  send(text, attachment, quickActions) {
+  send(content, attachment, quickActions) {
     const sendData = {
       recipient: {
         id: this.config.constituent.facebook_id,
       },
       message: {},
     };
-    // Handle templates differently than text, images, and quick replies
-    if (attachment && attachment.type === 'template') {
-      if (attachment.templateType === 'button') {
+    if (typeof content === 'object' && content.type === 'template') {
+      if (content.templateType === 'button') {
         sendData.message.attachment = {
           type: 'template',
           payload: {
             template_type: attachment.templateType,
-            text,
+            content,
             buttons: quickActions,
           },
         };
-      } else if (attachment.templateType === 'generic') {
+        if (quickActions) sendData.message.quick_replies = quickActions;
+      } else if (content.templateType === 'generic' || content.templateType === 'list') {
         sendData.message.attachment = {
           type: 'template',
           payload: {
-            template_type: attachment.templateType,
-            elements: attachment.elements,
+            template_type: content.templateType,
+            elements: content.elements,
           },
         };
+        if (quickActions) sendData.message.quick_replies = quickActions;
+        if (content.templateType === 'list' && content.buttons) {
+          sendData.message.attachment.payload.buttons = content.buttons;
+        }
       }
+      if (quickActions) sendData.message.quick_replies = quickActions;
     } else {
-      if (text) sendData.message.text = text;
+      if (content) sendData.message.text = content;
       if (attachment) {
         sendData.message.attachment = {
           type: attachment.type,
@@ -121,11 +126,11 @@ export class FacebookMessengerClient extends BaseClient {
           },
         };
       }
-      if (quickActions) {
-        sendData.message.quick_replies = quickActions;
-      }
+      if (quickActions) sendData.message.quick_replies = quickActions;
     }
-
+    console.log('-----')
+    console.log(sendData)
+    console.log('-----')
     return new Promise((resolve) => {
       this.isTyping(false);
       this.callAPI(sendData).then(() => resolve());
