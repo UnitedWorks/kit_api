@@ -1,6 +1,14 @@
 import { logger } from '../../logger';
 import SmallTalkMachine from './small-talk';
 
+export const entityValueIs = (entities = [], searchValues = []) => {
+  let hasValue = false;
+  entities.forEach((entity) => {
+    if (searchValues.includes(entity.value)) hasValue = true;
+  });
+  return hasValue;
+};
+
 export const stateMachines = {
   smallTalk: SmallTalkMachine,
 };
