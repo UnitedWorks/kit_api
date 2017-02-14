@@ -68,7 +68,7 @@ const smallTalkStates = {
 
       // Benefits
       } else if (entities[TAGS.BENEFITS]) {
-        return this.messagingClient.send('I\'m proud to be working with Benefit Kitchen to help you learn about state and federal programs. More is coming, but for now you can visit their website! https://benefitkitchen.com/signup');
+        return this.messagingClient.send('I\'m proud to be working with Benefit Kitchen to help you learn about state and federal programs. More is coming, but for now you can visit their website! https://app.benefitkitchen.com/');
 
       // Voting
       } else if (entities[TAGS.VOTING]) {
