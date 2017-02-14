@@ -15,9 +15,9 @@ export const states = {
         const registrationDeadline = VotingClient.getClosestRegistrationDeadline(elections,
           { returnString: true });
         if (registrationDeadline) {
-          this.messagingClient.addToQuene(`Your next election registration deadline is ${registrationDeadline}`, null, quickReplies);
+          this.messagingClient.addToQuene(`Your next election registration deadline is ${registrationDeadline}`, quickReplies);
         } else {
-          this.messagingClient.addToQuene('You have no upcoming deadlines, but that doesn\'t mean you shouldn\'t register.', null, quickReplies);
+          this.messagingClient.addToQuene('You have no upcoming deadlines, but that doesn\'t mean you shouldn\'t register.', quickReplies);
         }
       }
       this.messagingClient.runQuene().then(() => this.exit('start'));
@@ -63,7 +63,7 @@ export const states = {
         const quickReplies = ['Register to Vote', 'Am I Registered?'].map((label) => {
           return { content_type: 'text', title: label, payload: label };
         });
-        this.messagingClient.addToQuene(`You have ${Math.floor((earliestRegistrationDate.getTime() - Date.now())/86400000)} days left to register. Are you ready for the elections?`, null, quickReplies);
+        this.messagingClient.addToQuene(`You have ${Math.floor((earliestRegistrationDate.getTime() - Date.now()) / 86400000)} days left to register. Are you ready for the elections?`, quickReplies);
       }
       this.messagingClient.runQuene().then(() => this.exit('start'));
     });
@@ -240,7 +240,7 @@ export const states = {
       const quickReplies = ['Register to Vote', 'Check Registration', 'Upcoming Elections'].map((label) => {
         return { content_type: 'text', title: label, payload: label };
       });
-      this.messagingClient.addToQuene(idMessage, null, quickReplies);
+      this.messagingClient.addToQuene(idMessage, quickReplies);
       this.messagingClient.runQuene().then(() => this.exit('start'));
     });
   },
@@ -261,7 +261,7 @@ export const states = {
       const quickActions = ['Check Registration', 'Register to Vote', 'Upcoming Elections'].map((label) => {
         return { content_type: 'text', title: label, payload: label };
       });
-      this.messagingClient.addToQuene(notEligibleMessage, null, quickActions);
+      this.messagingClient.addToQuene(notEligibleMessage, quickActions);
       this.messagingClient.runQuene().then(() => this.exit('start'));
     });
   },

@@ -84,24 +84,25 @@ export class FacebookMessengerClient extends BaseClient {
     return this.callAPI(sendData);
   }
 
-  send(content, attachment, quickActions) {
+  send(content, quickActions) {
     const sendData = {
       recipient: {
         id: this.config.constituent.facebook_id,
       },
       message: {},
     };
-    if (typeof content === 'object' && content.type === 'template') {
+    if (typeof content === 'string') {
+      if (content) sendData.message.text = content;
+    } else if (typeof content === 'object' && content.type === 'template') {
       if (content.templateType === 'button') {
         sendData.message.attachment = {
           type: 'template',
           payload: {
-            template_type: attachment.templateType,
+            template_type: content.templateType,
             content,
             buttons: quickActions,
           },
         };
-        if (quickActions) sendData.message.quick_replies = quickActions;
       } else if (content.templateType === 'generic' || content.templateType === 'list') {
         sendData.message.attachment = {
           type: 'template',
@@ -110,24 +111,19 @@ export class FacebookMessengerClient extends BaseClient {
             elements: content.elements,
           },
         };
-        if (quickActions) sendData.message.quick_replies = quickActions;
         if (content.templateType === 'list' && content.buttons) {
           sendData.message.attachment.payload.buttons = content.buttons;
         }
       }
-      if (quickActions) sendData.message.quick_replies = quickActions;
     } else {
-      if (content) sendData.message.text = content;
-      if (attachment) {
-        sendData.message.attachment = {
-          type: attachment.type,
-          payload: {
-            url: attachment.url,
-          },
-        };
-      }
-      if (quickActions) sendData.message.quick_replies = quickActions;
+      sendData.message.attachment = {
+        type: content.type,
+        payload: {
+          url: content.url,
+        },
+      };
     }
+    if (quickActions) sendData.message.quick_replies = quickActions;
     console.log('-----')
     console.log(sendData)
     console.log('-----')

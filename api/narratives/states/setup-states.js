@@ -37,7 +37,7 @@ export const states = {
               payload: formattedText,
             };
           });
-          this.messagingClient.send(`Hmm, which ${nlpData.entities.location[0].value} are you?`, null, quickReplies);
+          this.messagingClient.send(`Hmm, which ${nlpData.entities.location[0].value} are you?`, quickReplies);
           this.exit('setOrganization');
           return;
         } else if (filteredGeoData.length === 0) {
@@ -92,7 +92,7 @@ export const states = {
         { content_type: 'text', title: 'Yep!', payload: 'Yep!' },
         { content_type: 'text', title: 'No', payload: 'No' },
       ];
-      this.messagingClient.send(`Oh, ${aux.locationText}? Is that the right city?`, null, quickReplies);
+      this.messagingClient.send(`Oh, ${aux.locationText}? Is that the right city?`, quickReplies);
       this.exit('setOrganizationConfirm');
     } else {
       const input = this.get('input').payload.text || this.get('input').payload.payload;
@@ -102,12 +102,15 @@ export const states = {
           // If city is activated, suggest asking a question or complaint
           // If not, tell them they can only leave complaints/suggestions!
           const quickReplies = [
+            { content_type: 'text', title: 'Upcoming Election', payload: 'Upcoming Election' },
+            { content_type: 'text', title: 'Available Benefits', payload: 'Available Benefits' },
+            { content_type: 'text', title: 'Raise an Issue', payload: 'MAKE_REQUEST' },
             { content_type: 'text', title: 'What can I ask?', payload: 'WHAT_CAN_I_ASK' },
           ];
           if (this.get('organization').activated) {
-            this.messagingClient.addToQuene('It looks like they\'ve given me answers to some questions and requests.', null, quickReplies);
+            this.messagingClient.addToQuene('It looks like they\'ve given me answers to some questions and requests.', quickReplies);
           } else {
-            this.messagingClient.addToQuene('You\'re community hasn\'t yet given me answers to any questions yet, but I\'ve let them know.', null, quickReplies);
+            this.messagingClient.addToQuene('You\'re community hasn\'t yet given me answers to any questions yet, but I\'ve let them know.', quickReplies);
           }
           this.messagingClient.runQuene().then(() => {
             this.exit('start');

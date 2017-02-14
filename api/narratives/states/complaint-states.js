@@ -13,7 +13,7 @@ export const states = {
         payload: label,
       };
     });
-    this.messagingClient.send(aux.message || 'What type of problem do you have?', null, quickReplies).then(() => {
+    this.messagingClient.send(aux.message || 'What type of problem do you have?', quickReplies).then(() => {
       this.exit('complaintCategory');
     });
   },
