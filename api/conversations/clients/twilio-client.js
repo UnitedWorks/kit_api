@@ -14,32 +14,43 @@ export class TwilioSMSClient extends BaseClient {
     this.config = Object.assign({}, defaults, config, this.config);
   }
 
-  send(text, attachment, quickActions) {
+  send(content, quickActions) {
     return new Promise((resolve, reject) => {
+      // Message
       const message = {
         to: this.config.constituent.phone,
         from: this.config.fromNumber,
-        body: text || '',
+        body: '',
       };
-      if (attachment) {
-        message.mediaUrl = attachment.url;
+      if (typeof content === 'string') {
+        message.body = content;
+      } else if (content.templateType === 'button') {
+        message.body = content.text;
+        content.buttons.forEach((button) => {
+          message.body = message.body.concat(` ${button.title}(${button.url})`);
+        });
+      } else if (content.templateType === 'generic' || content.templateType === 'list') {
+        content.elements.forEach((element) => {
+          message.body = message.body.concat(`${element.title}`);
+          if (element.subtitle) message.body = message.body.concat(` -- ${element.subtitle}`);
+          if (element.default_action) message.body = message.body.concat(` (${element.default_action.url})`);
+          element.buttons.forEach((button) => {
+            message.body = message.body.concat(` ${button.title}(${button.url})`);
+          });
+        });
       }
+      // Append Quick Actions
       if (quickActions) {
+        message.body = message.body.concat(' Quick Actions: ');
         quickActions.forEach((reply, index) => {
-          message.body += index === 0 ? reply.title : `, ${reply.title}`;
+          message.body = message.body.concat(index === 0 ? reply.title : `, ${reply.title}`);
         });
       }
-      let fakeTiming = text ? text.length * 60 : 800;
-      if (fakeTiming > 2000) fakeTiming = 2000;
-      setTimeout(() => {
-        this.client.messages.post(message, (err, response) => {
-          if (err) {
-            logger.error(err);
-            reject(err);
-          }
-          resolve(response);
-        });
-      }, fakeTiming);
+      // Send
+      this.client.messages.post(message, (err, response) => {
+        if (err) reject(err);
+        resolve(response);
+      });
     });
   }
 }

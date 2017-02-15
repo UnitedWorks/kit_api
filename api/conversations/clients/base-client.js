@@ -7,6 +7,13 @@ export default class BaseClient {
     }
   }
 
+  isTyping() {
+    // By default isn't used
+    return new Promise((resolve) => {
+      resolve();
+    });
+  }
+
   addToQuene(text, attachment, quickReplies) {
     // If has attachment, new message
     if (attachment) {
