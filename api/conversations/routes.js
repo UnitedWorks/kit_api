@@ -3,9 +3,24 @@ import { Router } from 'express';
 import { logger } from '../logger';
 import * as process from './process';
 import * as verify from './verify';
+import * as helpers from './helpers';
 import * as conversationClient from '../constants/interfaces';
 
 const router = new Router();
+
+router.post('/broadcast', (req, res, next) => {
+  logger.info('Constituent Broadcast');
+  try {
+    helpers.makeBroadcast(req.body.broadcast, req.body.organization, { returnJSON: true })
+      .then(() => {
+        res.status(200).send();
+      }).catch((err) => {
+        throw new Error(err);
+      });
+  } catch (e) {
+    next(e);
+  }
+});
 
 router.use('/webhook/facebook', bodyParser.json({
   verify: verify.verifyRequestSignature,
