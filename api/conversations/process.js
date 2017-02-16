@@ -1,7 +1,7 @@
 import uuid from 'uuid/v4';
 import { logger } from '../logger';
 import * as interfaces from '../constants/interfaces';
-import { NarrativeStore } from '../narratives/models';
+import { NarrativeSession } from '../narratives/models';
 import { Constituent } from '../accounts/models';
 import { inputDirector } from '../narratives/states/helpers';
 
@@ -21,7 +21,7 @@ function getConstituent(filterObj) {
 
 function setupConstituentState(constituent) {
   return new Promise((resolve, reject) => {
-    NarrativeStore.collection({
+    NarrativeSession.collection({
       constituent_id: constituent.id,
       // We eventually need to filter interface properties too
     }).fetchOne().then((model) => {

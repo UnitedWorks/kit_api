@@ -3,7 +3,7 @@ import { logger } from '../../logger';
 import * as TAGS from '../../constants/nlp-tagging';
 import * as INTEGRATIONS from '../../constants/integrations';
 import { nlp } from '../../services/nlp';
-import { NarrativeStoreMachine } from './state';
+import { NarrativeSessionMachine } from './state';
 import { getAnswer } from '../../knowledge-base/helpers';
 import { entityValueIs } from './helpers';
 import { hasIntegration } from '../../integrations/helpers';
@@ -424,7 +424,7 @@ const smallTalkStates = {
   },
 };
 
-export default class SmallTalkMachine extends NarrativeStoreMachine {
+export default class SmallTalkMachine extends NarrativeSessionMachine {
   constructor(appSession, snapshot) {
     super(appSession, snapshot, smallTalkStates);
     const self = this;

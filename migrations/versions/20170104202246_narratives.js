@@ -9,12 +9,11 @@ exports.up = function(knex, Promise) {
         .unsigned().references('id').inTable('constituents');
       table.integer('organization_id')
         .unsigned().references('id').inTable('organizations');
-      table.string('interface_property_id');
       table.string('state_machine_name');
       table.string('state_machine_previous_state');
       table.string('state_machine_current_state');
       // This can be flipped on/off when a rep takes over to prevent entering a state machine
-      table.boolean('over_ride').defaultTo(false);
+      table.boolean('over_ride_on').defaultTo(false);
       // Holds info on previous states AND location, organization, sources, user, etc.
       table.jsonb('data_store');
       table.dateTime('updated_at');
