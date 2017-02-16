@@ -27,9 +27,9 @@ export class TwilioSMSClient extends BaseClient {
       } else if (content.templateType === 'button') {
         message.body = content.text;
         content.buttons.forEach((button) => {
-          message.body = message.body.concat(` ${button.title}(${button.url})`);
+          message.body = message.body.concat(`\r${button.title}: ${button.payload}`);
         });
-      } else if (content.templateType === 'generic' || content.templateType === 'list') {
+      } else if (content.templateType === 'generic') {
         content.elements.forEach((element) => {
           message.body = message.body.concat(`${element.title}`);
           if (element.subtitle) message.body = message.body.concat(` -- ${element.subtitle}`);
@@ -38,10 +38,19 @@ export class TwilioSMSClient extends BaseClient {
             message.body = message.body.concat(` ${button.title}(${button.url})`);
           });
         });
+      } else if (content.templateType === 'list') {
+        content.elements.forEach((element) => {
+          message.body = message.body.concat(`${element.title}`);
+          if (element.subtitle) message.body = message.body.concat(` -- ${element.subtitle}`);
+          message.body = message.body.concat('\r');
+        });
+        content.buttons.forEach((button) => {
+          message.body = message.body.concat(`\n(${button.title}: ${button.url})`);
+        });
       }
       // Append Quick Actions
       if (quickActions) {
-        message.body = message.body.concat(' Quick Actions: ');
+        message.body = message.body.concat('\rQuick Actions: ');
         quickActions.forEach((reply, index) => {
           message.body = message.body.concat(index === 0 ? reply.title : `, ${reply.title}`);
         });
