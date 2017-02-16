@@ -7,6 +7,7 @@ import * as env from './env';
 import * as environments from './constants/environments';
 import { logger } from './logger';
 import * as clients from './conversations/clients';
+import { baseErrorHandler } from './utils';
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -35,18 +36,19 @@ app.use('/conversations', require('./conversations/routes'));
 app.use('/integrations', require('./integrations/routes'));
 app.use('/knowledge-base', require('./knowledge-base/routes'));
 
+// Log Viewing
 app.get('/logs/info', (req, res) => {
   fs.readFile(path.join(__dirname, '..', 'logs/info.log'), 'utf8', (err, data) => {
     res.status(200).send(data);
   });
 });
-
 app.get('/logs/error', (req, res) => {
   fs.readFile(path.join(__dirname, '..', 'logs/error.log'), 'utf8', (err, data) => {
     res.status(200).send(data);
   });
 });
 
+// Health check route for AWS Cluster checks
 app.get('/health_check', (req, res) => {
   res.status(200).send("I'm not dead yet!");
 });
@@ -55,6 +57,9 @@ app.get('/health_check', (req, res) => {
 if (env.get() === environments.PRODUCTION) {
   clients.configureExternalInterfaces();
 }
+
+// Error Handling
+app.use(baseErrorHandler);
 
 // Start Server
 app.listen(port, () => {

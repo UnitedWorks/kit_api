@@ -1,7 +1,7 @@
 import { logger } from '../../logger';
 import * as interfaces from '../../constants/interfaces';
 import { BaseClient, FacebookMessengerClient, TwilioSMSClient } from '../../conversations/clients';
-import { NarrativeStore } from '../models';
+import { NarrativeSession } from '../models';
 
 export class StateMachine {
   constructor(states, current, previous, datastore) {
@@ -36,7 +36,7 @@ export class StateMachine {
   }
 }
 
-export class NarrativeStoreMachine extends StateMachine {
+export class NarrativeSessionMachine extends StateMachine {
   constructor(appSession, snapshot, states) {
     // Set State
     super(states, snapshot.state_machine_current_state, snapshot.state_machine_previous_state,
@@ -58,7 +58,7 @@ export class NarrativeStoreMachine extends StateMachine {
 
   exit(pickUpState) {
     logger.info('Exiting');
-    NarrativeStore.where({ session_id: this.snapshot.session_id }).fetch().then((existingStore) => {
+    NarrativeSession.where({ session_id: this.snapshot.session_id }).fetch().then((existingStore) => {
       const attributes = {
         constituent_id: this.snapshot.constituent.id,
         session_id: this.snapshot.session_id,
@@ -74,7 +74,7 @@ export class NarrativeStoreMachine extends StateMachine {
       if (existingStore) {
         attributes.id = existingStore.attributes.id;
       }
-      NarrativeStore.forge(attributes).save(null, null).then(() => {
+      NarrativeSession.forge(attributes).save(null, null).then(() => {
         // logger.info(state.attributes);
       });
     });
