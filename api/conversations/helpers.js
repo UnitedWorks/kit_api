@@ -9,14 +9,17 @@ export function makeBroadcast(broadcast, organization, options) {
           if (session.constituent.facebook_id) {
             new Clients.FacebookMessengerClient({
               constituent: session.constituent,
-            }).send(broadcast.message);
+            }).send(broadcast.message)
+              .then(() => resolve())
+              .catch(err => reject(err));
           } else if (session.constituent.phone) {
             new Clients.TwilioSMSClient({
               constituent: session.constituent,
-            }).send(broadcast.message);
+            }).send(broadcast.message)
+              .then(() => resolve())
+              .catch(err => reject(err));
           }
         });
-        resolve();
-      });
+      }).catch(err => reject(err));
   });
 }
