@@ -15,7 +15,7 @@ router.post('/broadcast', (req, res, next) => {
       .then(() => {
         res.status(200).send();
       }).catch((err) => {
-        throw new Error(err);
+        next(err);
       });
   } catch (e) {
     next(e);
