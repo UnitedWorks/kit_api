@@ -47,10 +47,12 @@ export class TwilioSMSClient extends BaseClient {
         content.buttons.forEach((button) => {
           message.body = message.body.concat(`\n(${button.title}: ${button.url})`);
         });
+      } else if (content.type === 'image') {
+        message.mediaUrl = content.url;
       }
       // Append Quick Actions
       if (quickActions) {
-        message.body = message.body.concat('\rQuick Actions: ');
+        message.body = message.body.concat('\rQuick Replies: ');
         quickActions.forEach((reply, index) => {
           message.body = message.body.concat(index === 0 ? reply.title : `, ${reply.title}`);
         });
