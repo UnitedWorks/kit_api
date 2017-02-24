@@ -40,12 +40,14 @@ export const getQuestions = (params = {}) => {
     .then((answeredQuestions) => {
       const resolvedQuestions = [];
       allQuestions.toJSON().map((question) => {
+        let pushed = false;
         answeredQuestions.toJSON().forEach((answeredQuestion) => {
           if (answeredQuestion.label === question.label) {
+            pushed = true;
             resolvedQuestions.push(answeredQuestion);
           }
         });
-        resolvedQuestions.push(question);
+        if (!pushed) resolvedQuestions.push(question);
       });
       return resolvedQuestions;
     }).catch(error => error);
