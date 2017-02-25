@@ -1,6 +1,7 @@
+import { geocoder } from '../../services/geocoder';
 import { logger } from '../../logger';
 import { nlp } from '../../services/nlp';
-import { geocoder } from '../../services/geocoder';
+import SlackService from '../../services/slack';
 import { createOrganization, getAdminOrganizationAtLocation } from '../../accounts/helpers';
 import { saveLocation } from '../../knowledge-base/helpers';
 
