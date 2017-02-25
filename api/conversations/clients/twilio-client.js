@@ -35,7 +35,9 @@ export class TwilioSMSClient extends BaseClient {
           if (element.subtitle) message.body = message.body.concat(` -- ${element.subtitle}`);
           if (element.default_action) message.body = message.body.concat(` (${element.default_action.url})`);
           element.buttons.forEach((button) => {
-            message.body = message.body.concat(` ${button.title}(${button.url})`);
+            if (button.url) {
+              message.body = message.body.concat(` ${button.title}(${button.url})`);
+            }
           });
         });
       } else if (content.templateType === 'list') {
