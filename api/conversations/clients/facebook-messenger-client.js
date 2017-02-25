@@ -67,9 +67,10 @@ export class FacebookMessengerClient extends BaseClient {
       }).then((response) => {
         logger.info('Successfully called Send API for recipient %s', response.data.recipient_id);
         resolve(response);
-      }).catch((err) => {
-        logger.error(`${err}`);
-        reject(err);
+      }).catch((error) => {
+
+        logger.error('Error thrown by axios', error.response.data);
+        reject(error);
       });
     });
   }

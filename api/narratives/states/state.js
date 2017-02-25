@@ -3,6 +3,9 @@ import * as interfaces from '../../constants/interfaces';
 import { BaseClient, FacebookMessengerClient, TwilioSMSClient } from '../../conversations/clients';
 import { NarrativeSession } from '../models';
 
+import { stateMachines } from './helpers';
+
+
 export class StateMachine {
   constructor(states, current, previous, datastore) {
     this.states = states;
@@ -13,7 +16,6 @@ export class StateMachine {
 
   set(key, value) {
     this.datastore[key] = value;
-    this.fire('data', 'enter', this.datastore);
   }
 
   get(key) {
@@ -21,62 +23,98 @@ export class StateMachine {
   }
 
   input(event, aux) {
-    logger.info(`Event Input: ${this.current}`);
-    this.fire(this.current, event, aux);
+    return this.fire(this.current, event, aux);
+  }
+
+  resolve(state, event) {
+    return (this.states[state] && this.states[state][event]) || this.states[state];
+  }
+
+  setState(state) {
+    this.previous = this.current;
+    this.current = state;
   }
 
   fire(state, event, aux) {
-    const func = (this.states[state] && this.states[state][event]) || this.states[state];
-    const result = (func && typeof func === 'function') ? func.call(this, aux) : null;
-    if (result) {
-      this.previous = this.current;
-      this.current = result;
-      this.fire(this.current, 'enter', aux);
-    }
+    const func = this.resolve(state, event);
+    const next = (func && typeof func === 'function') ? func.call(this, aux) : null;
+    let self = this;
+    
+    logger.info(`${state} (${event}) -> ${next}`);
+    /* ** ~~((New and Improved!!!!!))~~ ** */
+    // TODO(nicksahler) Handler promise failure better. Maybe go to an error state in the bot?
+    return Promise.resolve(next).then(function(result){
+      if (!result) return null;
+
+      self.setState(result);
+      return self.fire(self.current, 'enter', aux);
+    }).catch(err => logger.error('error', err));
   }
 }
 
 export class NarrativeSessionMachine extends StateMachine {
-  constructor(appSession, snapshot, states) {
-    // Set State
-    super(states, snapshot.state_machine_current_state, snapshot.state_machine_previous_state,
-      snapshot.data_store);
+  constructor(states, snapshot) {
+    super(
+      states,
+      snapshot.state_machine_current_state,
+      snapshot.state_machine_previous_state,
+      snapshot.data_store
+    );
+
     this.snapshot = snapshot;
+    const self = this;
 
     // Set the Messaging Client
-    const clientConfig = {
-      constituent: this.snapshot.constituent,
-    }
-    if (this.snapshot.data_store.conversationClient === interfaces.FACEBOOK) {
-      this.messagingClient = new FacebookMessengerClient(clientConfig);
-    } else if (this.snapshot.data_store.conversationClient === interfaces.TWILIO) {
-      this.messagingClient = new TwilioSMSClient(clientConfig);
-    } else {
-      this.messagingClient = new BaseClient();
-    }
+    const clientConfig = { constituent: this.snapshot.constituent }
+
+    switch (this.snapshot.conversationClient) {
+      case interfaces.FACEBOOK:
+        this.messagingClient = new FacebookMessengerClient(clientConfig);
+        break;
+      case interfaces.TWILIO:
+        this.messagingClient = new TwilioSMSClient(clientConfig);
+        break;
+      default:
+        this.messagingClient = new BaseClient();
+    };
   }
 
-  exit(pickUpState) {
-    logger.info('Exiting');
-    NarrativeSession.where({ session_id: this.snapshot.session_id }).fetch().then((existingStore) => {
+  setState(state) {
+    /* Support moving between machines */
+    var split = state.split('.').reverse();
+    var machine = split[1] || this.snapshot.state_machine_name;
+    var s = split[0];
+
+    if (machine !== this.snapshot.state_machine_name && stateMachines[machine]) {
+      this.states = stateMachines[machine];
+      this.snapshot.state_machine_name = machine;
+    } 
+
+    super.setState(s);
+  }
+
+  // TODO(nicksahler): Proper SQL update
+  save() {
+    const self = this;
+    return NarrativeSession.where({ session_id: self.snapshot.session_id }).fetch().then((existingStore) => {
       const attributes = {
-        constituent_id: this.snapshot.constituent.id,
-        session_id: this.snapshot.session_id,
-        state_machine_name: this.snapshot.state_machine_name,
-        state_machine_previous_state: this.current,
-        state_machine_current_state: pickUpState,
-        over_ride: false,
-        data_store: this.snapshot.data_store,
+        constituent_id: self.snapshot.constituent.id,
+        session_id: self.snapshot.session_id,
+        state_machine_name: self.snapshot.state_machine_name,
+        state_machine_previous_state: self.previous,
+        state_machine_current_state: self.current,
+        data_store: self.snapshot.data_store,
       };
-      if (this.get('organization')) {
-        attributes.organization_id = this.get('organization').id || null;
+
+      if (self.get('organization')) {
+        attributes.organization_id = self.get('organization').id || null;
       }
+
       if (existingStore) {
         attributes.id = existingStore.attributes.id;
       }
-      NarrativeSession.forge(attributes).save(null, null).then(() => {
-        // logger.info(state.attributes);
-      });
+
+      return NarrativeSession.forge(attributes).save(null, null).then(()=>{});
     });
   }
 }
