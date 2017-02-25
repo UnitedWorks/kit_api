@@ -49,6 +49,11 @@ export default class BaseClient {
     }
   }
 
+  addAll(arr) {
+    const self = this;
+    arr.forEach((e)=> self.addToQuene(e));
+  }
+
   runQuene() {
     const self = this;
     return new Promise((resolve, reject) => {

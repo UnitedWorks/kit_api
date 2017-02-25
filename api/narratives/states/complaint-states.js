@@ -3,9 +3,8 @@ import { PRIMARY_CATEGORIES as PRIMARY_CASE_CATEGORIES } from '../../constants/c
 import { createCase } from '../../cases/helpers';
 import { CaseCategory } from '../../cases/models';
 
-export const states = {
-
-  complaintStart(aux = {}) {
+export default {
+  complaints_init(aux = {}) {
     const quickReplies = PRIMARY_CASE_CATEGORIES.map((label) => {
       return {
         content_type: 'text',
@@ -13,8 +12,9 @@ export const states = {
         payload: label,
       };
     });
-    this.messagingClient.send(aux.message || 'What type of problem do you have?', quickReplies).then(() => {
-      this.exit('complaintCategory');
+
+    return this.messagingClient.send(aux.message || 'What type of problem do you have?', quickReplies).then(() => {
+      return 'waiting_for_complaint';
     });
   },
 

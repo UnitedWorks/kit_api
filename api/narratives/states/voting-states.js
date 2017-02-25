@@ -3,7 +3,7 @@ import VotingClient from '../clients/voting-client';
 import * as US_VOTE_CONSTANTS from '../../constants/voting-foundation';
 import { getPlacesUrl } from '../../utils';
 
-export const states = {
+export default {
   votingDeadlines() {
     logger.info('State: votingDeadlines');
     new VotingClient({ location: this.get('location') }).getElections().then((elections) => {
