@@ -54,7 +54,7 @@ export default {
     });
 
     this.messagingClient.addToQuene('You can ask questions about all sorts of things like... "Where can I pay this parking ticket?," "Where can I get a dog license for this cute pup," and "When the next local election is coming up?"');
-    
+
     if (this.get('organization').activated) {
       this.messagingClient.addToQuene('If you ask a question I can\'t answer, I\'ll let your city know! You can also send your city requests and complaints.', quickReplies);
     } else {
@@ -450,7 +450,7 @@ export default {
     new SlackService({
       username: 'Misunderstood Request',
       icon: 'question',
-    }).send(`>*Request Message*: ${aux.input.text}\n>*Constituent ID*: ${this.snapshot.constituent.id}`);
+    }).send(`>*Request Message*: ${aux.input.payload.text}\n>*Constituent ID*: ${this.snapshot.constituent.id}`);
     const message = 'Ah shoot, I\'m still learning so I don\'t understand that request yet. Can you give more description? <3';
     this.messagingClient.send(message);
     return 'start';
