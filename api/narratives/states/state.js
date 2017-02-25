@@ -39,12 +39,15 @@ export class StateMachine {
     const func = this.resolve(state, event);
     const next = (func && typeof func === 'function') ? func.call(this, aux) : null;
     let self = this;
-    
-    logger.info(`${state} (${event}) -> ${next}`);
+
     /* ** ~~((New and Improved!!!!!))~~ ** */
     // TODO(nicksahler) Handler promise failure better. Maybe go to an error state in the bot?
     return Promise.resolve(next).then(function(result){
-      if (!result) return null;
+      logger.info(`${state} (${event}) -> ${result}`);
+      
+      if (!result) {
+        return null;
+      }
 
       self.setState(result);
       return self.fire(self.current, 'enter', aux);

@@ -5,27 +5,6 @@ import { NarrativeSession } from '../narratives/models';
 import { Constituent } from '../accounts/models';
 import { inputDirector } from '../narratives/states/helpers';
 
-// TODO(youmustfight, nicksahler): We eventually need to filter interface properties too
-function setupConstituentState(constituent) {
-  return NarrativeSession.collection({
-    constituent_id: constituent.id,
-  }).fetchOne().then((model) => {
-    if (model) {
-      return (Object.assign({}, model.toJSON(), { constituent }));
-    } else {
-      return {
-        session_id: uuid(),
-        state_machine_name: 'smallTalk',
-        state_machine_previous_state: null,
-        state_machine_current_state: null,
-        over_ride: false,
-        data_store: {},
-        constituent,
-      }
-    }
-  });
-}
-
 function normalizeInput(conversationClient, input) {
   let newMessageObject;
   // Input: interface, message, state
@@ -70,6 +49,28 @@ function normalizeInput(conversationClient, input) {
   return newMessageObject;
 }
 
+// TODO(youmustfight, nicksahler): We eventually need to filter interface properties too
+function setupConstituentState(constituent) {
+  return NarrativeSession.collection({
+    constituent_id: constituent.id,
+  }).fetchOne().then((model) => {
+    if (model) {
+      return (Object.assign({}, model.toJSON(), { constituent }));
+    } else {
+      return {
+        session_id: uuid(),
+        state_machine_name: 'smallTalk',
+        state_machine_previous_state: null,
+        state_machine_current_state: null,
+        over_ride_on: false,
+        data_store: {},
+        constituent,
+      }
+    }
+  });
+}
+
+// TODO(nicksahler) make dry
 function normalizeSessionsFromRequest(req, conversationClient) {
   if (conversationClient === interfaces.FACEBOOK) {
     const readyStates = [];
@@ -94,16 +95,12 @@ function normalizeSessionsFromRequest(req, conversationClient) {
     const input = req.body;
 
     return Constituent.where({ phone: input.From } ).fetch().then((model) => {  
-      return model || new Constituent(filterObj).save();
-    }).then((constituent) => {
-      return setupConstituentState(constituent.toJSON()).then((constituentState) => {
-        const state = constituentState;
-
-        state.data_store.conversationClient = conversationClient;
-        state.data_store.input = normalizeInput(conversationClient, input);
-        return [state];
-      })
-    })
+      return model || new Constituent({ phone: input.From }).save();
+    }).then(function(c) {
+      return setupConstituentState(c.toJSON());
+    }).then((state) => {
+      return [Object.assign(state, {input: normalizeInput(conversationClient, input), conversationClient: conversationClient})];
+    });
   }
 }
 
