@@ -6,7 +6,7 @@ import { getPlacesUrl } from '../../utils';
 export default {
   votingDeadlines() {
     logger.info('State: votingDeadlines');
-    new VotingClient({ location: this.get('location') }).getElections().then((elections) => {
+    return new VotingClient({ location: this.get('location') }).getElections().then((elections) => {
       if (elections.length === 0) {
         this.messagingClient.addToQuene('There are no upcoming elections!');
       } else {
@@ -21,14 +21,15 @@ export default {
           this.messagingClient.addToQuene('You have no upcoming deadlines, but that doesn\'t mean you shouldn\'t register.', quickReplies);
         }
       }
-      this.messagingClient.runQuene().then(() => this.exit('start'));
+
+      return this.messagingClient.runQuene().then(() => 'smallTalk.start');
     });
   },
 
   electionSchedule() {
     logger.info('State: electionSchedule');
     this.messagingClient.send('Hmmm, let me go grab the calendar!');
-    new VotingClient({ location: this.get('location') }).getElections().then((elections) => {
+    return new VotingClient({ location: this.get('location') }).getElections().then((elections) => {
       if (elections.length === 0) {
         this.messagingClient.addToQuene('There are no upcoming elections!');
       } else {
@@ -66,14 +67,14 @@ export default {
         });
         this.messagingClient.addToQuene(`You have ${Math.floor((earliestRegistrationDate.getTime() - Date.now()) / 86400000)} days left to register. Are you ready for the elections?`, quickReplies);
       }
-      this.messagingClient.runQuene().then(() => this.exit('start'));
+      return this.messagingClient.runQuene().then(() => 'smallTalk.start');
     });
   },
 
   pollInfo() {
     logger.info('State: pollInfo');
     const votingClientInstance = new VotingClient({ location: this.get('location') });
-    Promise.all([
+    return Promise.all([
       votingClientInstance.getGeneralStateInfo(),
     ]).then((data) => {
       const stateInfo = data[0];
@@ -103,13 +104,15 @@ export default {
         text: `This what I know about the polls. ${VotingClient.extractPollDetails(stateInfo.voting_general_info)}`,
         buttons: quickActions,
       });
+
+      return 'smallTalk.start';
     });
   },
 
   voterRegistrationCheck() {
     logger.info('State: voterRegistrationCheck');
     const quickActions = [];
-    new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
+    return new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
       info.lookup_tools.forEach((tool) => {
         if (tool.lookup_tool.kind === US_VOTE_CONSTANTS.REGISTRATION_STATUS) {
           quickActions.push({
@@ -126,6 +129,8 @@ export default {
         text: `Here's a way to check if your registered in ${this.get('location').administrativeLevels.level1short}:`,
         buttons: quickActions,
       });
+
+      return 'smallTalk.start';
     });
   },
 
@@ -133,7 +138,7 @@ export default {
     logger.info('State: voterRegistrationGet');
     this.messagingClient.addToQuene('Let\'s get you registered!');
     const votingClientInstance = new VotingClient({ location: this.get('location') });
-    Promise.all([
+    return Promise.all([
       votingClientInstance.getGeneralStateInfo(),
       votingClientInstance.getElections(),
     ]).then((data) => {
@@ -184,24 +189,26 @@ export default {
         templateType: 'generic',
         elements,
       });
-      this.messagingClient.runQuene();
+      return this.messagingClient.runQuene().then(() => 'smallTalk.start');
     });
   },
 
   sampleBallot() {
     logger.info('State: sampleBallot');
-    new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
+    return new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
       info.lookup_tools.forEach((tool) => {
         if (tool.lookup_tool.kind === 'sample_ballot') {
           this.messagingClient.send(`Check here for a sample ballot: ${tool.url}`);
         }
       });
+
+      return 'smallTalk.start';
     });
   },
 
   absenteeVote() {
     logger.info('State: absenteeVote');
-    new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
+    return new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
       const absenteeVotingDetails = VotingClient.extractAbsenteeVoteDetails(
         info.voting_general_info);
       if (absenteeVotingDetails) {
@@ -209,12 +216,13 @@ export default {
       } else {
         this.messagingClient.send('Hmm, your state doesn\'t seem to allow absentee voting.');
       }
+      return 'smallTalk.start';
     });
   },
 
   earlyVoting() {
     logger.info('State: earlyVoting');
-    new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
+    return new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
       const earlyVotingDetails = VotingClient.extractEarlyVotingDetails(
         info.voting_general_info);
       if (earlyVotingDetails) {
@@ -222,12 +230,13 @@ export default {
       } else {
         this.messagingClient.send('Hmm, it doesn\'t seem that your state allows early voting.');
       }
+      return 'smallTalk.start';
     });
   },
 
   voterIdRequirements() {
     logger.info('State: voterIdRequirements');
-    new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
+    return new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
       // Identification
       let idMessage = '';
       info.identification_requirements.forEach((idRequirement) => {
@@ -242,13 +251,13 @@ export default {
         return { content_type: 'text', title: label, payload: label };
       });
       this.messagingClient.addToQuene(idMessage, quickReplies);
-      this.messagingClient.runQuene().then(() => this.exit('start'));
+      return this.messagingClient.runQuene().then(() => 'smallTalk.start');
     });
   },
 
   stateVotingRules() {
     logger.info('State: stateVotingRules');
-    new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
+    return new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
       // Eligibility
       let eligibleMessage = `${info.eligibility_requirements[0].header} `;
       info.eligibility_requirements[0].items.forEach(({ item }, index) => {
@@ -263,13 +272,13 @@ export default {
         return { content_type: 'text', title: label, payload: label };
       });
       this.messagingClient.addToQuene(notEligibleMessage, quickActions);
-      this.messagingClient.runQuene().then(() => this.exit('start'));
+      return this.messagingClient.runQuene().then(() => 'smallTalk.start');
     });
   },
 
   voterProblem() {
     logger.info('State: voterProblem');
-    new VotingClient({ location: this.get('location') }).getLocalElectionOffice().then((info) => {
+    return new VotingClient({ location: this.get('location') }).getLocalElectionOffice().then((info) => {
       if (info.office) {
         const officeElements = [{
           title: info.office.express_address.address_to || 'Elections Office',
@@ -319,14 +328,14 @@ export default {
         text: 'If someone is preventing you from voting call these hotlines:',
         buttons: quickActions,
       });
-      this.messagingClient.runQuene().then(() => this.exit('start'));
+      return this.messagingClient.runQuene().then(() => 'smallTalk.start');
     });
   },
 
   voterAssistance() {
     logger.info('State: voterAssistance');
     const votingClientInstance = new VotingClient({ location: this.get('location') });
-    Promise.all([
+    return Promise.all([
       votingClientInstance.getGeneralStateInfo(),
     ]).then((data) => {
       const stateInfo = data[0];
@@ -347,6 +356,7 @@ export default {
         if (tool.lookup_tool.kind === US_VOTE_CONSTANTS.ELECTION_INFORMATION) {
           elements[0].buttons.push({
             type: 'web_url',
+            title: 'State Election Website',
             url: tool.url,
             webview_height_ratio: 'tall',
           });
@@ -357,7 +367,7 @@ export default {
         templateType: 'generic',
         elements,
       });
-      this.messagingClient.runQuene();
+      return this.messagingClient.runQuene().then(() => 'smallTalk.start');
     });
   },
 
