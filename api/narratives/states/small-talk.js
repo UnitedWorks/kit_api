@@ -60,7 +60,6 @@ export default {
     } else {
       this.messagingClient.addToQuene('Since your city hasn\'t signed up yet, I won\'t be able to answer every question for you :( I will be able to send your city requests and complaints though!', quickReplies);
     }
-
     return this.messagingClient.runQuene().then(() => 'start');
   },
 
@@ -208,7 +207,7 @@ export default {
                     const resource = resources[i];
                     this.messagingClient.addToQuene(`${resource.name}\n${resource.phones[0] ? `${resource.phones[0].number}\n` : ''}${resource.website ? `${resource.website}\n` : ''}${resource.short_description || resource.long_description || ''}\n`.trim());
                   }
-                  this.messagingClient.runQuene().then(() => 'start');
+                  return this.messagingClient.runQuene().then(() => 'start');
                 });
               } else {
                 return getAnswer({
@@ -246,7 +245,7 @@ export default {
                     const resource = resources[i];
                     this.messagingClient.addToQuene(`${resource.name}\n${resource.phones[0] ? `${resource.phones[0].number}\n` : ''}${resource.website ? `${resource.website}\n` : ''}${resource.short_description || resource.long_description || ''}\n`.trim());
                   }
-                  this.messagingClient.runQuene().then(() => 'start');
+                  return this.messagingClient.runQuene().then(() => 'start');
                 });
               } else {
                 return getAnswer({
@@ -285,7 +284,7 @@ export default {
                     const resource = resources[i];
                     this.messagingClient.addToQuene(`${resource.name}\n${resource.phones[0] ? `${resource.phones[0].number}\n` : ''}${resource.website ? `${resource.website}\n` : ''}${resource.short_description || resource.long_description || ''}\n`.trim());
                   }
-                  this.messagingClient.runQuene().then(() => 'start');
+                  return this.messagingClient.runQuene().then(() => 'start');
                 });
               } else {
                 return getAnswer({
@@ -328,7 +327,7 @@ export default {
                     const resource = resources[i];
                     this.messagingClient.addToQuene(`${resource.name}\n${resource.phones[0] ? `${resource.phones[0].number}\n` : ''}${resource.website ? `${resource.website}\n` : ''}${resource.short_description || resource.long_description || ''}\n`.trim());
                   }
-                  this.messagingClient.runQuene().then(() => 'start');
+                  return this.messagingClient.runQuene().then(() => 'start');
                 });
               } else {
                 return getAnswer({
@@ -371,7 +370,7 @@ export default {
                     const resource = resources[i];
                     this.messagingClient.addToQuene(`${resource.name}\n${resource.phones[0] ? `${resource.phones[0].number}\n` : ''}${resource.website ? `${resource.website}\n` : ''}${resource.short_description || resource.long_description || ''}\n`.trim());
                   }
-                  this.messagingClient.runQuene().then(() => 'start');
+                  return this.messagingClient.runQuene().then(() => 'start');
                 });
               } else {
                 return getAnswer({
@@ -421,14 +420,13 @@ export default {
     },
 
     action() {
-      const action_results = {
+      return {
         'MAKE_REQUEST': 'complaint.init',
         'GET_REQUESTS': 'getRequests',
         'GET_STARTED': 'init',
         'CHANGE_CITY': 'setup.reset_organization',
         'WHAT_CAN_I_ASK': 'whatCanIAsk',
-      }[this.snapshot.input.payload.payload]
-      return action_results;
+      }[this.snapshot.input.payload.payload];
     }
   },
 
@@ -451,5 +449,4 @@ export default {
     this.messagingClient.send(message);
     return 'start';
   },
-
 };

@@ -12,6 +12,7 @@ export default {
           title: label,
           payload: label,
         };
+
       });
       return this.messagingClient.send(aux.message || 'What type of problem do you have?', quickReplies);
     },
