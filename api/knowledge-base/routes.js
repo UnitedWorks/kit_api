@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { logger } from '../logger';
-import { KnowledgeAnswer, KnowledgeCategory, KnowledgeEvent, KnowledgeFacility,
+import { KnowledgeAnswer, KnowledgeEvent, KnowledgeFacility,
   KnowledgeFacilityType, KnowledgeService } from './models';
-import { getAnswers, getQuestions, makeAnswerRelation, makeAnswer } from './helpers';
+import { getAnswers, getCategories, getQuestions, makeAnswerRelation, makeAnswer } from './helpers';
 
 const router = new Router();
 
@@ -12,9 +12,9 @@ const router = new Router();
  */
 router.get('/categories', (req, res) => {
   logger.info('Pinged: knowledge-base/categories');
-  KnowledgeCategory.fetchAll().then((categoriesArray) => {
-    res.status(200).send({ categories: categoriesArray });
-  });
+  getCategories(req.query)
+    .then(categories => res.status(200).send({ categories }))
+    .catch(error => res.status(400).send({ error }))
 });
 
 /**
