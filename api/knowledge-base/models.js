@@ -1,5 +1,5 @@
 import lodash from 'lodash';
-import { bookshelf } from '../orm';
+import { bookshelf, knex } from '../orm';
 import { Organization } from '../accounts/models';
 
 // Information Entries - Referenced in knowledge and non-knowledge base tables
@@ -26,6 +26,9 @@ export const Schedule = bookshelf.Model.extend({
 // Knowledge Base Entries - Think of as complex objects
 export const KnowledgeCategory = bookshelf.Model.extend({
   tableName: 'knowledge_categorys',
+  questions: function() {
+    return this.hasMany(KnowledgeQuestion, 'knowledge_category_id');
+  },
 });
 
 export const KnowledgeFacilityType = bookshelf.Model.extend({

@@ -1,5 +1,5 @@
 import { knex } from '../orm';
-import { KnowledgeAnswer, KnowledgeQuestion, KnowledgeAnswerEvents, KnowledgeAnswerFacilitys,
+import { KnowledgeAnswer, KnowledgeCategory, KnowledgeQuestion, KnowledgeAnswerEvents, KnowledgeAnswerFacilitys,
   KnowledgeAnswerServices, Location, OrganizationQuestionAnswers } from './models';
 
 export const getAnswer = (params = {}, options) => {
@@ -52,6 +52,17 @@ export const getQuestions = (params = {}) => {
       return resolvedQuestions;
     }).catch(error => error);
   }).catch(error => error);
+};
+
+export const getCategories = (params = {}) => {
+  return KnowledgeCategory.fetchAll({ withRelated: ['questions'] })
+    .then(data => data.toJSON().map((category) => {
+      // I hate that I have to do this. Tried initializing this data on model
+      const newObj = category;
+      newObj.totalQuestions = category.questions.length;
+      delete newObj.questions;
+      return newObj;
+    })).catch(error => error);
 };
 
 export const makeAnswer = (organization, question, answer, options) => {
