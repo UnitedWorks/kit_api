@@ -17,7 +17,7 @@ export default {
     },
     message() {
       // Check for text answer or passed quick_reply payload
-      const category = this.get('input').payload.text || this.get('input').payload.payload;
+      const category = this.snapshot.input.payload.text || this.snapshot.input.payload.payload;
       return CaseCategory.where({ parent_category_id: null }).fetchAll().then((data) => {
         let foundModel;
         let generalModel;
@@ -37,7 +37,7 @@ export default {
       return this.messagingClient.send('Can you describe the problem for me?');
     },
     message() {
-      const headline = this.get('input').payload.text;
+      const headline = this.snapshot.input.payload.text;
       if (headline) {
         this.set('complaint', Object.assign({}, this.get('complaint'), { headline }));
       }
@@ -50,7 +50,7 @@ export default {
       return this.messagingClient.send('Can you provide a picture? If not, simply say you don\'t have one');
     },
     message() {
-      const payload = this.get('input').payload;
+      const payload = this.snapshot.input.payload;
       if (payload.attachments) {
         this.messagingClient.send('Thank you!');
         const updatedComplaint = Object.assign({}, this.get('complaint'), {
@@ -67,7 +67,7 @@ export default {
       this.messagingClient.send('Can you send your location? That can simply be an address or a pin on the map.');
     },
     message() {
-      const payload = this.get('input').payload;
+      const payload = this.snapshot.input.payload;
       if (payload.attachments) {
         const updatedComplaint = Object.assign({}, this.get('complaint'), {
           location: {
