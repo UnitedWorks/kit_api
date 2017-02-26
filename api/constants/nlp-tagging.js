@@ -79,5 +79,5 @@ export const GARBAGE_DROP_OFF = 'garbage drop off';
 export const RECYCLING_SCHEDULE = 'recycling schedule';
 export const RECYCLING_DROP_OFF = 'recycling drop off';
 export const COMPOST_DUMPING = 'compost dumping';
-export const BULK_PICKUP_REQUEST = 'bulk pickup request';
+export const BULK_PICKUP = 'bulk pickup';
 export const ELECTRONICS_DISPOSAL = 'electronics disposal';

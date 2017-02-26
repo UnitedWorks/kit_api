@@ -116,7 +116,7 @@ export default {
           // Compost
           if (entityValueIs(entities[TAGS.SANITATION], [TAGS.COMPOST_DUMPING])) return 'sanitation.compostDumping';
           // Bulk Pickup
-          if (entityValueIs(entities[TAGS.SANITATION], [TAGS.BULK_PICKUP_REQUEST])) return 'sanitation.bulkPickupRequest';
+          if (entityValueIs(entities[TAGS.SANITATION], [TAGS.BULK_PICKUP])) return 'sanitation.bulkPickup';
           // Electronics
           if (entityValueIs(entities[TAGS.SANITATION], [TAGS.ELECTRONICS_DISPOSAL])) return 'sanitation.electronicsDisposal';
           // Fallback
