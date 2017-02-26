@@ -3,9 +3,8 @@ import { logger } from '../../logger';
 import * as TAGS from '../../constants/nlp-tagging';
 import * as INTEGRATIONS from '../../constants/integrations';
 import { nlp } from '../../services/nlp';
-import { NarrativeSessionMachine } from './state';
 import { getAnswer } from '../../knowledge-base/helpers';
-import { entityValueIs } from './helpers';
+import { entityValueIs } from '../helpers';
 import { hasIntegration } from '../../integrations/helpers';
 import { getConstituentCases } from '../../cases/helpers';
 import SlackService from '../../services/slack';
@@ -78,7 +77,7 @@ export default {
           return 'whatCanIAsk';
         // Benefits
         } else if (entities[TAGS.BENEFITS]) {
-          return this.messagingClient.send('I\'m proud to be working with Benefit Kitchen to help you learn about state and federal programs. More is coming, but for now you can visit their website! https://app.benefitkitchen.com/');
+          return this.messagingClient.send('Benefit Kitchen can help you learn about state and federal programs. For now, visit their website: https://app.benefitkitchen.com/');
         // Voting
         } else if (entities[TAGS.VOTING]) {
           // Deadlines
@@ -132,59 +131,11 @@ export default {
 
         // Sanitation Services
         } else if (entities[TAGS.SANITATION]) {
-          const value = entities[TAGS.SANITATION][0].value;
-          let answerRequest;
-          if (value === TAGS.COMPOST) {
-            // Request Compost Dumping
-            answerRequest = getAnswer({
-              label: 'sanitation-compost',
-              organization_id: this.get('organization').id,
-            }, { withRelated: false, returnJSON: true });
-          } else if (value === TAGS.BULK) {
-            // Request Bulk Pickup
-            answerRequest = getAnswer({
-              label: 'sanitation-bulk-pickup',
-              organization_id: this.get('organization').id,
-            }, { withRelated: false, returnJSON: true });
-          } else if (value === TAGS.ELECTRONICS) {
-            // Request Electronics
-            answerRequest = getAnswer({
-              label: 'sanitation-electronics-disposal',
-              organization_id: this.get('organization').id,
-            }, { withRelated: false, returnJSON: true });
-          } else if (entities[TAGS.SCHEDULES]) {
-            switch (value) {
-              // Request Garbage
-              case TAGS.GARBAGE:
-                answerRequest = getAnswer({
-                  label: 'sanitation-garbage-schedule',
-                  organization_id: this.get('organization').id,
-                }, { withRelated: false, returnJSON: true });
-                break;
-              // Request Recycling
-              case TAGS.RECYCLING:
-                answerRequest = getAnswer({
-                  label: 'sanitation-recycling-schedule',
-                  organization_id: this.get('organization').id,
-                }, { withRelated: false, returnJSON: true });
-                break;
-              default:
-            }
+          // Garbage
+          if (entityValueIs(entities[TAGS.SANITATION], [TAGS.GARBAGE_SCHEDULE])) {
+            return 'sanitation.garbageSchedule';
           }
-          // Handle
-          if (answerRequest) {
-            return answerRequest.then((payload) => {
-              let message;
-              if (payload.answer) {
-                const answer = payload.answer;
-                message = answer.url ? `${answer.text} (More info at ${answer.url})` : `${answer.text}`;
-              } else {
-                message = `:( Unfortunately your city (${this.get('organization').name}) hasn't given me an answer for that yet.`;
-              }
-              this.messagingClient.send(message);
-            });
-          }
-
+          return 'failedRequest'
         // Human Services
         } else if (entities[TAGS.SOCIAL_SERVICES]) {
           const value = entities[TAGS.SOCIAL_SERVICES][0].value;

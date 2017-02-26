@@ -1,12 +1,13 @@
-import { logger } from '../../logger';
+import { logger } from '../logger';
 
 
-import SmallTalkMachine from './small-talk';
-import SetupMachine from './setup-states';
-import VotingMachine from './voting-states';
-import ComplaintMachine from './complaint-states';
+import SmallTalkMachine from './states/small-talk';
+import SetupMachine from './states/setup-states';
+import VotingMachine from './states/voting-states';
+import ComplaintMachine from './states/complaint-states';
+import SanitationMachine from './states/sanitation-states';
 
-import { NarrativeSessionMachine } from './state';
+import { NarrativeSessionMachine } from './machines';
 
 
 export const entityValueIs = (entities = [], searchValues = []) => {
@@ -21,7 +22,8 @@ export const stateMachines = {
   smallTalk: SmallTalkMachine,
   setup: SetupMachine,
   voting: VotingMachine,
-  complaint: ComplaintMachine
+  complaint: ComplaintMachine,
+  sanitation: SanitationMachine,
 };
 
 export const inputDirector = (appSession, snapshot) => {
