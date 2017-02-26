@@ -81,3 +81,10 @@ export const RECYCLING_DROP_OFF = 'recycling drop off';
 export const COMPOST_DUMPING = 'compost dumping';
 export const BULK_PICKUP = 'bulk pickup';
 export const ELECTRONICS_DISPOSAL = 'electronics disposal';
+
+
+// Settings
+// KEYWORDS
+export const SETTINGS = 'settings';
+// TRAITS
+export const CHANGE_CITY = 'change city';

@@ -329,19 +329,11 @@ export default {
               }
             });
           }
-        } else if (entities[TAGS.TRANSACTION]) {
-          const transaction = entities[TAGS.TRANSACTION][0].value;
-          if (transaction === TAGS.CHANGE) {
-            if (entities[TAGS.ADMINISTRATION]) {
-              const administration = entities[TAGS.ADMINISTRATION][0].value;
-              if (administration === TAGS.CITY) {
-                return 'setup.reset_organization';
-              }
-            }
-          }
-
-        // Relationships
-        } else if (entities[TAGS.RELATIONSHIPS]) {
+        } else if (entities[TAGS.SETTINGS]) {
+          // Change City
+          if (entityValueIs(entities[TAGS.SETTINGS], [TAGS.CHANGE_CITY])) return 'setup.reset_organization';
+          // Fallback
+          return 'failedRequest';
 
         // Complaint
         } else if (entities[TAGS.COMPLAINT]) {
