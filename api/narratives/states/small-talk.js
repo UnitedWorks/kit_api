@@ -75,9 +75,11 @@ export default {
         // Help
         if (entityValueIs(entities[TAGS.HELP], [TAGS.WHAT_CAN_I_ASK])) {
           return 'whatCanIAsk';
+
         // Benefits
         } else if (entities[TAGS.BENEFITS]) {
           return this.messagingClient.send('Benefit Kitchen can help you learn about state and federal programs. For now, visit their website: https://app.benefitkitchen.com/');
+
         // Voting
         } else if (entities[TAGS.VOTING]) {
           // Deadlines
