@@ -1,7 +1,7 @@
-import { logger } from '../../logger';
-import * as interfaces from '../../constants/interfaces';
-import { BaseClient, FacebookMessengerClient, TwilioSMSClient } from '../../conversations/clients';
-import { NarrativeSession } from '../models';
+import { logger } from '../logger';
+import * as interfaces from '../constants/interfaces';
+import { BaseClient, FacebookMessengerClient, TwilioSMSClient } from '../conversations/clients';
+import { NarrativeSession } from './models';
 
 import { stateMachines } from './helpers';
 

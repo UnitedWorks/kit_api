@@ -3,7 +3,7 @@ import { logger } from '../logger';
 import * as interfaces from '../constants/interfaces';
 import { NarrativeSession } from '../narratives/models';
 import { Constituent } from '../accounts/models';
-import { inputDirector } from '../narratives/states/helpers';
+import { inputDirector } from '../narratives/helpers';
 
 function normalizeInput(conversationClient, input) {
   let newMessageObject;

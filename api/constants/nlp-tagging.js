@@ -8,15 +8,6 @@ export const OPEN = 'open';
 export const LOOKING_FOR = 'looking_for';
 export const WHERE = 'where';
 
-// Sanitation Values
-export const SANITATION = 'sanitation';
-export const GARBAGE = 'garbage';
-export const RECYCLING = 'recycling';
-export const COMPOST = 'compost';
-export const BULK = 'bulk';
-export const ELECTRONICS = 'electronics';
-export const MIXED = 'mixed';
-
 // Social Services Values
 export const SOCIAL_SERVICES = 'social_services';
 export const HYGIENE = 'hygiene';
@@ -50,10 +41,18 @@ export const HELP = 'help';
 export const WHAT_CAN_I_ASK = 'what can I ask';
 export const INFO = 'info';
 
+// Relationships
+export const RELATIONSHIP_HOUSING = 'relationship_housing';
+export const RELATIONSHIP_POLITICAL = 'relationship_political';
+
+// Documents
+export const DOCUMENT = 'document';
+export const ID = 'id';
+
 // Voting
 // KEYWORDS
 export const VOTING = 'voting';
-// INTENTS
+// TRAITS
 export const REGISTER_TO_VOTE = 'register to vote';
 export const CHECK_VOTER_REGISTRATION = 'check voter registration';
 export const VOTING_DEADLINES = 'voting deadlines';
@@ -71,10 +70,14 @@ export const EARLY_VOTING = 'early voting';
 // KEYWORDS
 export const BENEFITS = 'benefits';
 
-// Relationships
-export const RELATIONSHIP_HOUSING = 'relationship_housing';
-export const RELATIONSHIP_POLITICAL = 'relationship_political';
-
-// Documents
-export const DOCUMENT = 'document';
-export const ID = 'id';
+// Sanitation
+// KEYWORDS
+export const SANITATION = 'sanitation';
+// TRAITS
+export const GARBAGE_SCHEDULE = 'garbage schedule';
+export const GARBAGE_DROP_OFF = 'garbage drop off';
+export const RECYCLING_SCHEDULE = 'recycling schedule';
+export const RECYCLING_DROP_OFF = 'recycling drop off';
+export const COMPOST_DUMPING = 'compost dumping';
+export const BULK_PICKUP = 'bulk pickup';
+export const ELECTRONICS_DISPOSAL = 'electronics disposal';
