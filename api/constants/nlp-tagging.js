@@ -8,12 +8,6 @@ export const OPEN = 'open';
 export const LOOKING_FOR = 'looking_for';
 export const WHERE = 'where';
 
-// Social Services Values
-export const SOCIAL_SERVICES = 'social_services';
-export const HYGIENE = 'hygiene';
-export const FOOD = 'food assistance';
-export const SHELTER = 'shelter';
-
 // Complaint Values
 export const COMPLAINT = 'complaint';
 
@@ -85,6 +79,14 @@ export const CLINIC_SEARCH = 'clinic search';
 export const EMPLOYMENT = 'employment';
 // TRAITS
 export const JOB_TRAINING = 'job training';
+
+// Social Services
+// KEYWORDS
+export const SOCIAL_SERVICES = 'social_services';
+// TRAITS
+export const SHELTER_SEARCH = 'shelter search';
+export const FOOD_SEARCH = 'food search';
+export const HYGIENE_SEARCH = 'hygiene search';
 
 // Settings
 // KEYWORDS
