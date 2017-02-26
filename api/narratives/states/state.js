@@ -44,7 +44,7 @@ export class StateMachine {
     // TODO(nicksahler) Handler promise failure better. Maybe go to an error state in the bot?
     return Promise.resolve(next).then(function(result){
       logger.info(`${state} (${event}) -> ${result}`);
-      
+
       if (!result) {
         return null;
       }
@@ -79,7 +79,7 @@ export class NarrativeSessionMachine extends StateMachine {
         break;
       default:
         this.messagingClient = new BaseClient();
-    };
+    }
   }
 
   setState(state) {
@@ -91,7 +91,7 @@ export class NarrativeSessionMachine extends StateMachine {
     if (machine !== this.snapshot.state_machine_name && stateMachines[machine]) {
       this.states = stateMachines[machine];
       this.snapshot.state_machine_name = machine;
-    } 
+    }
 
     super.setState(s);
   }

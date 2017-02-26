@@ -51,22 +51,21 @@ function normalizeInput(conversationClient, input) {
 
 // TODO(youmustfight, nicksahler): We eventually need to filter interface properties too
 function setupConstituentState(constituent) {
-  return NarrativeSession.collection({
+  return NarrativeSession.where({
     constituent_id: constituent.id,
-  }).fetchOne().then((model) => {
-    if (model) {
+  }).fetch().then((model) => {
+    if (model !== null && model.toJSON()) {
       return (Object.assign({}, model.toJSON(), { constituent }));
-    } else {
-      return {
-        session_id: uuid(),
-        state_machine_name: 'smallTalk',
-        state_machine_previous_state: null,
-        state_machine_current_state: null,
-        over_ride_on: false,
-        data_store: {},
-        constituent,
-      }
     }
+    return {
+      session_id: uuid(),
+      state_machine_name: 'smallTalk',
+      state_machine_previous_state: null,
+      state_machine_current_state: null,
+      over_ride_on: false,
+      data_store: {},
+      constituent,
+    };
   });
 }
 
@@ -74,32 +73,32 @@ function setupConstituentState(constituent) {
 function normalizeSessionsFromRequest(req, conversationClient) {
   if (conversationClient === interfaces.FACEBOOK) {
     const readyStates = [];
-    let messages = [].concat.apply([], req.body.entry.map(function(entry) {
+    let messages = [].concat.apply([], req.body.entry.map((entry) => {
       return entry.messaging;
     }));
 
     return Promise.all(
       messages.map(function(input) {
-        return Constituent.where({ facebook_id: input.sender.id }).fetch().then((model) => {  
+        return Constituent.where({ facebook_id: input.sender.id }).fetch().then((model) => {
           return model || new Constituent({ facebook_id: input.sender.id }).save();
         }).then(function(c) {
           return setupConstituentState(c.toJSON());
         }).then((state) => {
           // Mark: Gets narrative_state snapshot and adds to data store's context?
           // Nick: We should store this elsewhere. Moving for now.
-          return Object.assign(state, {input: normalizeInput(conversationClient, input), conversationClient: conversationClient});
+          return Object.assign(state, { input: normalizeInput(conversationClient, input), conversationClient });
         })
       })
     );
   } else if (conversationClient === interfaces.TWILIO) {
     const input = req.body;
 
-    return Constituent.where({ phone: input.From } ).fetch().then((model) => {  
+    return Constituent.where({ phone: input.From } ).fetch().then((model) => {
       return model || new Constituent({ phone: input.From }).save();
     }).then(function(c) {
       return setupConstituentState(c.toJSON());
     }).then((state) => {
-      return [Object.assign(state, {input: normalizeInput(conversationClient, input), conversationClient: conversationClient})];
+      return [Object.assign(state, { input: normalizeInput(conversationClient, input), conversationClient })];
     });
   }
 }
@@ -108,7 +107,7 @@ export function webhookHitWithMessage(req, res, conversationClient) {
   // Input: Request Object
   // Does: Normalizes data format for our state machines
   // TODO(nicksahler): Promise.all() or something
-  
+
   normalizeSessionsFromRequest(req, conversationClient).then((normalizedStates) => {
     normalizedStates.forEach((stateSnapShot) => {
       const appSession = { res };
