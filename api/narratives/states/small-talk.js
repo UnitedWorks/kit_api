@@ -246,51 +246,17 @@ export default {
 
         // Medical Services
         } else if (entities[TAGS.HEALTH]) {
-          const value = entities[TAGS.HEALTH][0].value;
           // Clinics
-          if (value === TAGS.CLINIC) {
-            return hasIntegration(this.datastore.organization, INTEGRATIONS.ASK_DARCEL).then((integrated) => {
-              if (integrated) {
-                axios.get('https://staging.askdarcel.org/api/resources', {
-                  params: {
-                    category_id: 3,
-                    lat: this.get('location').latitude,
-                    long: this.get('location').longitude,
-                  },
-                }).then((response) => {
-                  const body = response.data;
-                  const resources = body.resources;
-                  const counter = resources.length > 5 ? 5 : resources.length;
-                  this.messagingClient.addToQuene('Here are some places we\'ve found close to your location:\n');
-                  for (let i = counter; i > 0; i -= 1) {
-                    const resource = resources[i];
-                    this.messagingClient.addToQuene(`${resource.name}\n${resource.phones[0] ? `${resource.phones[0].number}\n` : ''}${resource.website ? `${resource.website}\n` : ''}${resource.short_description || resource.long_description || ''}\n`.trim());
-                  }
-                  return this.messagingClient.runQuene().then(() => 'start');
-                });
-              } else {
-                return getAnswer({
-                  label: 'health-clinic',
-                  organization_id: this.get('organization').id,
-                }, { withRelated: true, returnJSON: true }).then((payload) => {
-                  let message;
-                  if (payload.answer) {
-                    const answer = payload.answer;
-                    message = answer.url ? `${answer.text} (More info at ${answer.url})` : `${answer.text}`;
-                  } else {
-                    message = 'I\'m sorry. I can\'t find anything in our database. I\'m going to let the city know about your need.';
-                  }
-                  this.messagingClient.send(message);
-                  return 'start';
-                });
-              }
-            });
-          }
+          if (entityValueIs(entities[TAGS.HEALTH], [TAGS.CLINIC_SEARCH])) return 'health.clinicSearch';
+          // Fallback
+          return 'failedRequest';
 
         // Employment Services
         } else if (entities[TAGS.EMPLOYMENT]) {
           // Job Training
           if (entityValueIs(entities[TAGS.EMPLOYMENT], [TAGS.JOB_TRAINING])) return 'employment.jobTraining';
+          // Fallback
+          return 'failedRequest';
 
         // Complaint
         } else if (entities[TAGS.COMPLAINT]) {

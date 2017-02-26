@@ -14,10 +14,6 @@ export const HYGIENE = 'hygiene';
 export const FOOD = 'food assistance';
 export const SHELTER = 'shelter';
 
-// Health & Medicine Values
-export const HEALTH = 'health';
-export const CLINIC = 'clinic';
-
 // Complaint Values
 export const COMPLAINT = 'complaint';
 
@@ -77,6 +73,12 @@ export const RECYCLING_DROP_OFF = 'recycling drop off';
 export const COMPOST_DUMPING = 'compost dumping';
 export const BULK_PICKUP = 'bulk pickup';
 export const ELECTRONICS_DISPOSAL = 'electronics disposal';
+
+// Health
+// KEYWORDS
+export const HEALTH = 'health';
+// TRAITS
+export const CLINIC_SEARCH = 'clinic search';
 
 // Employment
 // KEYWORDS
