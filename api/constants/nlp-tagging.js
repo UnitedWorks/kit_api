@@ -18,10 +18,6 @@ export const SHELTER = 'shelter';
 export const HEALTH = 'health';
 export const CLINIC = 'clinic';
 
-// Emplyoment Values
-export const EMPLOYMENT = 'employment';
-export const JOB_TRAINING = 'job training';
-
 // Complaint Values
 export const COMPLAINT = 'complaint';
 
@@ -82,6 +78,11 @@ export const COMPOST_DUMPING = 'compost dumping';
 export const BULK_PICKUP = 'bulk pickup';
 export const ELECTRONICS_DISPOSAL = 'electronics disposal';
 
+// Employment
+// KEYWORDS
+export const EMPLOYMENT = 'employment';
+// TRAITS
+export const JOB_TRAINING = 'job training';
 
 // Settings
 // KEYWORDS
