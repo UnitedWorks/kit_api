@@ -81,61 +81,47 @@ export default {
         // Voting
         } else if (entities[TAGS.VOTING]) {
           // Deadlines
-          if (entityValueIs(entities[TAGS.VOTING], [TAGS.VOTING_DEADLINES])) {
-            return 'voting.votingDeadlines';
-          }
+          if (entityValueIs(entities[TAGS.VOTING], [TAGS.VOTING_DEADLINES])) return 'voting.votingDeadlines';
           // Elections
-          if (entityValueIs(entities[TAGS.VOTING], [TAGS.LIST_ELECTIONS])) {
-            return 'voting.electionSchedule';
-          }
+          if (entityValueIs(entities[TAGS.VOTING], [TAGS.LIST_ELECTIONS])) return 'voting.electionSchedule';
           // Registration
-          if (entityValueIs(entities[TAGS.VOTING], [TAGS.REGISTER_TO_VOTE])) {
-            return 'voting.voterRegistrationGet';
-          }
-          if (entityValueIs(entities[TAGS.VOTING], [TAGS.CHECK_VOTER_REGISTRATION])) {
-            return 'voting.voterRegistrationCheck';
-          }
+          if (entityValueIs(entities[TAGS.VOTING], [TAGS.REGISTER_TO_VOTE])) return 'voting.voterRegistrationGet';
+          if (entityValueIs(entities[TAGS.VOTING], [TAGS.CHECK_VOTER_REGISTRATION])) return 'voting.voterRegistrationCheck';
           // Poll info
-          if (entityValueIs(entities[TAGS.VOTING], [TAGS.POLL_INFO])) {
-            return 'voting.pollInfo';
-          }
+          if (entityValueIs(entities[TAGS.VOTING], [TAGS.POLL_INFO])) return 'voting.pollInfo';
           // Rules
-          if (entityValueIs(entities[TAGS.VOTING], [TAGS.VOTER_ID])) {
-            return 'voting.voterIdRequirements';
-          }
-          if (entityValueIs(entities[TAGS.VOTING], [TAGS.VOTER_ELIGIBILITY])) {
-            return 'voting.stateVotingRules';
-          }
+          if (entityValueIs(entities[TAGS.VOTING], [TAGS.VOTER_ID])) return 'voting.voterIdRequirements';
+          if (entityValueIs(entities[TAGS.VOTING], [TAGS.VOTER_ELIGIBILITY])) return 'voting.stateVotingRules';
           // Sample ballot
-          if (entityValueIs(entities[TAGS.VOTING], [TAGS.SAMPLE_BALLOT])) {
-            return 'voting.sampleBallot';
-          }
+          if (entityValueIs(entities[TAGS.VOTING], [TAGS.SAMPLE_BALLOT])) return 'voting.sampleBallot';
           // Absentee ballot
-          if (entityValueIs(entities[TAGS.VOTING], [TAGS.ABSENTEE_VOTE])) {
-            return 'voting.absenteeVote';
-          }
+          if (entityValueIs(entities[TAGS.VOTING], [TAGS.ABSENTEE_VOTE])) return 'voting.absenteeVote';
           // Early Voting
-          if (entityValueIs(entities[TAGS.VOTING], [TAGS.EARLY_VOTING])) {
-            return 'voting.earlyVoting';
-          }
+          if (entityValueIs(entities[TAGS.VOTING], [TAGS.EARLY_VOTING])) return 'voting.earlyVoting';
           // Problem
-          if (entityValueIs(entities[TAGS.VOTING], [TAGS.VOTER_PROBLEM])) {
-            return 'voting.voterProblem';
-          }
+          if (entityValueIs(entities[TAGS.VOTING], [TAGS.VOTER_PROBLEM])) return 'voting.voterProblem';
           // FAQ/Help
-          if (entityValueIs(entities[TAGS.VOTING], [TAGS.VOTER_ASSISTANCE])) {
-            return 'voting.voterAssistance';
-          }
+          if (entityValueIs(entities[TAGS.VOTING], [TAGS.VOTER_ASSISTANCE])) return 'voting.voterAssistance';
           // Fallback
           return 'failedRequest';
 
         // Sanitation Services
         } else if (entities[TAGS.SANITATION]) {
           // Garbage
-          if (entityValueIs(entities[TAGS.SANITATION], [TAGS.GARBAGE_SCHEDULE])) {
-            return 'sanitation.garbageSchedule';
-          }
-          return 'failedRequest'
+          if (entityValueIs(entities[TAGS.SANITATION], [TAGS.GARBAGE_SCHEDULE])) return 'sanitation.garbageSchedule';
+          if (entityValueIs(entities[TAGS.SANITATION], [TAGS.GARBAGE_DROP_OFF])) return 'sanitation.garbageDropOff';
+          // Recycling
+          if (entityValueIs(entities[TAGS.SANITATION], [TAGS.RECYCLING_SCHEDULE])) return 'sanitation.recyclingSchedule';
+          if (entityValueIs(entities[TAGS.SANITATION], [TAGS.RECYCLING_DROP_OFF])) return 'sanitation.recyclingDropOff';
+          // Compost
+          if (entityValueIs(entities[TAGS.SANITATION], [TAGS.COMPOST_DUMPING])) return 'sanitation.compostDumping';
+          // Bulk Pickup
+          if (entityValueIs(entities[TAGS.SANITATION], [TAGS.BULK_PICKUP_REQUEST])) return 'sanitation.bulkPickupRequest';
+          // Electronics
+          if (entityValueIs(entities[TAGS.SANITATION], [TAGS.ELECTRONICS_DISPOSAL])) return 'sanitation.electronicsDisposal';
+          // Fallback
+          return 'failedRequest';
+
         // Human Services
         } else if (entities[TAGS.SOCIAL_SERVICES]) {
           const value = entities[TAGS.SOCIAL_SERVICES][0].value;
