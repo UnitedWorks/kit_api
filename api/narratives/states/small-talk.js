@@ -126,222 +126,28 @@ export default {
 
         // Human Services
         } else if (entities[TAGS.SOCIAL_SERVICES]) {
-          const value = entities[TAGS.SOCIAL_SERVICES][0].value;
-          // Shelter Search
-          if (value === TAGS.SHELTER) {
-            return hasIntegration(this.datastore.organization, INTEGRATIONS.ASK_DARCEL).then((integrated) => {
-              if (integrated) {
-                return axios.get('https://staging.askdarcel.org/api/resources', {
-                  params: {
-                    category_id: 1,
-                    lat: this.get('location').latitude,
-                    long: this.get('location').longitude,
-                  },
-                }).then((response) => {
-                  const body = response.data;
-                  const resources = body.resources;
-                  const counter = resources.length > 5 ? 5 : resources.length;
-                  this.messagingClient.addToQuene('Here are some places we\'ve found close to your location:\n');
-                  for (let i = counter; i > 0; i -= 1) {
-                    const resource = resources[i];
-                    this.messagingClient.addToQuene(`${resource.name}\n${resource.phones[0] ? `${resource.phones[0].number}\n` : ''}${resource.website ? `${resource.website}\n` : ''}${resource.short_description || resource.long_description || ''}\n`.trim());
-                  }
-                  return this.messagingClient.runQuene().then(() => 'start');
-                });
-              } else {
-                return getAnswer({
-                  label: 'social-services-shelters',
-                  organization_id: this.get('organization').id,
-                }, { withRelated: true, returnJSON: true }).then((payload) => {
-                  let message;
-                  if (payload.answer) {
-                    const answer = payload.answer;
-                    message = answer.url ? `${answer.text} (More info at ${answer.url})` : `${answer.text}`;
-                  } else {
-                    message = 'I\'m sorry. I can\'t find anything in our database. I\'m going to let the city know about your need.';
-                  }
-                  this.messagingClient.send(message);
-                  return 'start';
-                });
-              }
-            });
-          }
-          if (value === TAGS.FOOD) { // Food Assistance
-            return hasIntegration(this.datastore.organization, INTEGRATIONS.ASK_DARCEL).then((integrated) => {
-              if (integrated) {
-                axios.get('https://staging.askdarcel.org/api/resources', {
-                  params: {
-                    category_id: 2,
-                    lat: this.get('location').latitude,
-                    long: this.get('location').longitude,
-                  },
-                }).then((response) => {
-                  const body = response.data;
-                  const resources = body.resources;
-                  const counter = resources.length > 5 ? 5 : resources.length;
-                  this.messagingClient.addToQuene('Here are some places we\'ve found close to your location:\n');
-                  for (let i = counter; i > 0; i -= 1) {
-                    const resource = resources[i];
-                    this.messagingClient.addToQuene(`${resource.name}\n${resource.phones[0] ? `${resource.phones[0].number}\n` : ''}${resource.website ? `${resource.website}\n` : ''}${resource.short_description || resource.long_description || ''}\n`.trim());
-                  }
-                  return this.messagingClient.runQuene().then(() => 'start');
-                });
-              } else {
-                return getAnswer({
-                  label: 'social-services-food-assistance',
-                  organization_id: this.get('organization').id,
-                }, { withRelated: true, returnJSON: true }).then((payload) => {
-                  let message;
-                  if (payload.answer) {
-                    const answer = payload.answer;
-                    message = answer.url ? `${answer.text} (More info at ${answer.url})` : `${answer.text}`;
-                  } else {
-                    message = 'I\'m sorry. I can\'t find anything in our database. I\'m going to let the city know about your need.';
-                  }
-                  this.messagingClient.send(message);
-                  return 'start';
-                });
-              }
-            });
-          }
-          // Hygiene Services
-          if (value === TAGS.HYGIENE) {
-            return hasIntegration(this.datastore.organization, INTEGRATIONS.ASK_DARCEL).then((integrated) => {
-              if (integrated) {
-                return axios.get('https://staging.askdarcel.org/api/resources', {
-                  params: {
-                    category_id: 4,
-                    lat: this.get('location').latitude,
-                    long: this.get('location').longitude,
-                  },
-                }).then((response) => {
-                  const body = response.data;
-                  const resources = body.resources;
-                  const counter = resources.length > 5 ? 5 : resources.length;
-                  this.messagingClient.addToQuene('Here are some places we\'ve found close to your location:\n');
-                  for (let i = counter; i > 0; i -= 1) {
-                    const resource = resources[i];
-                    this.messagingClient.addToQuene(`${resource.name}\n${resource.phones[0] ? `${resource.phones[0].number}\n` : ''}${resource.website ? `${resource.website}\n` : ''}${resource.short_description || resource.long_description || ''}\n`.trim());
-                  }
-                  return this.messagingClient.runQuene().then(() => 'start');
-                });
-              } else {
-                return getAnswer({
-                  label: 'social-services-hygiene',
-                  organization_id: this.get('organization').id,
-                }, { withRelated: true, returnJSON: true }).then((payload) => {
-                  let message;
-                  if (payload.answer) {
-                    const answer = payload.answer;
-                    message = answer.url ? `${answer.text} (More info at ${answer.url})` : `${answer.text}`;
-                  } else {
-                    message = 'I\'m sorry. I can\'t find anything in our database. I\'m going to let the city know about your need.';
-                  }
-                  this.messagingClient.send(message);
-                  return 'start';
-                });
-              }
-            });
-          }
+          // Shelters
+          if (entityValueIs(entities[TAGS.SOCIAL_SERVICES], [TAGS.SHELTER_SEARCH])) return 'socialServices.shelterSearch';
+          // Food
+          if (entityValueIs(entities[TAGS.SOCIAL_SERVICES], [TAGS.FOOD_SEARCH])) return 'socialServices.foodSearch';
+          // Hygiene
+          if (entityValueIs(entities[TAGS.SOCIAL_SERVICES], [TAGS.HYGIENE_SEARCH])) return 'socialServices.hygieneSearch';
+          // Fallback
+          return 'failedRequest';
 
         // Medical Services
         } else if (entities[TAGS.HEALTH]) {
-          const value = entities[TAGS.HEALTH][0].value;
           // Clinics
-          if (value === TAGS.CLINIC) {
-            return hasIntegration(this.datastore.organization, INTEGRATIONS.ASK_DARCEL).then((integrated) => {
-              if (integrated) {
-                axios.get('https://staging.askdarcel.org/api/resources', {
-                  params: {
-                    category_id: 3,
-                    lat: this.get('location').latitude,
-                    long: this.get('location').longitude,
-                  },
-                }).then((response) => {
-                  const body = response.data;
-                  const resources = body.resources;
-                  const counter = resources.length > 5 ? 5 : resources.length;
-                  this.messagingClient.addToQuene('Here are some places we\'ve found close to your location:\n');
-                  for (let i = counter; i > 0; i -= 1) {
-                    const resource = resources[i];
-                    this.messagingClient.addToQuene(`${resource.name}\n${resource.phones[0] ? `${resource.phones[0].number}\n` : ''}${resource.website ? `${resource.website}\n` : ''}${resource.short_description || resource.long_description || ''}\n`.trim());
-                  }
-                  return this.messagingClient.runQuene().then(() => 'start');
-                });
-              } else {
-                return getAnswer({
-                  label: 'health-clinic',
-                  organization_id: this.get('organization').id,
-                }, { withRelated: true, returnJSON: true }).then((payload) => {
-                  let message;
-                  if (payload.answer) {
-                    const answer = payload.answer;
-                    message = answer.url ? `${answer.text} (More info at ${answer.url})` : `${answer.text}`;
-                  } else {
-                    message = 'I\'m sorry. I can\'t find anything in our database. I\'m going to let the city know about your need.';
-                  }
-                  this.messagingClient.send(message);
-                  return 'start';
-                });
-              }
-            });
-          }
+          if (entityValueIs(entities[TAGS.HEALTH], [TAGS.CLINIC_SEARCH])) return 'health.clinicSearch';
+          // Fallback
+          return 'failedRequest';
 
         // Employment Services
         } else if (entities[TAGS.EMPLOYMENT]) {
-          const value = entities[TAGS.EMPLOYMENT][0].value;
-          // Employment Asssistance
-          if (value === TAGS.JOB_TRAINING) {
-            return hasIntegration(this.datastore.organization, INTEGRATIONS.ASK_DARCEL).then((integrated) => {
-              if (integrated) {
-                axios.get('https://staging.askdarcel.org/api/resources', {
-                  params: {
-                    category_id: 5,
-                    lat: this.get('location').latitude,
-                    long: this.get('location').longitude,
-                  },
-                }).then((response) => {
-                  const body = response.data;
-                  const resources = body.resources;
-                  const counter = resources.length > 5 ? 5 : resources.length;
-                  this.messagingClient.addToQuene('Here are some places we\'ve found close to your location:\n');
-                  for (let i = counter; i > 0; i -= 1) {
-                    const resource = resources[i];
-                    this.messagingClient.addToQuene(`${resource.name}\n${resource.phones[0] ? `${resource.phones[0].number}\n` : ''}${resource.website ? `${resource.website}\n` : ''}${resource.short_description || resource.long_description || ''}\n`.trim());
-                  }
-                  return this.messagingClient.runQuene().then(() => 'start');
-                });
-              } else {
-                return getAnswer({
-                  label: 'employment-job-training',
-                  organization_id: this.get('organization').id,
-                }, { withRelated: true, returnJSON: true }).then((payload) => {
-                  let message;
-                  if (payload.answer) {
-                    const answer = payload.answer;
-                    message = answer.url ? `${answer.text} (More info at ${answer.url})` : `${answer.text}`;
-                  } else {
-                    message = 'I\'m sorry. I can\'t find anything in our database. I\'m going to let the city know about your need.';
-                  }
-                  this.messagingClient.send(message);
-                  return 'start';
-                });
-              }
-            });
-          }
-        } else if (entities[TAGS.TRANSACTION]) {
-          const transaction = entities[TAGS.TRANSACTION][0].value;
-          if (transaction === TAGS.CHANGE) {
-            if (entities[TAGS.ADMINISTRATION]) {
-              const administration = entities[TAGS.ADMINISTRATION][0].value;
-              if (administration === TAGS.CITY) {
-                return 'setup.reset_organization';
-              }
-            }
-          }
-
-        // Relationships
-        } else if (entities[TAGS.RELATIONSHIPS]) {
+          // Job Training
+          if (entityValueIs(entities[TAGS.EMPLOYMENT], [TAGS.JOB_TRAINING])) return 'employment.jobTraining';
+          // Fallback
+          return 'failedRequest';
 
         // Complaint
         } else if (entities[TAGS.COMPLAINT]) {
@@ -350,6 +156,13 @@ export default {
           } else {
             return 'complaint.waiting_for_complaint';
           }
+
+        // Settings
+        } else if (entities[TAGS.SETTINGS]) {
+          // Change City
+          if (entityValueIs(entities[TAGS.SETTINGS], [TAGS.CHANGE_CITY])) return 'setup.reset_organization';
+          // Fallback
+          return 'failedRequest';
 
         // Failed to Understand Request
         } else {

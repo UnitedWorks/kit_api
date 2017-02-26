@@ -8,20 +8,6 @@ export const OPEN = 'open';
 export const LOOKING_FOR = 'looking_for';
 export const WHERE = 'where';
 
-// Social Services Values
-export const SOCIAL_SERVICES = 'social_services';
-export const HYGIENE = 'hygiene';
-export const FOOD = 'food assistance';
-export const SHELTER = 'shelter';
-
-// Health & Medicine Values
-export const HEALTH = 'health';
-export const CLINIC = 'clinic';
-
-// Emplyoment Values
-export const EMPLOYMENT = 'employment';
-export const JOB_TRAINING = 'job training';
-
 // Complaint Values
 export const COMPLAINT = 'complaint';
 
@@ -81,3 +67,29 @@ export const RECYCLING_DROP_OFF = 'recycling drop off';
 export const COMPOST_DUMPING = 'compost dumping';
 export const BULK_PICKUP = 'bulk pickup';
 export const ELECTRONICS_DISPOSAL = 'electronics disposal';
+
+// Health
+// KEYWORDS
+export const HEALTH = 'health';
+// TRAITS
+export const CLINIC_SEARCH = 'clinic search';
+
+// Employment
+// KEYWORDS
+export const EMPLOYMENT = 'employment';
+// TRAITS
+export const JOB_TRAINING = 'job training';
+
+// Social Services
+// KEYWORDS
+export const SOCIAL_SERVICES = 'social_services';
+// TRAITS
+export const SHELTER_SEARCH = 'shelter search';
+export const FOOD_SEARCH = 'food search';
+export const HYGIENE_SEARCH = 'hygiene search';
+
+// Settings
+// KEYWORDS
+export const SETTINGS = 'settings';
+// TRAITS
+export const CHANGE_CITY = 'change city';
