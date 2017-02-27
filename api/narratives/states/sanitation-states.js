@@ -1,51 +1,53 @@
-import { getAnswer } from '../../knowledge-base/helpers';
-
-const getMessage = (requestLabel, org) => {
-  return getAnswer({
-    label: requestLabel,
-    organization_id: org.id,
-  }, {
-    withRelated: false,
-    returnJSON: true,
-  }).then((payload) => {
-    let message;
-    if (payload.answer) {
-      const answer = payload.answer;
-      message = answer.url ? `${answer.text} (More info at ${answer.url})` : `${answer.text}`;
-    } else {
-      message = `:( Your city (${org.name}) hasn't given me an answer for that yet.`;
-    }
-    return message;
-  });
-};
+import KitClient from '../clients/kit-client';
 
 export default {
   garbageSchedule() {
-    return getMessage('sanitation-garbage-schedule', this.get('organization'))
-      .then(message => this.messagingClient.send(message).then(() => 'smallTalk.start'));
+    return new KitClient({ organization: this.get('organization') })
+      .getAnswer('sanitation-garbage-schedule')
+      .then((payload) => {
+        return this.messagingClient.send(KitClient.payloadToMessage(payload)).then(() => 'smallTalk.start');
+      });
   },
   garbageDropOff() {
-    return getMessage('sanitation-garbage-drop-off', this.get('organization'))
-      .then(message => this.messagingClient.send(message).then(() => 'smallTalk.start'));
+    return new KitClient({ organization: this.get('organization') })
+      .getAnswer('sanitation-garbage-drop-off')
+      .then((payload) => {
+        return this.messagingClient.send(KitClient.payloadToMessage(payload)).then(() => 'smallTalk.start');
+      });
   },
   recyclingSchedule() {
-    return getMessage('sanitation-recycling-schedule', this.get('organization'))
-      .then(message => this.messagingClient.send(message).then(() => 'smallTalk.start'));
+    return new KitClient({ organization: this.get('organization') })
+      .getAnswer('sanitation-recycling-schedule')
+      .then((payload) => {
+        return this.messagingClient.send(KitClient.payloadToMessage(payload)).then(() => 'smallTalk.start');
+      });
   },
   recyclingDropOff() {
-    return getMessage('sanitation-recycling-drop-off', this.get('organization'))
-      .then(message => this.messagingClient.send(message).then(() => 'smallTalk.start'));
+    return new KitClient({ organization: this.get('organization') })
+      .getAnswer('sanitation-recycling-drop-off')
+      .then((payload) => {
+        return this.messagingClient.send(KitClient.payloadToMessage(payload)).then(() => 'smallTalk.start');
+      });
   },
   compostDumping() {
-    return getMessage('sanitation-compost', this.get('organization'))
-      .then(message => this.messagingClient.send(message).then(() => 'smallTalk.start'));
+    return new KitClient({ organization: this.get('organization') })
+      .getAnswer('sanitation-compost')
+      .then((payload) => {
+        return this.messagingClient.send(KitClient.payloadToMessage(payload)).then(() => 'smallTalk.start');
+      });
   },
   bulkPickup() {
-    return getMessage('sanitation-bulk-pickup', this.get('organization'))
-      .then(message => this.messagingClient.send(message).then(() => 'smallTalk.start'));
+    return new KitClient({ organization: this.get('organization') })
+      .getAnswer('sanitation-bulk-pickup')
+      .then((payload) => {
+        return this.messagingClient.send(KitClient.payloadToMessage(payload)).then(() => 'smallTalk.start');
+      });
   },
   electronicsDisposal() {
-    return getMessage('sanitation-electronics-disposal', this.get('organization'))
-      .then(message => this.messagingClient.send(message).then(() => 'smallTalk.start'));
+    return new KitClient({ organization: this.get('organization') })
+      .getAnswer('sanitation-electronics-disposal')
+      .then((payload) => {
+        return this.messagingClient.send(KitClient.payloadToMessage(payload)).then(() => 'smallTalk.start');
+      });
   },
 };
