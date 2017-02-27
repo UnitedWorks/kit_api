@@ -12,7 +12,7 @@ import { hasIntegration } from '../integrations/helpers';
 import * as INTEGRATIONS from '../constants/integrations';
 import SeeClickFixClient from './clients/see-click-fix-client';
 
-const notifyConstituentOfCaseStatus = (caseJSON, status, constituentJSON) => {
+export const notifyConstituentOfCaseStatusUpdate = (caseJSON, status, constituentJSON) => {
   let message;
   if (status === 'closed') {
     message = `Your case (#${caseJSON.id}) has been taken care of!`;
@@ -87,10 +87,7 @@ export const createCase = (title, data, category, constituent, organization, loc
           resolve(refreshedCaseModel);
         });
       });
-    }).catch((err) => {
-      logger.error(err);
-      reject();
-    });
+    }).catch(err => reject(err));
   });
 };
 
@@ -149,7 +146,7 @@ export function webhookHitWithEmail(req) {
           updatedCaseModel.refresh({ withRelated: ['constituent'] }).then((refreshedCaseModel) => {
             logger.info(`Case Resolved for Constituent #${refreshedCaseModel.get('constituentId')}`);
             const caseJSON = refreshedCaseModel.toJSON();
-            notifyConstituentOfCaseStatus(caseJSON, 'closed', caseJSON.constituent);
+            notifyConstituentOfCaseStatusUpdate(caseJSON, 'closed', caseJSON.constituent);
           });
         });
       }
@@ -184,7 +181,7 @@ export function webhookEmailEvent(req) {
         Case.where({ id: event.case_id }).fetch({ withRelated: ['constituent'] }).then((fetchedCase) => {
           const constituent = fetchedCase.toJSON().constituent;
           if (!fetchedCase.toJSON().lastViewed) {
-            notifyConstituentOfCaseStatus(fetchedCase.toJSON(), 'viewed', constituent);
+            notifyConstituentOfCaseStatusUpdate(fetchedCase.toJSON(), 'viewed', constituent);
           }
           fetchedCase.save({
             last_viewed: knex.raw('now()'),
@@ -212,7 +209,7 @@ export const updateCaseStatus = (caseId, status, options = {}) => {
     .then(() => {
       return Case.where({ id: caseId }).fetch({ withRelated: ['constituent'] }).then((refreshedModel) => {
         const caseJSON = refreshedModel.toJSON();
-        notifyConstituentOfCaseStatus(caseJSON, status, caseJSON.constituent);
+        notifyConstituentOfCaseStatusUpdate(caseJSON, status, caseJSON.constituent);
         return options.returnJSON ? refreshedModel.toJSON() : refreshedModel;
       }).catch(error => error);
     }).catch(error => error);

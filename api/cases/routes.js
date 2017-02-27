@@ -4,13 +4,15 @@ import * as helpers from './helpers';
 
 const router = new Router();
 
-// TODO(youmustfight): Need to make separate requests model
-router.get('/', (req, res) => {
-  const orgId = req.query.organization_id;
-  helpers.getOrganizationCases(orgId, { returnJSON: true })
-    .then((cases) => {
-      res.status(200).send({ requests: cases });
-    }).catch(error => res.status(400).send({ error }));
+router.get('/', (req, res, next) => {
+  try {
+    const orgId = req.query.organization_id;
+    helpers.getOrganizationCases(orgId, { returnJSON: true })
+      .then(cases => res.status(200).send({ cases }))
+      .catch(error => next(error));
+  } catch (e) {
+    next(e);
+  }
 });
 
 router.put('/update_status', (req, res, next) => {
@@ -18,7 +20,7 @@ router.put('/update_status', (req, res, next) => {
     const caseId = req.body.case.id;
     const status = req.body.case.status;
     helpers.updateCaseStatus(caseId, status, { returnJSON: true })
-      .then(data => res.status(200).send({ request: data }))
+      .then(data => res.status(200).send({ case: data }))
       .catch(error => next(error));
   } catch (e) {
     next(e);
