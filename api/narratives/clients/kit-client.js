@@ -16,7 +16,7 @@ export default class KitClient {
     }, compiledConfig);
   }
 
-  static payloadToMessage(payload) {
+  static answerToString(payload) {
     this.answer = payload.answer;
     let message;
     if (this.answer) {
