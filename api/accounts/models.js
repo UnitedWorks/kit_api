@@ -20,7 +20,7 @@ export const Constituent = bookshelf.Model.extend({
   },
   cases: function() {
     return this.hasMany(CaseModels.Case, 'constituent_id');
-  }
+  },
 });
 
 export const Organization = bookshelf.Model.extend({

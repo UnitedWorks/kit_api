@@ -1,4 +1,3 @@
-import axios from 'axios';
 import formidable from 'formidable';
 import { knex } from '../orm';
 import { logger } from '../logger';
@@ -190,3 +189,11 @@ export function webhookEmailEvent(req) {
     }
   });
 }
+
+export const getOrganizationCases = (orgId, options = {}) => {
+  return AccountModels.Organization.where({ id: orgId }).fetch({ withRelated: ['cases', 'cases.category'] })
+    .then((fetchedOrg) => {
+      if (options.returnJSON) return fetchedOrg.toJSON().cases;
+      return fetchedOrg.get('cases');
+    }).catch(err => err);
+};
