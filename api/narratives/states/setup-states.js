@@ -59,41 +59,41 @@ export default {
 
           const constituentLocation = this.get('location');
 
-          return getAdminOrganizationAtLocation(constituentLocation, { returnJSON: true }).then((orgModel) => {
-            if (orgModel) {
-              this.set('organization', orgModel);
-              
-              if (!orgModel.activated) {
-                new SlackService({
-                  username: 'Inactive City Requested',
-                  icon: 'round_pushpin',
-                }).send(`>*City Requested*: ${orgModel.name}\n>*ID*: ${orgModel.id}`);
-              }
+          return getAdminOrganizationAtLocation(constituentLocation, { returnJSON: true })
+            .then((orgModel) => {
+              if (orgModel) {
+                this.set('organization', orgModel);
 
-              return 'waiting_organization_confirm';
-            } else {
+                if (!orgModel.activated) {
+                  new SlackService({
+                    username: 'Inactive City Requested',
+                    icon: 'round_pushpin',
+                  }).send(`>*City Requested*: ${orgModel.name}\n>*ID*: ${orgModel.id}`);
+                }
+
+                return 'waiting_organization_confirm';
+              }
               return saveLocation(constituentLocation).then((locationModel) => {
                 return createOrganization({
                   name: locationModel.get('city'),
                   category: 'public',
                   type: 'admin',
                   location_id: locationModel.get('id'),
-                }).then((orgModel) => {
-                  this.set('organization', orgModel);
+                }, { returnJSON: true }).then((orgJSON) => {
+                  this.set('organization', orgJSON);
 
                   new SlackService({
                     username: 'Unregistered City',
                     icon: 'round_pushpin',
-                  }).send(`>*City Requested*: ${orgModel.get('name')}\n>*ID*: ${orgModel.get('id')}`);
+                  }).send(`>*City Requested*: ${orgJSON.name}\n>*ID*: ${orgJSON.id}`);
 
                   return 'waiting_organization_confirm';
                 });
               });
-            }
-          })
-        })
-      })
-    }
+            });
+        });
+      });
+    },
   },
 
 
