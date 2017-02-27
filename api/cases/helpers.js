@@ -91,7 +91,7 @@ export const createCase = (title, data, category, constituent, organization, loc
   });
 };
 
-export const makeConstituentRequest = (headline, data, category, constituent, organization, location, attachments) => {
+export const handleConstituentRequest = (headline, data, category, constituent, organization, location, attachments) => {
   return new Promise((resolve, reject) => {
     // Check for integrations to push to
     hasIntegration(organization, INTEGRATIONS.SEE_CLICK_FIX).then((integrated) => {
