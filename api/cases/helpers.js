@@ -3,6 +3,7 @@ import { knex } from '../orm';
 import { logger } from '../logger';
 import * as AccountModels from '../accounts/models';
 import { Case, OrganizationsCases } from './models';
+import { CASE_STATUSES } from '../constants/case-statuses';
 import { FacebookMessengerClient, TwilioSMSClient } from '../conversations/clients';
 import SlackService from '../services/slack';
 import EmailService from '../services/email';
@@ -10,6 +11,21 @@ import { SEND_GRID_EVENT_OPEN } from '../constants/sendgrid';
 import { hasIntegration } from '../integrations/helpers';
 import * as INTEGRATIONS from '../constants/integrations';
 import SeeClickFixClient from './clients/see-click-fix-client';
+
+const notifyConstituentOfCaseStatus = (caseJSON, status, constituentJSON) => {
+  let message;
+  if (status === 'closed') {
+    message = `Your case (#${caseJSON.id}) has been taken care of!`;
+  }
+  if (status === 'viewed') {
+    message = `Your request #${caseJSON.id} has been seen by someone in government! We will let you know when it's addressed.`;
+  }
+  if (constituentJSON.facebook_id) {
+    new FacebookMessengerClient({ constituent: constituentJSON }).send(message);
+  } else if (constituentJSON.phone) {
+    new TwilioSMSClient({ constituent: constituentJSON }).send(message);
+  }
+};
 
 export const newCaseNotification = (caseObj, organization) => {
   AccountModels.Organization.where({ id: organization.id }).fetch({ withRelated: ['representatives'] }).then((returnedOrg) => {
@@ -132,12 +148,8 @@ export function webhookHitWithEmail(req) {
         new Case({ id: caseId }).save({ status: 'closed', closedAt: knex.raw('now()') }, { method: 'update', patch: true }).then((updatedCaseModel) => {
           updatedCaseModel.refresh({ withRelated: ['constituent'] }).then((refreshedCaseModel) => {
             logger.info(`Case Resolved for Constituent #${refreshedCaseModel.get('constituentId')}`);
-            const constituent = refreshedCaseModel.toJSON().constituent;
-            if (constituent.facebook_id) {
-              new FacebookMessengerClient({ constituent }).send(`Your case (#${refreshedCaseModel.id}) has been taken care of!`);
-            } else if (constituent.phone) {
-              new TwilioSMSClient({ constituent }).send(`Your case (#${refreshedCaseModel.id}) has been taken care of!`);
-            }
+            const caseJSON = refreshedCaseModel.toJSON();
+            notifyConstituentOfCaseStatus(caseJSON, 'closed', caseJSON.constituent);
           });
         });
       }
@@ -172,11 +184,7 @@ export function webhookEmailEvent(req) {
         Case.where({ id: event.case_id }).fetch({ withRelated: ['constituent'] }).then((fetchedCase) => {
           const constituent = fetchedCase.toJSON().constituent;
           if (!fetchedCase.toJSON().lastViewed) {
-            if (constituent.facebook_id) {
-              new FacebookMessengerClient({ constituent }).send(`Your case #${fetchedCase.id} has been seen by someone in government! We will let you know when it's addressed.`);
-            } else if (constituent.phone) {
-              new TwilioSMSClient({ constituent }).send(`Your case #${fetchedCase.id} has been seen in government! We will let you know when it's addressed.`);
-            }
+            notifyConstituentOfCaseStatus(fetchedCase.toJSON(), 'viewed', constituent);
           }
           fetchedCase.save({
             last_viewed: knex.raw('now()'),
@@ -196,4 +204,16 @@ export const getOrganizationCases = (orgId, options = {}) => {
       if (options.returnJSON) return fetchedOrg.toJSON().cases;
       return fetchedOrg.get('cases');
     }).catch(err => err);
+};
+
+export const updateCaseStatus = (caseId, status, options = {}) => {
+  if (!CASE_STATUSES.includes(status)) throw new Error(`Unacceptable Status: ${status}`);
+  return Case.where({ id: caseId }).save({ status }, { method: 'update' })
+    .then(() => {
+      return Case.where({ id: caseId }).fetch({ withRelated: ['constituent'] }).then((refreshedModel) => {
+        const caseJSON = refreshedModel.toJSON();
+        notifyConstituentOfCaseStatus(caseJSON, status, caseJSON.constituent);
+        return options.returnJSON ? refreshedModel.toJSON() : refreshedModel;
+      }).catch(error => error);
+    }).catch(error => error);
 };

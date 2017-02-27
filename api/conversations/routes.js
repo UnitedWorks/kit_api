@@ -12,11 +12,8 @@ router.post('/broadcast', (req, res, next) => {
   logger.info('Constituent Broadcast');
   try {
     helpers.makeBroadcast(req.body.broadcast, req.body.organization, { returnJSON: true })
-      .then(() => {
-        res.status(200).send();
-      }).catch((err) => {
-        next(err);
-      });
+      .then(() => res.status(200).send())
+      .catch(err => next(err));
   } catch (e) {
     next(e);
   }

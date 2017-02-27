@@ -5,12 +5,24 @@ import * as helpers from './helpers';
 const router = new Router();
 
 // TODO(youmustfight): Need to make separate requests model
-router.get('/requests', (req, res) => {
+router.get('/', (req, res) => {
   const orgId = req.query.organization_id;
   helpers.getOrganizationCases(orgId, { returnJSON: true })
     .then((cases) => {
       res.status(200).send({ requests: cases });
     }).catch(error => res.status(400).send({ error }));
+});
+
+router.put('/update_status', (req, res, next) => {
+  try {
+    const caseId = req.body.case.id;
+    const status = req.body.case.status;
+    helpers.updateCaseStatus(caseId, status, { returnJSON: true })
+      .then(data => res.status(200).send({ request: data }))
+      .catch(error => next(error));
+  } catch (e) {
+    next(e);
+  }
 });
 
 router.post('/webhook/email', (req, res) => {
