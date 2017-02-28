@@ -12,6 +12,8 @@ router.get('/', (req, res, next) => {
     };
     options.limit = req.query.limit;
     options.offset = req.query.offset;
+    options.filters = {};
+    if (req.query.status) options.filters.status = req.query.status;
     helpers.getCases(orgId, options)
       .then(cases => res.status(200).send({ cases }))
       .catch(error => next(error));

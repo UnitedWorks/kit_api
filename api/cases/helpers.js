@@ -221,7 +221,7 @@ export function webhookEmailEvent(req) {
 }
 
 export const getCases = (orgId, options = {}) => {
-  return Case.query((qb) => {
+  let baseQuery = Case.query((qb) => {
     qb.select('*')
       .from('organizations_cases')
       .whereRaw(`organization_id=${orgId}`)
@@ -229,18 +229,34 @@ export const getCases = (orgId, options = {}) => {
         this.on('cases.id', '=', 'organizations_cases.case_id');
       });
   })
-  .orderBy('-created_at')
-  .fetchPage({
+  .orderBy('-created_at');
+
+  Object.keys(options.filters).forEach((key) => {
+    baseQuery = baseQuery.where(key, '=', options.filters[key]);
+  });
+
+  const fetchPageOptions = {
     limit: options.limit || 25,
     offset: options.offset >= 0 ? options.offset : 0,
-    withRelated: ['organizations', 'category', 'locations', 'media'],
-  })
-  .then((fetchedCases) => {
-    return options.returnJSON ? {
-      collection: fetchedCases.toJSON(),
-      pagination: fetchedCases.pagination,
-    } : fetchedCases;
-  }).catch(err => err);
+    withRelated: ['category', 'locations', 'media'],
+  };
+
+  return baseQuery.fetchPage(fetchPageOptions)
+    .then((fetchedCases) => {
+      if (fetchedCases.length === 0) {
+        return baseQuery.fetchPage({ ...fetchPageOptions, offset: 0 })
+          .then((beginningCases) => {
+            return options.returnJSON ? {
+              collection: beginningCases.toJSON(),
+              pagination: beginningCases.pagination,
+            } : beginningCases;
+          });
+      }
+      return options.returnJSON ? {
+        collection: fetchedCases.toJSON(),
+        pagination: fetchedCases.pagination,
+      } : fetchedCases;
+    }).catch(err => err);
 };
 
 export const updateCaseStatus = (caseId, status, options = {}) => {
