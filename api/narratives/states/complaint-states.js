@@ -53,7 +53,6 @@ export default {
     message() {
       const payload = this.snapshot.input.payload;
       if (payload.attachments) {
-        this.messagingClient.send('Thank you!');
         const updatedComplaint = Object.assign({}, this.get('complaint'), {
           attachments: payload.attachments,
         });

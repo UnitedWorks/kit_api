@@ -5,6 +5,7 @@ import * as AccountModels from '../accounts/models';
 import { Case, OrganizationsCases } from './models';
 import { CASE_STATUSES } from '../constants/case-statuses';
 import { FacebookMessengerClient, TwilioSMSClient } from '../conversations/clients';
+import { saveLocation, saveMedia, associateCaseLocation, associateCaseMedia } from '../knowledge-base/helpers';
 import SlackService from '../services/slack';
 import EmailService from '../services/email';
 import { SEND_GRID_EVENT_OPEN } from '../constants/sendgrid';
@@ -64,30 +65,54 @@ export const newCaseNotification = (caseObj, organization) => {
   });
 };
 
-export const createCase = (title, data, category, constituent, organization, location, attachments, seeClickFixId) => {
+export const createCase = (title, data, category, constituent, organization, location, attachments = [], seeClickFixId) => {
   return new Promise((resolve, reject) => {
-    const newCase = {
-      status: 'open',
-      category_id: category.id,
-      constituent_id: constituent.id,
-      title,
-      data,
-      seeClickFixId,
-    };
-    Case.forge(newCase).save().then((caseResponse) => {
-      caseResponse.refresh({ withRelated: ['category'] }).then((refreshedCaseModel) => {
-        OrganizationsCases.forge({
-          case_id: refreshedCaseModel.get('id'),
-          organization_id: organization.id,
-        }).save().then(() => {
-          newCaseNotification(Object.assign(refreshedCaseModel.toJSON(), {
-            location,
-            attachments,
-          }), organization);
-          resolve(refreshedCaseModel);
+    const attachmentPromises = [];
+    if (location) attachmentPromises.push(saveLocation(location, { returnJSON: true }));
+    attachments.forEach((attachment) => {
+      attachmentPromises.push(saveMedia(attachment, { returnJSON: true }));
+    });
+    Promise.all(attachmentPromises).then((attachmentModels) => {
+      const newCase = {
+        status: 'open',
+        category_id: category.id,
+        constituent_id: constituent.id,
+        title,
+        data,
+        seeClickFixId,
+      };
+      Case.forge(newCase).save().then((caseResponse) => {
+        caseResponse.refresh({ withRelated: ['category'] }).then((refreshedCaseModel) => {
+          const newCaseModelJSON = refreshedCaseModel.toJSON();
+          const junctionPromises = [];
+
+          // Organization Junction
+          junctionPromises.push(OrganizationsCases.forge({
+            case_id: newCaseModelJSON.id,
+            organization_id: organization.id,
+          }).save());
+
+          // Location & Media Junction
+          attachmentModels.forEach((model) => {
+            let joinFn;
+            if (model.countryCode) {
+              joinFn = associateCaseLocation(newCaseModelJSON, model);
+            } else if (model.type) {
+              joinFn = associateCaseMedia(newCaseModelJSON, model);
+            }
+            junctionPromises.push(joinFn);
+          });
+
+          Promise.all(junctionPromises).then(() => {
+            newCaseNotification(Object.assign(newCaseModelJSON, {
+              location,
+              attachments,
+            }), organization);
+            resolve(refreshedCaseModel);
+          });
         });
-      });
-    }).catch(err => reject(err));
+      }).catch(err => reject(err));
+    });
   });
 };
 
@@ -196,7 +221,7 @@ export function webhookEmailEvent(req) {
 }
 
 export const getOrganizationCases = (orgId, options = {}) => {
-  return AccountModels.Organization.where({ id: orgId }).fetch({ withRelated: ['cases', 'cases.category'] })
+  return AccountModels.Organization.where({ id: orgId }).fetch({ withRelated: ['cases', 'cases.category', 'cases.locations', 'cases.media'] })
     .then((fetchedOrg) => {
       if (options.returnJSON) return fetchedOrg.toJSON().cases;
       return fetchedOrg.get('cases');

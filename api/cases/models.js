@@ -1,12 +1,21 @@
 import lodash from 'lodash';
 import { bookshelf } from '../orm';
 import * as AccountModels from '../accounts/models';
+import * as KnowledgeBaseModels from '../knowledge-base/models';
 
 export const CaseCategory = bookshelf.Model.extend({
   tableName: 'case_categorys',
   parent: function() {
     return this.hasOne(CaseCategory, 'parent_category_id');
   },
+});
+
+export const CaseLocations = bookshelf.Model.extend({
+  tableName: 'cases_locations',
+});
+
+export const CaseMedia = bookshelf.Model.extend({
+  tableName: 'cases_medias',
 });
 
 export const Case = bookshelf.Model.extend({
@@ -28,6 +37,12 @@ export const Case = bookshelf.Model.extend({
   },
   constituent: function() {
     return this.belongsTo(AccountModels.Constituent, 'constituent_id');
+  },
+  locations: function() {
+    return this.belongsToMany(KnowledgeBaseModels.Location, 'cases_locations');
+  },
+  media: function() {
+    return this.belongsToMany(KnowledgeBaseModels.Media, 'cases_medias');
   },
 });
 

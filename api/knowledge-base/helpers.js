@@ -1,6 +1,7 @@
 import { knex } from '../orm';
 import { KnowledgeAnswer, KnowledgeCategory, KnowledgeQuestion, KnowledgeAnswerEvents, KnowledgeAnswerFacilitys,
-  KnowledgeAnswerServices, Location, OrganizationQuestionAnswers } from './models';
+  KnowledgeAnswerServices, Location, OrganizationQuestionAnswers, Media } from './models';
+import { CaseLocations, CaseMedia } from '../cases/models';
 
 export const getAnswer = (params = {}, options) => {
   if (!params.organization_id) throw Error('No organization_id provided to getAnswer method');
@@ -156,4 +157,28 @@ export const saveLocation = (locationModel, options = {}) => {
       resolve(options.returnJSON ? data.toJSON() : data);
     }).catch(err => reject(err));
   });
+};
+
+export const saveMedia = (attachment, options = {}) => {
+  const newModel = {
+    type: attachment.type,
+    url: attachment.payload.url,
+  };
+  return Media.forge(newModel).save().then((data) => {
+    return options.returnJSON ? data.toJSON() : data;
+  }).catch(err => err);
+};
+
+export const associateCaseLocation = (caseObj, location) => {
+  return CaseLocations.forge({
+    case_id: caseObj.id,
+    location_id: location.id,
+  }).save();
+};
+
+export const associateCaseMedia = (caseObj, media) => {
+  return CaseMedia.forge({
+    case_id: caseObj.id,
+    media_id: media.id,
+  }).save();
 };
