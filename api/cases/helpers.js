@@ -95,7 +95,7 @@ export const createCase = (title, data, category, constituent, organization, loc
           // Location & Media Junction
           attachmentModels.forEach((model) => {
             let joinFn;
-            if (model.countryCode) {
+            if (model.latitude || model.countryCode) {
               joinFn = associateCaseLocation(newCaseModelJSON, model);
             } else if (model.type) {
               joinFn = associateCaseMedia(newCaseModelJSON, model);
