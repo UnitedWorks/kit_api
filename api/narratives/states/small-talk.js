@@ -1,11 +1,7 @@
-import axios from 'axios';
 import { logger } from '../../logger';
 import * as TAGS from '../../constants/nlp-tagging';
-import * as INTEGRATIONS from '../../constants/integrations';
 import { nlp } from '../../services/nlp';
-import { getAnswer } from '../../knowledge-base/helpers';
 import { entityValueIs } from '../helpers';
-import { hasIntegration } from '../../integrations/helpers';
 import { getConstituentCases } from '../../cases/helpers';
 import SlackService from '../../services/slack';
 

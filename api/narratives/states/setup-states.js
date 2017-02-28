@@ -1,9 +1,11 @@
 import { geocoder } from '../../services/geocoder';
 import { logger } from '../../logger';
 import { nlp } from '../../services/nlp';
+import { entityValueIs } from '../helpers';
 import SlackService from '../../services/slack';
 import { createOrganization, getAdminOrganizationAtLocation } from '../../accounts/helpers';
 import { saveLocation } from '../../knowledge-base/helpers';
+import * as TAGS from '../../constants/nlp-tagging';
 
 const i18n = function(key) {
   return {
@@ -32,7 +34,6 @@ export default {
           return;
         }
 
-
         return geocoder.geocode(nlpData.entities.location[0].value).then((geoData) => {
           // If more than one location is matched with our geolocation look up, ask for detail
           const filteredGeoData = geoData.filter(location => location.city);
@@ -58,19 +59,16 @@ export default {
           this.set('location', filteredGeoData[0]);
 
           const constituentLocation = this.get('location');
-
           return getAdminOrganizationAtLocation(constituentLocation, { returnJSON: true })
             .then((orgModel) => {
               if (orgModel) {
                 this.set('organization', orgModel);
-
                 if (!orgModel.activated) {
                   new SlackService({
                     username: 'Inactive City Requested',
                     icon: 'round_pushpin',
                   }).send(`>*City Requested*: ${orgModel.name}\n>*ID*: ${orgModel.id}`);
                 }
-
                 return 'waiting_organization_confirm';
               }
               return saveLocation(constituentLocation).then((locationModel) => {
@@ -111,11 +109,10 @@ export default {
 
     message() {
       const input = this.snapshot.input.payload.text || this.snapshot.payload.payload;
-
       return nlp.message(input, {}).then((nlpData) => {
-        if (nlpData.entities.confirm_deny[0].value === 'Yes') {
+        const entities = nlpData.entities;
+        if (entityValueIs(entities[TAGS.CONFIRM_DENY], TAGS.YES)) {
           this.messagingClient.addToQuene('Oh yeah? Some of the best mayors are around there. Including me of course.');
-
           // If city is activated, suggest asking a question or complaint
           // If not, tell them they can only leave complaints/suggestions!
           const quickReplies = [
@@ -124,25 +121,21 @@ export default {
             { content_type: 'text', title: 'Raise an Issue', payload: 'MAKE_REQUEST' },
             { content_type: 'text', title: 'What can I ask?', payload: 'WHAT_CAN_I_ASK' },
           ];
-
           if (this.get('organization').activated) {
             this.messagingClient.addToQuene('It looks like they\'ve given me answers to some questions and requests.', quickReplies);
           } else {
             this.messagingClient.addToQuene('Your community hasn\'t yet given me answers to any questions yet, but I\'ve let them know.', quickReplies);
           }
-
           return this.messagingClient.runQuene().then(() => {
-            return 'smallTalk.start'
+            return 'smallTalk.start';
           });
-
-        } else if (nlpData.entities.confirm_deny[0].value === 'No') {
+        } else if (entityValueIs(entities[TAGS.CONFIRM_DENY], TAGS.NO)) {
           this.messagingClient.send('Oh! Can you tell me your city and state again?');
           return 'waiting_organization';
-        } else {
-          this.messagingClient.send('Sorry, I didn\'t catch whether that was correct.');
         }
+        this.messagingClient.send('Sorry, I didn\'t catch whether that was correct.');
       });
-    }
+    },
   },
 
 };
