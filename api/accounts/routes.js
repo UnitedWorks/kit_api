@@ -41,11 +41,11 @@ router.post('/organization', (req, res) => {
     if (cityOnlyGeoData.length > 1) {
       const errorMessage = 'Found more than one location, be more specific.';
       logger.error(errorMessage);
-      res.status(400).send(errorMessage);
+      res.status(400).send({ error: errorMessage });
     } else if (cityOnlyGeoData.length === 0) {
       const errorMessage = 'No locations found.';
       logger.error(errorMessage);
-      res.status(400).send(errorMessage);
+      res.status(400).send({ error: errorMessage });
     }
     helpers.checkForAdminOrganizationAtLocation(cityOnlyGeoData[0]).then((orgExists) => {
       if (orgExists) {
@@ -58,11 +58,11 @@ router.post('/organization', (req, res) => {
             .then((newOrganization) => {
               new SlackService({ username: 'Welcome', icon: 'capitol' }).send(`Organization *${newOrganization.name}* just signed up!`);
               res.status(200).json({ organization: newOrganization });
-            }).catch(error => res.status(400).send(error));
-        }).catch(error => res.status(400).send(error));
+            }).catch(error => res.status(400).send({ error }));
+        }).catch(error => res.status(400).send({ error }));
       }
-    }).catch(error => res.status(400).send(error));
-  }).catch(error => res.status(400).send(error));
+    }).catch(error => res.status(400).send({ error }));
+  }).catch(error => res.status(400).send({ error }));
 });
 
 router.post('/organizations/add-representative', (req, res) => {
@@ -70,7 +70,7 @@ router.post('/organizations/add-representative', (req, res) => {
     .then(response => res.status(200).send({
       representative: response,
     }))
-    .catch(err => res.status(400).send(err));
+    .catch(error => res.status(400).send({ error }));
 });
 
 // Representatives
@@ -82,13 +82,13 @@ router.get('/representative', (req, res) => {
       } else {
         res.status(400).send('No representative found');
       }
-    }).catch(err => res.status(400).send(err));
+    }).catch(error => res.status(400).send({ error }));
 });
 
 router.get('/representatives', (req, res) => {
   Representative.where(req.query).fetchAll({ withRelated: ['organization'] })
     .then(representatives => res.status(200).send({ representatives }))
-    .catch(err => res.status(400).send(err));
+    .catch(error => res.status(400).send({ error }));
 });
 
 /**
@@ -111,20 +111,20 @@ router.post('/representative', (req, res) => {
       new SlackService({ username: 'Welcome', icon: 'capitol' })
         .send(`Representative joined: *${newRepresentative.email}*`);
       res.status(200).json({ representative: newRepresentative });
-    }).catch(error => res.status(400).send(error));
+    }).catch(error => res.status(400).send({ error }));
 });
 
 router.put('/representative', (req, res) => {
   helpers.updateRepresentative(req.body.representative, { returnJSON: true })
     .then(updatedRep => res.status(200).send({ representative: updatedRep }))
-    .catch(err => res.status(400).send(err));
+    .catch(error => res.status(400).send({ error }));
 });
 
 // Constituents
 router.get('/constituents', (req, res) => {
-  Constituent.fetchAll().then((cons) => {
-    res.status(200).send(cons);
-  });
+  Constituent.fetchAll()
+    .then(cons => res.status(200).send(cons))
+    .catch(error => res.status(400).send({ error }));
 });
 
 module.exports = router;

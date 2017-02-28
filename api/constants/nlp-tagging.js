@@ -93,3 +93,11 @@ export const HYGIENE_SEARCH = 'hygiene search';
 export const SETTINGS = 'settings';
 // TRAITS
 export const CHANGE_CITY = 'change city';
+
+
+// Confirm/Deny
+// KEYWORDS
+export const CONFIRM_DENY = 'confirm_deny';
+// TRAITS
+export const YES = 'yes';
+export const NO = 'no';

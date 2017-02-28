@@ -1,6 +1,6 @@
 import { geocoder } from '../../services/geocoder';
 import { PRIMARY_CATEGORIES as PRIMARY_CASE_CATEGORIES } from '../../constants/case-categories';
-import { createCase } from '../../cases/helpers';
+import { handleConstituentRequest } from '../../cases/helpers';
 import { CaseCategory } from '../../cases/models';
 
 export default {
@@ -53,7 +53,6 @@ export default {
     message() {
       const payload = this.snapshot.input.payload;
       if (payload.attachments) {
-        this.messagingClient.send('Thank you!');
         const updatedComplaint = Object.assign({}, this.get('complaint'), {
           attachments: payload.attachments,
         });
@@ -94,7 +93,7 @@ export default {
   complaint_submit: {
     enter() {
       const complaint = this.get('complaint');
-      return createCase(complaint.headline, complaint.data, complaint.category, this.snapshot.constituent, this.get('organization'), complaint.location, complaint.attachments)
+      return handleConstituentRequest(complaint.headline, complaint.data, complaint.category, this.snapshot.constituent, this.get('organization'), complaint.location, complaint.attachments)
         .then(() => {
           this.messagingClient.send('I just sent your message along. I\'ll try to let you know when it\'s been addressed.');
           return 'smallTalk.start';

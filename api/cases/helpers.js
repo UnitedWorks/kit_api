@@ -1,16 +1,32 @@
-import axios from 'axios';
 import formidable from 'formidable';
 import { knex } from '../orm';
 import { logger } from '../logger';
 import * as AccountModels from '../accounts/models';
 import { Case, OrganizationsCases } from './models';
+import { CASE_STATUSES } from '../constants/case-statuses';
 import { FacebookMessengerClient, TwilioSMSClient } from '../conversations/clients';
+import { saveLocation, saveMedia, associateCaseLocation, associateCaseMedia } from '../knowledge-base/helpers';
 import SlackService from '../services/slack';
 import EmailService from '../services/email';
 import { SEND_GRID_EVENT_OPEN } from '../constants/sendgrid';
 import { hasIntegration } from '../integrations/helpers';
 import * as INTEGRATIONS from '../constants/integrations';
 import SeeClickFixClient from './clients/see-click-fix-client';
+
+export const notifyConstituentOfCaseStatusUpdate = (caseJSON, status, constituentJSON) => {
+  let message;
+  if (status === 'closed') {
+    message = `Your case (#${caseJSON.id}) has been taken care of!`;
+  }
+  if (status === 'viewed') {
+    message = `Your request #${caseJSON.id} has been seen by someone in government! We will let you know when it's addressed.`;
+  }
+  if (constituentJSON.facebook_id) {
+    new FacebookMessengerClient({ constituent: constituentJSON }).send(message);
+  } else if (constituentJSON.phone) {
+    new TwilioSMSClient({ constituent: constituentJSON }).send(message);
+  }
+};
 
 export const newCaseNotification = (caseObj, organization) => {
   AccountModels.Organization.where({ id: organization.id }).fetch({ withRelated: ['representatives'] }).then((returnedOrg) => {
@@ -49,37 +65,58 @@ export const newCaseNotification = (caseObj, organization) => {
   });
 };
 
-export const createCase = (title, data, category, constituent, organization, location, attachments, seeClickFixId) => {
+export const createCase = (title, data, category, constituent, organization, location, attachments = [], seeClickFixId) => {
   return new Promise((resolve, reject) => {
-    const newCase = {
-      status: 'open',
-      category_id: category.id,
-      constituent_id: constituent.id,
-      title,
-      data,
-      seeClickFixId,
-    };
-    Case.forge(newCase).save().then((caseResponse) => {
-      caseResponse.refresh({ withRelated: ['category'] }).then((refreshedCaseModel) => {
-        OrganizationsCases.forge({
-          case_id: refreshedCaseModel.get('id'),
-          organization_id: organization.id,
-        }).save().then(() => {
-          newCaseNotification(Object.assign(refreshedCaseModel.toJSON(), {
-            location,
-            attachments,
-          }), organization);
-          resolve(refreshedCaseModel);
+    const attachmentPromises = [];
+    if (location) attachmentPromises.push(saveLocation(location, { returnJSON: true }));
+    attachments.forEach((attachment) => {
+      attachmentPromises.push(saveMedia(attachment, { returnJSON: true }));
+    });
+    Promise.all(attachmentPromises).then((attachmentModels) => {
+      const newCase = {
+        status: 'open',
+        category_id: category.id,
+        constituent_id: constituent.id,
+        title,
+        data,
+        seeClickFixId,
+      };
+      Case.forge(newCase).save().then((caseResponse) => {
+        caseResponse.refresh({ withRelated: ['category'] }).then((refreshedCaseModel) => {
+          const newCaseModelJSON = refreshedCaseModel.toJSON();
+          const junctionPromises = [];
+
+          // Organization Junction
+          junctionPromises.push(OrganizationsCases.forge({
+            case_id: newCaseModelJSON.id,
+            organization_id: organization.id,
+          }).save());
+
+          // Location & Media Junction
+          attachmentModels.forEach((model) => {
+            let joinFn;
+            if (model.countryCode) {
+              joinFn = associateCaseLocation(newCaseModelJSON, model);
+            } else if (model.type) {
+              joinFn = associateCaseMedia(newCaseModelJSON, model);
+            }
+            junctionPromises.push(joinFn);
+          });
+
+          Promise.all(junctionPromises).then(() => {
+            newCaseNotification(Object.assign(newCaseModelJSON, {
+              location,
+              attachments,
+            }), organization);
+            resolve(refreshedCaseModel);
+          });
         });
-      });
-    }).catch((err) => {
-      logger.error(err);
-      reject();
+      }).catch(err => reject(err));
     });
   });
 };
 
-export const makeConstituentRequest = (headline, data, category, constituent, organization, location, attachments) => {
+export const handleConstituentRequest = (headline, data, category, constituent, organization, location, attachments) => {
   return new Promise((resolve, reject) => {
     // Check for integrations to push to
     hasIntegration(organization, INTEGRATIONS.SEE_CLICK_FIX).then((integrated) => {
@@ -133,12 +170,8 @@ export function webhookHitWithEmail(req) {
         new Case({ id: caseId }).save({ status: 'closed', closedAt: knex.raw('now()') }, { method: 'update', patch: true }).then((updatedCaseModel) => {
           updatedCaseModel.refresh({ withRelated: ['constituent'] }).then((refreshedCaseModel) => {
             logger.info(`Case Resolved for Constituent #${refreshedCaseModel.get('constituentId')}`);
-            const constituent = refreshedCaseModel.toJSON().constituent;
-            if (constituent.facebook_id) {
-              new FacebookMessengerClient({ constituent }).send(`Your case (#${refreshedCaseModel.id}) has been taken care of!`);
-            } else if (constituent.phone) {
-              new TwilioSMSClient({ constituent }).send(`Your case (#${refreshedCaseModel.id}) has been taken care of!`);
-            }
+            const caseJSON = refreshedCaseModel.toJSON();
+            notifyConstituentOfCaseStatusUpdate(caseJSON, 'closed', caseJSON.constituent);
           });
         });
       }
@@ -173,11 +206,7 @@ export function webhookEmailEvent(req) {
         Case.where({ id: event.case_id }).fetch({ withRelated: ['constituent'] }).then((fetchedCase) => {
           const constituent = fetchedCase.toJSON().constituent;
           if (!fetchedCase.toJSON().lastViewed) {
-            if (constituent.facebook_id) {
-              new FacebookMessengerClient({ constituent }).send(`Your case #${fetchedCase.id} has been seen by someone in government! We will let you know when it's addressed.`);
-            } else if (constituent.phone) {
-              new TwilioSMSClient({ constituent }).send(`Your case #${fetchedCase.id} has been seen in government! We will let you know when it's addressed.`);
-            }
+            notifyConstituentOfCaseStatusUpdate(fetchedCase.toJSON(), 'viewed', constituent);
           }
           fetchedCase.save({
             last_viewed: knex.raw('now()'),
@@ -190,3 +219,38 @@ export function webhookEmailEvent(req) {
     }
   });
 }
+
+export const getCases = (orgId, options = {}) => {
+  return Case.query((qb) => {
+    qb.select('*')
+      .from('organizations_cases')
+      .whereRaw(`organization_id=${orgId}`)
+      .join('cases', function() {
+        this.on('cases.id', '=', 'organizations_cases.case_id');
+      });
+  })
+  .orderBy('-created_at')
+  .fetchPage({
+    limit: options.limit || 25,
+    offset: options.offset >= 0 ? options.offset : 0,
+    withRelated: ['organizations', 'category', 'locations', 'media'],
+  })
+  .then((fetchedCases) => {
+    return options.returnJSON ? {
+      collection: fetchedCases.toJSON(),
+      pagination: fetchedCases.pagination,
+    } : fetchedCases;
+  }).catch(err => err);
+};
+
+export const updateCaseStatus = (caseId, status, options = {}) => {
+  if (!CASE_STATUSES.includes(status)) throw new Error(`Unacceptable Status: ${status}`);
+  return Case.where({ id: caseId }).save({ status }, { method: 'update' })
+    .then(() => {
+      return Case.where({ id: caseId }).fetch({ withRelated: ['constituent'] }).then((refreshedModel) => {
+        const caseJSON = refreshedModel.toJSON();
+        notifyConstituentOfCaseStatusUpdate(caseJSON, status, caseJSON.constituent);
+        return options.returnJSON ? refreshedModel.toJSON() : refreshedModel;
+      }).catch(error => error);
+    }).catch(error => error);
+};
