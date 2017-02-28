@@ -232,7 +232,7 @@ export const getCases = (orgId, options = {}) => {
   .orderBy('-created_at')
   .fetchPage({
     limit: options.limit || 25,
-    offset: options.offset || 0,
+    offset: options.offset >= 0 ? options.offset : 0,
     withRelated: ['organizations', 'category', 'locations', 'media'],
   })
   .then((fetchedCases) => {
