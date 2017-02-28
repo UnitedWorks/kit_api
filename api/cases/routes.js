@@ -7,7 +7,12 @@ const router = new Router();
 router.get('/', (req, res, next) => {
   try {
     const orgId = req.query.organization_id;
-    helpers.getOrganizationCases(orgId, { returnJSON: true })
+    const options = {
+      returnJSON: true,
+    };
+    options.limit = req.query.limit;
+    options.offset = req.query.offset;
+    helpers.getCases(orgId, options)
       .then(cases => res.status(200).send({ cases }))
       .catch(error => next(error));
   } catch (e) {

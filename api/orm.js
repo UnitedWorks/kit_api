@@ -10,5 +10,7 @@ export const knex = require('knex')({
 });
 
 export const bookshelf = require('bookshelf')(knex);
+bookshelf.plugin('pagination');
+bookshelf.plugin('registry');
 
 export const st = require('knex-postgis')(knex);
