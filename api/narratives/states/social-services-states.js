@@ -10,7 +10,7 @@ export default {
       return hasIntegration(this.datastore.organization, INTEGRATIONS.ASK_DARCEL)
         .then((integrated) => {
           if (integrated) {
-            this.messagingClient.send('What address are you at? I want to nearby locations.');
+            this.messagingClient.send('What address are you currently at? I want to make sure I give you locations close by.');
             return null;
           }
           return this.input('message', { integrated: false });
@@ -41,11 +41,26 @@ export default {
         });
     },
   },
-  food_search() {
-    return hasIntegration(this.datastore.organization, INTEGRATIONS.ASK_DARCEL)
-      .then((integrated) => {
-        if (integrated) {
-          return new AskDarcelClient({ location: this.get('location') })
+
+  waiting_food_search: {
+    enter() {
+      return hasIntegration(this.datastore.organization, INTEGRATIONS.ASK_DARCEL)
+        .then((integrated) => {
+          if (integrated) {
+            this.messagingClient.send('What address are you currently at? I want to make sure I give you locations close by.');
+            return null;
+          }
+          return this.input('message', { integrated: false });
+        });
+    },
+    message(aux = {}) {
+      if (aux.input && aux.integrated !== false) {
+        return messageToGeodata(aux.input.payload.text, this.get('location')).then((geoData) => {
+          if (geoData === null) {
+            this.messagingClient.send('I didn\'t understand that address. Can you try again?');
+            return null;
+          }
+          return new AskDarcelClient({ location: geoData })
             .getResources('food', { limit: 5 })
             .then((resources) => {
               this.messagingClient.addToQuene('Here\'s what I\'ve found close to you\n');
@@ -54,19 +69,34 @@ export default {
               });
               return this.messagingClient.runQuene().then(() => 'smallTalk.start');
             });
-        }
-        return new KitClient({ organization: this.get('organization') })
-          .getAnswer('social-services-food-assistance').then((answer) => {
-            const message = KitClient.answerToString(answer);
-            return this.messagingClient.send(message).then(() => 'smallTalk.start');
-          });
-      });
+        });
+      }
+      return new KitClient({ organization: this.get('organization') })
+        .getAnswer('social-services-food-assistance').then((answer) => {
+          const message = KitClient.answerToString(answer);
+          return this.messagingClient.send(message).then(() => 'smallTalk.start');
+        });
+    },
   },
-  hygiene_search() {
-    return hasIntegration(this.datastore.organization, INTEGRATIONS.ASK_DARCEL)
-      .then((integrated) => {
-        if (integrated) {
-          return new AskDarcelClient({ location: this.get('location') })
+  waiting_hygiene_search: {
+    enter() {
+      return hasIntegration(this.datastore.organization, INTEGRATIONS.ASK_DARCEL)
+        .then((integrated) => {
+          if (integrated) {
+            this.messagingClient.send('What address are you currently at? I want to make sure I give you locations close by.');
+            return null;
+          }
+          return this.input('message', { integrated: false });
+        });
+    },
+    message(aux = {}) {
+      if (aux.input && aux.integrated !== false) {
+        return messageToGeodata(aux.input.payload.text, this.get('location')).then((geoData) => {
+          if (geoData === null) {
+            this.messagingClient.send('I didn\'t understand that address. Can you try again?');
+            return null;
+          }
+          return new AskDarcelClient({ location: geoData })
             .getResources('hygiene', { limit: 5 })
             .then((resources) => {
               this.messagingClient.addToQuene('Here\'s what I\'ve found close to you\n');
@@ -75,12 +105,13 @@ export default {
               });
               return this.messagingClient.runQuene().then(() => 'smallTalk.start');
             });
-        }
-        return new KitClient({ organization: this.get('organization') })
-          .getAnswer('social-services-hygiene').then((answer) => {
-            const message = KitClient.answerToString(answer);
-            return this.messagingClient.send(message).then(() => 'smallTalk.start');
-          });
-      });
+        });
+      }
+      return new KitClient({ organization: this.get('organization') })
+        .getAnswer('social-services-hygiene').then((answer) => {
+          const message = KitClient.answerToString(answer);
+          return this.messagingClient.send(message).then(() => 'smallTalk.start');
+        });
+    },
   },
 };
