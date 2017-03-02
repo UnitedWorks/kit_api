@@ -1,25 +1,20 @@
 import { knex } from '../orm';
-import { Answer, KnowledgeCategory, KnowledgeQuestion, Location, OrganizationQuestionAnswers, Media } from './models';
+import { KnowledgeCategory, KnowledgeQuestion, Location, Media } from './models';
 import { CaseLocations, CaseMedia } from '../cases/models';
 
-export const getAnswer = (params = {}, options) => {
-  if (!params.organization_id) throw Error('No organization_id provided to getAnswer method');
-  if (!params.label) throw Error('No label provided to getAnswer method');
-
-  return Answer.forge(params).fetch({ withRelated: ['question'] });
-};
-
 export const getAnswers = (params = {}, options) => {
-  return Answer.where(params).fetchAll({
-    withRelated: ['question', 'question.category', 'events', 'facilities', 'services'],
-  });
+  return KnowledgeQuestion.where({ label: params.label }).fetch({
+    withRelated: [{
+      answers: q => q.where('organization_id', params.organization_id),
+    }, 'category'],
+  }).then(data => options.returnJSON ? data.toJSON().answers : data.get('answers'));
 };
 
 export const getQuestions = (params = {}) => {
   return KnowledgeQuestion.fetchAll({ withRelated: {
-    category: (q)=>q,
-    answer: (q)=>q.where('organization_id', params.organization_id) 
-  }});
+    category: q => q,
+    answer: q => q.where('organization_id', params.organization_id),
+  } });
 };
 
 export const getCategories = (params = {}) => {

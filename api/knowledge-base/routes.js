@@ -197,13 +197,6 @@ router.get('/questions', (req, res) => {
     .catch(error => res.status(400).send(error));
 });
 
-/* TODO: Either get rid of this or change to POST /questions/answers and forward it to POST /answers */ 
-router.post('/questions/make-answer', (req, res) => {
-  makeAnswer(req.body.organization, req.body.question, req.body.answer, { returnJSON: true })
-    .then(answer => res.status(200).send({ answer }))
-    .catch(error => res.status(400).send(error));
-});
-
 /**
  * Answers Endpoint
  */
