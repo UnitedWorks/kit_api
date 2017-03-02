@@ -1,8 +1,7 @@
 import { Router } from 'express';
 import { logger } from '../logger';
-import { KnowledgeAnswer, KnowledgeEvent, KnowledgeFacility,
-  KnowledgeFacilityType, KnowledgeService } from './models';
-import { getAnswers, getCategories, getQuestions, makeAnswerRelation, makeAnswer } from './helpers';
+import { KnowledgeEvent, KnowledgeFacility, KnowledgeFacilityType, KnowledgeService } from './models';
+import { getAnswers, getCategories, getQuestions, makeAnswer, updateAnswer, deleteAnswer } from './helpers';
 
 const router = new Router();
 
@@ -198,12 +197,6 @@ router.get('/questions', (req, res) => {
     .catch(error => res.status(400).send(error));
 });
 
-router.post('/questions/make-answer', (req, res) => {
-  makeAnswer(req.body.organization, req.body.question, req.body.answer, { returnJSON: true })
-    .then(answer => res.status(200).send({ answer }))
-    .catch(error => res.status(400).send(error));
-});
-
 /**
  * Answers Endpoint
  */
@@ -213,7 +206,6 @@ router.route('/answers')
    * @return {Array}
    */
   .get((req, res) => {
-    const session = { req };
     const params = req.query;
     getAnswers(params, {}).then((payload) => {
       res.status(200).send({
@@ -225,48 +217,29 @@ router.route('/answers')
    * Create Answer
    * @return {Object}
    */
-  .post((req, res) => {
-    KnowledgeAnswer.forge(req.body.answer)
-        .save(null, {
-          method: 'insert',
-        }).then((answerModel) => {
-          makeAnswerRelation(answerModel, req.body.events, req.body.services, req.body.facilities)
-            .then(() => {
-              res.status(200).send({ answer: answerModel });
-            }).catch((err) => {
-              res.status(400).send(err);
-            });
-        });
+  .post((req, res, next) => {
+    makeAnswer(req.body.organization, req.body.question, req.body.answer, { returnJSON: true })
+      .then(answerModel => res.status(200).send({ answer: answerModel }))
+      .catch(err => next(err));
   })
   /**
    * Update Answer
    * @return {Object}
    */
-  .put((req, res) => {
-    KnowledgeAnswer.forge(req.body.answer)
-      .save(null, {
-        method: 'update',
-      }).then((answerModel) => {
-        makeAnswerRelation(answerModel, req.body.events, req.body.services, req.body.facilities)
-          .then(() => {
-            res.status(200).send({ answer: answerModel });
-          }).catch((err) => {
-            res.status(400).send(err);
-          });
-      });
+  .put((req, res, next) => {
+    updateAnswer(req.body.answer, { returnJSON: true })
+      .then(answerModel => res.status(200).send({ answer: answerModel }))
+      .catch(err => next(err));
   })
   /**
    * Delete Answer
    * @param {Number} id - Id of the answer to be deleted
    * @return {Object}
    */
-  .delete((req, res) => {
-    KnowledgeAnswer.forge({ id: req.query.id }).destroy()
-      .then(() => {
-        res.status(200).send();
-      }).catch(() => {
-        res.status(400).send();
-      });
+  .delete((req, res, next) => {
+    deleteAnswer(req.query.answer_id)
+      .then(answer => res.status(200).send({ answer }))
+      .catch(err => next(err));
   });
 
 module.exports = router;

@@ -1,4 +1,4 @@
-import { getAnswer as getAnswerHelper } from '../../knowledge-base/helpers';
+import { getAnswers as getAnswersHelper } from '../../knowledge-base/helpers';
 
 export default class KitClient {
   constructor(config = {}) {
@@ -10,21 +10,18 @@ export default class KitClient {
       withRelated: true,
       returnJSON: true,
     }, config);
-    return getAnswerHelper({
+    return getAnswersHelper({
       label,
       organization_id: this.organization.id,
     }, compiledConfig);
   }
 
-  static answerToString(payload) {
-    this.answer = payload.answer;
-    let message;
-    if (this.answer) {
-      message = this.answer.url ? `${this.answer.text} (More info at ${this.answer.url})` : `${this.answer.text}`;
-    } else {
-      message = 'Sorry, I can\'t find an answer for you. :( I\'ll let the city know';
+  static answersToString(answers) {
+    const answer = answers[0];
+    if (answer) {
+      return answer.url ? `${answer.text} (More info at ${answer.url})` : `${answer.text}`;
     }
-    return message;
+    return 'Sorry, I can\'t find an answer for you. :( I\'ll let the city know';
   }
 
 }

@@ -7,9 +7,6 @@ exports.seed = (knex, Promise) => {
     knex('organizations_constituents').del(),
     knex('organizations_integrations').del(),
     knex('narrative_sessions').del(),
-    knex('knowledge_answers_knowledge_events').del(),
-    knex('knowledge_answers_knowledge_services').del(),
-    knex('knowledge_answers_knowledge_facilitys').del(),
     knex('case_category_representative_assignments').del(),
     knex('organizations_cases').del(),
     knex('representatives_cases').del(),
@@ -18,9 +15,7 @@ exports.seed = (knex, Promise) => {
     // Clearing knowledge entities in a particular order because of relationships
     return knex('knowledge_events').del().then(() => {
       return knex('knowledge_services').del().then(() => {
-        return knex('knowledge_facilitys').del().then(() => {
-          return knex('knowledge_questions_organizations_knowledge_answers').del();
-        });
+        return knex('knowledge_facilitys').del();
       });
     });
   })
