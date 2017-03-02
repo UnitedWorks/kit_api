@@ -93,7 +93,7 @@ export default {
   complaint_submit: {
     enter() {
       const complaint = this.get('complaint');
-      return handleConstituentRequest(complaint.headline, complaint.data, complaint.category, this.snapshot.constituent, this.get('organization'), complaint.location, complaint.attachments)
+      return handleConstituentRequest(complaint.headline, complaint.category, this.snapshot.constituent, this.get('organization'), complaint.location, complaint.attachments)
         .then(() => {
           this.messagingClient.send('I just sent your message along. I\'ll try to let you know when it\'s been addressed.');
           return 'smallTalk.start';

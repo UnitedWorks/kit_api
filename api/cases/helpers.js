@@ -65,7 +65,9 @@ export const newCaseNotification = (caseObj, organization) => {
   });
 };
 
-export const createCase = (title, data, category, constituent, organization, location, attachments = [], seeClickFixId) => {
+export const createCase = (title, category, constituent, organization, location, attachments = [], seeClickFixId) => {
+  if (!constituent.id) throw new Error('Missing Key: constituent.id');
+  if (!organization.id) throw new Error('Missing Key: organization.id');
   return new Promise((resolve, reject) => {
     const attachmentPromises = [];
     if (location) attachmentPromises.push(saveLocation(location, { returnJSON: true }));
@@ -75,10 +77,9 @@ export const createCase = (title, data, category, constituent, organization, loc
     Promise.all(attachmentPromises).then((attachmentModels) => {
       const newCase = {
         status: 'open',
-        category_id: category.id,
-        constituent_id: constituent.id,
+        category_id: category.id || category,
+        constituent_id: constituent.id || constituent,
         title,
-        data,
         seeClickFixId,
       };
       Case.forge(newCase).save().then((caseResponse) => {
@@ -116,22 +117,34 @@ export const createCase = (title, data, category, constituent, organization, loc
   });
 };
 
-export const handleConstituentRequest = (headline, data, category, constituent, organization, location, attachments) => {
+export const handleConstituentRequest = (headline, category, constituent, organization, location, attachments) => {
   return new Promise((resolve, reject) => {
     // Check for integrations to push to
     hasIntegration(organization, INTEGRATIONS.SEE_CLICK_FIX).then((integrated) => {
       if (integrated && new SeeClickFixClient().requestCategoryAllowed(category.label)) {
         new SeeClickFixClient().report(location, headline, attachments).then((scfIssue) => {
-          createCase(headline, data, category, constituent, organization, location, attachments,
+          createCase(headline, category, constituent, organization, location, attachments,
             scfIssue.id).then(caseObj => resolve(caseObj.toJSON()));
         });
       } else {
-        createCase(headline, data, category, constituent, organization, location, attachments)
+        createCase(headline, category, constituent, organization, location, attachments)
           .then(caseObj => resolve(caseObj.toJSON()));
       }
     });
   });
 };
+
+export const compileCase = (case, constituent, organization) => {
+  return helpers.handleConstituentRequest(
+    case.description,
+    case.category,
+    constituent,
+    organiztation,
+    case.location,
+    case.attachments,
+    case.seeClickFixId
+  );
+}
 
 export const getConstituentCases = (constituent) => {
   return new Promise((requestResolve, reject) => {

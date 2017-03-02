@@ -42,27 +42,25 @@ export const makeAnswer = (organization, question, answer, options) => {
 };
 
 export const saveLocation = (locationModel, options = {}) => {
-  return new Promise((resolve, reject) => {
-    const newLocationModel = {
-      latitude: locationModel.latitude,
-      longitude: locationModel.longitude,
-      formattedAddress: locationModel.formattedAddress,
-      streetNumber: locationModel.streetNumber,
-      streetName: locationModel.streetName,
-      city: locationModel.city,
-      zipcode: locationModel.zipcode,
-      country: locationModel.country,
-      countryCode: locationModel.countryCode,
-      administrativeLevels: locationModel.administrativeLevels,
-      extra: locationModel.extra,
-    };
-    if (Object.prototype.hasOwnProperty.call(locationModel, 'id')) {
-      newLocationModel.id = locationModel.id;
-    }
-    Location.forge(newLocationModel).save().then((data) => {
-      resolve(options.returnJSON ? data.toJSON() : data);
-    }).catch(err => reject(err));
-  });
+  const newLocationModel = {
+    latitude: locationModel.latitude,
+    longitude: locationModel.longitude,
+    formattedAddress: locationModel.formattedAddress,
+    streetNumber: locationModel.streetNumber,
+    streetName: locationModel.streetName,
+    city: locationModel.city,
+    zipcode: locationModel.zipcode,
+    country: locationModel.country,
+    countryCode: locationModel.countryCode,
+    administrativeLevels: locationModel.administrativeLevels,
+    extra: locationModel.extra,
+  };
+  if (Object.prototype.hasOwnProperty.call(locationModel, 'id')) {
+    newLocationModel.id = locationModel.id;
+  }
+  return Location.forge(newLocationModel).save()
+    .then(data => options.returnJSON ? data.toJSON() : data)
+    .catch(error => error);
 };
 
 export const updateAnswer = (answer, options) => {
