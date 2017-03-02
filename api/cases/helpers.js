@@ -134,32 +134,32 @@ export const handleConstituentRequest = (headline, category, constituent, organi
   });
 };
 
-export const compileCase = (case, constituent, organization) => {
-  return helpers.handleConstituentRequest(
-    case.description,
-    case.category,
+export const compileCase = (caseObj, constituent, organization) => {
+  return handleConstituentRequest(
+    caseObj.description,
+    caseObj.category,
     constituent,
-    organiztation,
-    case.location,
-    case.attachments,
-    case.seeClickFixId
+    organization,
+    caseObj.location,
+    caseObj.attachments,
+    caseObj.seeClickFixId,
   );
-}
+};
 
 export const getConstituentCases = (constituent) => {
-  return new Promise((requestResolve, reject) => {
-    AccountModels.Constituent.where({ id: constituent.id }).fetch({ withRelated: ['cases'] }).then((constituentModel) => {
-      const casePromises = [];
-      constituentModel.toJSON().cases.forEach((constituentCase) => {
-        // If case has see_click_fix_id and is open, we need to check for resolution
-        if (constituentCase.seeClickFixId && constituentCase.status === 'open') {
-          casePromises.push(new SeeClickFixClient().syncCase(constituentCase.seeClickFixId));
-        } else {
-          casePromises.push(new Promise(caseResolve => caseResolve(constituentCase)));
-        }
-      });
-      // Resolve all fetches
-      Promise.all(casePromises).then(res => requestResolve({ cases: res }));
+  return AccountModels.Constituent.where({ id: constituent.id }).fetch({ withRelated: ['cases'] }).then((constituentModel) => {
+    const casePromises = [];
+    constituentModel.toJSON().cases.forEach((constituentCase) => {
+      // If case has see_click_fix_id and is open, we need to check for resolution
+      if (constituentCase.seeClickFixId && constituentCase.status === 'open') {
+        casePromises.push(new SeeClickFixClient().syncCase(constituentCase.seeClickFixId));
+      } else {
+        casePromises.push(new Promise(caseResolve => caseResolve(constituentCase)));
+      }
+    });
+    // Resolve all fetches
+    return Promise.all(casePromises).then((response) => {
+      return { cases: response };
     });
   });
 };

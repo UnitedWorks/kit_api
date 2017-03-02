@@ -93,6 +93,11 @@ export const getOrInsertConstituent = (constituentParams, options) => {
     query = Constituent.forge(constituentParams).save(null, { method: 'insert' });
   }
   return query.then((constituent) => {
+    if (!constituent) {
+      return Constituent.forge(constituentParams).save().then((newConstituent) => {
+        return options.returnJSON ? newConstituent.toJSON() : newConstituent;
+      });
+    }
     return options.returnJSON ? constituent.toJSON() : constituent;
   });
 };
