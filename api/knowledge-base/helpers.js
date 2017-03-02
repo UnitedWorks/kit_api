@@ -1,5 +1,5 @@
 import { knex } from '../orm';
-import { KnowledgeCategory, KnowledgeQuestion, Location, Media } from './models';
+import { KnowledgeAnswer, KnowledgeCategory, KnowledgeQuestion, Location, Media } from './models';
 import { CaseLocations, CaseMedia } from '../cases/models';
 
 export const getAnswers = (params = {}, options) => {
@@ -63,6 +63,18 @@ export const saveLocation = (locationModel, options = {}) => {
       resolve(options.returnJSON ? data.toJSON() : data);
     }).catch(err => reject(err));
   });
+};
+
+export const updateAnswer = (answer, options) => {
+  return KnowledgeAnswer.forge(answer).save(null, { method: 'update' })
+    .then(data => options.returnJSON ? data.toJSON() : data)
+    .catch(err => err);
+};
+
+export const deleteAnswer = (answerId) => {
+  return KnowledgeAnswer.forge({ id: answerId }).destroy().then(() => {
+    return { id: answerId };
+  }).catch(err => err);
 };
 
 export const saveMedia = (attachment, options = {}) => {
