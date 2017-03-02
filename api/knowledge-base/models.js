@@ -1,5 +1,5 @@
 import lodash from 'lodash';
-import { bookshelf, knex } from '../orm';
+import { bookshelf } from '../orm';
 import { Organization } from '../accounts/models';
 
 // Information Entries - Referenced in knowledge and non-knowledge base tables
@@ -102,21 +102,19 @@ export const KnowledgeEvent = bookshelf.Model.extend({
 export const KnowledgeQuestion = bookshelf.Model.extend({
   tableName: 'knowledge_questions',
   answers: function() {
-    return this.hasMany(Answer, 'question_id');
+    return this.hasMany(KnowledgeAnswer, 'question_id');
   },
   answer: function() {
-    return this.hasOne(Answer, 'question_id');
+    return this.hasOne(KnowledgeAnswer, 'question_id');
   },
-
   category: function() {
     return this.belongsTo(KnowledgeCategory, 'knowledge_category_id');
   },
 });
 
-export const Answer = bookshelf.Model.extend({
-  tableName: 'answers',
+export const KnowledgeAnswer = bookshelf.Model.extend({
+  tableName: 'knowledge_answers',
   hasTimestamps: true,
-
   organization: function() {
     return this.belongsTo(Organization);
   },

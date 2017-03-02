@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { logger } from '../logger';
-import { Answer, KnowledgeEvent, KnowledgeFacility, KnowledgeFacilityType, KnowledgeService } from './models';
+import { KnowledgeAnswer, KnowledgeEvent, KnowledgeFacility, KnowledgeFacilityType, KnowledgeService } from './models';
 import { getAnswers, getCategories, getQuestions, makeAnswer } from './helpers';
 
 const router = new Router();
@@ -225,22 +225,17 @@ router.route('/answers')
    * Create Answer
    * @return {Object}
    */
-  .post((req, res) => {
-    Answer.forge(req.body.answer)
-      .save(null, {
-        method: 'insert',
-      }).then(() => {
-        res.status(200).send({ answer: answerModel });
-      }).catch((err) => {
-        res.status(400).send(err);
-      });
+  .post((req, res, next) => {
+    makeAnswer(req.body.organization, req.body.question, req.body.answer, { returnJSON: true })
+      .then(answerModel => res.status(200).send({ answer: answerModel }))
+      .catch(err => next(err));
   })
   /**
    * Update Answer
    * @return {Object}
    */
   .put((req, res) => {
-    Answer.forge(req.body.answer)
+    KnowledgeAnswer.forge(req.body.answer)
       .save(null, {
         method: 'update',
       }).then(() => {
@@ -255,7 +250,7 @@ router.route('/answers')
    * @return {Object}
    */
   .delete((req, res) => {
-    Answer.forge({ id: req.query.id }).destroy()
+    KnowledgeAnswer.forge({ id: req.query.id }).destroy()
       .then(() => {
         res.status(200).send();
       }).catch(() => {

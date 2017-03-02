@@ -38,7 +38,7 @@ export const makeAnswer = (organization, question, answer, options) => {
   answer.organization_id = organization.id;
   answer.question_id = question.id;
 
-  let insertString = knex('answers').insert(answer).toString();
+  let insertString = knex('knowledge_answers').insert(answer).toString();
 
   let conflictString = knex.raw(` ON CONFLICT (organization_id, question_id) DO UPDATE SET text = EXCLUDED.text, url = EXCLUDED.url, knowledge_event_id = EXCLUDED.knowledge_event_id, knowledge_service_id = EXCLUDED.knowledge_service_id, knowledge_facility_id = EXCLUDED.knowledge_facility_id, media_id = EXCLUDED.media_id RETURNING *;`).toString();
   let query = (insertString + conflictString).replace(/\?/g, '\\?');

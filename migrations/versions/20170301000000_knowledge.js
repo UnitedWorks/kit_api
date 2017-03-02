@@ -69,7 +69,7 @@ exports.up = function(knex, Promise) {
       table.dateTime('created_at').defaultTo(knex.raw('now()'));
       table.dateTime('updated_at');
     })
-    .createTable('answers', (table) => {
+    .createTable('knowledge_answers', (table) => {
       table.increments('id').unsigned().primary();
 
       table.integer('organization_id').notNullable().references('organizations.id');
@@ -91,12 +91,7 @@ exports.up = function(knex, Promise) {
 
 exports.down = function(knex, Promise) {
   return knex.schema
-    .dropTable('answers_knowledge_events')
-    .dropTable('answers_knowledge_services')
-    .dropTable('answers_knowledge_facilitys')
-    .dropTable('answers_url')
-    .dropTable('answers_text')
-    .dropTable('answers')
+    .dropTable('knowledge_answers')
     .dropTable('knowledge_questions')
 
     .dropTable('knowledge_events')

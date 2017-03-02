@@ -1,4 +1,4 @@
-import { getAnswer as getAnswerHelper } from '../../knowledge-base/helpers';
+import { getAnswers as getAnswersHelper } from '../../knowledge-base/helpers';
 
 export default class KitClient {
   constructor(config = {}) {

@@ -34,7 +34,7 @@ app.use('/accounts', require('./accounts/routes'));
 app.use('/cases', require('./cases/routes'));
 app.use('/conversations', require('./conversations/routes'));
 app.use('/integrations', require('./integrations/routes'));
-app.use('/knowledge-base', require('./knowledge-base/routes'));
+app.use('/knowledge', require('./knowledge-base/routes'));
 
 // Log Viewing
 app.get('/logs/info', (req, res) => {
