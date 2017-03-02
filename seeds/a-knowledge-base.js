@@ -35,6 +35,16 @@ exports.seed = function(knex, Promise) {
       knowledge_category_id: generalCategoryId,
     }, 'id'));
     questionInserts.push(knex('knowledge_questions').insert({
+      label: 'sanitation-garbage-drop-off',
+      question: 'Where do I dispose of my garbage?',
+      knowledge_category_id: generalCategoryId,
+    }, 'id'));
+    questionInserts.push(knex('knowledge_questions').insert({
+      label: 'sanitation-recycling-drop-off',
+      question: 'Where do I dispose of my recycling?',
+      knowledge_category_id: generalCategoryId,
+    }, 'id'));
+    questionInserts.push(knex('knowledge_questions').insert({
       label: 'sanitation-compost',
       question: 'When do you collect compost?',
       knowledge_category_id: generalCategoryId,
@@ -47,6 +57,26 @@ exports.seed = function(knex, Promise) {
     questionInserts.push(knex('knowledge_questions').insert({
       label: 'sanitation-electronics-disposal',
       question: 'Where can I dispose of electronics?',
+      knowledge_category_id: generalCategoryId,
+    }, 'id'));
+    questionInserts.push(knex('knowledge_questions').insert({
+      label: 'social-services-shelters',
+      question: 'What shelters are available?',
+      knowledge_category_id: generalCategoryId,
+    }, 'id'));
+    questionInserts.push(knex('knowledge_questions').insert({
+      label: 'social-services-food-assistance',
+      question: 'Where can I go for food assistance?',
+      knowledge_category_id: generalCategoryId,
+    }, 'id'));
+    questionInserts.push(knex('knowledge_questions').insert({
+      label: 'social-services-hygiene',
+      question: 'Where can I get access to a public shower or toilet?',
+      knowledge_category_id: generalCategoryId,
+    }, 'id'));
+    questionInserts.push(knex('knowledge_questions').insert({
+      label: 'sanitation-electronics-disposal',
+      question: 'Where can I find a health clinic or basic medical care?',
       knowledge_category_id: generalCategoryId,
     }, 'id'));
     return Promise.all(questionInserts).then((data) => {
