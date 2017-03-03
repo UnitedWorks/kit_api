@@ -2,7 +2,7 @@ import formidable from 'formidable';
 import { knex } from '../orm';
 import { logger } from '../logger';
 import * as AccountModels from '../accounts/models';
-import { Case, OrganizationsCases } from './models';
+import { Case, CaseCategory, OrganizationsCases } from './models';
 import { CASE_STATUSES } from '../constants/case-statuses';
 import { FacebookMessengerClient, TwilioSMSClient } from '../conversations/clients';
 import { saveLocation, saveMedia, associateCaseLocation, associateCaseMedia } from '../knowledge-base/helpers';
@@ -282,4 +282,10 @@ export const updateCaseStatus = (caseId, status, options = {}) => {
         return options.returnJSON ? refreshedModel.toJSON() : refreshedModel;
       }).catch(error => error);
     }).catch(error => error);
+};
+
+export const getCaseCategories = (params, options) => {
+  return CaseCategory.fetchAll()
+    .then(categories => options.returnJSON ? categories.toJSON() : categories)
+    .catch(error => error);
 };
