@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import { logger } from '../logger';
 import * as helpers from './helpers';
+import { getOrInsertConstituent } from '../accounts/helpers';
+import { geocoder } from '../services/geocoder';
 
 const router = new Router();
 
@@ -16,6 +18,37 @@ router.get('/', (req, res, next) => {
     if (req.query.status) options.filters.status = req.query.status;
     helpers.getCases(orgId, options)
       .then(cases => res.status(200).send({ cases }))
+      .catch(error => next(error));
+  } catch (e) {
+    next(e);
+  }
+});
+
+router.post('/', (req, res, next) => {
+  try {
+    getOrInsertConstituent(req.body.constituent, { returnJSON: true }).then((constituentJSON) => {
+      if (typeof req.body.case.location === 'string') {
+        geocoder.geocode(req.body.case.location).then((geoJSON) => {
+          req.body.case.location = geoJSON.length > 0 ? geoJSON[0] : null;
+          helpers.compileCase(req.body.case, constituentJSON, req.body.organization)
+            .then(caseJSON => res.status(200).send({ case: caseJSON }))
+            .catch(error => next(error));
+        });
+      } else {
+        helpers.compileCase(req.body.caseModel, constituentJSON, req.body.organization)
+          .then(caseJSON => res.status(200).send({ case: caseJSON }))
+          .catch(error => next(error));
+      }
+    }).catch(error => next(error));
+  } catch (e) {
+    next(e);
+  }
+});
+
+router.get('/categories', (req, res, next) => {
+  try {
+    helpers.getCaseCategories(null, { returnJSON: true })
+      .then(categories => res.status(200).send({ categories }))
       .catch(error => next(error));
   } catch (e) {
     next(e);

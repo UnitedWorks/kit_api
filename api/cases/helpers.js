@@ -2,7 +2,7 @@ import formidable from 'formidable';
 import { knex } from '../orm';
 import { logger } from '../logger';
 import * as AccountModels from '../accounts/models';
-import { Case, OrganizationsCases } from './models';
+import { Case, CaseCategory, OrganizationsCases } from './models';
 import { CASE_STATUSES } from '../constants/case-statuses';
 import { FacebookMessengerClient, TwilioSMSClient } from '../conversations/clients';
 import { saveLocation, saveMedia, associateCaseLocation, associateCaseMedia } from '../knowledge-base/helpers';
@@ -65,7 +65,9 @@ export const newCaseNotification = (caseObj, organization) => {
   });
 };
 
-export const createCase = (title, data, category, constituent, organization, location, attachments = [], seeClickFixId) => {
+export const createCase = (title, category, constituent, organization, location, attachments = [], seeClickFixId) => {
+  if (!constituent.id) throw new Error('Missing Key: constituent.id');
+  if (!organization.id) throw new Error('Missing Key: organization.id');
   return new Promise((resolve, reject) => {
     const attachmentPromises = [];
     if (location) attachmentPromises.push(saveLocation(location, { returnJSON: true }));
@@ -75,10 +77,9 @@ export const createCase = (title, data, category, constituent, organization, loc
     Promise.all(attachmentPromises).then((attachmentModels) => {
       const newCase = {
         status: 'open',
-        category_id: category.id,
-        constituent_id: constituent.id,
+        category_id: category.id || category,
+        constituent_id: constituent.id || constituent,
         title,
-        data,
         seeClickFixId,
       };
       Case.forge(newCase).save().then((caseResponse) => {
@@ -116,37 +117,49 @@ export const createCase = (title, data, category, constituent, organization, loc
   });
 };
 
-export const handleConstituentRequest = (headline, data, category, constituent, organization, location, attachments) => {
+export const handleConstituentRequest = (headline, category, constituent, organization, location, attachments) => {
   return new Promise((resolve, reject) => {
     // Check for integrations to push to
     hasIntegration(organization, INTEGRATIONS.SEE_CLICK_FIX).then((integrated) => {
       if (integrated && new SeeClickFixClient().requestCategoryAllowed(category.label)) {
         new SeeClickFixClient().report(location, headline, attachments).then((scfIssue) => {
-          createCase(headline, data, category, constituent, organization, location, attachments,
+          createCase(headline, category, constituent, organization, location, attachments,
             scfIssue.id).then(caseObj => resolve(caseObj.toJSON()));
         });
       } else {
-        createCase(headline, data, category, constituent, organization, location, attachments)
+        createCase(headline, category, constituent, organization, location, attachments)
           .then(caseObj => resolve(caseObj.toJSON()));
       }
     });
   });
 };
 
+export const compileCase = (caseObj, constituent, organization) => {
+  return handleConstituentRequest(
+    caseObj.description,
+    caseObj.category,
+    constituent,
+    organization,
+    caseObj.location,
+    caseObj.attachments,
+    caseObj.seeClickFixId,
+  );
+};
+
 export const getConstituentCases = (constituent) => {
-  return new Promise((requestResolve, reject) => {
-    AccountModels.Constituent.where({ id: constituent.id }).fetch({ withRelated: ['cases'] }).then((constituentModel) => {
-      const casePromises = [];
-      constituentModel.toJSON().cases.forEach((constituentCase) => {
-        // If case has see_click_fix_id and is open, we need to check for resolution
-        if (constituentCase.seeClickFixId && constituentCase.status === 'open') {
-          casePromises.push(new SeeClickFixClient().syncCase(constituentCase.seeClickFixId));
-        } else {
-          casePromises.push(new Promise(caseResolve => caseResolve(constituentCase)));
-        }
-      });
-      // Resolve all fetches
-      Promise.all(casePromises).then(res => requestResolve({ cases: res }));
+  return AccountModels.Constituent.where({ id: constituent.id }).fetch({ withRelated: ['cases'] }).then((constituentModel) => {
+    const casePromises = [];
+    constituentModel.toJSON().cases.forEach((constituentCase) => {
+      // If case has see_click_fix_id and is open, we need to check for resolution
+      if (constituentCase.seeClickFixId && constituentCase.status === 'open') {
+        casePromises.push(new SeeClickFixClient().syncCase(constituentCase.seeClickFixId));
+      } else {
+        casePromises.push(new Promise(caseResolve => caseResolve(constituentCase)));
+      }
+    });
+    // Resolve all fetches
+    return Promise.all(casePromises).then((response) => {
+      return { cases: response };
     });
   });
 };
@@ -269,4 +282,10 @@ export const updateCaseStatus = (caseId, status, options = {}) => {
         return options.returnJSON ? refreshedModel.toJSON() : refreshedModel;
       }).catch(error => error);
     }).catch(error => error);
+};
+
+export const getCaseCategories = (params, options) => {
+  return CaseCategory.fetchAll()
+    .then(categories => options.returnJSON ? categories.toJSON() : categories)
+    .catch(error => error);
 };
