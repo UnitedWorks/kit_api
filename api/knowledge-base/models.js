@@ -23,10 +23,6 @@ export const Schedule = bookshelf.Model.extend({
   tableName: 'schedules',
 });
 
-export const Media = bookshelf.Model.extend({
-  tableName: 'medias',
-});
-
 // Knowledge Base Entries - Think of as complex objects
 export const KnowledgeCategory = bookshelf.Model.extend({
   tableName: 'knowledge_categorys',
