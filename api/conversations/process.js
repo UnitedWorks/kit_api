@@ -4,49 +4,68 @@ import * as interfaces from '../constants/interfaces';
 import { NarrativeSession } from '../narratives/models';
 import { Constituent } from '../accounts/models';
 import { inputDirector } from '../narratives/helpers';
+import AWSClient from '../services/aws';
 
 function normalizeInput(conversationClient, input) {
-  let newMessageObject;
-  // Input: interface, message, state
-  if (conversationClient === interfaces.FACEBOOK) {
-    if (Object.prototype.hasOwnProperty.call(input, 'message')) {
+  return new Promise((resolve, reject) => {
+    let newMessageObject;
+    // Input: interface, message, state
+    if (conversationClient === interfaces.FACEBOOK) {
+      if (Object.prototype.hasOwnProperty.call(input, 'message')) {
+        newMessageObject = {
+          type: 'message',
+          payload: input.message,
+        };
+      } else if (Object.prototype.hasOwnProperty.call(input, 'postback')) {
+        newMessageObject = {
+          type: 'action',
+          payload: input.postback,
+        };
+      }
+      delete newMessageObject.mid;
+      delete newMessageObject.seq;
+    } else if (conversationClient === interfaces.TWILIO) {
       newMessageObject = {
         type: 'message',
-        payload: input.message,
+        payload: {
+          text: input.Body,
+        },
       };
-    } else if (Object.prototype.hasOwnProperty.call(input, 'postback')) {
-      newMessageObject = {
-        type: 'action',
-        payload: input.postback,
-      };
-    }
-    delete newMessageObject.mid;
-    delete newMessageObject.seq;
-  } else if (conversationClient === interfaces.TWILIO) {
-    newMessageObject = {
-      type: 'message',
-      payload: {
-        text: input.Body,
-      },
-    };
-    if (input.NumMedia > 0) {
-      if (!Object.prototype.hasOwnProperty.call(newMessageObject.payload, 'attachments')) {
-        newMessageObject.payload.attachments = [];
-      }
-      for (let a = 0; a <= 9; a += 1) {
-        if (Object.prototype.hasOwnProperty.call(input, `MediaContentType${a}`)) {
-          newMessageObject.payload.attachments.push({
-            type: input[`MediaContentType${a}`],
-            payload: {
-              url: input[`MediaUrl${a}`],
-            },
-          });
+      if (input.NumMedia > 0) {
+        if (!Object.prototype.hasOwnProperty.call(newMessageObject.payload, 'attachments')) {
+          newMessageObject.payload.attachments = [];
+        }
+        for (let a = 0; a <= 9; a += 1) {
+          if (Object.prototype.hasOwnProperty.call(input, `MediaContentType${a}`)) {
+            newMessageObject.payload.attachments.push({
+              type: input[`MediaContentType${a}`],
+              payload: {
+                url: input[`MediaUrl${a}`],
+              },
+            });
+          }
         }
       }
     }
-  }
-  // Output: reformatted message
-  return newMessageObject;
+    // Output reformatted message after transfering external media to our S3
+    if (newMessageObject.payload.attachments) {
+      const fileTransfers = [];
+      newMessageObject.payload.attachments.forEach((attachment) => {
+        fileTransfers.push(new AWSClient().copyExternalUrlToS3(attachment.payload.url));
+      });
+      return Promise.all(fileTransfers)
+        .then((newUrls) => {
+          newMessageObject.payload.attachments = newMessageObject.payload.attachments.map(
+            (attachment, index) => {
+              attachment.payload.url = newUrls[index];
+              return attachment;
+            });
+          resolve(newMessageObject);
+        });
+    }
+    // Or just output reformatted message
+    resolve(newMessageObject);
+  });
 }
 
 // TODO(youmustfight, nicksahler): We eventually need to filter interface properties too
@@ -86,9 +105,11 @@ function normalizeSessionsFromRequest(req, conversationClient) {
         }).then((state) => {
           // Mark: Gets narrative_state snapshot and adds to data store's context?
           // Nick: We should store this elsewhere. Moving for now.
-          return Object.assign(state, { input: normalizeInput(conversationClient, input), conversationClient });
-        })
-      })
+          return normalizeInput(conversationClient, input).then((normalizedInput) => {
+            return Object.assign(state, { input: normalizedInput, conversationClient });
+          });
+        });
+      }),
     );
   } else if (conversationClient === interfaces.TWILIO) {
     const input = req.body;
@@ -98,7 +119,9 @@ function normalizeSessionsFromRequest(req, conversationClient) {
     }).then(function(c) {
       return setupConstituentState(c.toJSON());
     }).then((state) => {
-      return [Object.assign(state, { input: normalizeInput(conversationClient, input), conversationClient })];
+      return normalizeInput(conversationClient, input).then((normalizedInput) => {
+        return [Object.assign(state, { input: normalizedInput, conversationClient })];
+      });
     });
   }
 }
