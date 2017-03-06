@@ -143,7 +143,6 @@ export const compileCase = (caseObj, constituent, organization) => {
     organization,
     caseObj.location,
     caseObj.attachments,
-    caseObj.seeClickFixId,
   );
 };
 

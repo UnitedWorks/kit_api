@@ -3,9 +3,8 @@ exports.up = function(knex, Promise) {
   return knex.schema
     .createTable('medias', (table) => {
       table.increments('id').primary();
-      table.string('name').notNullable();
-      table.string('url').notNullable();
       table.enum('type', ['image', 'video', 'file']).notNullable();
+      table.string('url').notNullable();
       table.dateTime('created_at').defaultTo(knex.raw('now()'));
     })
     .createTable('cases_medias', (table) => {
