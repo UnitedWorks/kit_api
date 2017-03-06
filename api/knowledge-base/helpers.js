@@ -75,16 +75,6 @@ export const deleteAnswer = (answerId) => {
   }).catch(err => err);
 };
 
-export const saveMedia = (attachment, options = {}) => {
-  const newModel = {
-    type: attachment.type,
-    url: attachment.payload.url,
-  };
-  return Media.forge(newModel).save().then((data) => {
-    return options.returnJSON ? data.toJSON() : data;
-  }).catch(err => err);
-};
-
 export const associateCaseLocation = (caseObj, location) => {
   return CaseLocations.forge({
     case_id: caseObj.id,

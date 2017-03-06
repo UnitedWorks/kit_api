@@ -2,6 +2,7 @@ import lodash from 'lodash';
 import { bookshelf } from '../orm';
 import * as AccountModels from '../accounts/models';
 import * as KnowledgeBaseModels from '../knowledge-base/models';
+import { Media } from '../media/models';
 
 export const CaseCategory = bookshelf.Model.extend({
   tableName: 'case_categorys',
@@ -57,6 +58,6 @@ export const Case = bookshelf.Model.extend({
     return this.belongsToMany(KnowledgeBaseModels.Location, 'cases_locations');
   },
   media: function() {
-    return this.belongsToMany(KnowledgeBaseModels.Media, 'cases_medias');
+    return this.belongsToMany(Media, 'cases_medias');
   },
 });

@@ -23,7 +23,19 @@ app.use(bodyParser.json({
 }));
 
 // Handle Cross Origin Options
-app.use(cors());
+const whitelist = [
+  'http://localhost:8000',
+  'http://127.0.0.1:8000',
+  'https://dashboard.kit.community',
+];
+const corsOptions = {
+  origin: (origin, cb) => {
+    const originIsWhitelisted = whitelist.indexOf(origin) !== -1;
+    cb(null, originIsWhitelisted);
+  },
+  credentials: true,
+};
+app.use(cors(corsOptions));
 
 app.get('/', (req, res) => {
   res.status(200).send();
@@ -35,6 +47,7 @@ app.use('/cases', require('./cases/routes'));
 app.use('/conversations', require('./conversations/routes'));
 app.use('/integrations', require('./integrations/routes'));
 app.use('/knowledge', require('./knowledge-base/routes'));
+app.use('/media', require('./media/routes'));
 
 // Log Viewing
 app.get('/logs/info', (req, res) => {
