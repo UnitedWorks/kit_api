@@ -12,5 +12,5 @@ exports.down = function(knex, Promise) {
     .alterTable('medias', (table) => {
       table.dropColumn('name');
     })
-    .raw('ALTER TABLE medias ALTER COLUMN type SET NOT NULL');
+    .raw(`UPDATE medias SET type='file' WHERE type IS NULL; ALTER TABLE medias ALTER COLUMN type SET NOT NULL`);
 };
