@@ -109,3 +109,9 @@ export const REACTION = 'reaction';
 export const ACCEPTING = 'accepting';
 export const SKEPTICAL = 'skeptical';
 export const ELABORATE = 'elaborate';
+
+// SmallTalk
+// KEYWORDS
+export const SMALL_TALK = 'small_talk';
+// TRAITS
+export const GREETING = 'greeting';

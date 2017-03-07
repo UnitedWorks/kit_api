@@ -12,7 +12,7 @@ const i18n = function(key) {
     'intro_information': 'I’ll tell you how to register to vote, about state/federal benefits, school closings, and more! How great is that?',
     'intro_excitement': ':D I thought you\'d never ask!',
     'intro_explanation': 'Every week local governments and organizations are telling me information to frequently asked questions their constituents have. When you ask a question, I sift through all that knowledge to give you the best answer! My goal is to save you from digging through annoying websites and making endless phone calls.',
-    'intro_ask_location': 'So I can give you the right answers, can you tell me what city and state you are located in?',
+    'intro_ask_location': 'So I can give you the right answers, what CITY and STATE are you in?',
     'bot_apology': 'Sorry, I didn\'t catch that :( I have a lot of learning to do! Can you say that again please?',
   };
   return translations[key];
@@ -27,6 +27,12 @@ const skpeticQuickReplies = [
   { content_type: 'text', title: 'Get registered!', payload: 'Get registered to vote' },
   { content_type: 'text', title: 'Am I registered?', payload: 'Am I registered to vote?' },
   { content_type: 'text', title: 'No thanks', payload: 'No thanks' },
+];
+
+const basicRequestQuickReplies = [
+  { content_type: 'text', title: 'Upcoming Elections', payload: 'Upcoming Elections' },
+  { content_type: 'text', title: 'Available Benefits', payload: 'Available Benefits' },
+  { content_type: 'text', title: 'Raise an Issue', payload: 'MAKE_REQUEST' },
 ];
 
 export default {
@@ -87,13 +93,13 @@ export default {
           if (entityValueIs(entities[TAGS.VOTING], [TAGS.REGISTER_TO_VOTE])) {
             this.set('stateRedirects', [{
               whenExiting: 'voting.voterRegistrationGet',
-              goTo: 'smallTalk.starting_interaction_end',
+              goTo: 'smallTalk.waiting_for_starting_interaction_end',
             }]);
             return 'voting.voterRegistrationGet';
           } else if (entityValueIs(entities[TAGS.VOTING], [TAGS.CHECK_VOTER_REGISTRATION])) {
             this.set('stateRedirects', [{
               whenExiting: 'voting.voterRegistrationCheck',
-              goTo: 'smallTalk.starting_interaction_end',
+              goTo: 'smallTalk.waiting_for_starting_interaction_end',
             }]);
             return 'voting.voterRegistrationCheck';
           }
@@ -113,7 +119,7 @@ export default {
     },
   },
 
-  starting_interaction_end: {
+  waiting_for_starting_interaction_end: {
     enter() {
       const quickReplies = [
         { content_type: 'text', title: 'WOH!', payload: 'Awesome!' },
@@ -123,9 +129,7 @@ export default {
     },
     message() {
       const quickReplies = [
-        { content_type: 'text', title: 'Upcoming Elections', payload: 'Upcoming Elections' },
-        { content_type: 'text', title: 'Available Benefits', payload: 'Available Benefits' },
-        { content_type: 'text', title: 'Raise an Issue', payload: 'MAKE_REQUEST' },
+        ...basicRequestQuickReplies,
         { content_type: 'text', title: 'What else can I ask?', payload: 'What can I ask?' },
       ];
       const input = this.snapshot.input.payload;
@@ -154,21 +158,21 @@ export default {
   },
 
   askOptions() {
-    const quickReplies = [
-      { content_type: 'text', title: 'Upcoming Elections', payload: 'Upcoming Elections' },
-      { content_type: 'text', title: 'Available Benefits', payload: 'Available Benefits' },
-      { content_type: 'text', title: 'Raise an Issue', payload: 'MAKE_REQUEST' },
-    ];
     if (this.get('organization').activated) {
-      this.messagingClient.addToQuene('Your local government has been teaching me frequent requests, so I know a few things about your area!', quickReplies);
+      this.messagingClient.addToQuene('Your local government has been teaching me frequent requests, so I know a few things about your area!', basicRequestQuickReplies);
     } else {
-      this.messagingClient.addToQuene('Unfortunately, your local government hasn\'t told me anything yet. :( but there are still some ways I can help out!', quickReplies);
+      this.messagingClient.addToQuene('Unfortunately, your local government hasn\'t told me anything yet. :( but there are still some ways I can help out!', basicRequestQuickReplies);
     }
-    this.messagingClient.addToQuene('I have a lot to learn but some starting questions you can ask are: "When is my next election?", "What benefits are available to me?", and "I have a complaint"', quickReplies);
+    this.messagingClient.addToQuene('I have a lot to learn but some starting questions you can ask are: "When is my next election?", "What benefits are available to me?", and "I have a complaint"', basicRequestQuickReplies);
     return this.messagingClient.runQuene().then(() => {
       return 'start';
     });
   },
+
+  hanlde_greeting() {
+    this.messagingClient.send('Hey there! I\'m not much for small talk at the moment :/ Focusing on learning ways to help you interact with city governments right now!', basicRequestQuickReplies)
+    return 'start';
+  }
 
 // TODO: Move to init
   start: {
@@ -183,6 +187,10 @@ export default {
         // Help
         if (entityValueIs(entities[TAGS.HELP], [TAGS.ASK_OPTIONS])) {
           return 'askOptions';
+
+        // Actual Small Talk
+        } else if (entities[TAGS.SMALL_TALK]) {
+          if (entityValueIs(entities[TAGS.SMALL_TALK], [TAGS.GREETING])) return 'handle_greeting';
 
         // Benefits
         } else if (entities[TAGS.BENEFITS]) {

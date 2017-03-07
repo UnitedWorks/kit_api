@@ -9,8 +9,8 @@ import * as TAGS from '../../constants/nlp-tagging';
 
 const i18n = function(key) {
   return {
-    setup_ask_city: 'Ok! What\'s your city and state?',
-    setup_invalid_location: 'Sorry, did you say a city or state? Can you tell me what city and state you\'re from?'
+    setup_ask_city: 'Ok! What\'s your CITY and STATE?',
+    setup_invalid_location: 'Sorry, did you say a city or state? Can you tell me what CITY and STATE you\'re from?'
   }[key];
 }
 
@@ -50,7 +50,7 @@ export default {
             this.messagingClient.send(`Hmm, which ${nlpData.entities.location[0].value} are you?`, quickReplies);
             return;
           } else if (filteredGeoData.length === 0) {
-            this.messagingClient.send('Hmm, I wasn\'t able to find anything. Can you try giving me a city and state again?');
+            this.messagingClient.send('Hmm, I wasn\'t able to find anything. Can you try giving me a CITY and STATE again?');
             return;
           }
 
@@ -114,7 +114,7 @@ export default {
         if (entityValueIs(entities[TAGS.CONFIRM_DENY], TAGS.YES)) {
           return 'smallTalk.askOptions';
         } else if (entityValueIs(entities[TAGS.CONFIRM_DENY], TAGS.NO)) {
-          this.messagingClient.send('Oh! Can you tell me your city and state again?');
+          this.messagingClient.send('Oh! Can you tell me your CITY and STATE again?');
           return 'waiting_organization';
         }
         this.messagingClient.send('Sorry, I didn\'t catch whether that was correct.');
