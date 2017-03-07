@@ -51,7 +51,7 @@ export default {
             return;
           } else if (filteredGeoData.length === 0) {
             if (noCityGeoData.length > 0) {
-              this.messagingClient.send('I need more than just a state. Can you give a CITY and STATE like: "New Brunswick, NJ"');
+              this.messagingClient.send('I need more info. Give a CITY and STATE like: "New Brunswick, NJ"');
             } else {
               this.messagingClient.send(i18n('setup_invalid_location'));
             }
