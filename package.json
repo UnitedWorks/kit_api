@@ -45,7 +45,6 @@
     "dotenv": "^2.0.0",
     "express": "^4.14.0",
     "express-formidable": "^1.0.0",
-    "jimp": "^0.2.27",
     "knex": "^0.12.6",
     "knex-postgis": "^0.2.0",
     "lodash": "^4.17.4",
