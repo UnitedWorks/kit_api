@@ -172,7 +172,7 @@ export default {
   hanlde_greeting() {
     this.messagingClient.send('Hey there! I\'m not much for small talk at the moment :/ Focusing on learning ways to help you interact with city governments right now!', basicRequestQuickReplies)
     return 'start';
-  }
+  },
 
 // TODO: Move to init
   start: {
