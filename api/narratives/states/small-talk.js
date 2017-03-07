@@ -8,11 +8,11 @@ import SlackService from '../../services/slack';
 /* TODO(nicksahler) until I build the full i18n class */
 const i18n = function(key) {
   var translations = {
-    'intro_hello': 'Hey there! I’m the Mayor, a chat bot to help you make sense of government large and small.',
+    'intro_hello': 'Hey there! :) I’m the Mayor, a chat bot to help you make sense of government large and small.',
     'intro_information': 'I’ll tell you how to register to vote, about state/federal benefits, school closings, and more! How great is that?',
     'intro_excitement': ':D I thought you\'d never ask!',
     'intro_explanation': 'Every week local governments and organizations are telling me information to frequently asked questions their constituents have. When you ask a question, I sift through all that knowledge to give you the best answer! My goal is to save you from digging through annoying websites and making endless phone calls.',
-    'intro_ask_location': 'One quick question so I can give you better answers. What city and state are you located in?',
+    'intro_ask_location': 'So I can give you the right answers, can you tell me what city and state you are located in?',
     'bot_apology': 'Sorry, I didn\'t catch that :( I have a lot of learning to do! Can you say that again please?',
   };
   return translations[key];
@@ -24,8 +24,8 @@ const startingQuickReplies = [
 ];
 
 const skpeticQuickReplies = [
-  { content_type: 'text', title: 'Register to Vote', payload: 'Register to Vote' },
-  { content_type: 'text', title: 'Am I registered to vote?', payload: 'Am I registered to vote?' },
+  { content_type: 'text', title: 'Get registered!', payload: 'Get registered to vote' },
+  { content_type: 'text', title: 'Am I registered?', payload: 'Am I registered to vote?' },
   { content_type: 'text', title: 'No thanks', payload: 'No thanks' },
 ];
 
@@ -56,16 +56,17 @@ export default {
         const entities = nlpData.entities;
         if (entities[TAGS.REACTION]) {
           if (entityValueIs(entities[TAGS.REACTION], [TAGS.SKEPTICAL])) {
-            return 'waiting_for_skeptical_starting_interaction';
+            return this.messagingClient.send('Hmmmm, quite skeptical aren\'t we? :P')
+              .then(() => 'waiting_for_starting_interaction_options');
           } else if (entityValueIs(entities[TAGS.REACTION], [TAGS.ELABORATE])) {
             this.messagingClient.addAll([
-              i18n('intro_excitement'),
+              {
+                type: 'image',
+                url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/16463485_187743068374118_731666577286732253_o.png?oh=145d7d19e62113f3d2a56a74f1632d13&oe=590ABC31',
+              },
               i18n('intro_explanation'),
-              i18n('intro_ask_location'),
             ]);
-            return this.messagingClient.runQuene().then(() => {
-              return 'setup.waiting_organization';
-            });
+            return this.messagingClient.runQuene().then(() => 'waiting_for_starting_interaction_options');
           }
         }
         this.messagingClient.send(i18n('bot_apology'), startingQuickReplies);
@@ -73,9 +74,9 @@ export default {
     },
   },
 
-  waiting_for_skeptical_starting_interaction: {
+  waiting_for_starting_interaction_options: {
     enter() {
-      this.messagingClient.send('Hmmmm, quite skeptical aren\'t we? :P How about we get you registered to vote?', skpeticQuickReplies);
+      this.messagingClient.send('How about I tell you how to register to vote?', skpeticQuickReplies);
     },
     message() {
       const input = this.snapshot.input.payload;
@@ -100,16 +101,14 @@ export default {
         if (entities[TAGS.CONFIRM_DENY]) {
           if (entityValueIs(entities[TAGS.CONFIRM_DENY], [TAGS.NO])) {
             this.messagingClient.addAll([
-              'Ok! Let me give you a run down of what I can do!',
+              'Ok! In that case, let me give you a run down of what I can do!',
               i18n('intro_explanation'),
               i18n('intro_ask_location'),
             ]);
-            return this.messagingClient.runQuene().then(() => {
-              return 'setup.waiting_organization';
-            });
+            return this.messagingClient.runQuene().then(() => 'setup.waiting_organization');
           }
         }
-        this.messagingClient.send(i18n('bot_apology'), skpeticQuickReplies);
+        this.messagingClient.send(i18n('bot_apology')).then(() => 'waiting_for_starting_interaction_options');
       });
     },
   },
@@ -117,14 +116,14 @@ export default {
   starting_interaction_end: {
     enter() {
       const quickReplies = [
-        { content_type: 'text', title: 'Awesome!', payload: 'Awesome!' },
-        { content_type: 'text', title: 'Unimpressed', payload: 'Unimpressed' },
+        { content_type: 'text', title: 'WOH!', payload: 'Awesome!' },
+        { content_type: 'text', title: 'Ehh...', payload: 'Unimpressed' },
       ];
       this.messagingClient.send('How easy was that?! :D', quickReplies);
     },
     message() {
       const quickReplies = [
-        { content_type: 'text', title: 'Upcoming Election', payload: 'Upcoming Election' },
+        { content_type: 'text', title: 'Upcoming Elections', payload: 'Upcoming Elections' },
         { content_type: 'text', title: 'Available Benefits', payload: 'Available Benefits' },
         { content_type: 'text', title: 'Raise an Issue', payload: 'MAKE_REQUEST' },
         { content_type: 'text', title: 'What else can I ask?', payload: 'What can I ask?' },
@@ -148,28 +147,24 @@ export default {
             this.messagingClient.addToQuene('Tough crowd, huh. :|');
           }
         }
-        this.messagingClient.addToQuene('It\'s still early days for me, but here are other things I can help with.', quickReplies);
+        this.messagingClient.addToQuene('In bot years, I\'m still young, but there are a few things I can help you and your local government with! Ask away.', quickReplies);
         return this.messagingClient.runQuene().then(() => 'start');
       });
     },
   },
 
-  whatCanIAsk() {
+  askOptions() {
     const quickReplies = [
-      { content_type: 'text', title: 'Upcoming Election', payload: 'Upcoming Election' },
+      { content_type: 'text', title: 'Upcoming Elections', payload: 'Upcoming Elections' },
       { content_type: 'text', title: 'Available Benefits', payload: 'Available Benefits' },
       { content_type: 'text', title: 'Raise an Issue', payload: 'MAKE_REQUEST' },
     ];
-    this.messagingClient.addToQuene({
-      type: 'image',
-      url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/16463485_187743068374118_731666577286732253_o.png?oh=145d7d19e62113f3d2a56a74f1632d13&oe=590ABC31',
-    });
     if (this.get('organization').activated) {
       this.messagingClient.addToQuene('Your local government has been teaching me frequent requests, so I know a few things about your area!', quickReplies);
     } else {
       this.messagingClient.addToQuene('Unfortunately, your local government hasn\'t told me anything yet. :( but there are still some ways I can help out!', quickReplies);
     }
-    this.messagingClient.addToQuene('I have a lot to learn but some starting questions you can ask are: "When is my next election?", "What benefits are available to me?", and "I have a complaint"');
+    this.messagingClient.addToQuene('I have a lot to learn but some starting questions you can ask are: "When is my next election?", "What benefits are available to me?", and "I have a complaint"', quickReplies);
     return this.messagingClient.runQuene().then(() => {
       return 'start';
     });
@@ -186,8 +181,8 @@ export default {
         logger.info(nlpData);
 
         // Help
-        if (entityValueIs(entities[TAGS.HELP], [TAGS.WHAT_CAN_I_ASK])) {
-          return 'whatCanIAsk';
+        if (entityValueIs(entities[TAGS.HELP], [TAGS.ASK_OPTIONS])) {
+          return 'askOptions';
 
         // Benefits
         } else if (entities[TAGS.BENEFITS]) {
@@ -290,7 +285,7 @@ export default {
         'GET_REQUESTS': 'getRequests',
         'GET_STARTED': 'init',
         'CHANGE_CITY': 'setup.reset_organization',
-        'WHAT_CAN_I_ASK': 'whatCanIAsk',
+        'ASK_OPTIONS': 'askOptions',
       }[this.snapshot.input.payload.payload];
     }
   },

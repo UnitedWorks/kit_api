@@ -23,9 +23,10 @@ export const GET = 'get';
 export const CHECK = 'check';
 
 // Help Tags
+// KEYWORDS
 export const HELP = 'help';
-export const WHAT_CAN_I_ASK = 'what can I ask';
-export const INFO = 'info';
+// TRAITS
+export const ASK_OPTIONS = 'ask options';
 
 // Relationships
 export const RELATIONSHIP_HOUSING = 'relationship_housing';

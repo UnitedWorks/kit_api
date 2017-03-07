@@ -112,7 +112,7 @@ export default {
       return nlp.message(input, {}).then((nlpData) => {
         const entities = nlpData.entities;
         if (entityValueIs(entities[TAGS.CONFIRM_DENY], TAGS.YES)) {
-          return 'smallTalk.whatCanIAsk';
+          return 'smallTalk.askOptions';
         } else if (entityValueIs(entities[TAGS.CONFIRM_DENY], TAGS.NO)) {
           this.messagingClient.send('Oh! Can you tell me your city and state again?');
           return 'waiting_organization';

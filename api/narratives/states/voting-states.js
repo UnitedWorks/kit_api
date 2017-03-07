@@ -112,11 +112,11 @@ export default {
   voterRegistrationCheck() {
     // Check for location. If none, set redirect back to this state once location is set
     if (this.get('location') === undefined) {
-      this.messagingClient.send('Lets check! Quick question though. What city and state are you located in?');
+      this.messagingClient.send('Ok! First, what city and state are you located in?');
       if (this.get('stateRedirects')) {
         this.set('stateRedirects', [{
           whenExiting: 'setup.waiting_organization_confirm',
-          exitWas: 'smallTalk.whatCanIAsk',
+          exitWas: 'smallTalk.askOptions',
           goTo: 'voting.voterRegistrationCheck',
         }].concat(this.get('stateRedirects')));
       }
@@ -153,11 +153,11 @@ export default {
   voterRegistrationGet() {
     // Check for location. If none, set redirect back to this state once location is set
     if (this.get('location') === undefined) {
-      this.messagingClient.send('Lets get you registered! Quick question though. What city and state are you located in?');
+      this.messagingClient.send('Ok! First, what city and state are you located in?');
       if (this.get('stateRedirects')) {
         this.set('stateRedirects', [{
           whenExiting: 'setup.waiting_organization_confirm',
-          exitWas: 'smallTalk.whatCanIAsk',
+          exitWas: 'smallTalk.askOptions',
           goTo: 'voting.voterRegistrationGet',
         }].concat(this.get('stateRedirects')));
       }

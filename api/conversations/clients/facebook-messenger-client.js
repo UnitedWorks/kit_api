@@ -20,7 +20,7 @@ const persistentMenu = {
   }, {
     type: 'postback',
     title: 'What can I ask?',
-    payload: 'WHAT_CAN_I_ASK',
+    payload: 'ASK_OPTIONS',
   }],
 };
 
