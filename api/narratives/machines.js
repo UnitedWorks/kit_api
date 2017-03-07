@@ -83,21 +83,30 @@ export class NarrativeSessionMachine extends StateMachine {
   setState(state) {
     let newState = state;
 
+    // Checks for Redirecting State - Check for object on data store
     if (this.snapshot.data_store.stateRedirects && this.snapshot.data_store.stateRedirects.length > 0) {
+      // Does the exiting state match our stateRedirect whenExiting?
       if (this.snapshot.data_store.stateRedirects[0].whenExiting.includes(this.snapshot.state_machine_previous_state)) {
+        // The state we're going to was what our redirect was. Means succes, and remove redirect
         if (RegExp(`${state}$`).test(this.snapshot.data_store.stateRedirects[0].goTo)) {
           newState = this.snapshot.data_store.stateRedirects[0].goTo;
           this.snapshot.data_store.stateRedirects = this.snapshot.data_store.stateRedirects.slice(1);
+        // We want the redirect to happen when the state exited in a certain manner
+        // Ex: when setting location, we only want redirect to happen when successful,
+        // not when looping back for clairifcation
         } else if (this.snapshot.data_store.stateRedirects[0].exitWas !== undefined) {
+          // If the exit condition exists, and the state we were going to matches our condition
           if (RegExp(`${state}$`).test(this.snapshot.data_store.stateRedirects[0].exitWas)) {
             newState = this.snapshot.data_store.stateRedirects[0].goTo;
             this.snapshot.data_store.stateRedirects = this.snapshot.data_store.stateRedirects.slice(1);
           }
         }
+      // Does the state we're going to match what the redirect's end goal is?
       } else if (this.snapshot.data_store.stateRedirects[0].goTo === state) {
         this.snapshot.data_store.stateRedirects = this.snapshot.data_store.stateRedirects.slice(1);
       }
     } else {
+      // Clear the datastore object if its empty
       delete this.snapshot.data_store.stateRedirects;
     }
 
