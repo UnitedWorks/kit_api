@@ -110,7 +110,19 @@ export default {
   },
 
   voterRegistrationCheck() {
-    logger.info('State: voterRegistrationCheck');
+    // Check for location. If none, set redirect back to this state once location is set
+    if (this.get('location') === undefined) {
+      this.messagingClient.send('Lets check! Quick question though. What city and state are you located in?');
+      if (this.get('stateRedirects')) {
+        this.set('stateRedirects', [{
+          whenExiting: 'setup.waiting_organization_confirm',
+          exitWas: 'smallTalk.whatCanIAsk',
+          goTo: 'voting.voterRegistrationCheck',
+        }].concat(this.get('stateRedirects')));
+      }
+      return 'setup.waiting_organization';
+    }
+    // State
     const quickActions = [];
     return new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
       info.lookup_tools.forEach((tool) => {
@@ -123,19 +135,33 @@ export default {
           });
         }
       });
-      this.messagingClient.send({
+      return this.messagingClient.send({
         type: 'template',
         templateType: 'button',
         text: `Here's a way to check if your registered in ${this.get('location').administrativeLevels.level1short}:`,
         buttons: quickActions,
+      }).then(() => {
+        if (this.get('stateRedirects')[0].whenExiting.includes('voterRegistrationCheck')) {
+          return this.get('stateRedirects')[0].goTo;
+        }
+        return 'smallTalk.start';
       });
-
-      return 'smallTalk.start';
     });
   },
 
   voterRegistrationGet() {
-    logger.info('State: voterRegistrationGet');
+    // Check for location. If none, set redirect back to this state once location is set
+    if (this.get('location') === undefined) {
+      this.messagingClient.send('Lets get you registered! Quick question though. What city and state are you located in?');
+      if (this.get('stateRedirects')) {
+        this.set('stateRedirects', [{
+          whenExiting: 'setup.waiting_organization_confirm',
+          exitWas: 'smallTalk.whatCanIAsk',
+          goTo: 'voting.voterRegistrationGet',
+        }].concat(this.get('stateRedirects')));
+      }
+      return 'setup.waiting_organization';
+    }
     this.messagingClient.addToQuene('Let\'s get you registered!');
     const votingClientInstance = new VotingClient({ location: this.get('location') });
     return Promise.all([
@@ -189,7 +215,12 @@ export default {
         templateType: 'generic',
         elements,
       });
-      return this.messagingClient.runQuene().then(() => 'smallTalk.start');
+      return this.messagingClient.runQuene().then(() => {
+        if (this.get('stateRedirects')[0].whenExiting.includes('voterRegistrationGet')) {
+          return this.get('stateRedirects')[0].goTo;
+        }
+        return 'smallTalk.start';
+      });
     });
   },
 

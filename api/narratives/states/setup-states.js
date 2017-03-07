@@ -9,8 +9,8 @@ import * as TAGS from '../../constants/nlp-tagging';
 
 const i18n = function(key) {
   return {
-    setup_ask_city: 'Ok! Tell me the city name or postcode.',
-    setup_invalid_location: 'Sorry, did you say a city or state? Can you tell me what city, state, and zipcode you\'re from?'
+    setup_ask_city: 'Ok! What\'s your city and state?',
+    setup_invalid_location: 'Sorry, did you say a city or state? Can you tell me what city and state you\'re from?'
   }[key];
 }
 
@@ -50,7 +50,7 @@ export default {
             this.messagingClient.send(`Hmm, which ${nlpData.entities.location[0].value} are you?`, quickReplies);
             return;
           } else if (filteredGeoData.length === 0) {
-            this.messagingClient.send('Hmm, I can\'t find that city, can you try again?');
+            this.messagingClient.send('Hmm, I wasn\'t able to find anything. Can you try giving me a city and state again?');
             return;
           }
 
@@ -112,23 +112,7 @@ export default {
       return nlp.message(input, {}).then((nlpData) => {
         const entities = nlpData.entities;
         if (entityValueIs(entities[TAGS.CONFIRM_DENY], TAGS.YES)) {
-          this.messagingClient.addToQuene('Oh yeah? Some of the best mayors are around there. Including me of course.');
-          // If city is activated, suggest asking a question or complaint
-          // If not, tell them they can only leave complaints/suggestions!
-          const quickReplies = [
-            { content_type: 'text', title: 'Upcoming Election', payload: 'Upcoming Election' },
-            { content_type: 'text', title: 'Available Benefits', payload: 'Available Benefits' },
-            { content_type: 'text', title: 'Raise an Issue', payload: 'MAKE_REQUEST' },
-            { content_type: 'text', title: 'What can I ask?', payload: 'WHAT_CAN_I_ASK' },
-          ];
-          if (this.get('organization').activated) {
-            this.messagingClient.addToQuene('It looks like they\'ve given me answers to some questions and requests.', quickReplies);
-          } else {
-            this.messagingClient.addToQuene('Your community hasn\'t yet given me answers to any questions yet, but I\'ve let them know.', quickReplies);
-          }
-          return this.messagingClient.runQuene().then(() => {
-            return 'smallTalk.start';
-          });
+          return 'smallTalk.whatCanIAsk';
         } else if (entityValueIs(entities[TAGS.CONFIRM_DENY], TAGS.NO)) {
           this.messagingClient.send('Oh! Can you tell me your city and state again?');
           return 'waiting_organization';

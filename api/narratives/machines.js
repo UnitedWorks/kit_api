@@ -38,11 +38,11 @@ export class StateMachine {
   fire(state, event, aux) {
     const func = this.resolve(state, event);
     const next = (func && typeof func === 'function') ? func.call(this, aux) : null;
-    let self = this;
+    const self = this;
 
     /* ** ~~((New and Improved!!!!!))~~ ** */
     // TODO(nicksahler) Handler promise failure better. Maybe go to an error state in the bot?
-    return Promise.resolve(next).then(function(result){
+    return Promise.resolve(next).then((result) => {
       logger.info(`${state} (${event}) -> ${result}`);
 
       if (!result) {
@@ -61,15 +61,13 @@ export class NarrativeSessionMachine extends StateMachine {
       states,
       snapshot.state_machine_current_state,
       snapshot.state_machine_previous_state,
-      snapshot.data_store
+      snapshot.data_store,
     );
 
     this.snapshot = snapshot;
-    const self = this;
 
     // Set the Messaging Client
-    const clientConfig = { constituent: this.snapshot.constituent }
-
+    const clientConfig = { constituent: this.snapshot.constituent };
     switch (this.snapshot.conversationClient) {
       case interfaces.FACEBOOK:
         this.messagingClient = new FacebookMessengerClient(clientConfig);
@@ -83,10 +81,21 @@ export class NarrativeSessionMachine extends StateMachine {
   }
 
   setState(state) {
+    let newState = state;
+    if (this.snapshot.data_store.stateRedirects && this.snapshot.data_store.stateRedirects.length > 0) {
+      if (this.snapshot.data_store.stateRedirects[0].whenExiting.includes(this.snapshot.state_machine_previous_state)
+          && this.snapshot.data_store.stateRedirects[0].exitWas.includes(state)) {
+        newState = this.snapshot.data_store.stateRedirects[0].goTo;
+        this.snapshot.data_store.stateRedirects = this.snapshot.data_store.stateRedirects.slice(1);
+      }
+    } else {
+      delete this.snapshot.data_store.stateRedirects;
+    }
+
     /* Support moving between machines */
-    var split = state.split('.').reverse();
-    var machine = split[1] || this.snapshot.state_machine_name;
-    var s = split[0];
+    const split = newState.split('.').reverse();
+    const machine = split[1] || this.snapshot.state_machine_name;
+    const s = split[0];
 
     if (machine !== this.snapshot.state_machine_name && stateMachines[machine]) {
       this.states = stateMachines[machine];
