@@ -9,8 +9,8 @@ import * as TAGS from '../../constants/nlp-tagging';
 
 const i18n = function(key) {
   return {
-    setup_ask_city: 'Ok! What\'s your CITY and STATE?',
-    setup_invalid_location: 'Sorry, did you say a city or state? Can you tell me what CITY and STATE you\'re from?'
+    setup_ask_city: 'Ok! What\'s your CITY and STATE?  Ex) "New Brunswick, NJ"',
+    setup_invalid_location: 'Hmm, I wasn\'t able to find anything. Can you try giving me a CITY and STATE again? Ex) "New Brunswick, NJ"'
   }[key];
 }
 
@@ -37,7 +37,7 @@ export default {
         return geocoder.geocode(nlpData.entities.location[0].value).then((geoData) => {
           // If more than one location is matched with our geolocation look up, ask for detail
           const filteredGeoData = geoData.filter(location => location.city);
-
+          const noCityGeoData = geoData.filter(location => location.administrativeLevels.level1short);
           if (filteredGeoData.length > 1) {
             const quickReplies = filteredGeoData.map((location) => {
               const formattedText = `${location.city}, ${location.administrativeLevels.level1short}`;
@@ -47,10 +47,14 @@ export default {
                 payload: formattedText,
               };
             });
-            this.messagingClient.send(`Hmm, which ${nlpData.entities.location[0].value} are you?`, quickReplies);
+            this.messagingClient.send(`Which ${nlpData.entities.location[0].value} are you?`, quickReplies);
             return;
           } else if (filteredGeoData.length === 0) {
-            this.messagingClient.send('Hmm, I wasn\'t able to find anything. Can you try giving me a CITY and STATE again?');
+            if (noCityGeoData.length > 0) {
+              this.messagingClient.send('I need more than just a state. Can you give a CITY and STATE like: "New Brunswick, NJ"');
+            } else {
+              this.messagingClient.send(i18n('setup_invalid_location'));
+            }
             return;
           }
 
@@ -97,13 +101,13 @@ export default {
 
   waiting_organization_confirm: {
     enter() {
-      var organization = this.get('organization');
+      const organization = this.get('organization');
       if (organization) {
         const quickReplies = [
           { content_type: 'text', title: 'Yep!', payload: 'Yep!' },
           { content_type: 'text', title: 'No', payload: 'No' },
         ];
-        this.messagingClient.send(`Oh, ${organization.location.city}, ${organization.location.administrativeLevels.level1short}? Is that the right city?`, quickReplies);
+        this.messagingClient.send(`${organization.location.city}, ${organization.location.administrativeLevels.level1short}? Is that right?`, quickReplies);
       }
     },
 

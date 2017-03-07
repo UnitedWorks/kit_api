@@ -112,7 +112,7 @@ export default {
   voterRegistrationCheck() {
     // Check for location. If none, set redirect back to this state once location is set
     if (this.get('location') === undefined) {
-      this.messagingClient.send('Ok! First, what city and state are you located in?');
+      this.messagingClient.send('Ok! First, what CITY and STATE are you located in?');
       if (this.get('stateRedirects')) {
         this.set('stateRedirects', [{
           whenExiting: 'setup.waiting_organization_confirm',
@@ -153,7 +153,7 @@ export default {
   voterRegistrationGet() {
     // Check for location. If none, set redirect back to this state once location is set
     if (this.get('location') === undefined) {
-      this.messagingClient.send('Ok! First, what city and state are you located in?');
+      this.messagingClient.send('Ok! First, what CITY and STATE are you located in?');
       if (this.get('stateRedirects')) {
         this.set('stateRedirects', [{
           whenExiting: 'setup.waiting_organization_confirm',
