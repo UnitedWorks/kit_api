@@ -24,8 +24,8 @@ const startingQuickReplies = [
 ];
 
 const skpeticQuickReplies = [
-  { content_type: 'text', title: 'Get registered', payload: 'Register to Vote' },
-  { content_type: 'text', title: 'Check registration', payload: 'Check Voter Registration' },
+  { content_type: 'text', title: 'Register to Vote', payload: 'Register to Vote' },
+  { content_type: 'text', title: 'Am I registered to vote?', payload: 'Am I registered to vote?' },
   { content_type: 'text', title: 'No thanks', payload: 'No thanks' },
 ];
 
@@ -127,6 +127,7 @@ export default {
         { content_type: 'text', title: 'Upcoming Election', payload: 'Upcoming Election' },
         { content_type: 'text', title: 'Available Benefits', payload: 'Available Benefits' },
         { content_type: 'text', title: 'Raise an Issue', payload: 'MAKE_REQUEST' },
+        { content_type: 'text', title: 'What else can I ask?', payload: 'What can I ask?' },
       ];
       const input = this.snapshot.input.payload;
       return nlp.message(input.text, {}).then((nlpData) => {
@@ -148,7 +149,7 @@ export default {
           }
         }
         this.messagingClient.addToQuene('It\'s still early days for me, but here are other things I can help with.', quickReplies);
-        this.messagingClient.runQuene().then(() => 'start');
+        return this.messagingClient.runQuene().then(() => 'start');
       });
     },
   },
@@ -158,7 +159,6 @@ export default {
       { content_type: 'text', title: 'Upcoming Election', payload: 'Upcoming Election' },
       { content_type: 'text', title: 'Available Benefits', payload: 'Available Benefits' },
       { content_type: 'text', title: 'Raise an Issue', payload: 'MAKE_REQUEST' },
-      { content_type: 'text', title: 'What else can I ask?', payload: 'What can I ask?' },
     ];
     this.messagingClient.addToQuene({
       type: 'image',

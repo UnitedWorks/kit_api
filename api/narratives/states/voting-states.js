@@ -141,7 +141,8 @@ export default {
         text: `Here's a way to check if your registered in ${this.get('location').administrativeLevels.level1short}:`,
         buttons: quickActions,
       }).then(() => {
-        if (this.get('stateRedirects')[0].whenExiting.includes('voterRegistrationCheck')) {
+        if (this.get('stateRedirects') &&
+            this.get('stateRedirects')[0].whenExiting.includes('voterRegistrationCheck')) {
           return this.get('stateRedirects')[0].goTo;
         }
         return 'smallTalk.start';
@@ -216,7 +217,8 @@ export default {
         elements,
       });
       return this.messagingClient.runQuene().then(() => {
-        if (this.get('stateRedirects')[0].whenExiting.includes('voterRegistrationGet')) {
+        if (this.get('stateRedirects') &&
+            this.get('stateRedirects')[0].whenExiting.includes('voterRegistrationGet')) {
           return this.get('stateRedirects')[0].goTo;
         }
         return 'smallTalk.start';

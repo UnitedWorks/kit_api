@@ -82,10 +82,19 @@ export class NarrativeSessionMachine extends StateMachine {
 
   setState(state) {
     let newState = state;
+
     if (this.snapshot.data_store.stateRedirects && this.snapshot.data_store.stateRedirects.length > 0) {
-      if (this.snapshot.data_store.stateRedirects[0].whenExiting.includes(this.snapshot.state_machine_previous_state)
-          && this.snapshot.data_store.stateRedirects[0].exitWas.includes(state)) {
-        newState = this.snapshot.data_store.stateRedirects[0].goTo;
+      if (this.snapshot.data_store.stateRedirects[0].whenExiting.includes(this.snapshot.state_machine_previous_state)) {
+        if (RegExp(`${state}$`).test(this.snapshot.data_store.stateRedirects[0].goTo)) {
+          newState = this.snapshot.data_store.stateRedirects[0].goTo;
+          this.snapshot.data_store.stateRedirects = this.snapshot.data_store.stateRedirects.slice(1);
+        } else if (this.snapshot.data_store.stateRedirects[0].exitWas !== undefined) {
+          if (RegExp(`${state}$`).test(this.snapshot.data_store.stateRedirects[0].exitWas)) {
+            newState = this.snapshot.data_store.stateRedirects[0].goTo;
+            this.snapshot.data_store.stateRedirects = this.snapshot.data_store.stateRedirects.slice(1);
+          }
+        }
+      } else if (this.snapshot.data_store.stateRedirects[0].goTo === state) {
         this.snapshot.data_store.stateRedirects = this.snapshot.data_store.stateRedirects.slice(1);
       }
     } else {
