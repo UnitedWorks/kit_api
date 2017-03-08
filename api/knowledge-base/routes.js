@@ -36,7 +36,7 @@ router.route('/facilities')
    * @return {Array}
    */
   .get((req, res) => {
-    KnowledgeFacility.fetchAll({ withRelated: ['category', 'events', 'location', 'schedule', 'services', 'type'] })
+    KnowledgeFacility.fetchAll({ withRelated: ['category', 'events', 'location', 'eventRules', 'services', 'type'] })
       .then((facilityArray) => {
         res.status(200).send({ facilities: facilityArray });
       });
@@ -91,7 +91,7 @@ router.route('/events')
    * @return {Array}
    */
   .get((req, res) => {
-    KnowledgeEvent.fetchAll({ withRelated: ['category', 'facility', 'location', 'service', 'schedule'] })
+    KnowledgeEvent.fetchAll({ withRelated: ['category', 'facility', 'location', 'service', 'eventRules'] })
       .then((eventsArray) => {
         res.status(200).send({ events: eventsArray });
       });
@@ -143,7 +143,7 @@ router.route('/services')
    * @return {Array}
    */
   .get((req, res) => {
-    KnowledgeService.fetchAll({ withRelated: ['category', 'events', 'facility', 'location', 'schedule'] })
+    KnowledgeService.fetchAll({ withRelated: ['category', 'events', 'facility', 'location', 'eventRules'] })
       .then((serviceArray) => {
         res.status(200).send({ services: serviceArray });
       });
