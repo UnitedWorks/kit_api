@@ -69,14 +69,14 @@ export default {
     message() {
       const payload = this.snapshot.input.payload;
       if (payload.attachments) {
-        const updatedComplaint = Object.assign({}, this.get('complaint'), {
-          location: {
-            latitude: payload.attachments[0].payload.coordinates.lat,
-            longitude: payload.attachments[0].payload.coordinates.long,
-          },
+        const coordinates = payload.attachments[0].payload.coordinates;
+        return geocoder.geocode(`${coordinates.lat}, ${coordinates.long}`).then((geoData) => {
+          const updatedComplaint = Object.assign({}, this.get('complaint'), {
+            location: geoData[Object.keys(geoData)[0]],
+          });
+          this.set('complaint', updatedComplaint);
+          return 'complaint_submit';
         });
-        this.set('complaint', updatedComplaint);
-        return 'complaint_submit';
       } else if (payload.text) {
         return geocoder.geocode(payload.text).then((geoData) => {
           const updatedComplaint = Object.assign({}, this.get('complaint'), {

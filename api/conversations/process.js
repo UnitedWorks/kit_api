@@ -51,13 +51,19 @@ function normalizeInput(conversationClient, input) {
     if (newMessageObject.payload.attachments) {
       const fileTransfers = [];
       newMessageObject.payload.attachments.forEach((attachment) => {
-        fileTransfers.push(new AWSClient().copyExternalUrlToS3(attachment.payload.url));
+        if (attachment.type !== 'location') {
+          fileTransfers.push(new AWSClient().copyExternalUrlToS3(attachment.payload.url));
+        } else {
+          fileTransfers.push(null);
+        }
       });
       return Promise.all(fileTransfers)
         .then((newUrls) => {
           newMessageObject.payload.attachments = newMessageObject.payload.attachments.map(
             (attachment, index) => {
-              attachment.payload.url = newUrls[index];
+              if (attachment.type !== 'location') {
+                attachment.payload.url = newUrls[index];
+              }
               return attachment;
             });
           resolve(newMessageObject);
