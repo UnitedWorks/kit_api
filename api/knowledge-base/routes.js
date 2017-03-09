@@ -145,50 +145,52 @@ router.route('/services')
    * Get services
    * @return {Array}
    */
-  .get((req, res) => {
-    KnowledgeService.fetchAll({ withRelated: ['category', 'events', 'facility', 'location', 'eventRules'] })
-      .then((serviceArray) => {
-        res.status(200).send({ services: serviceArray });
-      });
+  .get((req, res, next) => {
+    const whereFilters = {};
+    if (req.query.organization_id) whereFilters.organization_id = req.query.organization_id;
+    KnowledgeService.where(whereFilters).fetchAll({ withRelated: ['category', 'events', 'facility', 'location', 'eventRules'] })
+      .then(serviceArray => res.status(200).send({ services: serviceArray }))
+      .catch(err => next(err));
   })
   /**
    * Create service
    * @param {Object} service - Object for service creation
+   * @param {Object} organization - Organization to associate service with
    * @return {Object}
    */
-  .post((req, res) => {
-    KnowledgeService.forge(req.body.service).save(null, { method: 'insert' })
-      .then((saved) => {
-        res.status(200).send({ service: saved });
-      }).catch((err) => {
-        res.status(400).send({ error: err });
-      });
+  .post((req, res, next) => {
+    const serviceModel = {
+        ...req.body.service,
+        organization_id: req.body.organization.id,
+    };
+    KnowledgeService.forge(serviceModel).save(null, { method: 'insert' })
+      .then(saved => res.status(200).send({ service: saved }))
+      .catch(err => next(err));
   })
   /**
    * Update service
    * @param {Object} service - Object for service update
    * @return {Object}
    */
-  .put((req, res) => {
-    KnowledgeService.forge(req.body.service).save(null, { method: 'update' })
-      .then((saved) => {
-        res.status(200).send({ service: saved });
-      }).catch((err) => {
-        res.status(400).send({ error: err });
-      });
+  .put((req, res, next) => {
+    const serviceModel = {
+      id: req.body.service.id,
+      name: req.body.service.name,
+      description: req.body.service.description,
+    };
+    KnowledgeService.forge(serviceModel).save(null, { method: 'update' })
+      .then(saved => res.status(200).send({ service: saved }))
+      .catch(err => next(err));
   })
   /**
    * Delete Service
    * @param {Number} id - Id of the service to be deleted
    * @return {Object}
    */
-  .delete((req, res) => {
-    KnowledgeService.forge({ id: req.query.id }).destroy()
-      .then(() => {
-        res.status(200).send();
-      }).catch(() => {
-        res.status(400).send();
-      });
+  .delete((req, res, next) => {
+    KnowledgeService.forge({ id: req.query.service_id }).destroy()
+      .then(() => res.status(200).send({ service: { id: req.query.service_id } }))
+      .catch(err => next(err));
   });
 
 /**
