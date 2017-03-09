@@ -36,7 +36,9 @@ router.route('/facilities')
    * @return {Array}
    */
   .get((req, res) => {
-    KnowledgeFacility.fetchAll({ withRelated: ['category', 'events', 'location', 'eventRules', 'services', 'type'] })
+    const whereFilters = {};
+    if (req.query.organization_id) whereFilters.organization_id = req.query.organization_id;
+    KnowledgeFacility.where(whereFilters).fetchAll({ withRelated: ['category', 'events', 'location', 'eventRules', 'services', 'type'] })
       .then((facilityArray) => {
         res.status(200).send({ facilities: facilityArray });
       });
@@ -44,15 +46,17 @@ router.route('/facilities')
   /**
    * Create Facilities
    * @param {Object} facility - Facility object to be created
+   * @param {Object} organization - Organization to associate facility with
    * @return {Object}
    */
-  .post((req, res) => {
-    KnowledgeFacility.forge(req.body.facility).save(null, { method: 'insert' })
-      .then((created) => {
-        res.status(200).send({ facility: created });
-      }).catch((err) => {
-        res.status(200).send(err);
-      });
+  .post((req, res, next) => {
+    const compiledModel = {
+      ...req.body.facility,
+      organization_id: req.body.organization.id,
+    };
+    KnowledgeFacility.forge(compiledModel).save(null, { method: 'insert' })
+      .then(created => res.status(200).send({ facility: created }))
+      .catch(err => next(err));
   })
   /**
    * Update Facilities
@@ -60,26 +64,25 @@ router.route('/facilities')
    * @param {Number} facility.id - Required: Id of updated object
    * @return {Object}
    */
-   .put((req, res) => {
-     KnowledgeFacility.forge(req.body.facility).save(null, { method: 'update' })
-       .then((updated) => {
-         res.status(200).send({ facility: updated });
-       }).catch((err) => {
-         res.status(200).send(err);
-       });
+   .put((req, res, next) => {
+     const compiledModel = {
+       id: req.body.facility.id,
+       name: req.body.facility.name,
+       description: req.body.facility.description,
+     };
+     KnowledgeFacility.forge(compiledModel).save(null, { method: 'update' })
+       .then(updated => res.status(200).send({ facility: updated }))
+       .catch(err => next(err));
    })
    /**
     * Delete facilities
     * @param {Number} id - Id of the facility to be removed
     * @return {Object}
     */
-  .delete((req, res) => {
-    KnowledgeFacility.forge({ id: req.query.id }).destroy()
-      .then(() => {
-        res.status(200).send();
-      }).catch((err) => {
-        return res.status(400).send(err);
-      });
+  .delete((req, res, next) => {
+    KnowledgeFacility.forge({ id: req.query.facility_id }).destroy()
+      .then(() => res.status(200).send({ facility: { id: req.query.facility_id } }))
+      .catch(err => next(err));
   });
 
 /**
