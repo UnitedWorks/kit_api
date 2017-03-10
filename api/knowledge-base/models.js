@@ -63,7 +63,7 @@ export const KnowledgeService = bookshelf.Model.extend({
     return this.belongsTo(KnowledgeCategory, 'knowledge_category_id');
   },
   events: function() {
-    return this.hasMany(KnowledgeEvent, 'service_id');
+    return this.hasMany(KnowledgeEvent, 'knowledge_service_id');
   },
   facility: function() {
     return this.belongsTo(KnowledgeFacility, 'knowledge_facility_id');
@@ -91,7 +91,7 @@ export const KnowledgeEvent = bookshelf.Model.extend({
     return this.hasMany(EventRule, 'knowledge_event_id');
   },
   service: function() {
-    return this.belongsTo(KnowledgeService, 'service_id');
+    return this.belongsTo(KnowledgeService, 'knowledge_service_id');
   },
 });
 

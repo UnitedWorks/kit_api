@@ -10,12 +10,15 @@ export const getAnswers = (params = {}, options) => {
     if (!options.returnJSON) return data.get('answers');
     const answerJSON = data.toJSON().answers;
     if (options.groupKnowledge) {
-      return {
-        text: answerJSON.filter(a => a.text != null)[0].text,
-        url: answerJSON.filter(a => a.url != null)[0].url,
+      const answerGrouped = {
         facilities: answerJSON.filter(a => a.knowledge_facility_id).map(a => a.facility),
         services: answerJSON.filter(a => a.knowledge_service_id).map(a => a.service),
       };
+      if (answerJSON.filter(a => a.text != null).length > 0) {
+        answerGrouped.text = answerJSON.filter(a => a.text != null)[0].text;
+        answerGrouped.url = answerJSON.filter(a => a.url != null)[0].url;
+      }
+      return answerGrouped;
     }
     return answerJSON;
   });

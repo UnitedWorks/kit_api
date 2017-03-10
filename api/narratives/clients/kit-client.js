@@ -17,12 +17,11 @@ export default class KitClient {
     }, compiledConfig);
   }
 
-  static answerText(answers) {
-    const answer = answers.text != null ? answers : answers.filter(a => a.text != null)[0];
-    if (answer) {
-      return answer.url ? `${answer.text} (${answer.url})` : `${answer.text}`;
+  static answerText(answerObj) {
+    if (Object.hasOwnProperty.call(answerObj, 'text')) {
+      return answerObj.url ? `${answerObj.text} (${answerObj.url})` : `${answerObj.text}`;
     }
-    return 'Sorry, I can\'t find an answer for you. :( I\'ll let the city know';
+    return 'Sorry, I can\'t find an answer for you. :( I\'ll try to get one for you soon';
   }
 
   static formGenericTemplates(type, objects) {
@@ -54,6 +53,15 @@ export default class KitClient {
       return templates;
     }
     return [];
+  }
+
+  static standardAnswerAndProgress(messagingClient, answers, nextState) {
+    messagingClient.addAll([
+      KitClient.answerText(answers),
+      ...KitClient.formGenericTemplates('facility', answers.facilities),
+      ...KitClient.formGenericTemplates('service', answers.services),
+    ]);
+    return messagingClient.runQuene().then(() => nextState);
   }
 
 }

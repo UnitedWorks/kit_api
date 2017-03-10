@@ -35,9 +35,8 @@ export default {
         });
       }
       return new KitClient({ organization: this.get('organization') })
-        .getAnswer('social-services-shelters').then((answer) => {
-          const message = KitClient.answerText(answer);
-          return this.messagingClient.send(message).then(() => 'smallTalk.start');
+        .getAnswer('social-services-shelters').then((answers) => {
+          return KitClient.standardAnswerAndProgress(this.messagingClient, answers, 'smallTalk.start');
         });
     },
   },
@@ -72,9 +71,8 @@ export default {
         });
       }
       return new KitClient({ organization: this.get('organization') })
-        .getAnswer('social-services-food-assistance').then((answer) => {
-          const message = KitClient.answerText(answer);
-          return this.messagingClient.send(message).then(() => 'smallTalk.start');
+        .getAnswer('social-services-food-assistance').then((answers) => {
+          return KitClient.standardAnswerAndProgress(this.messagingClient, answers, 'smallTalk.start');
         });
     },
   },
@@ -108,9 +106,8 @@ export default {
         });
       }
       return new KitClient({ organization: this.get('organization') })
-        .getAnswer('social-services-hygiene').then((answer) => {
-          const message = KitClient.answerText(answer);
-          return this.messagingClient.send(message).then(() => 'smallTalk.start');
+        .getAnswer('social-services-hygiene').then((answers) => {
+          return KitClient.standardAnswerAndProgress(this.messagingClient, answers, 'smallTalk.start');
         });
     },
   },
