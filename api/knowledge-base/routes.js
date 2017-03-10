@@ -160,8 +160,8 @@ router.route('/services')
    */
   .post((req, res, next) => {
     const serviceModel = {
-        ...req.body.service,
-        organization_id: req.body.organization.id,
+      ...req.body.service,
+      organization_id: req.body.organization.id,
     };
     KnowledgeService.forge(serviceModel).save(null, { method: 'insert' })
       .then(saved => res.status(200).send({ service: saved }))

@@ -13,7 +13,7 @@ export const getAnswers = (params = {}, options) => {
 export const getQuestions = (params = {}) => {
   return KnowledgeQuestion.fetchAll({ withRelated: {
     category: q => q,
-    answer: q => q.where('organization_id', params.organization_id),
+    answers: q => q.where('organization_id', params.organization_id),
   } });
 };
 
@@ -29,16 +29,14 @@ export const getCategories = (params = {}) => {
 };
 
 export const makeAnswer = (organization, question, answer, options) => {
-  var values = answer;
-  answer.organization_id = organization.id;
-  answer.question_id = question.id;
-
-  let insertString = knex('knowledge_answers').insert(answer).toString();
-
-  let conflictString = knex.raw(` ON CONFLICT (organization_id, question_id) DO UPDATE SET text = EXCLUDED.text, url = EXCLUDED.url, knowledge_event_id = EXCLUDED.knowledge_event_id, knowledge_service_id = EXCLUDED.knowledge_service_id, knowledge_facility_id = EXCLUDED.knowledge_facility_id, media_id = EXCLUDED.media_id RETURNING *;`).toString();
-  let query = (insertString + conflictString).replace(/\?/g, '\\?');
-
-  return knex.raw(query).then(result => result.rows[0]);
+  const newAnswerModel = {
+    ...answer,
+    question_id: question.id,
+    organization_id: organization.id,
+  };
+  return KnowledgeAnswer.forge(newAnswerModel).save(null, { method: 'insert' })
+    .then(data => options.returnJSON ? data.toJSON() : data)
+    .catch(error => error);
 };
 
 export const saveLocation = (locationModel, options = {}) => {
