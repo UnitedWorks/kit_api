@@ -167,9 +167,48 @@ export const deleteFacility = (facilityId) => {
   }).catch(err => err);
 };
 
-export const createService = (service, options) => {
-
+export const createService = (service, organization, location, options) => {
+  const composedService = {
+    name: service.name,
+    brief_description: service.brief_description,
+    description: service.description,
+    phone_number: service.phone_number,
+    url: service.url,
+  };
+  return createLocation(location, { returnJSON: true }).then((locationJSON) => {
+    const composedModel = {
+      ...composedService,
+      location_id: locationJSON ? locationJSON.id : null,
+      organization_id: organization.id,
+    };
+    return KnowledgeService.forge(composedModel).save(null, { method: 'insert' })
+      .then(data => options.returnJSON ? data.toJSON() : data)
+      .catch(err => err);
+  });
 };
+
+export const updateService = (service, options) => {
+  const compiledModel = {
+    id: service.id,
+    name: service.name,
+    brief_description: service.brief_description,
+    description: service.description,
+    eligibility_information: service.eligibility_information,
+    phone_number: service.phone_number,
+    url: service.url,
+  };
+  if (!service.location.id) {
+    return createLocation(service.location, { returnJSON: true }).then((locationJSON) => {
+      return KnowledgeService.forge({ ...compiledModel, location_id: locationJSON.id })
+        .save(null, { method: 'update' })
+        .then(data => options.returnJSON ? data.toJSON() : data)
+        .catch(err => err);
+    }).catch(err => err);
+  }
+  return KnowledgeFacility.forge({ compiledModel }).save(null, { method: 'update' })
+    .then(data => options.returnJSON ? data.toJSON() : data)
+    .catch(err => err);
+}
 
 export const deleteService = (serviceId) => {
   return KnowledgeAnswer.where({ knowledge_service_id: serviceId }).destroy().then(() => {

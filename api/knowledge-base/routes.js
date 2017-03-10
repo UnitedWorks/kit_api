@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { logger } from '../logger';
 import { KnowledgeEvent, KnowledgeFacility, KnowledgeFacilityType, KnowledgeService } from './models';
 import { getAnswers, getCategories, getQuestions, makeAnswer, updateAnswer, deleteAnswer,
-  deleteService, createFacility, updateFacility, deleteFacility } from './helpers';
+  deleteService, createFacility, updateFacility, deleteFacility, createService, updateService } from './helpers';
 
 const router = new Router();
 
@@ -152,15 +152,8 @@ router.route('/services')
    * @return {Object}
    */
   .post((req, res, next) => {
-    const compiledModel = {
-      name: req.body.service.name,
-      brief_description: req.body.service.brief_description,
-      description: req.body.service.description,
-      phone_number: req.body.service.phone_number,
-      url: req.body.service.url,
-      organization_id: req.body.organization.id,
-    };
-    KnowledgeService.forge(compiledModel).save(null, { method: 'insert' })
+    createService(req.body.service, req.body.organization, req.body.service.location,
+      { returnJSON: true })
       .then(saved => res.status(200).send({ service: saved }))
       .catch(err => next(err));
   })
@@ -170,15 +163,7 @@ router.route('/services')
    * @return {Object}
    */
   .put((req, res, next) => {
-    const compiledModel = {
-      id: req.body.service.id,
-      name: req.body.service.name,
-      brief_description: req.body.service.brief_description,
-      description: req.body.service.description,
-      phone_number: req.body.service.phone_number,
-      url: req.body.service.url,
-    };
-    KnowledgeService.forge(compiledModel).save(null, { method: 'update' })
+    updateService(req.body.service, { returnJSON: true })
       .then(saved => res.status(200).send({ service: saved }))
       .catch(err => next(err));
   })
