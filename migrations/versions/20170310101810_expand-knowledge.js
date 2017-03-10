@@ -6,19 +6,19 @@ exports.up = function(knex, Promise) {
       table.dateTime('expiration');
     })
     .alterTable('knowledge_facilitys', (table) => {
-      table.text('breief_description');
+      table.text('brief_description');
       table.text('eligibility_information');
       table.string('url');
       table.string('phone_number');
     })
     .alterTable('knowledge_services', (table) => {
-      table.text('breief_description');
+      table.text('brief_description');
       table.dateTime('expiration');
       table.string('url');
       table.string('phone_number');
     })
     .alterTable('knowledge_events', (table) => {
-      table.text('breief_description');
+      table.text('brief_description');
       table.string('url');
       table.string('phone_number');
     })
@@ -34,19 +34,19 @@ exports.down = function(knex, Promise) {
       table.dropColumn('expiration');
     })
     .alterTable('knowledge_facilitys', (table) => {
-      table.dropColumn('breief_description');
+      table.dropColumn('brief_description');
       table.dropColumn('eligibility_information');
       table.dropColumn('url');
       table.dropColumn('phone_number');
     })
     .alterTable('knowledge_services', (table) => {
-      table.dropColumn('breief_description');
+      table.dropColumn('brief_description');
       table.dropColumn('expiration');
       table.dropColumn('url');
       table.dropColumn('phone_number');
     })
     .alterTable('knowledge_events', (table) => {
-      table.dropColumn('breief_description');
+      table.dropColumn('brief_description');
       table.dropColumn('url');
       table.dropColumn('phone_number');
     })

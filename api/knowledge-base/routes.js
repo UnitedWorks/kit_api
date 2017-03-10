@@ -52,7 +52,12 @@ router.route('/facilities')
    */
   .post((req, res, next) => {
     const compiledModel = {
-      ...req.body.facility,
+      name: req.body.facility.name,
+      brief_description: req.body.facility.brief_description,
+      description: req.body.facility.description,
+      eligibility_information: req.body.facility.eligibility_information,
+      phone_number: req.body.facility.phone_number,
+      url: req.body.facility.url,
       organization_id: req.body.organization.id,
     };
     KnowledgeFacility.forge(compiledModel).save(null, { method: 'insert' })
@@ -69,7 +74,11 @@ router.route('/facilities')
      const compiledModel = {
        id: req.body.facility.id,
        name: req.body.facility.name,
+       brief_description: req.body.facility.brief_description,
        description: req.body.facility.description,
+       eligibility_information: req.body.facility.eligibility_information,
+       phone_number: req.body.facility.phone_number,
+       url: req.body.facility.url,
      };
      KnowledgeFacility.forge(compiledModel).save(null, { method: 'update' })
        .then(updated => res.status(200).send({ facility: updated }))
@@ -160,11 +169,15 @@ router.route('/services')
    * @return {Object}
    */
   .post((req, res, next) => {
-    const serviceModel = {
-      ...req.body.service,
+    const compiledModel = {
+      name: req.body.service.name,
+      brief_description: req.body.service.brief_description,
+      description: req.body.service.description,
+      phone_number: req.body.service.phone_number,
+      url: req.body.service.url,
       organization_id: req.body.organization.id,
     };
-    KnowledgeService.forge(serviceModel).save(null, { method: 'insert' })
+    KnowledgeService.forge(compiledModel).save(null, { method: 'insert' })
       .then(saved => res.status(200).send({ service: saved }))
       .catch(err => next(err));
   })
@@ -174,12 +187,15 @@ router.route('/services')
    * @return {Object}
    */
   .put((req, res, next) => {
-    const serviceModel = {
+    const compiledModel = {
       id: req.body.service.id,
       name: req.body.service.name,
+      brief_description: req.body.service.brief_description,
       description: req.body.service.description,
+      phone_number: req.body.service.phone_number,
+      url: req.body.service.url,
     };
-    KnowledgeService.forge(serviceModel).save(null, { method: 'update' })
+    KnowledgeService.forge(compiledModel).save(null, { method: 'update' })
       .then(saved => res.status(200).send({ service: saved }))
       .catch(err => next(err));
   })
