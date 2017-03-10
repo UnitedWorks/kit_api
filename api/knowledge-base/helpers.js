@@ -1,4 +1,3 @@
-import { knex } from '../orm';
 import { KnowledgeAnswer, KnowledgeCategory, KnowledgeQuestion, Location, Media } from './models';
 import { CaseLocations, CaseMedia } from '../cases/models';
 
@@ -6,8 +5,20 @@ export const getAnswers = (params = {}, options) => {
   return KnowledgeQuestion.where({ label: params.label }).fetch({
     withRelated: [{
       answers: q => q.where('organization_id', params.organization_id),
-    }, 'category'],
-  }).then(data => options.returnJSON ? data.toJSON().answers : data.get('answers'));
+    }, 'category', 'answers.facility', 'answers.service'],
+  }).then((data) => {
+    if (!options.returnJSON) return data.get('answers');
+    const answerJSON = data.toJSON().answers;
+    if (options.groupKnowledge) {
+      return {
+        text: answerJSON.filter(a => a.text != null)[0].text,
+        url: answerJSON.filter(a => a.url != null)[0].url,
+        facilities: answerJSON.filter(a => a.knowledge_facility_id).map(a => a.facility),
+        services: answerJSON.filter(a => a.knowledge_service_id).map(a => a.service),
+      };
+    }
+    return answerJSON;
+  });
 };
 
 export const getQuestions = (params = {}) => {

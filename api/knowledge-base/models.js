@@ -120,10 +120,10 @@ export const KnowledgeAnswer = bookshelf.Model.extend({
   events: function() {
     return this.hasOne(KnowledgeEvent, 'id', 'knowledge_event_id');
   },
-  facilities: function() {
+  facility: function() {
     return this.hasOne(KnowledgeFacility, 'id', 'knowledge_facility_id');
   },
-  services: function() {
+  service: function() {
     return this.hasOne(KnowledgeService, 'id', 'knowledge_service_id');
   },
 });
