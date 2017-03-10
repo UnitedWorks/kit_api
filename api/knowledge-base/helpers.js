@@ -1,5 +1,6 @@
 import { KnowledgeAnswer, KnowledgeCategory, KnowledgeFacility, KnowledgeService, KnowledgeQuestion, Location, Media } from './models';
 import { CaseLocations, CaseMedia } from '../cases/models';
+import { geocoder } from '../services/geocoder';
 
 export const getAnswers = (params = {}, options) => {
   return KnowledgeQuestion.where({ label: params.label }).fetch({
@@ -78,6 +79,30 @@ export const saveLocation = (locationModel, options = {}) => {
     .catch(error => error);
 };
 
+export const createLocation = (location, options = {}) => {
+  let geocodeString = '';
+  if (typeof location === 'string') {
+    geocodeString = location;
+  } else if (location.formattedAddress) {
+    geocodeString = location.formattedAddress;
+  } else if (location.latitude && location.longitude) {
+    geocodeString = `${location.latitude}, ${location.longitude}`;
+  } else if (location.streetNumber && location.streetName && location.city && location.country) {
+    geocodeString = `${location.streetNumber} ${location.streetName} ${location.city} ${location.country}`;
+  } else {
+    return null;
+  }
+
+  return geocoder.geocode(geocodeString).then((geoData) => {
+    if (geoData.length > 1 || geoData.length === 0) {
+      throw new Error('Location invalid. Please try again.')
+    }
+    return saveLocation(geoData[0], { returnJSON: options.returnJSON })
+      .then(newLocation => newLocation)
+      .catch(err => err);
+  }).catch(err => err);
+};
+
 export const updateAnswer = (answer, options) => {
   return KnowledgeAnswer.forge(answer).save(null, { method: 'update' })
     .then(data => options.returnJSON ? data.toJSON() : data)
@@ -90,12 +115,60 @@ export const deleteAnswer = (answerId) => {
   }).catch(err => err);
 };
 
+export const createFacility = (facility, organization, location, options) => {
+  const composedFacility = {
+    name: facility.name,
+    brief_description: facility.brief_description,
+    description: facility.description,
+    eligibility_information: facility.eligibility_information,
+    phone_number: facility.phone_number,
+    url: facility.url,
+  };
+  return createLocation(location, { returnJSON: true }).then((locationJSON) => {
+    const composedModel = {
+      ...composedFacility,
+      location_id: locationJSON ? locationJSON.id : null,
+      organization_id: organization.id,
+    };
+    return KnowledgeFacility.forge(composedModel).save(null, { method: 'insert' })
+      .then(data => options.returnJSON ? data.toJSON() : data)
+      .catch(err => err);
+  });
+};
+
+export const updateFacility = (facility, options) => {
+  const compiledModel = {
+    id: facility.id,
+    name: facility.name,
+    brief_description: facility.brief_description,
+    description: facility.description,
+    eligibility_information: facility.eligibility_information,
+    phone_number: facility.phone_number,
+    url: facility.url,
+  };
+  if (!facility.location.id) {
+    return createLocation(facility.location, { returnJSON: true }).then((locationJSON) => {
+      return KnowledgeFacility.forge({ ...compiledModel, location_id: locationJSON.id })
+        .save(null, { method: 'update' })
+        .then(data => options.returnJSON ? data.toJSON() : data)
+        .catch(err => err);
+    }).catch(err => err);
+  }
+  return KnowledgeFacility.forge({ compiledModel }).save(null, { method: 'update' })
+    .then(data => options.returnJSON ? data.toJSON() : data)
+    .catch(err => err);
+}
+
 export const deleteFacility = (facilityId) => {
   return KnowledgeAnswer.where({ knowledge_facility_id: facilityId }).destroy().then(() => {
     return KnowledgeFacility.forge({ id: facilityId }).destroy().then(() => {
       return { id: facilityId };
     }).catch(err => err);
   }).catch(err => err);
+};
+
+export const createService = (service, options) => {
+
 };
 
 export const deleteService = (serviceId) => {

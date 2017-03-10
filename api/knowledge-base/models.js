@@ -44,7 +44,7 @@ export const KnowledgeFacility = bookshelf.Model.extend({
     return this.hasMany(KnowledgeEvent, 'knowledge_facility_id');
   },
   location: function() {
-    return this.hasOne(Location, 'id');
+    return this.belongsTo(Location, 'location_id');
   },
   eventRules: function() {
     return this.hasMany(EventRule, 'knowledge_facility_id');
@@ -69,7 +69,7 @@ export const KnowledgeService = bookshelf.Model.extend({
     return this.belongsTo(KnowledgeFacility, 'knowledge_facility_id');
   },
   location: function() {
-    return this.hasOne(Location, 'id');
+    return this.belongsTo(Location, 'location_id');
   },
   eventRules: function() {
     return this.hasMany(EventRule, 'knowledge_service_id');

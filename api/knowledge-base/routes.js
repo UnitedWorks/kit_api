@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { logger } from '../logger';
 import { KnowledgeEvent, KnowledgeFacility, KnowledgeFacilityType, KnowledgeService } from './models';
 import { getAnswers, getCategories, getQuestions, makeAnswer, updateAnswer, deleteAnswer,
-  deleteService, deleteFacility } from './helpers';
+  deleteService, createFacility, updateFacility, deleteFacility } from './helpers';
 
 const router = new Router();
 
@@ -51,17 +51,9 @@ router.route('/facilities')
    * @return {Object}
    */
   .post((req, res, next) => {
-    const compiledModel = {
-      name: req.body.facility.name,
-      brief_description: req.body.facility.brief_description,
-      description: req.body.facility.description,
-      eligibility_information: req.body.facility.eligibility_information,
-      phone_number: req.body.facility.phone_number,
-      url: req.body.facility.url,
-      organization_id: req.body.organization.id,
-    };
-    KnowledgeFacility.forge(compiledModel).save(null, { method: 'insert' })
-      .then(created => res.status(200).send({ facility: created }))
+    createFacility(req.body.facility, req.body.organization, req.body.facility.location,
+      { returnJSON: true })
+      .then(facility => res.status(200).send({ facility }))
       .catch(err => next(err));
   })
   /**
@@ -71,16 +63,7 @@ router.route('/facilities')
    * @return {Object}
    */
    .put((req, res, next) => {
-     const compiledModel = {
-       id: req.body.facility.id,
-       name: req.body.facility.name,
-       brief_description: req.body.facility.brief_description,
-       description: req.body.facility.description,
-       eligibility_information: req.body.facility.eligibility_information,
-       phone_number: req.body.facility.phone_number,
-       url: req.body.facility.url,
-     };
-     KnowledgeFacility.forge(compiledModel).save(null, { method: 'update' })
+     updateFacility(req.body.facility, { returnJSON: true })
        .then(updated => res.status(200).send({ facility: updated }))
        .catch(err => next(err));
    })
