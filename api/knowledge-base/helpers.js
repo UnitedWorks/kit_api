@@ -1,4 +1,4 @@
-import { KnowledgeAnswer, KnowledgeCategory, KnowledgeQuestion, Location, Media } from './models';
+import { KnowledgeAnswer, KnowledgeCategory, KnowledgeFacility, KnowledgeService, KnowledgeQuestion, Location, Media } from './models';
 import { CaseLocations, CaseMedia } from '../cases/models';
 
 export const getAnswers = (params = {}, options) => {
@@ -48,6 +48,9 @@ export const makeAnswer = (organization, question, answer, options) => {
     question_id: question.id,
     organization_id: organization.id,
   };
+  if (answer.text == null || (typeof answer.text === 'string' && answer.text.length === 0)) {
+    throw new Error('Empty text field given to answer');
+  }
   return KnowledgeAnswer.forge(newAnswerModel).save(null, { method: 'insert' })
     .then(data => options.returnJSON ? data.toJSON() : data)
     .catch(error => error);
@@ -84,6 +87,22 @@ export const updateAnswer = (answer, options) => {
 export const deleteAnswer = (answerId) => {
   return KnowledgeAnswer.forge({ id: answerId }).destroy().then(() => {
     return { id: answerId };
+  }).catch(err => err);
+};
+
+export const deleteFacility = (facilityId) => {
+  return KnowledgeAnswer.where({ knowledge_facility_id: facilityId }).destroy().then(() => {
+    return KnowledgeFacility.forge({ id: facilityId }).destroy().then(() => {
+      return { id: facilityId };
+    }).catch(err => err);
+  }).catch(err => err);
+};
+
+export const deleteService = (serviceId) => {
+  return KnowledgeAnswer.where({ knowledge_service_id: serviceId }).destroy().then(() => {
+    return KnowledgeService.forge({ id: serviceId }).destroy().then(() => {
+      return { id: serviceId };
+    }).catch(err => err);
   }).catch(err => err);
 };
 
