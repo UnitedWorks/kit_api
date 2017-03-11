@@ -6,7 +6,7 @@ export const getAnswers = (params = {}, options) => {
   return KnowledgeQuestion.where({ label: params.label }).fetch({
     withRelated: [{
       answers: q => q.where('organization_id', params.organization_id),
-    }, 'category', 'answers.facility', 'answers.service'],
+    }, 'category', 'answers.facility', 'answers.facility.location',  'answers.service', 'answers.service.location'],
   }).then((data) => {
     if (!options.returnJSON) return data.get('answers');
     const answerJSON = data.toJSON().answers;
@@ -49,7 +49,7 @@ export const makeAnswer = (organization, question, answer, options) => {
     question_id: question.id,
     organization_id: organization.id,
   };
-  if (answer.text == null || (typeof answer.text === 'string' && answer.text.length === 0)) {
+  if (typeof answer.text === 'string' && answer.text.length === 0) {
     throw new Error('Empty text field given to answer');
   }
   return KnowledgeAnswer.forge(newAnswerModel).save(null, { method: 'insert' })

@@ -36,7 +36,8 @@ export default {
       }
       return new KitClient({ organization: this.get('organization') })
         .getAnswer('health-clinic').then((answers) => {
-          return KitClient.standardAnswerAndProgress(this.messagingClient, answers, 'smallTalk.start');
+          this.messagingClient.addAll(KitClient.compileAnswers(answers));
+          return this.messagingClient.runQuene().then(() => 'smallTalk.start');
         });
     },
   },
