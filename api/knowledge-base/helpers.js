@@ -1,21 +1,25 @@
-import { KnowledgeAnswer, KnowledgeCategory, KnowledgeQuestion, Location, Media } from './models';
+import { EventRule, KnowledgeAnswer, KnowledgeCategory, KnowledgeFacility, KnowledgeService, KnowledgeQuestion, Location, Media } from './models';
 import { CaseLocations, CaseMedia } from '../cases/models';
+import { geocoder } from '../services/geocoder';
 
 export const getAnswers = (params = {}, options) => {
   return KnowledgeQuestion.where({ label: params.label }).fetch({
     withRelated: [{
       answers: q => q.where('organization_id', params.organization_id),
-    }, 'category', 'answers.facility', 'answers.service'],
+    }, 'category', 'answers.facility', 'answers.facility.location',  'answers.service', 'answers.service.location'],
   }).then((data) => {
     if (!options.returnJSON) return data.get('answers');
     const answerJSON = data.toJSON().answers;
     if (options.groupKnowledge) {
-      return {
-        text: answerJSON.filter(a => a.text != null)[0].text,
-        url: answerJSON.filter(a => a.url != null)[0].url,
+      const answerGrouped = {
         facilities: answerJSON.filter(a => a.knowledge_facility_id).map(a => a.facility),
         services: answerJSON.filter(a => a.knowledge_service_id).map(a => a.service),
       };
+      if (answerJSON.filter(a => a.text != null).length > 0) {
+        answerGrouped.text = answerJSON.filter(a => a.text != null)[0].text;
+        answerGrouped.url = answerJSON.filter(a => a.url != null)[0].url;
+      }
+      return answerGrouped;
     }
     return answerJSON;
   });
@@ -45,9 +49,18 @@ export const makeAnswer = (organization, question, answer, options) => {
     question_id: question.id,
     organization_id: organization.id,
   };
+  if (typeof answer.text === 'string' && answer.text.length === 0) {
+    throw new Error('Empty text field given to answer');
+  }
   return KnowledgeAnswer.forge(newAnswerModel).save(null, { method: 'insert' })
     .then(data => options.returnJSON ? data.toJSON() : data)
     .catch(error => error);
+};
+
+export const upsertEventRules = (eventRules, idsObj) => {
+  return Promise.all(
+    eventRules.map(rule => EventRule.forge(Object.assign(rule, idsObj)).save())
+  ).then(results => results).catch(error => error);
 };
 
 export const saveLocation = (locationModel, options = {}) => {
@@ -72,6 +85,30 @@ export const saveLocation = (locationModel, options = {}) => {
     .catch(error => error);
 };
 
+export const createLocation = (location, options = {}) => {
+  let geocodeString = '';
+  if (typeof location === 'string') {
+    geocodeString = location;
+  } else if (location.formattedAddress) {
+    geocodeString = location.formattedAddress;
+  } else if (location.latitude && location.longitude) {
+    geocodeString = `${location.latitude}, ${location.longitude}`;
+  } else if (location.streetNumber && location.streetName && location.city && location.country) {
+    geocodeString = `${location.streetNumber} ${location.streetName} ${location.city} ${location.country}`;
+  } else {
+    return null;
+  }
+
+  return geocoder.geocode(geocodeString).then((geoData) => {
+    if (geoData.length > 1 || geoData.length === 0) {
+      throw new Error('Location invalid. Please try again.')
+    }
+    return saveLocation(geoData[0], { returnJSON: options.returnJSON })
+      .then(newLocation => newLocation)
+      .catch(err => err);
+  }).catch(err => err);
+};
+
 export const updateAnswer = (answer, options) => {
   return KnowledgeAnswer.forge(answer).save(null, { method: 'update' })
     .then(data => options.returnJSON ? data.toJSON() : data)
@@ -81,6 +118,138 @@ export const updateAnswer = (answer, options) => {
 export const deleteAnswer = (answerId) => {
   return KnowledgeAnswer.forge({ id: answerId }).destroy().then(() => {
     return { id: answerId };
+  }).catch(err => err);
+};
+
+export const createFacility = (facility, organization, location, options) => {
+  const composedFacility = {
+    name: facility.name,
+    brief_description: facility.brief_description,
+    description: facility.description,
+    eligibility_information: facility.eligibility_information,
+    phone_number: facility.phone_number,
+    url: facility.url,
+  };
+  const eventRules = facility.eventRules;
+  return createLocation(location, { returnJSON: true }).then((locationJSON) => {
+    const composedModel = {
+      ...composedFacility,
+      location_id: locationJSON ? locationJSON.id : null,
+      organization_id: organization.id,
+    };
+    return KnowledgeFacility.forge(composedModel).save(null, { method: 'insert' })
+      .then((facilityData) => {
+        return upsertEventRules(eventRules, { knowledge_facility_id: facilityData.get('id') })
+          .then(() => options.returnJSON ? facilityData.toJSON() : facilityData)
+          .catch(err => err);
+      }).catch(err => err);
+  });
+};
+
+export const updateFacility = (facility, options) => {
+  const compiledModel = {
+    id: facility.id,
+    name: facility.name,
+    brief_description: facility.brief_description,
+    description: facility.description,
+    eligibility_information: facility.eligibility_information,
+    phone_number: facility.phone_number,
+    url: facility.url,
+  };
+  const eventRules = facility.eventRules;
+  if (!facility.location.id) {
+    return createLocation(facility.location, { returnJSON: true }).then((locationJSON) => {
+      return KnowledgeFacility.forge({ ...compiledModel, location_id: locationJSON.id })
+        .save(null, { method: 'update' })
+        .then((facilityData) => {
+          return upsertEventRules(eventRules, { knowledge_facility_id: facilityData.get('id') })
+            .then(() => options.returnJSON ? facilityData.toJSON() : facilityData)
+            .catch(err => err);
+        })
+        .catch(err => err);
+    }).catch(err => err);
+  }
+  return KnowledgeFacility.forge(compiledModel).save(null, { method: 'update' }).then((facilityData) => {
+    return upsertEventRules(eventRules, { knowledge_facility_id: facilityData.get('id') })
+      .then(() => options.returnJSON ? facilityData.toJSON() : facilityData)
+      .catch(err => err);
+  }).catch(err => err);
+};
+
+export const deleteFacility = (facilityId) => {
+  return KnowledgeAnswer.where({ knowledge_facility_id: facilityId }).destroy().then(() => {
+    return EventRule.where({ knowledge_facility_id: facilityId }).destroy().then(() => {
+      return KnowledgeFacility.forge({ id: facilityId }).destroy().then(() => {
+        return { id: facilityId };
+      }).catch(err => err);
+    }).catch(err => err);
+  }).catch(err => err);
+};
+
+export const createService = (service, organization, location, options) => {
+  const composedService = {
+    name: service.name,
+    brief_description: service.brief_description,
+    description: service.description,
+    phone_number: service.phone_number,
+    url: service.url,
+  };
+  const eventRules = service.eventRules;
+  return createLocation(location, { returnJSON: true }).then((locationJSON) => {
+    const composedModel = {
+      ...composedService,
+      location_id: locationJSON ? locationJSON.id : null,
+      organization_id: organization.id,
+    };
+    return KnowledgeService.forge(composedModel).save(null, { method: 'insert' })
+      .then((serviceData) => {
+        return upsertEventRules(eventRules, { knowledge_service_id: serviceData.get('id') })
+          .then(() => options.returnJSON ? serviceData.toJSON() : serviceData)
+          .catch(err => err);
+      })
+      .catch(err => err);
+  });
+};
+
+export const updateService = (service, options) => {
+  const compiledModel = {
+    id: service.id,
+    name: service.name,
+    brief_description: service.brief_description,
+    description: service.description,
+    eligibility_information: service.eligibility_information,
+    phone_number: service.phone_number,
+    url: service.url,
+  };
+  const eventRules = service.eventRules;
+  if (!service.location.id) {
+    return createLocation(service.location, { returnJSON: true }).then((locationJSON) => {
+      return KnowledgeService.forge({ ...compiledModel, location_id: locationJSON.id })
+        .save(null, { method: 'update' })
+        .then((serviceData) => {
+          return upsertEventRules(eventRules, { knowledge_service_id: serviceData.get('id') })
+            .then(() => options.returnJSON ? serviceData.toJSON() : serviceData)
+            .catch(err => err);
+        })
+        .catch(err => err);
+    }).catch(err => err);
+  }
+  return KnowledgeService.forge(compiledModel).save(null, { method: 'update' })
+    .then((serviceData) => {
+      return upsertEventRules(eventRules, { knowledge_service_id: serviceData.get('id') })
+        .then(() => options.returnJSON ? serviceData.toJSON() : serviceData)
+        .catch(err => err);
+    })
+    .catch(err => err);
+}
+
+export const deleteService = (serviceId) => {
+  return KnowledgeAnswer.where({ knowledge_service_id: serviceId }).destroy().then(() => {
+    return EventRule.where({ knowledge_service_id: serviceId }).destroy().then(() => {
+      return KnowledgeService.forge({ id: serviceId }).destroy().then(() => {
+        return { id: serviceId };
+      }).catch(err => err);
+    }).catch(err => err);
   }).catch(err => err);
 };
 

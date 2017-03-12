@@ -54,7 +54,7 @@ export default class SeeClickFix {
           refreshedStatus = 'closed';
         }
         knex('cases')
-          .where({ see_click_fix_id: scfId })
+          .where({ seeClickFixId: scfId })
           .update({ status: refreshedStatus })
           .returning('*')
           .then(res => resolve(JSON.parse(JSON.stringify(res[0]))))

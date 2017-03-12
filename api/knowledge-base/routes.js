@@ -1,7 +1,8 @@
 import { Router } from 'express';
 import { logger } from '../logger';
 import { KnowledgeEvent, KnowledgeFacility, KnowledgeFacilityType, KnowledgeService } from './models';
-import { getAnswers, getCategories, getQuestions, makeAnswer, updateAnswer, deleteAnswer } from './helpers';
+import { getAnswers, getCategories, getQuestions, makeAnswer, updateAnswer, deleteAnswer,
+  deleteService, createFacility, updateFacility, deleteFacility, createService, updateService } from './helpers';
 
 const router = new Router();
 
@@ -38,7 +39,7 @@ router.route('/facilities')
   .get((req, res) => {
     const whereFilters = {};
     if (req.query.organization_id) whereFilters.organization_id = req.query.organization_id;
-    KnowledgeFacility.where(whereFilters).fetchAll({ withRelated: ['category', 'events', 'location', 'eventRules', 'services', 'type'] })
+    KnowledgeFacility.where(whereFilters).fetchAll({ withRelated: ['category', 'location', 'eventRules', 'services', 'type'] })
       .then((facilityArray) => {
         res.status(200).send({ facilities: facilityArray });
       });
@@ -50,12 +51,9 @@ router.route('/facilities')
    * @return {Object}
    */
   .post((req, res, next) => {
-    const compiledModel = {
-      ...req.body.facility,
-      organization_id: req.body.organization.id,
-    };
-    KnowledgeFacility.forge(compiledModel).save(null, { method: 'insert' })
-      .then(created => res.status(200).send({ facility: created }))
+    createFacility(req.body.facility, req.body.organization, req.body.facility.location,
+      { returnJSON: true })
+      .then(facility => res.status(200).send({ facility }))
       .catch(err => next(err));
   })
   /**
@@ -65,12 +63,7 @@ router.route('/facilities')
    * @return {Object}
    */
    .put((req, res, next) => {
-     const compiledModel = {
-       id: req.body.facility.id,
-       name: req.body.facility.name,
-       description: req.body.facility.description,
-     };
-     KnowledgeFacility.forge(compiledModel).save(null, { method: 'update' })
+     updateFacility(req.body.facility, { returnJSON: true })
        .then(updated => res.status(200).send({ facility: updated }))
        .catch(err => next(err));
    })
@@ -80,8 +73,8 @@ router.route('/facilities')
     * @return {Object}
     */
   .delete((req, res, next) => {
-    KnowledgeFacility.forge({ id: req.query.facility_id }).destroy()
-      .then(() => res.status(200).send({ facility: { id: req.query.facility_id } }))
+    deleteFacility(req.query.facility_id)
+      .then(facility => res.status(200).send({ facility }))
       .catch(err => next(err));
   });
 
@@ -148,7 +141,7 @@ router.route('/services')
   .get((req, res, next) => {
     const whereFilters = {};
     if (req.query.organization_id) whereFilters.organization_id = req.query.organization_id;
-    KnowledgeService.where(whereFilters).fetchAll({ withRelated: ['category', 'events', 'facility', 'location', 'eventRules'] })
+    KnowledgeService.where(whereFilters).fetchAll({ withRelated: ['category', 'facility', 'location', 'eventRules'] })
       .then(serviceArray => res.status(200).send({ services: serviceArray }))
       .catch(err => next(err));
   })
@@ -159,11 +152,8 @@ router.route('/services')
    * @return {Object}
    */
   .post((req, res, next) => {
-    const serviceModel = {
-      ...req.body.service,
-      organization_id: req.body.organization.id,
-    };
-    KnowledgeService.forge(serviceModel).save(null, { method: 'insert' })
+    createService(req.body.service, req.body.organization, req.body.service.location,
+      { returnJSON: true })
       .then(saved => res.status(200).send({ service: saved }))
       .catch(err => next(err));
   })
@@ -173,12 +163,7 @@ router.route('/services')
    * @return {Object}
    */
   .put((req, res, next) => {
-    const serviceModel = {
-      id: req.body.service.id,
-      name: req.body.service.name,
-      description: req.body.service.description,
-    };
-    KnowledgeService.forge(serviceModel).save(null, { method: 'update' })
+    updateService(req.body.service, { returnJSON: true })
       .then(saved => res.status(200).send({ service: saved }))
       .catch(err => next(err));
   })
@@ -188,18 +173,18 @@ router.route('/services')
    * @return {Object}
    */
   .delete((req, res, next) => {
-    KnowledgeService.forge({ id: req.query.service_id }).destroy()
-      .then(() => res.status(200).send({ service: { id: req.query.service_id } }))
+    deleteService(req.query.service_id)
+      .then(service => res.status(200).send({ service }))
       .catch(err => next(err));
   });
 
 /**
  * Questions Endpoint
  */
-router.get('/questions', (req, res) => {
+router.get('/questions', (req, res, next) => {
   getQuestions(req.query)
     .then(questions => res.status(200).send({ questions }))
-    .catch(error => res.status(400).send(error));
+    .catch(error => next(error));
 });
 
 /**
@@ -223,9 +208,13 @@ router.route('/answers')
    * @return {Object}
    */
   .post((req, res, next) => {
-    makeAnswer(req.body.organization, req.body.question, req.body.answer, { returnJSON: true })
-      .then(answerModel => res.status(200).send({ answer: answerModel }))
-      .catch(err => next(err));
+    try {
+      makeAnswer(req.body.organization, req.body.question, req.body.answer, { returnJSON: true })
+        .then(answerModel => res.status(200).send({ answer: answerModel }))
+        .catch(err => next(err));
+    } catch (e) {
+      next(e);
+    }
   })
   /**
    * Update Answer

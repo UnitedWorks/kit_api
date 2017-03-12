@@ -1,4 +1,5 @@
 import { getAnswers as getAnswersHelper } from '../../knowledge-base/helpers';
+import { getPlacesUrl } from '../../utils';
 
 export default class KitClient {
   constructor(config = {}) {
@@ -17,43 +18,62 @@ export default class KitClient {
     }, compiledConfig);
   }
 
-  static answerText(answers) {
-    const answer = answers.text != null ? answers : answers.filter(a => a.text != null)[0];
-    if (answer) {
-      return answer.url ? `${answer.text} (${answer.url})` : `${answer.text}`;
+  static answerText(answerObj) {
+    if (Object.hasOwnProperty.call(answerObj, 'text')) {
+      return answerObj.url ? `${answerObj.text} (${answerObj.url})` : `${answerObj.text}`;
     }
-    return 'Sorry, I can\'t find an answer for you. :( I\'ll let the city know';
+    return 'Sorry, I can\'t find an answer for you. :( I\'ll try to get one for you soon';
   }
 
-  static formGenericTemplates(type, objects) {
-    const templates = [];
+  static formGenericTemplate(type, objects) {
+    const template = {
+      type: 'template',
+      templateType: 'generic',
+      image_aspect_ratio: 'horizontal',
+      elements: [],
+    };
     if (objects.length > 0) {
-      if (type === 'facility') {
-        objects.forEach((facility) => {
-          templates.push({
-            type: 'template',
-            templateType: 'generic',
-            elements: [{
-              title: facility.name,
-              subtitle: facility.description,
-            }],
+      objects.forEach((object) => {
+        const elementButtons = [];
+        if (object.hasOwnProperty('location')) {
+          elementButtons.push({
+            type: 'web_url',
+            title: object.location.formattedAddress,
+            url: getPlacesUrl(object.location.formattedAddress),
           });
-        });
-      } else if (type === 'service') {
-        objects.forEach((service) => {
-          templates.push({
-            type: 'template',
-            templateType: 'generic',
-            elements: [{
-              title: service.name,
-              subtitle: service.description,
-            }],
+        }
+        if (object.hasOwnProperty('phone_number')) {
+          elementButtons.push({
+            type: 'phone_number',
+            title: object.phone_number,
+            payload: object.phone_number,
           });
+        }
+        if (object.hasOwnProperty('url')) {
+          elementButtons.push({
+            type: 'web_url',
+            title: object.url,
+            url: object.url,
+            webview_height_ratio: 'tall',
+          });
+        }
+        template.elements.push({
+          title: object.name,
+          subtitle: object.brief_description,
+          buttons: elementButtons,
         });
-      }
-      return templates;
+      });
+      return [template];
     }
     return [];
+  }
+
+  static compileAnswers(answers) {
+    return [
+      KitClient.answerText(answers),
+      ...KitClient.formGenericTemplate('facility', answers.facilities),
+      ...KitClient.formGenericTemplate('service', answers.services),
+    ];
   }
 
 }

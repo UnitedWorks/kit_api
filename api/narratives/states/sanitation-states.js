@@ -4,48 +4,50 @@ export default {
   garbageSchedule() {
     return new KitClient({ organization: this.get('organization') })
       .getAnswer('sanitation-garbage-schedule').then((answers) => {
-        this.messagingClient.addAll([
-          KitClient.answerText(answers),
-          ...KitClient.formGenericTemplates('facility', answers.facilities),
-          ...KitClient.formGenericTemplates('service', answers.services),
-        ]);
+        this.messagingClient.addAll(KitClient.compileAnswers(answers));
         return this.messagingClient.runQuene().then(() => 'smallTalk.start');
       });
   },
   garbageDropOff() {
     return new KitClient({ organization: this.get('organization') })
       .getAnswer('sanitation-garbage-drop-off').then((answers) => {
-        return this.messagingClient.send(KitClient.answerText(answers)).then(() => 'smallTalk.start');
+        this.messagingClient.addAll(KitClient.compileAnswers(answers));
+        return this.messagingClient.runQuene().then(() => 'smallTalk.start');
       });
   },
   recyclingSchedule() {
     return new KitClient({ organization: this.get('organization') })
       .getAnswer('sanitation-recycling-schedule').then((answers) => {
-        return this.messagingClient.send(KitClient.answerText(answers)).then(() => 'smallTalk.start');
+        this.messagingClient.addAll(KitClient.compileAnswers(answers));
+        return this.messagingClient.runQuene().then(() => 'smallTalk.start');
       });
   },
   recyclingDropOff() {
     return new KitClient({ organization: this.get('organization') })
       .getAnswer('sanitation-recycling-drop-off').then((answers) => {
-        return this.messagingClient.send(KitClient.answerText(answers)).then(() => 'smallTalk.start');
+        this.messagingClient.addAll(KitClient.compileAnswers(answers));
+        return this.messagingClient.runQuene().then(() => 'smallTalk.start');
       });
   },
   compostDumping() {
     return new KitClient({ organization: this.get('organization') })
       .getAnswer('sanitation-compost').then((answers) => {
-        return this.messagingClient.send(KitClient.answerText(answers)).then(() => 'smallTalk.start');
+        this.messagingClient.addAll(KitClient.compileAnswers(answers));
+        return this.messagingClient.runQuene().then(() => 'smallTalk.start');
       });
   },
   bulkPickup() {
     return new KitClient({ organization: this.get('organization') })
       .getAnswer('sanitation-bulk-pickup').then((answers) => {
-        return this.messagingClient.send(KitClient.answerText(answers)).then(() => 'smallTalk.start');
+        this.messagingClient.addAll(KitClient.compileAnswers(answers));
+        return this.messagingClient.runQuene().then(() => 'smallTalk.start');
       });
   },
   electronicsDisposal() {
     return new KitClient({ organization: this.get('organization') })
       .getAnswer('sanitation-electronics-disposal').then((answers) => {
-        return this.messagingClient.send(KitClient.answerText(answers)).then(() => 'smallTalk.start');
+        this.messagingClient.addAll(KitClient.compileAnswers(answers));
+        return this.messagingClient.runQuene().then(() => 'smallTalk.start');
       });
   },
 };

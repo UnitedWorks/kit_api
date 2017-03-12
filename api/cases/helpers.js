@@ -150,7 +150,7 @@ export const getConstituentCases = (constituent) => {
   return AccountModels.Constituent.where({ id: constituent.id }).fetch({ withRelated: ['cases'] }).then((constituentModel) => {
     const casePromises = [];
     constituentModel.toJSON().cases.forEach((constituentCase) => {
-      // If case has see_click_fix_id and is open, we need to check for resolution
+      // If case has seeClickFixId and is open, we need to check for resolution
       if (constituentCase.seeClickFixId && constituentCase.status === 'open') {
         casePromises.push(new SeeClickFixClient().syncCase(constituentCase.seeClickFixId));
       } else {
