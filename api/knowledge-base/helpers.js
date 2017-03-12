@@ -1,4 +1,4 @@
-import { KnowledgeAnswer, KnowledgeCategory, KnowledgeFacility, KnowledgeService, KnowledgeQuestion, Location, Media } from './models';
+import { EventRule, KnowledgeAnswer, KnowledgeCategory, KnowledgeFacility, KnowledgeService, KnowledgeQuestion, Location, Media } from './models';
 import { CaseLocations, CaseMedia } from '../cases/models';
 import { geocoder } from '../services/geocoder';
 
@@ -55,6 +55,12 @@ export const makeAnswer = (organization, question, answer, options) => {
   return KnowledgeAnswer.forge(newAnswerModel).save(null, { method: 'insert' })
     .then(data => options.returnJSON ? data.toJSON() : data)
     .catch(error => error);
+};
+
+export const upsertEventRules = (eventRules, idsObj) => {
+  return Promise.all(
+    eventRules.map(rule => EventRule.forge(Object.assign(rule, idsObj)).save())
+  ).then(results => results).catch(error => error);
 };
 
 export const saveLocation = (locationModel, options = {}) => {
@@ -124,6 +130,7 @@ export const createFacility = (facility, organization, location, options) => {
     phone_number: facility.phone_number,
     url: facility.url,
   };
+  const eventRules = facility.eventRules;
   return createLocation(location, { returnJSON: true }).then((locationJSON) => {
     const composedModel = {
       ...composedFacility,
@@ -131,8 +138,11 @@ export const createFacility = (facility, organization, location, options) => {
       organization_id: organization.id,
     };
     return KnowledgeFacility.forge(composedModel).save(null, { method: 'insert' })
-      .then(data => options.returnJSON ? data.toJSON() : data)
-      .catch(err => err);
+      .then((facilityData) => {
+        return upsertEventRules(eventRules, { knowledge_facility_id: facilityData.get('id') })
+          .then(() => options.returnJSON ? facilityData.toJSON() : facilityData)
+          .catch(err => err);
+      }).catch(err => err);
   });
 };
 
@@ -146,18 +156,25 @@ export const updateFacility = (facility, options) => {
     phone_number: facility.phone_number,
     url: facility.url,
   };
+  const eventRules = facility.eventRules;
   if (!facility.location.id) {
     return createLocation(facility.location, { returnJSON: true }).then((locationJSON) => {
       return KnowledgeFacility.forge({ ...compiledModel, location_id: locationJSON.id })
         .save(null, { method: 'update' })
-        .then(data => options.returnJSON ? data.toJSON() : data)
+        .then((facilityData) => {
+          return upsertEventRules(eventRules, { knowledge_facility_id: facilityData.get('id') })
+            .then(() => options.returnJSON ? facilityData.toJSON() : facilityData)
+            .catch(err => err);
+        })
         .catch(err => err);
     }).catch(err => err);
   }
-  return KnowledgeFacility.forge({ compiledModel }).save(null, { method: 'update' })
-    .then(data => options.returnJSON ? data.toJSON() : data)
-    .catch(err => err);
-}
+  return KnowledgeFacility.forge(compiledModel).save(null, { method: 'update' }).then((facilityData) => {
+    return upsertEventRules(eventRules, { knowledge_facility_id: facilityData.get('id') })
+      .then(() => options.returnJSON ? facilityData.toJSON() : facilityData)
+      .catch(err => err);
+  }).catch(err => err);
+};
 
 export const deleteFacility = (facilityId) => {
   return KnowledgeAnswer.where({ knowledge_facility_id: facilityId }).destroy().then(() => {
