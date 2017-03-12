@@ -178,8 +178,10 @@ export const updateFacility = (facility, options) => {
 
 export const deleteFacility = (facilityId) => {
   return KnowledgeAnswer.where({ knowledge_facility_id: facilityId }).destroy().then(() => {
-    return KnowledgeFacility.forge({ id: facilityId }).destroy().then(() => {
-      return { id: facilityId };
+    return EventRule.where({ knowledge_facility_id: facilityId }).destroy().then(() => {
+      return KnowledgeFacility.forge({ id: facilityId }).destroy().then(() => {
+        return { id: facilityId };
+      }).catch(err => err);
     }).catch(err => err);
   }).catch(err => err);
 };
@@ -192,6 +194,7 @@ export const createService = (service, organization, location, options) => {
     phone_number: service.phone_number,
     url: service.url,
   };
+  const eventRules = service.eventRules;
   return createLocation(location, { returnJSON: true }).then((locationJSON) => {
     const composedModel = {
       ...composedService,
@@ -199,7 +202,11 @@ export const createService = (service, organization, location, options) => {
       organization_id: organization.id,
     };
     return KnowledgeService.forge(composedModel).save(null, { method: 'insert' })
-      .then(data => options.returnJSON ? data.toJSON() : data)
+      .then((serviceData) => {
+        return upsertEventRules(eventRules, { knowledge_service_id: serviceData.get('id') })
+          .then(() => options.returnJSON ? serviceData.toJSON() : serviceData)
+          .catch(err => err);
+      })
       .catch(err => err);
   });
 };
@@ -214,23 +221,34 @@ export const updateService = (service, options) => {
     phone_number: service.phone_number,
     url: service.url,
   };
+  const eventRules = service.eventRules;
   if (!service.location.id) {
     return createLocation(service.location, { returnJSON: true }).then((locationJSON) => {
       return KnowledgeService.forge({ ...compiledModel, location_id: locationJSON.id })
         .save(null, { method: 'update' })
-        .then(data => options.returnJSON ? data.toJSON() : data)
+        .then((serviceData) => {
+          return upsertEventRules(eventRules, { knowledge_service_id: serviceData.get('id') })
+            .then(() => options.returnJSON ? serviceData.toJSON() : serviceData)
+            .catch(err => err);
+        })
         .catch(err => err);
     }).catch(err => err);
   }
-  return KnowledgeFacility.forge({ compiledModel }).save(null, { method: 'update' })
-    .then(data => options.returnJSON ? data.toJSON() : data)
+  return KnowledgeService.forge(compiledModel).save(null, { method: 'update' })
+    .then((serviceData) => {
+      return upsertEventRules(eventRules, { knowledge_service_id: serviceData.get('id') })
+        .then(() => options.returnJSON ? serviceData.toJSON() : serviceData)
+        .catch(err => err);
+    })
     .catch(err => err);
 }
 
 export const deleteService = (serviceId) => {
   return KnowledgeAnswer.where({ knowledge_service_id: serviceId }).destroy().then(() => {
-    return KnowledgeService.forge({ id: serviceId }).destroy().then(() => {
-      return { id: serviceId };
+    return EventRule.where({ knowledge_service_id: serviceId }).destroy().then(() => {
+      return KnowledgeService.forge({ id: serviceId }).destroy().then(() => {
+        return { id: serviceId };
+      }).catch(err => err);
     }).catch(err => err);
   }).catch(err => err);
 };
