@@ -31,7 +31,6 @@ exports.seed = (knex, Promise) => {
   .then(() => {
     // Then we clear unassociated representatives
     return Promise.all([
-      knex('schedules').del(),
       knex('organizations').del(),
       knex('constituents').del(),
       knex('knowledge_categorys').del(),

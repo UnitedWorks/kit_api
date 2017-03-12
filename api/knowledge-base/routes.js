@@ -36,7 +36,9 @@ router.route('/facilities')
    * @return {Array}
    */
   .get((req, res) => {
-    KnowledgeFacility.fetchAll({ withRelated: ['category', 'events', 'location', 'schedule', 'services', 'type'] })
+    const whereFilters = {};
+    if (req.query.organization_id) whereFilters.organization_id = req.query.organization_id;
+    KnowledgeFacility.where(whereFilters).fetchAll({ withRelated: ['category', 'events', 'location', 'eventRules', 'services', 'type'] })
       .then((facilityArray) => {
         res.status(200).send({ facilities: facilityArray });
       });
@@ -44,15 +46,17 @@ router.route('/facilities')
   /**
    * Create Facilities
    * @param {Object} facility - Facility object to be created
+   * @param {Object} organization - Organization to associate facility with
    * @return {Object}
    */
-  .post((req, res) => {
-    KnowledgeFacility.forge(req.body.facility).save(null, { method: 'insert' })
-      .then((created) => {
-        res.status(200).send({ facility: created });
-      }).catch((err) => {
-        res.status(200).send(err);
-      });
+  .post((req, res, next) => {
+    const compiledModel = {
+      ...req.body.facility,
+      organization_id: req.body.organization.id,
+    };
+    KnowledgeFacility.forge(compiledModel).save(null, { method: 'insert' })
+      .then(created => res.status(200).send({ facility: created }))
+      .catch(err => next(err));
   })
   /**
    * Update Facilities
@@ -60,26 +64,25 @@ router.route('/facilities')
    * @param {Number} facility.id - Required: Id of updated object
    * @return {Object}
    */
-   .put((req, res) => {
-     KnowledgeFacility.forge(req.body.facility).save(null, { method: 'update' })
-       .then((updated) => {
-         res.status(200).send({ facility: updated });
-       }).catch((err) => {
-         res.status(200).send(err);
-       });
+   .put((req, res, next) => {
+     const compiledModel = {
+       id: req.body.facility.id,
+       name: req.body.facility.name,
+       description: req.body.facility.description,
+     };
+     KnowledgeFacility.forge(compiledModel).save(null, { method: 'update' })
+       .then(updated => res.status(200).send({ facility: updated }))
+       .catch(err => next(err));
    })
    /**
     * Delete facilities
     * @param {Number} id - Id of the facility to be removed
     * @return {Object}
     */
-  .delete((req, res) => {
-    KnowledgeFacility.forge({ id: req.query.id }).destroy()
-      .then(() => {
-        res.status(200).send();
-      }).catch((err) => {
-        return res.status(400).send(err);
-      });
+  .delete((req, res, next) => {
+    KnowledgeFacility.forge({ id: req.query.facility_id }).destroy()
+      .then(() => res.status(200).send({ facility: { id: req.query.facility_id } }))
+      .catch(err => next(err));
   });
 
 /**
@@ -91,7 +94,7 @@ router.route('/events')
    * @return {Array}
    */
   .get((req, res) => {
-    KnowledgeEvent.fetchAll({ withRelated: ['category', 'facility', 'location', 'service', 'schedule'] })
+    KnowledgeEvent.fetchAll({ withRelated: ['category', 'facility', 'location', 'service', 'eventRules'] })
       .then((eventsArray) => {
         res.status(200).send({ events: eventsArray });
       });
@@ -142,50 +145,52 @@ router.route('/services')
    * Get services
    * @return {Array}
    */
-  .get((req, res) => {
-    KnowledgeService.fetchAll({ withRelated: ['category', 'events', 'facility', 'location', 'schedule'] })
-      .then((serviceArray) => {
-        res.status(200).send({ services: serviceArray });
-      });
+  .get((req, res, next) => {
+    const whereFilters = {};
+    if (req.query.organization_id) whereFilters.organization_id = req.query.organization_id;
+    KnowledgeService.where(whereFilters).fetchAll({ withRelated: ['category', 'events', 'facility', 'location', 'eventRules'] })
+      .then(serviceArray => res.status(200).send({ services: serviceArray }))
+      .catch(err => next(err));
   })
   /**
    * Create service
    * @param {Object} service - Object for service creation
+   * @param {Object} organization - Organization to associate service with
    * @return {Object}
    */
-  .post((req, res) => {
-    KnowledgeService.forge(req.body.service).save(null, { method: 'insert' })
-      .then((saved) => {
-        res.status(200).send({ service: saved });
-      }).catch((err) => {
-        res.status(400).send({ error: err });
-      });
+  .post((req, res, next) => {
+    const serviceModel = {
+      ...req.body.service,
+      organization_id: req.body.organization.id,
+    };
+    KnowledgeService.forge(serviceModel).save(null, { method: 'insert' })
+      .then(saved => res.status(200).send({ service: saved }))
+      .catch(err => next(err));
   })
   /**
    * Update service
    * @param {Object} service - Object for service update
    * @return {Object}
    */
-  .put((req, res) => {
-    KnowledgeService.forge(req.body.service).save(null, { method: 'update' })
-      .then((saved) => {
-        res.status(200).send({ service: saved });
-      }).catch((err) => {
-        res.status(400).send({ error: err });
-      });
+  .put((req, res, next) => {
+    const serviceModel = {
+      id: req.body.service.id,
+      name: req.body.service.name,
+      description: req.body.service.description,
+    };
+    KnowledgeService.forge(serviceModel).save(null, { method: 'update' })
+      .then(saved => res.status(200).send({ service: saved }))
+      .catch(err => next(err));
   })
   /**
    * Delete Service
    * @param {Number} id - Id of the service to be deleted
    * @return {Object}
    */
-  .delete((req, res) => {
-    KnowledgeService.forge({ id: req.query.id }).destroy()
-      .then(() => {
-        res.status(200).send();
-      }).catch(() => {
-        res.status(400).send();
-      });
+  .delete((req, res, next) => {
+    KnowledgeService.forge({ id: req.query.service_id }).destroy()
+      .then(() => res.status(200).send({ service: { id: req.query.service_id } }))
+      .catch(err => next(err));
   });
 
 /**

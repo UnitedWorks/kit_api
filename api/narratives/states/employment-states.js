@@ -36,7 +36,7 @@ export default {
       }
       return new KitClient({ organization: this.get('organization') })
         .getAnswer('employment-job-training').then((answer) => {
-          const message = KitClient.answersToString(answer);
+          const message = KitClient.answerText(answer);
           return this.messagingClient.send(message).then(() => 'smallTalk.start');
         });
     },

@@ -19,8 +19,8 @@ export const Location = bookshelf.Model.extend({
   },
 });
 
-export const Schedule = bookshelf.Model.extend({
-  tableName: 'schedules',
+export const EventRule = bookshelf.Model.extend({
+  tableName: 'event_rules',
 });
 
 // Knowledge Base Entries - Think of as complex objects
@@ -46,8 +46,8 @@ export const KnowledgeFacility = bookshelf.Model.extend({
   location: function() {
     return this.hasOne(Location, 'id');
   },
-  schedule: function() {
-    return this.hasOne(Schedule, 'id');
+  eventRules: function() {
+    return this.hasMany(EventRule, 'knowledge_facility_id');
   },
   services: function() {
     return this.hasMany(KnowledgeService, 'knowledge_facility_id');
@@ -71,8 +71,8 @@ export const KnowledgeService = bookshelf.Model.extend({
   location: function() {
     return this.hasOne(Location, 'id');
   },
-  schedule: function() {
-    return this.hasOne(Schedule, 'id');
+  eventRules: function() {
+    return this.hasMany(EventRule, 'knowledge_service_id');
   },
 });
 
@@ -87,8 +87,8 @@ export const KnowledgeEvent = bookshelf.Model.extend({
   location: function() {
     return this.hasOne(Location, 'id');
   },
-  schedule: function() {
-    return this.hasOne(Schedule, 'id');
+  eventRules: function() {
+    return this.hasMany(EventRule, 'knowledge_event_id');
   },
   service: function() {
     return this.belongsTo(KnowledgeService, 'service_id');
@@ -120,10 +120,10 @@ export const KnowledgeAnswer = bookshelf.Model.extend({
   events: function() {
     return this.hasOne(KnowledgeEvent, 'id', 'knowledge_event_id');
   },
-  facilities: function() {
+  facility: function() {
     return this.hasOne(KnowledgeFacility, 'id', 'knowledge_facility_id');
   },
-  services: function() {
+  service: function() {
     return this.hasOne(KnowledgeService, 'id', 'knowledge_service_id');
   },
 });

@@ -54,7 +54,7 @@ exports.up = function(knex, Promise) {
         .unsigned().references('id').inTable('locations');
       table.integer('knowledge_facility_id')
         .unsigned().references('id').inTable('knowledge_facilitys');
-      table.integer('service_id')
+      table.integer('knowledge_service_id')
         .unsigned().references('id').inTable('knowledge_services');
       table.integer('organization_id')
         .unsigned().references('id').inTable('organizations');
@@ -93,7 +93,6 @@ exports.down = function(knex, Promise) {
   return knex.schema
     .dropTable('knowledge_answers')
     .dropTable('knowledge_questions')
-
     .dropTable('knowledge_events')
     .dropTable('knowledge_services')
     .dropTable('knowledge_facilitys')

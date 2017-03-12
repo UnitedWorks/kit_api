@@ -75,7 +75,7 @@ exports.seed = function(knex, Promise) {
       knowledge_category_id: generalCategoryId,
     }, 'id'));
     questionInserts.push(knex('knowledge_questions').insert({
-      label: 'sanitation-electronics-disposal',
+      label: 'health-clinic',
       question: 'Where can I find a health clinic or basic medical care?',
       knowledge_category_id: generalCategoryId,
     }, 'id'));
