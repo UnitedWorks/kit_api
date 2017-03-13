@@ -96,7 +96,7 @@ export default class KitClient {
     const simpleScheduleDescriber = object => {
       const timeStart = moment(object.eventRules[0].t_start, 'HH-mm-ss');
       const timeEnd = moment(object.eventRules[0].t_end, 'HH-mm-ss');
-      let objectResponse = `Facility: ${object.name}`
+      let objectResponse = `Facility: ${object.name}${object.phone ? ` (${object.phone})` : ''}${object.url ? ` (${object.url})` : ''}`
         .concat(`Schedule: ${RRule.fromString(object.eventRules[0].rrule).toText()}`);
       if (object.eventRules[0].t_start && object.eventRules[0].t_end) {
         objectResponse = objectResponse.concat(`\nHours: ${timeStart.format('h:mm A')} - ${timeEnd.format('h:mm A')}`);
@@ -122,12 +122,12 @@ export default class KitClient {
           weekLaterDate.setDate(weekLaterDate.getDate() + 7);
           betweenSlice = rruleSet.between(new Date(datetimeEntity[0].value), weekLaterDate);
         }
-        let thisServiceResponse = `${entity.name} Schedule: `;
+        let thisResponse = `${entity.name}${entity.phone ? ` (${entity.phone})` : ''}${entity.url ? ` (${entity.url})` : ''} Schedule: `;
         if (betweenSlice.length > 0) {
           betweenSlice.forEach((slice) => {
-            thisServiceResponse = thisServiceResponse.concat(`${moment(slice).format('ddd, M/DD')} (${timeStart.format('h:mm A')} - ${timeEnd.format('h:mm A')}) `);
+            thisResponse = thisResponse.concat(`${moment(slice).format('ddd, M/DD')} (${timeStart.format('h:mm A')} - ${timeEnd.format('h:mm A')}) `);
           });
-          entityResponses.push(thisServiceResponse);
+          entityResponses.push(thisResponse);
         }
       } else if (datetimeEntity[0].value) {
         // Specific Day = Yes/NO
@@ -139,21 +139,21 @@ export default class KitClient {
           const dayLaterDate = new Date(datetimeEntity[0].value);
           dayLaterDate.setHours(23, 59, 59);
           const betweenSlice = rruleSet.between(floorDate, dayLaterDate);
-          let thisServiceResponse = `${entity.name} Schedule: `;
+          let thisResponse = `${entity.name}${entity.phone ? ` (${entity.phone})` : ''}${entity.url ? ` (${entity.url})` : ''} Schedule: `;
           if (betweenSlice.length === 1) {
-            thisServiceResponse = thisServiceResponse.concat(`${moment(betweenSlice[0]).format('ddd, M/DD')} (${timeStart.format('h:mm A')} - ${timeEnd.format('h:mm A')}) `);
-            entityResponses.push(thisServiceResponse);
+            thisResponse = thisResponse.concat(`${moment(betweenSlice[0]).format('ddd, M/DD')} (${timeStart.format('h:mm A')} - ${timeEnd.format('h:mm A')}) `);
+            entityResponses.push(thisResponse);
           }
         } else if (datetimeEntity[0].grain === 'week') {
           const weekLaterDate = new Date(datetimeEntity[0].value);
           weekLaterDate.setDate(weekLaterDate.getDate() + 7);
           const betweenSlice = rruleSet.between(new Date(datetimeEntity[0].value), weekLaterDate);
-          let thisServiceResponse = `${entity.name} Schedule: `;
+          let thisResponse = `${entity.name} Schedule: `;
           if (betweenSlice.length > 0) {
             betweenSlice.forEach((slice) => {
-              thisServiceResponse = thisServiceResponse.concat(`${moment(slice).format('ddd, M/DD')} (${timeStart.format('h:mm A')} - ${timeEnd.format('h:mm A')}) `);
+              thisResponse = thisResponse.concat(`${moment(slice).format('ddd, M/DD')} (${timeStart.format('h:mm A')} - ${timeEnd.format('h:mm A')}) `);
             });
-            entityResponses.push(thisServiceResponse);
+            entityResponses.push(thisResponse);
           }
         }
       }
