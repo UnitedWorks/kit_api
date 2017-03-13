@@ -37,21 +37,21 @@ export default class KitClient {
     if (objects.length > 0) {
       objects.forEach((object) => {
         const elementButtons = [];
-        if (object.hasOwnProperty('location')) {
+        if (object.hasOwnProperty('location') && object.location.formattedAddress != null) {
           elementButtons.push({
             type: 'web_url',
             title: object.location.formattedAddress,
             url: getPlacesUrl(object.location.formattedAddress),
           });
         }
-        if (object.hasOwnProperty('phone_number')) {
+        if (object.hasOwnProperty('phone_number') && object.phone_number != null) {
           elementButtons.push({
             type: 'phone_number',
             title: object.phone_number,
             payload: object.phone_number,
           });
         }
-        if (object.hasOwnProperty('url')) {
+        if (object.hasOwnProperty('url') && object.url != null) {
           elementButtons.push({
             type: 'web_url',
             title: object.url,
@@ -92,7 +92,6 @@ export default class KitClient {
   }
 
   static dynamicAnswer(answer, datetimeEntity) {
-
     const responses = [];
     const simpleScheduleDescriber = object => {
       const timeStart = moment(object.eventRules[0].t_start, 'HH-mm-ss');
