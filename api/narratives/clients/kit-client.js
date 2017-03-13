@@ -59,9 +59,22 @@ export default class KitClient {
             webview_height_ratio: 'tall',
           });
         }
+        let scheduleString;
+        if (object.eventRules[0].rrule) {
+          scheduleString = '';
+          if (object.eventRules[0].t_start) {
+            const timeStart = moment(object.eventRules[0].t_start, 'HH-mm-ss');
+            scheduleString = scheduleString.concat(`From ${timeStart.format('h:mm A')}`);
+          }
+          if (object.eventRules[0].t_start && object.eventRules[0].t_end) {
+            const timeEnd = moment(object.eventRules[0].t_end, 'HH-mm-ss');
+            scheduleString = scheduleString.concat(` to ${timeEnd.format('h:mm A')} `);
+          }
+          scheduleString = scheduleString.concat(`${RRule.fromString(object.eventRules[0].rrule).toText()}`);
+        }
         template.elements.push({
           title: object.name,
-          subtitle: object.brief_description,
+          subtitle: scheduleString || object.brief_description || object.description,
           buttons: elementButtons,
         });
       });
