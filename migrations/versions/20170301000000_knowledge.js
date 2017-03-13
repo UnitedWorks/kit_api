@@ -74,7 +74,6 @@ exports.up = function(knex, Promise) {
 
       table.integer('organization_id').notNullable().references('organizations.id');
       table.integer('question_id').notNullable().references('knowledge_questions.id');
-      table.unique(['organization_id', 'question_id']);
 
       table.dateTime('created_at').defaultTo(knex.raw('now()'));
       table.dateTime('updated_at');

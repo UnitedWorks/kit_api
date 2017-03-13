@@ -2,7 +2,6 @@
 exports.up = function(knex, Promise) {
   return knex.schema
     .alterTable('knowledge_answers', (table) => {
-      table.dropUnique(['organization_id', 'question_id']);
       table.dateTime('expiration');
     })
     .alterTable('knowledge_facilitys', (table) => {
@@ -30,7 +29,6 @@ exports.up = function(knex, Promise) {
 exports.down = function(knex, Promise) {
   return knex.schema
     .alterTable('knowledge_answers', (table) => {
-      table.unique(['organization_id', 'question_id']);
       table.dropColumn('expiration');
     })
     .alterTable('knowledge_facilitys', (table) => {
