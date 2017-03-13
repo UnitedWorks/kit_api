@@ -6,7 +6,8 @@ export const getAnswers = (params = {}, options) => {
   return KnowledgeQuestion.where({ label: params.label }).fetch({
     withRelated: [{
       answers: q => q.where('organization_id', params.organization_id),
-    }, 'category', 'answers.facility', 'answers.facility.location',  'answers.service', 'answers.service.location'],
+    }, 'category', 'answers.facility', 'answers.facility.location', 'answers.facility.eventRules',
+      'answers.service', 'answers.service.location', 'answers.service.eventRules'],
   }).then((data) => {
     if (!options.returnJSON) return data.get('answers');
     const answerJSON = data.toJSON().answers;
