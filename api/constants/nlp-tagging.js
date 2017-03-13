@@ -1,9 +1,3 @@
-// Schedules
-export const SCHEDULES = 'schedules';
-export const WHEN = 'when';
-export const DEADLINE = 'deadline';
-export const OPEN = 'open';
-
 // Locations
 export const LOOKING_FOR = 'looking_for';
 export const WHERE = 'where';
@@ -22,12 +16,6 @@ export const STATUS = 'status';
 export const GET = 'get';
 export const CHECK = 'check';
 
-// Help Tags
-// KEYWORDS
-export const HELP = 'help';
-// TRAITS
-export const ASK_OPTIONS = 'ask options';
-
 // Relationships
 export const RELATIONSHIP_HOUSING = 'relationship_housing';
 export const RELATIONSHIP_POLITICAL = 'relationship_political';
@@ -36,8 +24,14 @@ export const RELATIONSHIP_POLITICAL = 'relationship_political';
 export const DOCUMENT = 'document';
 export const ID = 'id';
 
+// Help
+// NAME
+export const HELP = 'help';
+// TRAITS
+export const ASK_OPTIONS = 'ask options';
+
 // Voting
-// KEYWORDS
+// NAME
 export const VOTING = 'voting';
 // TRAITS
 export const REGISTER_TO_VOTE = 'register to vote';
@@ -54,11 +48,11 @@ export const VOTER_ASSISTANCE = 'voter assistance';
 export const EARLY_VOTING = 'early voting';
 
 // Benefits
-// KEYWORDS
+// NAME
 export const BENEFITS = 'benefits';
 
 // Sanitation
-// KEYWORDS
+// NAME
 export const SANITATION = 'sanitation';
 // TRAITS
 export const GARBAGE_SCHEDULE = 'garbage schedule';
@@ -70,19 +64,19 @@ export const BULK_PICKUP = 'bulk pickup';
 export const ELECTRONICS_DISPOSAL = 'electronics disposal';
 
 // Health
-// KEYWORDS
+// NAME
 export const HEALTH = 'health';
 // TRAITS
 export const CLINIC_SEARCH = 'clinic search';
 
 // Employment
-// KEYWORDS
+// NAME
 export const EMPLOYMENT = 'employment';
 // TRAITS
 export const JOB_TRAINING = 'job training';
 
 // Social Services
-// KEYWORDS
+// NAME
 export const SOCIAL_SERVICES = 'social_services';
 // TRAITS
 export const SHELTER_SEARCH = 'shelter search';
@@ -90,20 +84,20 @@ export const FOOD_SEARCH = 'food search';
 export const HYGIENE_SEARCH = 'hygiene search';
 
 // Settings
-// KEYWORDS
+// NAME
 export const SETTINGS = 'settings';
 // TRAITS
 export const CHANGE_CITY = 'change city';
 
 // Confirm/Deny
-// KEYWORDS
+// NAME
 export const CONFIRM_DENY = 'confirm_deny';
 // TRAITS
 export const YES = 'yes';
 export const NO = 'no';
 
 // Reactions
-// KEYWORDS
+// NAME
 export const REACTION = 'reaction';
 // TRAITS
 export const ACCEPTING = 'accepting';
@@ -111,7 +105,21 @@ export const SKEPTICAL = 'skeptical';
 export const ELABORATE = 'elaborate';
 
 // SmallTalk
-// KEYWORDS
+// NAME
 export const SMALL_TALK = 'small_talk';
 // TRAITS
 export const GREETING = 'greeting';
+
+// DateTime
+// NAME
+export const DATETIME = 'datetime';
+// TRAITS
+
+// Schedules
+// NAME
+export const SCHEDULES = 'schedules';
+// KEYWORDS
+export const WHEN = 'when';
+export const DEADLINE = 'deadline';
+export const OPEN = 'open';
+export const DAYS = 'days';
