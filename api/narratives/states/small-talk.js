@@ -63,6 +63,8 @@ export default {
     message() {
       logger.info('State: Start');
       const input = this.snapshot.input.payload;
+
+
       return nlp.message(input.text, {}).then((nlpData) => {
         this.set('nlp', nlpData.entities);
         const entities = nlpData.entities;
@@ -74,8 +76,10 @@ export default {
 
         // Benefits
         } else if (entities[TAGS.BENEFITS]) {
-          return this.messagingClient.send('Benefit Kitchen can help you learn about state and federal programs. For now, visit their website: https://app.benefitkitchen.com/');
-
+          // return this.messagingClient.send('Benefit Kitchen can help you learn about state and federal programs. For now, visit their website: https://app.benefitkitchen.com/');
+          if (entityValueIs(entities[TAGS.BENEFITS], [TAGS.HIGH_SPEED_INTERNET_CHECK])) {
+            return 'benefits-internet.init';
+          }
         // Voting
         } else if (entities[TAGS.VOTING]) {
           // Deadlines

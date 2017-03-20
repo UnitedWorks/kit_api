@@ -9,6 +9,7 @@ import SanitationMachine from './states/sanitation-states';
 import EmploymentMachine from './states/employment-states';
 import HealthMachine from './states/health-states';
 import SocialServicesMachine from './states/social-services-states';
+import BenefitsInternetMachine from './states/benefits-internet-states';
 
 import { NarrativeSessionMachine } from './machines';
 
@@ -30,6 +31,7 @@ export const stateMachines = {
   employment: EmploymentMachine,
   health: HealthMachine,
   socialServices: SocialServicesMachine,
+  'benefits-internet': BenefitsInternetMachine
 };
 
 export const inputDirector = (appSession, snapshot) => {

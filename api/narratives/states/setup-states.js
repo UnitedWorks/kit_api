@@ -15,7 +15,6 @@ const i18n = function(key) {
 }
 
 export default {
-
   reset_organization() {
     this.messagingClient.send(i18n('setup_ask_city'));
     return 'waiting_organization';
@@ -55,7 +54,6 @@ export default {
           }
 
           /* Match with Organization */
-          this.set('nlp', nlpData.entities);
           this.set('location', filteredGeoData[0]);
 
           const constituentLocation = this.get('location');
