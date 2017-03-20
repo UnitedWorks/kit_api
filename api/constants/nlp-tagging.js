@@ -50,6 +50,8 @@ export const EARLY_VOTING = 'early voting';
 // Benefits
 // NAME
 export const BENEFITS = 'benefits';
+export const BENEFITS_ASSISTANCE = 'benefits assistance';
+export const HIGH_SPEED_INTERNET_CHECK = 'high speed internet check';
 
 // Sanitation
 // NAME
