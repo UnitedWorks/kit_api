@@ -42,18 +42,11 @@ exports.seed = function(knex, Promise) {
       description: 'Request and case management system',
       url: 'https://seeclickfix.com',
     });
-    const salesForce = knex('integrations').insert({
-      name: 'Sales Force',
-      type: 'cases',
-      label: 'salesForce',
-      description: 'Customer relationship management system and toolset',
-      url: 'https://www.salesforce.com',
-    });
     const sfSelect = knex.select().where('name', 'San Francisco').from('organizations').then((rows) => {
       return rows[0].id;
     });
     return Promise.join(
-      askDarcelInsert, sfSelect, voteFoundationInsert, benefitKitchen, seeClickFix, salesForce,
+      askDarcelInsert, sfSelect, voteFoundationInsert, benefitKitchen, seeClickFix,
       (askDarcelId, sfId) => {
         idsObj.sourceIds = {
           askDarcel: askDarcelId,
