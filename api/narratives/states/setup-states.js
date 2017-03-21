@@ -5,6 +5,7 @@ import { entityValueIs } from '../helpers';
 import SlackService from '../../services/slack';
 import { createOrganization, getAdminOrganizationAtLocation } from '../../accounts/helpers';
 import { saveLocation } from '../../knowledge-base/helpers';
+import axios from 'axios';
 import * as TAGS from '../../constants/nlp-tagging';
 
 const i18n = function(key) {
@@ -13,6 +14,16 @@ const i18n = function(key) {
     setup_invalid_location: 'Hmm, I wasn\'t able to find anything. Can you try giving me a CITY and STATE again? Ex) "New Brunswick, NJ"'
   }[key];
 }
+
+const admin_levels = {
+ country: 2,
+ state: 4,
+ state_district: 5,
+ county: 7,
+ village: 8,
+ city_district: 9,
+ suburb: 10
+};
 
 export default {
   reset_organization() {
@@ -25,73 +36,78 @@ export default {
       /* Get input, process it, and get a geolocation */
       const input = this.snapshot.input.payload.text || this.snapshot.payload.payload;
       logger.info(`made it this far... ${input}`);
-      return nlp.message(input, {}).then((nlpData) => {
+      // http://nominatim.openstreetmap.org/search?q=Queens,%20New%20York&format=json&addressdetails=1&dedupe=1&type=administrative&polygon_geojson=1
 
-        // If no location is recognized by NLP, request again.
-        if (!Object.prototype.hasOwnProperty.call(nlpData.entities, 'location')) {
+      return axios.get('http://nominatim.openstreetmap.org/search', {
+        params: {
+          q: input,
+          format: 'json',
+          addressdetails: 1,
+          dedupe: 1,
+          // polygon_geojson: 1,
+          limit: 5
+        }
+      }).then((response) => {
+        logger.info(response.data);
+        const valid_results = response.data.filter((result)=>{
+          return ["administrative", "city", "town", "neighbourhood", "hamlet", "village"].includes(result.type) && (result.address.city || result.address.county);
+        });
+
+        logger.info(valid_results);
+
+        // If more than one location is matched with our geolocation look up, ask for detail
+        if (valid_results.length > 1) {
+          const quickReplies = valid_results.map((location) => {
+            const text = `${location.address.city || location.address.county}, ${location.address.state}`;
+            return {
+              content_type: 'text',
+              title: text,
+              payload: text,
+            };
+          });
+
+          this.messagingClient.send(`Which ${input} are you?`, quickReplies);
+          return;
+        } else if (valid_results.length === 0) {
           this.messagingClient.send(i18n('setup_invalid_location'));
           return;
         }
 
-        return geocoder.geocode(nlpData.entities.location[0].value).then((geoData) => {
-          // If more than one location is matched with our geolocation look up, ask for detail
-          const filteredGeoData = geoData.filter(location => location.city);
-          const noCityGeoData = geoData.filter(location => location.administrativeLevels.level1short);
-          if (filteredGeoData.length > 1) {
-            const quickReplies = filteredGeoData.map((location) => {
-              const formattedText = `${location.city}, ${location.administrativeLevels.level1short}`;
-              return {
-                content_type: 'text',
-                title: formattedText,
-                payload: formattedText,
-              };
-            });
-            this.messagingClient.send(`Which ${nlpData.entities.location[0].value} are you?`, quickReplies);
-            return;
-          } else if (filteredGeoData.length === 0) {
-            if (noCityGeoData.length > 0) {
-              this.messagingClient.send('I need more info. Give a CITY and STATE like: "New Brunswick, NJ"');
-            } else {
-              this.messagingClient.send(i18n('setup_invalid_location'));
-            }
-            return;
-          }
+        const location = valid_results[0];
 
-          /* Match with Organization */
-          this.set('location', filteredGeoData[0]);
+        this.set('location', location);
 
-          const constituentLocation = this.get('location');
-          return getAdminOrganizationAtLocation(constituentLocation, { returnJSON: true })
-            .then((orgModel) => {
-              if (orgModel) {
-                this.set('organization', orgModel);
-                if (!orgModel.activated) {
-                  new SlackService({
-                    username: 'Inactive City Requested',
-                    icon: 'round_pushpin',
-                  }).send(`>*City Requested*: ${orgModel.name}\n>*ID*: ${orgModel.id}`);
-                }
-                return 'waiting_organization_confirm';
+        return getAdminOrganizationAtLocation(location, { returnJSON: true })
+          .then((orgModel) => {
+            if (orgModel) {
+              this.set('organization', orgModel);
+              if (!orgModel.activated) {
+                new SlackService({
+                  username: 'Inactive City Requested',
+                  icon: 'round_pushpin',
+                }).send(`>*City Requested*: ${orgModel.name}\n>*ID*: ${orgModel.id}`);
               }
-              return saveLocation(constituentLocation).then((locationModel) => {
-                return createOrganization({
-                  name: locationModel.get('city'),
-                  category: 'public',
-                  type: 'admin',
-                  location_id: locationModel.get('id'),
-                }, { returnJSON: true }).then((orgJSON) => {
-                  this.set('organization', orgJSON);
+              return 'waiting_organization_confirm';
+            }
 
-                  new SlackService({
-                    username: 'Unregistered City',
-                    icon: 'round_pushpin',
-                  }).send(`>*City Requested*: ${orgJSON.name}\n>*ID*: ${orgJSON.id}`);
+            return saveLocation(location).then((locationModel) => {
+              return createOrganization({
+                name: locationModel.get('city'),
+                category: 'public',
+                type: 'admin',
+                location_id: locationModel.get('id'),
+              }, { returnJSON: true }).then((orgJSON) => {
+                this.set('organization', orgJSON);
 
-                  return 'waiting_organization_confirm';
-                });
+                new SlackService({
+                  username: 'Unregistered City',
+                  icon: 'round_pushpin',
+                }).send(`>*City Requested*: ${orgJSON.name}\n>*ID*: ${orgJSON.id}`);
+
+                return 'waiting_organization_confirm';
               });
             });
-        });
+          });
       });
     },
   },
@@ -99,13 +115,13 @@ export default {
 
   waiting_organization_confirm: {
     enter() {
-      const organization = this.get('organization');
-      if (organization) {
+      const location = this.get('location');
+      if (location) {
         const quickReplies = [
           { content_type: 'text', title: 'Yep!', payload: 'Yep!' },
           { content_type: 'text', title: 'No', payload: 'No' },
         ];
-        this.messagingClient.send(`${organization.location.city}, ${organization.location.administrativeLevels.level1short}? Is that right?`, quickReplies);
+        this.messagingClient.send(`${location.display_name}? Is that right?`, quickReplies);
       }
     },
 
