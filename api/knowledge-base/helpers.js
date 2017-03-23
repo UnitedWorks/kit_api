@@ -64,26 +64,23 @@ export const upsertEventRules = (eventRules, idsObj) => {
   ).then(results => results).catch(error => error);
 };
 
-export const saveLocation = (locationModel, options = {}) => {
-  const newLocationModel = {
-    latitude: locationModel.latitude,
-    longitude: locationModel.longitude,
-    formattedAddress: locationModel.formattedAddress,
-    streetNumber: locationModel.streetNumber,
-    streetName: locationModel.streetName,
-    city: locationModel.city,
-    zipcode: locationModel.zipcode,
-    country: locationModel.country,
-    countryCode: locationModel.countryCode,
-    administrativeLevels: locationModel.administrativeLevels,
-    extra: locationModel.extra,
-  };
-  if (Object.prototype.hasOwnProperty.call(locationModel, 'id')) {
-    newLocationModel.id = locationModel.id;
-  }
-  return Location.forge(newLocationModel).save()
-    .then(data => options.returnJSON ? data.toJSON() : data)
-    .catch(error => error);
+export const saveLocation = (location, options = {}) => {
+  return Location.forge({
+    id: (Object.prototype.hasOwnProperty.call(location, 'id'))? void 0 : location.id,
+    latitude: location.lat,
+    longitude: location.lon,
+    formattedAddress: location.display_name,
+    streetNumber: location.address.house_number,
+    streetName: location.address.road,
+    city: location.address.city,
+    zipcode: location.address.postcode,
+    country: location.address.country,
+    countryCode: location.address.country_code,
+    administrativeLevels: location.address,
+    extra: location.extra,
+  }).save()
+  .then(data => options.returnJSON ? data.toJSON() : data)
+  .catch(error => error);
 };
 
 export const createLocation = (location, options = {}) => {
