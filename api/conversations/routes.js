@@ -19,6 +19,12 @@ router.post('/broadcast', (req, res, next) => {
   }
 });
 
+router.route('/webhook/http')
+  .post((req, res)=> {
+    logger.info('HTTP Webhook Pinged', req.body);
+    process.webhookHitWithMessage(req, res, conversationClient.HTTP);
+  });
+
 router.use('/webhook/facebook', bodyParser.json({
   verify: verify.verifyRequestSignature,
 }));
