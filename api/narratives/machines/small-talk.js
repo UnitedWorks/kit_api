@@ -51,6 +51,20 @@ export default {
     },
   },
 
+  human_override: {
+    enter() {
+      new SlackService({
+        username: 'Entered Human Override',
+        icon: 'monkey_face',
+      }).send(`Respond here to say hey, respond with :robot_face: to return control to the robot.`);
+    },
+
+    message() {
+     // Not done yet lol
+      return 'start';
+    }
+  },
+
   waiting_for_starting_interaction: {
     enter() {
       this.messagingClient.send(i18n('intro_information'), startingQuickReplies);
