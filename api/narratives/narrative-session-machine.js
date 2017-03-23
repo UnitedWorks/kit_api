@@ -24,8 +24,16 @@ export const stateMachines = {
   'benefits-internet': BenefitsInternetMachine
 };
 
+const RESPONSE_TIMEOUT_MS = 8.64e+7;
+
 export class NarrativeSessionMachine extends StateMachine {
   constructor(snapshot, messagingClient) {
+    if (Date.now() - (snapshot.data_store.last_checked || 0) > RESPONSE_TIMEOUT_MS) {
+      snapshot.state_machine_name = 'smallTalk';
+      snapshot.state_machine_previous_state = snapshot.state_machine_current_state;
+      snapshot.state_machine_current_state = 'start';
+    }
+
     super(
       stateMachines[snapshot.state_machine_name],
       snapshot.state_machine_current_state,
@@ -33,6 +41,7 @@ export class NarrativeSessionMachine extends StateMachine {
       snapshot.data_store,
     );
 
+    this.set('last_checked', Date.now());
     this.snapshot = snapshot;
     this.messagingClient = messagingClient;
   }
