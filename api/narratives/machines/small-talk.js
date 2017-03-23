@@ -55,7 +55,7 @@ export default {
     enter() {
       new SlackService({
         username: 'Entered Human Override',
-        icon_emoji: ':monkey_face:',
+        icon: 'monkey_face',
       }).send(`Respond here to say hey, respond with :robot_face: to return control to the robot.`);
     },
 
