@@ -1,83 +1,40 @@
 import { logger } from '../logger';
-import * as interfaces from '../constants/interfaces';
-import { BaseClient, FacebookMessengerClient, TwilioSMSClient } from '../conversations/clients';
 import { NarrativeSession } from './models';
+import StateMachine from './state-machine'
 
-import { stateMachines } from './helpers';
+import SmallTalkMachine from './machines/small-talk';
+import SetupMachine from './machines/setup';
+import VotingMachine from './machines/voting';
+import ComplaintMachine from './machines/complaint';
+import SanitationMachine from './machines/sanitation';
+import EmploymentMachine from './machines/employment';
+import HealthMachine from './machines/health';
+import SocialServicesMachine from './machines/social-services';
+import BenefitsInternetMachine from './machines/benefits-internet';
 
-
-export class StateMachine {
-  constructor(states, current, previous, datastore) {
-    this.states = states;
-    this.current = current || 'init';
-    this.previous = previous || null;
-    this.datastore = datastore || {};
-  }
-
-  set(key, value) {
-    this.datastore[key] = value;
-  }
-
-  get(key) {
-    return this.datastore[key];
-  }
-
-  input(event, aux) {
-    return this.fire(this.current, event, aux);
-  }
-
-  resolve(state, event) {
-    return (this.states[state] && this.states[state][event]) || this.states[state];
-  }
-
-  setState(state) {
-    this.previous = this.current;
-    this.current = state;
-  }
-
-  fire(state, event, aux) {
-    const func = this.resolve(state, event);
-    const next = (func && typeof func === 'function') ? func.call(this, aux) : null;
-    const self = this;
-
-    /* ** ~~((New and Improved!!!!!))~~ ** */
-    // TODO(nicksahler) Handler promise failure better. Maybe go to an error state in the bot?
-    return Promise.resolve(next).then((result) => {
-      logger.info(`${state} (${event}) -> ${result}`);
-
-      if (!result) {
-        return null;
-      }
-
-      self.setState(result);
-      return self.fire(self.current, 'enter', aux);
-    }).catch(err => logger.error('error', err));
-  }
-}
+export const stateMachines = {
+  smallTalk: SmallTalkMachine,
+  setup: SetupMachine,
+  voting: VotingMachine,
+  complaint: ComplaintMachine,
+  sanitation: SanitationMachine,
+  employment: EmploymentMachine,
+  health: HealthMachine,
+  socialServices: SocialServicesMachine,
+  'benefits-internet': BenefitsInternetMachine
+};
 
 export class NarrativeSessionMachine extends StateMachine {
-  constructor(states, snapshot) {
+  constructor(snapshot, messagingClient) {
     super(
-      states,
+      stateMachines[snapshot.state_machine_name],
       snapshot.state_machine_current_state,
       snapshot.state_machine_previous_state,
       snapshot.data_store,
     );
 
     this.snapshot = snapshot;
-
-    // Set the Messaging Client
-    const clientConfig = { constituent: this.snapshot.constituent };
-    switch (this.snapshot.conversationClient) {
-      case interfaces.FACEBOOK:
-        this.messagingClient = new FacebookMessengerClient(clientConfig);
-        break;
-      case interfaces.TWILIO:
-        this.messagingClient = new TwilioSMSClient(clientConfig);
-        break;
-      default:
-        this.messagingClient = new BaseClient();
-    }
+    this.messagingClient = messagingClient;
   }
 
   setState(state) {
