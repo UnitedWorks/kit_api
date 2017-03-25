@@ -46,6 +46,38 @@ export class NarrativeSessionMachine extends StateMachine {
     this.messagingClient = messagingClient;
   }
 
+  stateRedirect(instructions, nextState, message) {
+    if (instructions === 'location') {
+      this.messagingClient.send('Ok! First, what CITY and STATE are you located in?');
+      const stateRedirects = [{
+        whenExiting: 'setup.waiting_organization_confirm',
+        exitIs: 'smallTalk.askOptions',
+        exitInstead: nextState,
+      }];
+      if (this.get('stateRedirects') && this.get('stateRedirects').length > 0) {
+        stateRedirects.push(...this.get('stateRedirects'));
+      }
+      this.set('stateRedirects', stateRedirects);
+      return 'setup.waiting_organization';
+    }
+    if (message) {
+      this.messagingClient.send(message);
+    }
+    if (!this.get('stateRedirects')) {
+      this.set('stateRedirects', [instructions]);
+    } else {
+      this.set('stateRedirects', [instructions, ...this.get('stateRedirects')]);
+    }
+    return nextState;
+  }
+
+  checkMultiRedirect(checkState, fallbackState) {
+    if (this.get('stateRedirects') && this.get('stateRedirects')[0].whenExiting.includes(checkState)) {
+      return this.get('stateRedirects')[0].exitInstead;
+    }
+    return fallbackState;
+  }
+
   setState(state) {
     let newState = state;
 
@@ -54,21 +86,21 @@ export class NarrativeSessionMachine extends StateMachine {
       // Does the exiting state match our stateRedirect whenExiting?
       if (this.snapshot.data_store.stateRedirects[0].whenExiting.includes(this.snapshot.state_machine_previous_state)) {
         // The state we're going to was what our redirect was. Means succes, and remove redirect
-        if (RegExp(`${state}$`).test(this.snapshot.data_store.stateRedirects[0].goTo)) {
-          newState = this.snapshot.data_store.stateRedirects[0].goTo;
+        if (RegExp(`${state}$`).test(this.snapshot.data_store.stateRedirects[0].exitInstead)) {
+          newState = this.snapshot.data_store.stateRedirects[0].exitInstead;
           this.snapshot.data_store.stateRedirects = this.snapshot.data_store.stateRedirects.slice(1);
         // We want the redirect to happen when the state exited in a certain manner
         // Ex: when setting location, we only want redirect to happen when successful,
         // not when looping back for clairifcation
-        } else if (this.snapshot.data_store.stateRedirects[0].exitWas !== undefined) {
+        } else if (this.snapshot.data_store.stateRedirects[0].exitIs !== undefined) {
           // If the exit condition exists, and the state we were going to matches our condition
-          if (RegExp(`${state}$`).test(this.snapshot.data_store.stateRedirects[0].exitWas)) {
-            newState = this.snapshot.data_store.stateRedirects[0].goTo;
+          if (RegExp(`${state}$`).test(this.snapshot.data_store.stateRedirects[0].exitIs)) {
+            newState = this.snapshot.data_store.stateRedirects[0].exitInstead;
             this.snapshot.data_store.stateRedirects = this.snapshot.data_store.stateRedirects.slice(1);
           }
         }
       // Does the state we're going to match what the redirect's end goal is?
-      } else if (this.snapshot.data_store.stateRedirects[0].goTo === state) {
+      } else if (this.snapshot.data_store.stateRedirects[0].exitInstead === state) {
         this.snapshot.data_store.stateRedirects = this.snapshot.data_store.stateRedirects.slice(1);
       }
     } else {

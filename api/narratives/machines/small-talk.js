@@ -105,17 +105,15 @@ export default {
         const entities = nlpData.entities;
         if (entities[TAGS.VOTING]) {
           if (entityValueIs(entities[TAGS.VOTING], [TAGS.REGISTER_TO_VOTE])) {
-            this.set('stateRedirects', [{
+            return this.stateRedirect({
               whenExiting: 'voting.voterRegistrationGet',
-              goTo: 'smallTalk.waiting_for_starting_interaction_end',
-            }]);
-            return 'voting.voterRegistrationGet';
+              exitInstead: 'smallTalk.waiting_for_starting_interaction_end',
+            }, 'voting.voterRegistrationGet');
           } else if (entityValueIs(entities[TAGS.VOTING], [TAGS.CHECK_VOTER_REGISTRATION])) {
-            this.set('stateRedirects', [{
+            return this.stateRedirect({
               whenExiting: 'voting.voterRegistrationCheck',
-              goTo: 'smallTalk.waiting_for_starting_interaction_end',
-            }]);
-            return 'voting.voterRegistrationCheck';
+              exitInstead: 'smallTalk.waiting_for_starting_interaction_end',
+            }, 'voting.voterRegistrationCheck');
           }
         }
         if (entities[TAGS.CONFIRM_DENY]) {

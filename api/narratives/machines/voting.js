@@ -5,7 +5,7 @@ import { getPlacesUrl } from '../../utils';
 
 export default {
   votingDeadlines() {
-    logger.info('State: votingDeadlines');
+    if (!this.get('location')) return this.stateRedirect('location', 'voting.votingDeadlines');
     return new VotingClient({ location: this.get('location') }).getElections().then((elections) => {
       if (elections.length === 0) {
         this.messagingClient.addToQuene('There are no upcoming elections!');
@@ -27,7 +27,7 @@ export default {
   },
 
   electionSchedule() {
-    logger.info('State: electionSchedule');
+    if (!this.get('location')) return this.stateRedirect('location', 'voting.electionSchedule');
     this.messagingClient.send('Hmmm, let me go grab the calendar!');
     return new VotingClient({ location: this.get('location') }).getElections().then((elections) => {
       if (elections.length === 0) {
@@ -72,7 +72,6 @@ export default {
   },
 
   pollInfo() {
-    logger.info('State: pollInfo');
     const votingClientInstance = new VotingClient({ location: this.get('location') });
     return Promise.all([
       votingClientInstance.getGeneralStateInfo(),
@@ -110,19 +109,7 @@ export default {
   },
 
   voterRegistrationCheck() {
-    // Check for location. If none, set redirect back to this state once location is set
-    if (this.get('location') === undefined) {
-      this.messagingClient.send('Ok! First, what CITY and STATE are you located in?');
-      if (this.get('stateRedirects')) {
-        this.set('stateRedirects', [{
-          whenExiting: 'setup.waiting_organization_confirm',
-          exitWas: 'smallTalk.askOptions',
-          goTo: 'voting.voterRegistrationCheck',
-        }].concat(this.get('stateRedirects')));
-      }
-      return 'setup.waiting_organization';
-    }
-    // State
+    if (!this.get('location')) return this.stateRedirect('location', 'voting.voterRegistrationCheck');
     const quickActions = [];
     return new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
       info.lookup_tools.forEach((tool) => {
@@ -141,28 +128,13 @@ export default {
         text: `Here's a way to check if your registered in ${this.get('location').address.state}:`,
         buttons: quickActions,
       }).then(() => {
-        if (this.get('stateRedirects') &&
-            this.get('stateRedirects')[0].whenExiting.includes('voterRegistrationCheck')) {
-          return this.get('stateRedirects')[0].goTo;
-        }
-        return 'smallTalk.start';
+        return this.checkMultiRedirect('voterRegistrationCheck', 'smallTalk.start');
       });
     });
   },
 
   voterRegistrationGet() {
-    // Check for location. If none, set redirect back to this state once location is set
-    if (this.get('location') === undefined) {
-      this.messagingClient.send('Ok! First, what CITY and STATE are you located in?');
-      if (this.get('stateRedirects')) {
-        this.set('stateRedirects', [{
-          whenExiting: 'setup.waiting_organization_confirm',
-          exitWas: 'smallTalk.askOptions',
-          goTo: 'voting.voterRegistrationGet',
-        }].concat(this.get('stateRedirects')));
-      }
-      return 'setup.waiting_organization';
-    }
+    if (!this.get('location')) return this.stateRedirect('location', 'voting.voterRegistrationGet');
     this.messagingClient.addToQuene('Let\'s get you registered!');
     const votingClientInstance = new VotingClient({ location: this.get('location') });
     return Promise.all([
@@ -217,17 +189,13 @@ export default {
         elements,
       });
       return this.messagingClient.runQuene().then(() => {
-        if (this.get('stateRedirects') &&
-            this.get('stateRedirects')[0].whenExiting.includes('voterRegistrationGet')) {
-          return this.get('stateRedirects')[0].goTo;
-        }
-        return 'smallTalk.start';
+        return this.checkMultiRedirect('voterRegistrationGet', 'smallTalk.start');
       });
     });
   },
 
   sampleBallot() {
-    logger.info('State: sampleBallot');
+    if (!this.get('location')) return this.stateRedirect('location', 'voting.sampleBallot');
     return new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
       info.lookup_tools.forEach((tool) => {
         if (tool.lookup_tool.kind === 'sample_ballot') {
@@ -240,7 +208,7 @@ export default {
   },
 
   absenteeVote() {
-    logger.info('State: absenteeVote');
+    if (!this.get('location')) return this.stateRedirect('location', 'voting.absenteeVote');
     return new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
       const absenteeVotingDetails = VotingClient.extractAbsenteeVoteDetails(
         info.voting_general_info);
@@ -254,7 +222,7 @@ export default {
   },
 
   earlyVoting() {
-    logger.info('State: earlyVoting');
+    if (!this.get('location')) return this.stateRedirect('location', 'voting.earlyVoting');
     return new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
       const earlyVotingDetails = VotingClient.extractEarlyVotingDetails(
         info.voting_general_info);
@@ -268,7 +236,7 @@ export default {
   },
 
   voterIdRequirements() {
-    logger.info('State: voterIdRequirements');
+    if (!this.get('location')) return this.stateRedirect('location', 'voting.voterIdRequirements');
     return new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
       // Identification
       let idMessage = '';
@@ -289,7 +257,7 @@ export default {
   },
 
   stateVotingRules() {
-    logger.info('State: stateVotingRules');
+    if (!this.get('location')) return this.stateRedirect('location', 'voting.stateVotingRules');
     return new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
       // Eligibility
       let eligibleMessage = `${info.eligibility_requirements[0].header} `;
@@ -310,7 +278,7 @@ export default {
   },
 
   voterProblem() {
-    logger.info('State: voterProblem');
+    if (!this.get('location')) return this.stateRedirect('location', 'voting.voterProblem');
     return new VotingClient({ location: this.get('location') }).getLocalElectionOffice().then((info) => {
       if (info.office) {
         const officeElements = [{
@@ -366,7 +334,7 @@ export default {
   },
 
   voterAssistance() {
-    logger.info('State: voterAssistance');
+    if (!this.get('location')) return this.stateRedirect('location', 'voting.voterAssistance');
     const votingClientInstance = new VotingClient({ location: this.get('location') });
     return Promise.all([
       votingClientInstance.getGeneralStateInfo(),
