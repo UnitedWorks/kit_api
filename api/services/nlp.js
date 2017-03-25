@@ -25,7 +25,7 @@ export const messageToGeodata = (input, userLocation) => {
     return geocoder(locationString).then((geoData) => {
       const geoSuggestion = geoData.length ? geoData[0] : {};
       // If our geodata isn't in the same city, get more specifics
-      if (geoSuggestion.address.city !== userLocation.address.city) {
+      if (userLocation && geoSuggestion.address.city !== userLocation.address.city) {
         return geocoder(`${locationString}, ${userLocation.address.city} ${userLocation.address.country}`)
           .then(refinedGeoData => refinedGeoData[0]);
       }
