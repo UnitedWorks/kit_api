@@ -10,15 +10,20 @@ export const createOrganization = (organizationModel, options = {}) => {
 };
 
 export const getAdminOrganizationAtLocation = (geoData, options = {}) => {
-  const subquery = knex('locations')
+  let subquery = knex('locations')
     .select('id')
-    .whereRaw("address->>'state'=?", geoData.address.state)
-    .whereRaw("address->>'city'=?", geoData.address.city || geoData.address.town || null);
+    .whereRaw("address->>'state'=?", geoData.address.state);
+  if (geoData.address.city) {
+    subquery = subquery.whereRaw("address->>'city'=?", geoData.address.city);
+  } else if (geoData.address.town) {
+    subquery = subquery.whereRaw("address->>'town'=?", geoData.address.town);
+  }
   return knex.select('*').from('organizations').whereIn('location_id', subquery)
     .then((res) => {
       if (res.length === 1) {
         const orgJSON = JSON.parse(JSON.stringify(res[0]));
-        return Organization.where({ id: orgJSON.id }).fetch({ withRelated: ['location', 'integrations'] })
+        return Organization.where({ id: orgJSON.id })
+          .fetch({ withRelated: ['location', 'integrations'] })
           .then(model => options.returnJSON ? model.toJSON() : model);
       }
       return null;
@@ -27,18 +32,19 @@ export const getAdminOrganizationAtLocation = (geoData, options = {}) => {
 };
 
 export const checkForAdminOrganizationAtLocation = (geoData) => {
-  return knex('organizations')
-    .select('*')
-    .join('locations', 'organizations.location_id', 'locations.id')
-    .whereRaw("address->>'state'=?", geoData.address.state)
-    .whereRaw("address->>'city'=?", geoData.address.city || geoData.address.town)
-    .then((res) => {
-      if (res.length > 0) {
-        return true;
-      }
-      return false;
-    })
-    .catch(error => error);
+  let query = knex('organizations').select('*')
+    .join('locations', 'organizations.location_id', 'locations.id');
+  if (geoData.address.city) {
+    query = query.whereRaw("address->>'city'=?", geoData.address.city);
+  } else if (geoData.address.town) {
+    query = query.whereRaw("address->>'town'=?", geoData.address.town);
+  }
+  query.then((res) => {
+    if (res.length > 0) {
+      return true;
+    }
+    return false;
+  }).catch(error => error);
 };
 
 export const createRepresentative = (rep, org, options = {}) => {

@@ -34,7 +34,6 @@ export default {
       /* Get input, process it, and get a geolocation */
       const input = this.snapshot.input.payload.text || this.snapshot.payload.payload;
       logger.info(`made it this far... ${input}`);
-      // http://nominatim.openstreetmap.org/search?q=Queens,%20New%20York&format=json&addressdetails=1&dedupe=1&type=administrative&polygon_geojson=1
 
       return geocoder(input).then((data) => {
         logger.info(data);
