@@ -16,18 +16,19 @@ export default class VotingClient {
       },
     });
     // Setup config variables
-    const level2 = config.location.administrativeLevels.level2long;
-    const level1 = config.location.administrativeLevels.level1long;
+    const city = config.location.address.city || config.location.address.town;
+    const county = config.location.address.county;
+    const state = config.location.address.state;
     this.locations = {
       original: config.location,
-      google: {
-        county: level2 ? level2.toLowerCase().replace(/\s/g, '_') : null,
-        state: level1 ? level1.toLowerCase() : null,
+      openStreetMap: {
+        county: county ? county.toLowerCase().replace(/\s/g, '_') : null,
+        state: state ? state.toLowerCase() : null,
       },
       usVote: {
-        county: level2 ? level2.toLowerCase().replace(/\s/g, '+') : null,
-        state: level1 ? level1.toLowerCase().replace(/\s/g, '+') : null,
-        city: config.location.city.toLowerCase().replace(/\s/, '+'),
+        county: county ? county.toLowerCase().replace(/\s/g, '+') : null,
+        state: state ? state.toLowerCase().replace(/\s/g, '+') : null,
+        city: city ? city.toLowerCase().replace(/\s/, '+') : null,
       },
     };
   }

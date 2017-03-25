@@ -1,4 +1,4 @@
-import { geocoder } from '../../services/geocoder';
+import geocoder from '../../services/geocoder';
 import { PRIMARY_CATEGORIES as PRIMARY_CASE_CATEGORIES } from '../../constants/case-categories';
 import { handleConstituentRequest } from '../../cases/helpers';
 import { CaseCategory } from '../../cases/models';
@@ -70,17 +70,17 @@ export default {
       const payload = this.snapshot.input.payload;
       if (payload.attachments) {
         const coordinates = payload.attachments[0].payload.coordinates;
-        return geocoder.geocode(`${coordinates.lat}, ${coordinates.long}`).then((geoData) => {
+        return geocoder(`${coordinates.lat}, ${coordinates.long}`).then((geoData) => {
           const updatedComplaint = Object.assign({}, this.get('complaint'), {
-            location: geoData[Object.keys(geoData)[0]],
+            location: geoData[0],
           });
           this.set('complaint', updatedComplaint);
           return 'complaint_submit';
         });
       } else if (payload.text) {
-        return geocoder.geocode(payload.text).then((geoData) => {
+        return geocoder(payload.text).then((geoData) => {
           const updatedComplaint = Object.assign({}, this.get('complaint'), {
-            location: geoData[Object.keys(geoData)[0]],
+            location: geoData[0],
           });
           this.set('complaint', updatedComplaint);
           return 'complaint_submit';

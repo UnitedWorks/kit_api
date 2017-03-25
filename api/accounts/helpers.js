@@ -12,9 +12,8 @@ export const createOrganization = (organizationModel, options = {}) => {
 export const getAdminOrganizationAtLocation = (geoData, options = {}) => {
   const subquery = knex('locations')
     .select('id')
-    .where('city', '=', geoData.city)
-    .whereRaw("administrative_levels->>'state'=?", geoData.address.state)
-    .whereRaw("administrative_levels->>'city'=?", geoData.address.city || null);
+    .whereRaw("address->>'state'=?", geoData.address.state)
+    .whereRaw("address->>'city'=?", geoData.address.city || geoData.address.town || null);
   return knex.select('*').from('organizations').whereIn('location_id', subquery)
     .then((res) => {
       if (res.length === 1) {
@@ -31,9 +30,8 @@ export const checkForAdminOrganizationAtLocation = (geoData) => {
   return knex('organizations')
     .select('*')
     .join('locations', 'organizations.location_id', 'locations.id')
-    .where('city', '=', geoData.city)
-    .whereRaw("administrative_levels->>'state'=?", geoData.address.state)
-    .whereRaw("administrative_levels->>'city'=?", geoData.address.city)
+    .whereRaw("address->>'state'=?", geoData.address.state)
+    .whereRaw("address->>'city'=?", geoData.address.city || geoData.address.town)
     .then((res) => {
       if (res.length > 0) {
         return true;

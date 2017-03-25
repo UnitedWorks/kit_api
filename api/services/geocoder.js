@@ -1,10 +1,14 @@
-import NodeGeocoder from 'node-geocoder';
+import axios from 'axios';
 
-const options = {
-  provider: process.env.GEOCODE_PROVIDER,
-  httpAdapter: 'https',
-  apiKey: process.env.GEOCODE_KEY,
-  formatter: null,
-};
-
-export const geocoder = NodeGeocoder(options);
+export default function geocoder(input) {
+  return axios.get('http://nominatim.openstreetmap.org/search', {
+    params: {
+      q: input,
+      format: 'json',
+      addressdetails: 1,
+      dedupe: 1,
+      // polygon_geojson: 1,
+      limit: 5
+    },
+  }).then(response => response.data);
+}

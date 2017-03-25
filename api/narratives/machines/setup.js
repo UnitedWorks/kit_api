@@ -1,11 +1,9 @@
-import { geocoder } from '../../services/geocoder';
+import geocoder from '../../services/geocoder';
 import { logger } from '../../logger';
 import { nlp } from '../../services/nlp';
 import { entityValueIs } from '../helpers';
 import SlackService from '../../services/slack';
-import { createOrganization, getAdminOrganizationAtLocation } from '../../accounts/helpers';
-import { saveLocation } from '../../knowledge-base/helpers';
-import axios from 'axios';
+import { getAdminOrganizationAtLocation } from '../../accounts/helpers';
 import * as TAGS from '../../constants/nlp-tagging';
 
 const i18n = function(key) {
@@ -16,13 +14,13 @@ const i18n = function(key) {
 }
 
 const admin_levels = {
- country: 2,
- state: 4,
- state_district: 5,
- county: 7,
- village: 8,
- city_district: 9,
- suburb: 10
+  country: 2,
+  state: 4,
+  state_district: 5,
+  county: 7,
+  village: 8,
+  city_district: 9,
+  suburb: 10,
 };
 
 export default {
@@ -38,19 +36,10 @@ export default {
       logger.info(`made it this far... ${input}`);
       // http://nominatim.openstreetmap.org/search?q=Queens,%20New%20York&format=json&addressdetails=1&dedupe=1&type=administrative&polygon_geojson=1
 
-      return axios.get('http://nominatim.openstreetmap.org/search', {
-        params: {
-          q: input,
-          format: 'json',
-          addressdetails: 1,
-          dedupe: 1,
-          // polygon_geojson: 1,
-          limit: 5
-        }
-      }).then((response) => {
-        logger.info(response.data);
-        const valid_results = response.data.filter((result)=>{
-          return ["administrative", "city", "town", "neighbourhood", "hamlet", "village"].includes(result.type) && (result.address.city || result.address.county);
+      return geocoder(input).then((data) => {
+        logger.info(data);
+        const valid_results = data.filter((result)=>{
+          return ["administrative", "city", "town", "neighbourhood", "hamlet", "village"].includes(result.type) && (result.address.city || result.address.town);
         });
 
         logger.info(valid_results);
@@ -58,7 +47,7 @@ export default {
         // If more than one location is matched with our geolocation look up, ask for detail
         if (valid_results.length > 1) {
           const quickReplies = valid_results.map((location) => {
-            const text = `${location.address.city || location.address.county}, ${location.address.state}`;
+            const text = `${location.address.city || location.address.town}, ${location.address.state}`;
             return {
               content_type: 'text',
               title: text,
@@ -81,32 +70,8 @@ export default {
           .then((orgModel) => {
             if (orgModel) {
               this.set('organization', orgModel);
-              if (!orgModel.activated) {
-                new SlackService({
-                  username: 'Inactive City Requested',
-                  icon: 'round_pushpin',
-                }).send(`>*City Requested*: ${orgModel.name}\n>*ID*: ${orgModel.id}`);
-              }
-              return 'waiting_organization_confirm';
             }
-
-            return saveLocation(location).then((locationModel) => {
-              return createOrganization({
-                name: locationModel.get('city'),
-                category: 'public',
-                type: 'admin',
-                location_id: locationModel.get('id'),
-              }, { returnJSON: true }).then((orgJSON) => {
-                this.set('organization', orgJSON);
-
-                new SlackService({
-                  username: 'Unregistered City',
-                  icon: 'round_pushpin',
-                }).send(`>*City Requested*: ${orgJSON.name}\n>*ID*: ${orgJSON.id}`);
-
-                return 'waiting_organization_confirm';
-              });
-            });
+            return 'waiting_organization_confirm';
           });
       });
     },
@@ -130,6 +95,12 @@ export default {
       return nlp.message(input, {}).then((nlpData) => {
         const entities = nlpData.entities;
         if (entityValueIs(entities[TAGS.CONFIRM_DENY], TAGS.YES)) {
+          if (!this.get('organization')) {
+            new SlackService({
+              username: 'Unregistered Town/City Requested!',
+              icon: 'round_pushpin',
+            }).send(`>*Location*: ${this.get('location').display_name}`);
+          }
           return 'smallTalk.askOptions';
         } else if (entityValueIs(entities[TAGS.CONFIRM_DENY], TAGS.NO)) {
           this.messagingClient.send('Oh! Can you tell me your CITY and STATE again?');

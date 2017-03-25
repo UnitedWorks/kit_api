@@ -65,7 +65,7 @@ function normalizeInput(conversationClient, input) {
           });
         }
 
-        return attachment; 
+        return attachment;
       })).then((attachments) => {
         newMessageObject.payload.attachments = attachments;
         resolve(newMessageObject);
@@ -130,10 +130,10 @@ function normalizeSessionsFromRequest(req, conversationClient) {
         return [].concat(Object.assign(state, { input: normalizedInput }));
       });
     });
-  /* TODO(nicksahler): 
-    Support multiple messages at a time for HTTP webhook, 
+  /* TODO(nicksahler):
+    Support multiple messages at a time for HTTP webhook,
     but not right now since this is not (in a way) async.
-    Maybe allow a "callback" argument on this end 
+    Maybe allow a "callback" argument on this end
   */
   } else if (conversationClient === interfaces.HTTP ) {
     return Constituent.where({ id: req.query.constituent_id }).fetch().then((model)=>{
@@ -169,7 +169,7 @@ export function webhookHitWithMessage(req, res, conversationClient) {
 
         let instance = new NarrativeSessionMachine(snapshot, messagingClient);
         let action;
-        
+
         if (typeof snapshot.state_machine_current_state !== 'string' && typeof snapshot.organization_id !== 'string') {
           action = instance.input('enter');
         } else if (instance.current) {

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { geocoder } from '../services/geocoder';
+import geocoder from '../services/geocoder';
 import * as helpers from './helpers';
 import { logger } from '../logger';
 import { saveLocation } from '../knowledge-base/helpers';
@@ -36,8 +36,8 @@ router.post('/organization', (req, res) => {
   const organization = req.body.organization;
   if (!organization.type) organization.type = 'admin';
   // Get location
-  geocoder.geocode(`${address.city} ${address.state}, ${address.zipcode}, ${address.country}`).then((geoData) => {
-    const cityOnlyGeoData = geoData.filter(location => location.city);
+  geocoder(`${address.city} ${address.state}, ${address.zipcode}, ${address.country}`).then((geoData) => {
+    const cityOnlyGeoData = geoData.filter(location => location.address.city);
     if (cityOnlyGeoData.length > 1) {
       const errorMessage = 'Found more than one location, be more specific.';
       logger.error(errorMessage);

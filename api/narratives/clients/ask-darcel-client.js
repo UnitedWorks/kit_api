@@ -17,12 +17,12 @@ export default class AskDarcelClient {
   getResources(category, options = {}) {
     const parameters = {
       category_id: this.categoryIdMap[category],
-      lat: this.location.latitude,
-      long: this.location.longitude,
+      lat: this.location.lat,
+      long: this.location.lon,
     };
     if (options.location) {
-      parameters.lat = parameters.location.latitude;
-      parameters.long = parameters.location.longitude;
+      parameters.lat = parameters.location.lat;
+      parameters.long = parameters.location.lon;
     }
     return axios.get(this.apiUrl, { params: parameters })
       .then((response) => {

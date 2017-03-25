@@ -45,62 +45,51 @@ exports.seed = (knex, Promise) => {
   .then(() => {
     // Seed Locations
     const seedJerseyCity = knex('locations').insert({
-      latitude: 40.72815749999999,
-      longitude: -74.0776417,
-      formatted_address: 'Jersey City, NJ, USA',
-      city: 'Jersey City',
-      country: 'United States',
-      country_code: 'US',
-      zipcode: '08901',
-      administrative_levels: {
-        level2long: 'Hudson County',
-        level2short: 'Hudson County',
-        level1long: 'New Jersey',
-        level1short: 'NJ',
+      lat: 40.72815749999999,
+      lon: -74.0776417,
+      display_name: 'Jersey City, NJ, USA',
+      address: {
+        city: 'Jersey City',
+        state: 'New Jersey',
+        county: 'Hudson County',
+        country: 'United States of America',
+        country_code: 'us',
       },
     }, 'id');
     const seedNewBrunswick = knex('locations').insert({
-      latitude: 40.4862157,
-      longitude: -74.4518188,
-      formatted_address: 'New Brunswick, NJ, USA',
-      city: 'New Brunswick',
-      country: 'United States',
-      country_code: 'US',
-      zipcode: '08901',
-      administrative_levels: {
-        level2long: 'Middlesex County',
-        level2short: 'Middlesex County',
-        level1long: 'New Jersey',
-        level1short: 'NJ',
+      lat: 40.4862157,
+      lon: -74.4518188,
+      display_name: 'New Brunswick, NJ, USA',
+      address: {
+        city: 'New Brunswick',
+        state: 'New Jersey',
+        county: 'Middlesex County',
+        country: 'United States of America',
+        country_code: 'us',
       },
     }, 'id');
     const seedHanoverTownship = knex('locations').insert({
-      latitude: 40.828898,
-      longitude: -74.449686,
-      formatted_address: 'Hanover, NJ 07927, USA',
-      city: 'Hanover',
-      country: 'United States',
-      country_code: 'US',
-      zipcode: '07927',
-      administrative_levels: {
-        level2long: 'Morris County',
-        level2short: 'Morris County',
-        level1long: 'New Jersey',
-        level1short: 'NJ',
+      lat: 40.828898,
+      lon: -74.449686,
+      display_name: 'Hanover, NJ 07927, USA',
+      address: {
+        town: 'Hanover',
+        state: 'New Jersey',
+        county: 'Morris County',
+        country: 'United States of America',
+        country_code: 'us',
       },
     }, 'id');
     const seedSanFrancisco = knex('locations').insert({
-      latitude: 37.7749295,
-      longitude: -122.4194155,
-      formatted_address: 'San Francisco, CA, USA',
-      city: 'San Francisco',
-      country: 'United States',
-      country_code: 'US',
-      administrative_levels: {
-        level2long: 'San Francisco County',
-        level2short: 'San Francisco County',
-        level1long: 'California',
-        level1short: 'CA',
+      lat: 37.7749295,
+      lon: -122.4194155,
+      display_name: 'SF, CA, USA',
+      address: {
+        city: 'SF',
+        state: 'California',
+        county: 'SF',
+        country: 'United States of America',
+        country_code: 'us',
       },
     }, 'id');
     return Promise.join(seedJerseyCity, seedNewBrunswick, seedHanoverTownship, seedSanFrancisco, (jC, nB, hT, sF) => {

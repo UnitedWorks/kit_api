@@ -138,7 +138,7 @@ export default {
       return this.messagingClient.send({
         type: 'template',
         templateType: 'button',
-        text: `Here's a way to check if your registered in ${this.get('location').administrativeLevels.level1short}:`,
+        text: `Here's a way to check if your registered in ${this.get('location').address.state}:`,
         buttons: quickActions,
       }).then(() => {
         if (this.get('stateRedirects') &&
@@ -178,7 +178,7 @@ export default {
         { returnString: true });
       if (registrationDeadline) this.messagingClient.addToQuene(`Your next election registration deadline is ${registrationDeadline}`);
       const elements = [{
-        title: `Register to Vote in ${this.get('location').administrativeLevels.level1short}`,
+        title: `Register to Vote in ${this.get('location').address.state}`,
         buttons: [],
       }];
       stateInfo.lookup_tools.forEach((tool) => {

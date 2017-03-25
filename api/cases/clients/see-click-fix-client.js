@@ -24,9 +24,9 @@ export default class SeeClickFix {
         answers.description = `Image: ${images[0].payload.url}`;
       }
       const payload = {
-        address: location.formattedAddress,
-        lat: String(location.latitude),
-        lng: String(location.longitude),
+        address: location.display_name,
+        lat: String(location.lat),
+        lng: String(location.lon),
         answers,
         request_type_id: 'other',
         anonymize_reporter: true,
@@ -54,7 +54,7 @@ export default class SeeClickFix {
           refreshedStatus = 'closed';
         }
         knex('cases')
-          .where({ seeClickFixId: scfId })
+          .where({ see_click_fix_id: scfId })
           .update({ status: refreshedStatus })
           .returning('*')
           .then(res => resolve(JSON.parse(JSON.stringify(res[0]))))

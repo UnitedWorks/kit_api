@@ -1,7 +1,8 @@
 import { Organization } from '../accounts/models';
 import { saveLocation } from '../knowledge-base/helpers';
 import { Integration, IntegrationsLocations, OrganizationIntegrations } from './models';
-import { geocoder } from '../services/geocoder';
+import geocode from '../services/geocoder';
+import { logger } from '../logger';
 
 export const getIntegrations = (params, options) => {
   if (params.organization.id) {
@@ -23,21 +24,21 @@ export const getIntegrations = (params, options) => {
           // Set 'available' flag - check org city against integration locations
           const orgLocation = orgModel.toJSON().location;
           updatedIntegration.locations.forEach((whiteListedLocation) => {
-            if (whiteListedLocation.countryCode === orgLocation.countryCode) {
-              if (!whiteListedLocation.administrativeLevels.level1short) {
+            if (whiteListedLocation.country_code === orgLocation.country_code) {
+              if (!whiteListedLocation.address.state) {
                 updatedIntegration.available = true;
-              } else if (whiteListedLocation.administrativeLevels.level1short ===
-                  orgLocation.administrativeLevels.level1short) {
+              } else if (whiteListedLocation.address.state ===
+                  orgLocation.address.state) {
                 // If county or city dont exist, its good. If more details, do more checks
-                if (!whiteListedLocation.administrativeLevels.level2short ||
+                if (!whiteListedLocation.address.county ||
                     !whiteListedLocation.city) {
                   updatedIntegration.available = true;
                 } else {
                   // If county is specified, check for match
-                  if (whiteListedLocation.administrativeLevels.level2short) {
+                  if (whiteListedLocation.address.county) {
                     updatedIntegration.available = (
-                      whiteListedLocation.administrativeLevels.level2short ===
-                      orgLocation.administrativeLevels.level2short);
+                      whiteListedLocation.address.county ===
+                      orgLocation.address.county);
                     // If county matched, city may still be different and a city
                     if (updatedIntegration.available && whiteListedLocation.city) {
                       // Check if cities match
@@ -46,8 +47,8 @@ export const getIntegrations = (params, options) => {
                   // If county wasn't specified, still check city
                   } else if (whiteListedLocation.city) {
                     updatedIntegration.available = (
-                      whiteListedLocation.administrativeLevels.level2short ===
-                      orgLocation.administrativeLevels.level2short);
+                      whiteListedLocation.address.county ===
+                      orgLocation.address.county);
                   }
                 }
               }
@@ -87,9 +88,9 @@ export const hasIntegration = (organization, integrationLabel) => {
 export const addIntegrationRestriction = (params) => {
   if (!params.integration) throw Error('No integration specified');
   if (!params.location) throw Error('No location specified');
-  return geocoder.geocode(`${params.location.formatted_address}`).then((geoData) => {
+  return geocode(`${params.location.display_name}`).then((geoData) => {
     if (geoData.length > 1) {
-      throw Error('Found more than one location');
+      logger.warn('More than 1 location', geoData)
     }
     return saveLocation(geoData[0]).then((location) => {
       return IntegrationsLocations.forge({

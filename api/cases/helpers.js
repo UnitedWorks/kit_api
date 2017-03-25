@@ -38,7 +38,7 @@ export const newCaseNotification = (caseObj, organization) => {
     }
     emailMessage += `Complaint: ${caseObj.title}<br/>`;
     if (caseObj.location) {
-      emailMessage += `Geo-location: http://maps.google.com/maps/place/${caseObj.location.latitude},${caseObj.location.longitude}<br/>`;
+      emailMessage += `Geo-location: http://maps.google.com/maps/place/${caseObj.location.lat},${caseObj.location.lon}<br/>`;
     }
     if (caseObj.attachments) {
       emailMessage += 'Attachments:<br/>';
@@ -54,7 +54,7 @@ export const newCaseNotification = (caseObj, organization) => {
     // Slack Notification
     let slackMessage = `>*City/Organization*: ${returnedOrg.get('name')}\n>*Category*: ${caseObj.category.label}\n>*Constituent ID*: ${caseObj.constituent_id}\n>*Complaint*: ${caseObj.title}`;
     if (caseObj.location) {
-      slackMessage += `\n>*Geo-location*: <http://maps.google.com/maps/place/${caseObj.location.latitude},${caseObj.location.longitude}|${caseObj.location.latitude},${caseObj.location.longitude}>`;
+      slackMessage += `\n>*Geo-location*: <http://maps.google.com/maps/place/${caseObj.location.display_name}|${caseObj.location.display_name}>`;
     }
     if (caseObj.attachments) {
       slackMessage += '\n>*Attachments*:';
@@ -81,7 +81,7 @@ export const createCase = (title, category, constituent, organization, location,
         category_id: category.id || category,
         constituent_id: constituent.id || constituent,
         title,
-        seeClickFixId,
+        see_click_fix_id: seeClickFixId,
       };
       Case.forge(newCase).save().then((caseResponse) => {
         caseResponse.refresh({ withRelated: ['category'] }).then((refreshedCaseModel) => {
@@ -97,7 +97,7 @@ export const createCase = (title, category, constituent, organization, location,
           // Location & Media Junction
           attachmentModels.forEach((model) => {
             let joinFn;
-            if (model.latitude || model.countryCode) {
+            if (model.lat || model.address.country_code) {
               joinFn = associateCaseLocation(newCaseModelJSON, model);
             } else if (model.type) {
               joinFn = associateCaseMedia(newCaseModelJSON, model);
@@ -150,9 +150,9 @@ export const getConstituentCases = (constituent) => {
   return AccountModels.Constituent.where({ id: constituent.id }).fetch({ withRelated: ['cases'] }).then((constituentModel) => {
     const casePromises = [];
     constituentModel.toJSON().cases.forEach((constituentCase) => {
-      // If case has seeClickFixId and is open, we need to check for resolution
-      if (constituentCase.seeClickFixId && constituentCase.status === 'open') {
-        casePromises.push(new SeeClickFixClient().syncCase(constituentCase.seeClickFixId));
+      // If case has see_click_fix_id and is open, we need to check for resolution
+      if (constituentCase.see_click_fix_id && constituentCase.status === 'open') {
+        casePromises.push(new SeeClickFixClient().syncCase(constituentCase.see_click_fix_id));
       } else {
         casePromises.push(new Promise(caseResolve => caseResolve(constituentCase)));
       }
