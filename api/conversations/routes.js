@@ -19,8 +19,33 @@ router.post('/broadcast', (req, res, next) => {
   }
 });
 
+router.route('/entry')
+  .post((req, res, next) => {
+    logger.info('Creating Entry');
+    try {
+      console.log('////////')
+      console.log(req.body)
+      console.log('////////')
+      helpers.createEntry(req.body.entry, req.body.organization)
+        .then(data => res.status(200).send({ data }))
+        .catch(err => next(err));
+    } catch (e) {
+      next(e);
+    }
+  })
+  .delete((req, res, next) => {
+    logger.info('Disconnecting Entry');
+    try {
+      helpers.deleteEntry({ id: req.query.entry_id })
+        .then(() => res.status(200).send({ data: { id: req.query.entry_id } }))
+        .catch(err => next(err));
+    } catch (e) {
+      next(e);
+    }
+  });
+
 router.route('/webhook/http')
-  .post((req, res)=> {
+  .post((req, res) => {
     logger.info('HTTP Webhook Pinged', req.body);
     process.webhookHitWithMessage(req, res, conversationClient.HTTP);
   });

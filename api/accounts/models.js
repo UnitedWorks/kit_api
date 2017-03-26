@@ -2,6 +2,7 @@ import { bookshelf } from '../orm';
 import * as KnowledgeModels from '../knowledge-base/models';
 import * as CaseModels from '../cases/models';
 import * as IntegrationModels from '../integrations/models';
+import * as ConversationModels from '../conversations/models';
 
 export const Representative = bookshelf.Model.extend({
   tableName: 'representatives',
@@ -39,6 +40,9 @@ export const Organization = bookshelf.Model.extend({
   },
   cases: function() {
     return this.belongsToMany(CaseModels.Case, 'organizations_cases');
+  },
+  messageEntries: function() {
+    return this.hasMany(ConversationModels.MessageEntry, 'organization_id');
   },
 });
 

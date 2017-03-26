@@ -11,7 +11,7 @@ const router = new Router();
 
 // Organizations
 router.get('/organizations', (req, res) => {
-  Organization.fetchAll({ withRelated: ['location', 'integrations'] }).then((orgs) => {
+  Organization.fetchAll({ withRelated: ['location', 'integrations', 'messageEntries'] }).then((orgs) => {
     res.status(200).send({ organizations: orgs });
   });
 });
@@ -70,7 +70,7 @@ router.post('/organizations/add-representative', (req, res) => {
 
 // Representatives
 router.get('/representative', (req, res) => {
-  Representative.where(req.query).fetch({ withRelated: ['organization', 'organization.integrations'] })
+  Representative.where(req.query).fetch({ withRelated: ['organization', 'organization.integrations', 'organization.messageEntries'] })
     .then((representative) => {
       if (representative) {
         res.status(200).send({ representative });
