@@ -33,18 +33,6 @@ export const CaseCategoryAssignments = bookshelf.Model.extend({
 
 export const Case = bookshelf.Model.extend({
   tableName: 'cases',
-  parse: (attr) => {
-    return lodash.reduce(attr, (record, val, key) => {
-      record[lodash.camelCase(key)] = val;
-      return record;
-    }, {});
-  },
-  format: (attr) => {
-    return lodash.reduce(attr, (record, val, key) => {
-      record[lodash.snakeCase(key)] = val;
-      return record;
-    }, {});
-  },
   organizations: function() {
     return this.belongsToMany(AccountModels.Organization, 'organizations_cases');
   },

@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { logger } from '../logger';
 import * as helpers from './helpers';
 import { getOrInsertConstituent } from '../accounts/helpers';
-import { geocoder } from '../services/geocoder';
+import geocoder from '../services/geocoder';
 
 const router = new Router();
 
@@ -28,7 +28,7 @@ router.post('/', (req, res, next) => {
   try {
     getOrInsertConstituent(req.body.constituent, { returnJSON: true }).then((constituentJSON) => {
       if (typeof req.body.case.location === 'string') {
-        geocoder.geocode(req.body.case.location).then((geoJSON) => {
+        geocoder(req.body.case.location).then((geoJSON) => {
           req.body.case.location = geoJSON.length > 0 ? geoJSON[0] : null;
           helpers.compileCase(req.body.case, constituentJSON, req.body.organization)
             .then(caseJSON => res.status(200).send({ case: caseJSON }))

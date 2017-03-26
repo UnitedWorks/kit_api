@@ -37,11 +37,11 @@ export default class KitClient {
     if (objects.length > 0) {
       objects.forEach((object) => {
         const elementButtons = [];
-        if (object.hasOwnProperty('location') && object.location.formattedAddress != null) {
+        if (object.hasOwnProperty('location') && object.location.display_name != null) {
           elementButtons.push({
             type: 'web_url',
-            title: object.location.formattedAddress,
-            url: getPlacesUrl(object.location.formattedAddress),
+            title: object.location.display_name,
+            url: getPlacesUrl(object.location.display_name),
           });
         }
         if (object.hasOwnProperty('phone_number') && object.phone_number != null) {

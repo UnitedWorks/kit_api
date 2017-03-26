@@ -4,17 +4,10 @@ exports.up = function (knex, Promise) {
     // Primitive Documents
     .createTable('locations', (table) => {
       table.increments('id').primary();
-      table.float('latitude');
-      table.float('longitude');
-      table.string('formatted_address');
-      table.string('street_number');
-      table.string('street_name');
-      table.string('city');
-      table.string('zipcode');
-      table.string('country');
-      table.string('country_code');
-      table.jsonb('administrative_levels');
-      table.jsonb('extra');
+      table.float('lat');
+      table.float('lon');
+      table.string('display_name');
+      table.jsonb('address');
       table.dateTime('created_at').defaultTo(knex.raw('now()'));
     })
     .createTable('schedules', (table) => {

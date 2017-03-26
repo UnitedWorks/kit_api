@@ -1,6 +1,6 @@
 import { EventRule, KnowledgeAnswer, KnowledgeCategory, KnowledgeFacility, KnowledgeService, KnowledgeQuestion, Location, Media } from './models';
 import { CaseLocations, CaseMedia } from '../cases/models';
-import { geocoder } from '../services/geocoder';
+import geocoder from '../services/geocoder';
 
 export const getAnswers = (params = {}, options) => {
   return KnowledgeQuestion.where({ label: params.label }).fetch({
@@ -64,24 +64,14 @@ export const upsertEventRules = (eventRules, idsObj) => {
   ).then(results => results).catch(error => error);
 };
 
-export const saveLocation = (locationModel, options = {}) => {
-  const newLocationModel = {
-    latitude: locationModel.latitude,
-    longitude: locationModel.longitude,
-    formattedAddress: locationModel.formattedAddress,
-    streetNumber: locationModel.streetNumber,
-    streetName: locationModel.streetName,
-    city: locationModel.city,
-    zipcode: locationModel.zipcode,
-    country: locationModel.country,
-    countryCode: locationModel.countryCode,
-    administrativeLevels: locationModel.administrativeLevels,
-    extra: locationModel.extra,
-  };
-  if (Object.prototype.hasOwnProperty.call(locationModel, 'id')) {
-    newLocationModel.id = locationModel.id;
-  }
-  return Location.forge(newLocationModel).save()
+export const saveLocation = (location, options = {}) => {
+  return Location.forge({
+    id: (Object.prototype.hasOwnProperty.call(location, 'id')) ? undefined : location.id,
+    lat: location.lat,
+    lon: location.lon,
+    display_name: location.display_name,
+    address: location.address,
+  }).save()
     .then(data => options.returnJSON ? data.toJSON() : data)
     .catch(error => error);
 };
@@ -90,17 +80,17 @@ export const createLocation = (location, options = {}) => {
   let geocodeString = '';
   if (typeof location === 'string') {
     geocodeString = location;
-  } else if (location.formattedAddress) {
-    geocodeString = location.formattedAddress;
-  } else if (location.latitude && location.longitude) {
-    geocodeString = `${location.latitude}, ${location.longitude}`;
-  } else if (location.streetNumber && location.streetName && location.city && location.country) {
-    geocodeString = `${location.streetNumber} ${location.streetName} ${location.city} ${location.country}`;
+  } else if (location.display_name) {
+    geocodeString = location.display_name;
+  } else if (location.lat && location.lon) {
+    geocodeString = `${location.lat}, ${location.lon}`;
+  } else if (location.address.street_number && location.address.street_name && location.address.city && location.address.country) {
+    geocodeString = `${location.address.street_number} ${location.address.street_name} ${location.address.city} ${location.address.country}`;
   } else {
     return null;
   }
 
-  return geocoder.geocode(geocodeString).then((geoData) => {
+  return geocoder(geocodeString).then((geoData) => {
     if (geoData.length > 1 || geoData.length === 0) {
       throw new Error('Location invalid. Please try again.')
     }

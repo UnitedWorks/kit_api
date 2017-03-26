@@ -8,19 +8,19 @@ import SlackService from '../../services/slack';
 /* TODO(nicksahler) until I build the full i18n class */
 const i18n = function(key) {
   var translations = {
-    'intro_hello': 'Hey there! :) I’m the Mayor, a chat bot to help you make sense of government large and small.',
-    'intro_information': 'I’ll tell you how to register to vote, about state/federal benefits, school closings, and more! How great is that?',
-    'intro_excitement': ':D I thought you\'d never ask!',
-    'intro_explanation': 'Every week local governments and organizations are telling me information to frequently asked questions their constituents have. When you ask a question, I sift through all that knowledge to give you the best answer! My goal is to save you from digging through annoying websites and making endless phone calls.',
+    'intro_hello': 'Hey there! :) I’m the Mayor, a chatbot to help you make sense of government large and small!',
+    'intro_information': 'I can help you register to vote, navigate state/federal benefits, alert you of school closings, and more! How great is that?',
+    'intro_excitement': ':D Thought you\'d never ask!',
+    'intro_explanation': 'Local governments and service providers tell me answers for frequently asked questions. When you ask, I sift through all it to give you the best answer! I want to save you from struggling with websites and phone calls.',
     'intro_ask_location': 'So I can give you the right answers, what CITY and STATE are you in?',
-    'bot_apology': 'Sorry, I didn\'t catch that :( I have a lot of learning to do! Can you say that again please?',
+    'bot_apology': 'Sorry, I may not be understanding :( Can you try saying that with more detail?',
   };
   return translations[key];
 };
 
 const startingQuickReplies = [
   { content_type: 'text', title: 'Tell me more!', payload: 'Tell me more!' },
-  { content_type: 'text', title: 'Yah... ok...', payload: 'Yah... ok...' },
+  { content_type: 'text', title: 'Hmm...', payload: 'Hmm...' },
 ];
 
 const skpeticQuickReplies = [
@@ -51,6 +51,20 @@ export default {
     },
   },
 
+  human_override: {
+    enter() {
+      new SlackService({
+        username: 'Entered Human Override',
+        icon: 'monkey_face',
+      }).send(`Respond here to say hey, respond with :robot_face: to return control to the robot.`);
+    },
+
+    message() {
+     // Not done yet lol
+      return 'start';
+    }
+  },
+
   waiting_for_starting_interaction: {
     enter() {
       this.messagingClient.send(i18n('intro_information'), startingQuickReplies);
@@ -62,7 +76,7 @@ export default {
         const entities = nlpData.entities;
         if (entities[TAGS.REACTION]) {
           if (entityValueIs(entities[TAGS.REACTION], [TAGS.SKEPTICAL])) {
-            return this.messagingClient.send('Hmmmm, quite skeptical aren\'t we? :P')
+            return this.messagingClient.send('I get it. Governments can barely get a website working. How could they possibly have a chatbot!?! :P')
               .then(() => 'waiting_for_starting_interaction_options');
           } else if (entityValueIs(entities[TAGS.REACTION], [TAGS.ELABORATE])) {
             this.messagingClient.addAll([
@@ -91,17 +105,15 @@ export default {
         const entities = nlpData.entities;
         if (entities[TAGS.VOTING]) {
           if (entityValueIs(entities[TAGS.VOTING], [TAGS.REGISTER_TO_VOTE])) {
-            this.set('stateRedirects', [{
+            return this.stateRedirect({
               whenExiting: 'voting.voterRegistrationGet',
-              goTo: 'smallTalk.waiting_for_starting_interaction_end',
-            }]);
-            return 'voting.voterRegistrationGet';
+              exitInstead: 'smallTalk.waiting_for_starting_interaction_end',
+            }, 'voting.voterRegistrationGet');
           } else if (entityValueIs(entities[TAGS.VOTING], [TAGS.CHECK_VOTER_REGISTRATION])) {
-            this.set('stateRedirects', [{
+            return this.stateRedirect({
               whenExiting: 'voting.voterRegistrationCheck',
-              goTo: 'smallTalk.waiting_for_starting_interaction_end',
-            }]);
-            return 'voting.voterRegistrationCheck';
+              exitInstead: 'smallTalk.waiting_for_starting_interaction_end',
+            }, 'voting.voterRegistrationCheck');
           }
         }
         if (entities[TAGS.CONFIRM_DENY]) {
@@ -123,9 +135,9 @@ export default {
     enter() {
       const quickReplies = [
         { content_type: 'text', title: 'WOH!', payload: 'Awesome!' },
-        { content_type: 'text', title: 'Ehh...', payload: 'Unimpressed' },
+        { content_type: 'text', title: 'Unimpressive', payload: 'Unimpressed' },
       ];
-      this.messagingClient.send('How easy was that?! :D', quickReplies);
+      this.messagingClient.send('How awesome was that?! :D', quickReplies);
     },
     message() {
       const quickReplies = [
@@ -159,11 +171,11 @@ export default {
 
   askOptions() {
     if (this.get('organization').activated) {
-      this.messagingClient.addToQuene('Your local government has been teaching me frequent requests, so I know a few things about your area!', basicRequestQuickReplies);
+      this.messagingClient.addToQuene('Your local government is great! They have told me quite a bit!', basicRequestQuickReplies);
     } else {
-      this.messagingClient.addToQuene('Unfortunately, your local government hasn\'t told me anything yet. :( but there are still some ways I can help out!', basicRequestQuickReplies);
+      this.messagingClient.addToQuene('Your local government still has a lot to tell me, but I will do my best to help!', basicRequestQuickReplies);
     }
-    this.messagingClient.addToQuene('I have a lot to learn but some starting questions you can ask are: "When is my next election?", "What benefits are available to me?", and "I have a complaint"', basicRequestQuickReplies);
+    this.messagingClient.addToQuene('Some starting questions you can ask are: "When is my next election?", "What benefits are available to me?", and "I have a complaint"', basicRequestQuickReplies);
     return this.messagingClient.runQuene().then(() => {
       return 'start';
     });

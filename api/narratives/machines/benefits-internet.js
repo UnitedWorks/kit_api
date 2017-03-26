@@ -80,11 +80,6 @@ export default {
   calculate() {
     let self = this;
 
-    if (!this.get('benefits')['last_checked'] || Date.now() - this.get('benefits')['last_checked'] > 6.048e8) 
-      this.set('benefits', {});
-
-    this.get('benefits')['last_checked'] = Date.now();
-
     if (!this.get('benefits')['monthly_income']) return 'waiting_monthly_income';
     if (!this.get('benefits')['family_size']) return 'waiting_family_size';
     if (!this.get('benefits')['food_stamps']) return 'waiting_food_stamps';

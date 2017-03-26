@@ -5,18 +5,6 @@ import { Organization } from '../accounts/models';
 // Information Entries - Referenced in knowledge and non-knowledge base tables
 export const Location = bookshelf.Model.extend({
   tableName: 'locations',
-  parse: (attr) => {
-    return lodash.reduce(attr, (record, val, key) => {
-      record[lodash.camelCase(key)] = val;
-      return record;
-    }, {});
-  },
-  format: (attr) => {
-    return lodash.reduce(attr, (record, val, key) => {
-      record[lodash.snakeCase(key)] = val;
-      return record;
-    }, {});
-  },
 });
 
 export const EventRule = bookshelf.Model.extend({
