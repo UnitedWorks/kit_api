@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import geocoder from '../services/geocoder';
+import * as OSM from '../constants/open-street-maps';
 import * as helpers from './helpers';
 import { logger } from '../logger';
 import { saveLocation } from '../knowledge-base/helpers';
@@ -27,42 +28,36 @@ router.get('/organizations', (req, res) => {
  * @param {String} [organization.type] - Enum: 'admin', 'division'
  * @return {Object} Organization document on 'organization'
  */
-router.post('/organization', (req, res) => {
+router.post('/organization', (req, res, next) => {
   logger.info('Creation Requested - Organization');
   const address = req.body.address;
-  if (!address.city || !address.state || !address.zipcode || !address.country) {
-    res.status(400).send("Missing address 'city', 'state', 'zipcode', or 'country'");
+  if (!address.city || !address.state || !address.country) {
+    next('Missing address city, state, or country');
   }
   const organization = req.body.organization;
   if (!organization.type) organization.type = 'admin';
   // Get location
-  geocoder(`${address.city} ${address.state}, ${address.zipcode}, ${address.country}`).then((geoData) => {
-    const cityOnlyGeoData = geoData.filter(location => location.address.city);
-    if (cityOnlyGeoData.length > 1) {
-      const errorMessage = 'Found more than one location, be more specific.';
-      logger.error(errorMessage);
-      res.status(400).send({ error: errorMessage });
-    } else if (cityOnlyGeoData.length === 0) {
-      const errorMessage = 'No locations found.';
-      logger.error(errorMessage);
-      res.status(400).send({ error: errorMessage });
-    }
-    helpers.checkForAdminOrganizationAtLocation(cityOnlyGeoData[0]).then((orgExists) => {
-      if (orgExists) {
-        res.status(400).send('A city in that state seems to have already been registered.');
-      } else {
-        saveLocation(cityOnlyGeoData[0], { returnJSON: true }).then((location) => {
-          const orgWithLocation = Object.assign(organization, { location_id: location.id });
-          // Create organization
-          helpers.createOrganization(orgWithLocation, { returnJSON: true })
-            .then((newOrganization) => {
-              new SlackService({ username: 'Welcome', icon: 'capitol' }).send(`Organization *${newOrganization.name}* just signed up!`);
-              res.status(200).json({ organization: newOrganization });
-            }).catch(error => res.status(400).send({ error }));
-        }).catch(error => res.status(400).send({ error }));
+  geocoder(`${address.city}, ${address.state}, ${address.country}`, [OSM.ADMINISTRATIVE, OSM.CITY, OSM.TOWN])
+    .then((geoData) => {
+      if (geoData.length === 0) {
+        return next('No locations found.');
       }
-    }).catch(error => res.status(400).send({ error }));
-  }).catch(error => res.status(400).send({ error }));
+      helpers.checkForAdminOrganizationAtLocation(geoData[0]).then((orgExists) => {
+        if (orgExists) {
+          return next('A city in that state seems to have already been registered.');
+        } else {
+          saveLocation(geoData[0], { returnJSON: true }).then((location) => {
+            const orgWithLocation = Object.assign(organization, { location_id: location.id });
+            // Create organization
+            helpers.createOrganization(orgWithLocation, { returnJSON: true })
+              .then((newOrganization) => {
+                new SlackService({ username: 'Welcome', icon: 'capitol' }).send(`Organization *${newOrganization.name}* just signed up!`);
+                res.status(200).json({ organization: newOrganization });
+              }).catch(error => next(error));
+          }).catch(error => next(error));
+        }
+      }).catch(error => next(error));
+    }).catch(error => next(error));
 });
 
 router.post('/organizations/add-representative', (req, res) => {
@@ -102,7 +97,7 @@ router.get('/representatives', (req, res) => {
  * @param {Number} [organization.id] - Organization identifier
  * @return {Object} Representative document on 'representative'
  */
-router.post('/representative', (req, res) => {
+router.post('/representative', (req, res, next) => {
   logger.info('Creation Requested - Representative');
   const rep = req.body.representative;
   const org = req.body.organization;
@@ -111,7 +106,7 @@ router.post('/representative', (req, res) => {
       new SlackService({ username: 'Welcome', icon: 'capitol' })
         .send(`Representative joined: *${newRepresentative.email}*`);
       res.status(200).json({ representative: newRepresentative });
-    }).catch(error => res.status(400).send({ error }));
+    }).catch(error => next(error));
 });
 
 router.put('/representative', (req, res) => {

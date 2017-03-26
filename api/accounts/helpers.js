@@ -39,7 +39,7 @@ export const checkForAdminOrganizationAtLocation = (geoData) => {
   } else if (geoData.address.town) {
     query = query.whereRaw("address->>'town'=?", geoData.address.town);
   }
-  query.then((res) => {
+  return query.then((res) => {
     if (res.length > 0) {
       return true;
     }
@@ -56,14 +56,15 @@ export const createRepresentative = (rep, org, options = {}) => {
     .then((createdRep) => {
       if (!org) {
         return options.returnJSON ? createdRep.toJSON() : createdRep;
-      } else {
-        return createdRep.refresh({ withRelated: ['organization'] })
-          .then((populatedRep) => {
-            return options.returnJSON ? populatedRep.toJSON() : populatedRep;
-          }).catch(error => error);
       }
-    }).catch((err) => {
-      return 'This email looks like its in use, contact us with further issues.';
+      return createdRep.refresh({ withRelated: ['organization'] })
+        .then((populatedRep) => {
+          return options.returnJSON ? populatedRep.toJSON() : populatedRep;
+        }).catch((error) => {
+          throw new Error(error);
+        });
+    }).catch((error) => {
+      throw new Error(error);
     });
 };
 
