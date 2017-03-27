@@ -84,7 +84,7 @@ export const createCase = (title, category, constituent, organization, location,
         see_click_fix_id: seeClickFixId,
       };
       Case.forge(newCase).save().then((caseResponse) => {
-        caseResponse.refresh({ withRelated: ['category'] }).then((refreshedCaseModel) => {
+        caseResponse.refresh({ withRelated: ['category', 'constituent', 'constituent.facebookEntry'] }).then((refreshedCaseModel) => {
           const newCaseModelJSON = refreshedCaseModel.toJSON();
           const junctionPromises = [];
 
@@ -111,8 +111,8 @@ export const createCase = (title, category, constituent, organization, location,
               attachments,
             }), organization);
             resolve(refreshedCaseModel);
-          });
-        });
+          }).catch(err => reject(err));
+        }).catch(err => reject(err));
       }).catch(err => reject(err));
     }).catch(err => reject(err));
   });
@@ -181,7 +181,7 @@ export function webhookHitWithEmail(req) {
       if (caseId) {
         logger.info(`Email Action: Close Case #${caseId}`);
         new Case({ id: caseId }).save({ status: 'closed', closedAt: knex.raw('now()') }, { method: 'update', patch: true }).then((updatedCaseModel) => {
-          updatedCaseModel.refresh({ withRelated: ['constituent'] }).then((refreshedCaseModel) => {
+          updatedCaseModel.refresh({ withRelated: ['constituent', 'constituent.facebookEntry'] }).then((refreshedCaseModel) => {
             logger.info(`Case Resolved for Constituent #${refreshedCaseModel.get('constituentId')}`);
             const caseJSON = refreshedCaseModel.toJSON();
             notifyConstituentOfCaseStatusUpdate(caseJSON, 'closed', caseJSON.constituent);
@@ -216,7 +216,7 @@ export function webhookEmailEvent(req) {
     if (event.event === SEND_GRID_EVENT_OPEN) {
       if (event.case_id) {
         logger.info(`Email Event: Case ${event.case_id} read by ${event.email}`);
-        Case.where({ id: event.case_id }).fetch({ withRelated: ['constituent'] }).then((fetchedCase) => {
+        Case.where({ id: event.case_id }).fetch({ withRelated: ['constituent', 'constituent.facebookEntry'] }).then((fetchedCase) => {
           const constituent = fetchedCase.toJSON().constituent;
           if (!fetchedCase.toJSON().lastViewed) {
             notifyConstituentOfCaseStatusUpdate(fetchedCase.toJSON(), 'viewed', constituent);
@@ -276,7 +276,7 @@ export const updateCaseStatus = (caseId, status, options = {}) => {
   if (!CASE_STATUSES.includes(status)) throw new Error(`Unacceptable Status: ${status}`);
   return Case.where({ id: caseId }).save({ status }, { method: 'update' })
     .then(() => {
-      return Case.where({ id: caseId }).fetch({ withRelated: ['constituent'] }).then((refreshedModel) => {
+      return Case.where({ id: caseId }).fetch({ withRelated: ['constituent', 'constituent.facebookEntry'] }).then((refreshedModel) => {
         const caseJSON = refreshedModel.toJSON();
         notifyConstituentOfCaseStatusUpdate(caseJSON, status, caseJSON.constituent);
         return options.returnJSON ? refreshedModel.toJSON() : refreshedModel;
