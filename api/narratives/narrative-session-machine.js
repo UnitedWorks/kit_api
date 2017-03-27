@@ -134,8 +134,12 @@ export class NarrativeSessionMachine extends StateMachine {
         data_store: self.snapshot.data_store,
       };
 
+      // If an organization was set, put the ID on the session object
       if (self.get('organization')) {
         attributes.organization_id = self.get('organization').id || null;
+      // If no org is assigned org, default associate the entry point org id
+      } else if (!self.get('organization') && self.snapshot.constituent.facebookEntry.organization_id) {
+        attributes.organization_id = self.snapshot.constituent.facebookEntry.organization_id;
       }
 
       if (existingStore) {
