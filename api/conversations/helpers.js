@@ -50,15 +50,19 @@ export function createEntry(entry, organization) {
 }
 
 export function deleteEntry(entry) {
-  return axios.delete(`https://graph.facebook.com/v2.8/${entry.facebook_entry_id}/subscribed_apps?access_token=${entry.access_token}`)
-    .then((response) => {
-      if (response.error) throw new Error(response.error.message);
-      return MessageEntry.where({ id: entry.id }).destroy({ require: true })
-        .then(res => res)
-        .catch((err) => {
+  return MessageEntry.where({ id: entry.id }).fetch().then((entryModel) => {
+    return axios.delete(`https://graph.facebook.com/v2.8/${entryModel.toJSON().facebook_entry_id}/subscribed_apps?access_token=${entryModel.toJSON().access_token}`)
+      .then((response) => {
+        if (response.error) throw new Error(response.error.message);
+        return entryModel.destroy().then(() => {
+          return { id: entry.id };
+        }).catch((err) => {
           throw new Error(err);
         });
-    }).catch((error) => {
-      throw new Error(error);
-    });
+      }).catch((err) => {
+        throw new Error(err);
+      });
+  }).catch((err) => {
+    throw new Error(err);
+  });
 }
