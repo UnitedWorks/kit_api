@@ -59,7 +59,7 @@ export class FacebookMessengerClient extends BaseClient {
       const axiosInstance = axios.create();
       axiosInstance.post(`${this.config.graphURI}/v2.6/me/messages`, messageData, {
         params: {
-          access_token: this.config.constituent.facebookEntry.access_token || this.config.pageToken,
+          access_token: this.config.constituent.facebookEntry.access_token != null ? this.config.constituent.facebookEntry.access_token : this.config.pageToken,
         },
       }).then((response) => {
         logger.info('Successfully called Send API for recipient %s', response.data.recipient_id);

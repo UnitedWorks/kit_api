@@ -114,7 +114,7 @@ export const createCase = (title, category, constituent, organization, location,
           });
         });
       }).catch(err => reject(err));
-    });
+    }).catch(err => reject(err));
   });
 };
 

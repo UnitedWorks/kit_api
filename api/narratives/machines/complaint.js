@@ -70,7 +70,7 @@ export default {
       const payload = this.snapshot.input.payload;
       if (payload.attachments) {
         const coordinates = payload.attachments[0].payload.coordinates;
-        return geocoder(`${coordinates.lat}, ${coordinates.long}`).then((geoData) => {
+        return geocoder(`${coordinates.lat}, ${coordinates.lon}`).then((geoData) => {
           const updatedComplaint = Object.assign({}, this.get('complaint'), {
             location: geoData[0],
           });
