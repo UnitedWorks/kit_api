@@ -23,9 +23,6 @@ router.route('/entry')
   .post((req, res, next) => {
     logger.info('Creating Entry');
     try {
-      console.log('////////')
-      console.log(req.body)
-      console.log('////////')
       helpers.createEntry(req.body.entry, req.body.organization)
         .then(data => res.status(200).send({ data }))
         .catch(err => next(err));
