@@ -6,7 +6,7 @@ import Clients from './clients';
 export function makeBroadcast(broadcast, organization) {
   return new Promise((resolve, reject) => {
     NarrativeSession.where({ organization_id: organization.id })
-      .fetchAll({ withRelated: ['constituent'] }).then((citySessions) => {
+      .fetchAll({ withRelated: ['constituent', 'constituent.facebookEntry'] }).then((citySessions) => {
         citySessions.toJSON().forEach((session) => {
           if (session.constituent.facebook_id) {
             new Clients.FacebookMessengerClient({
@@ -26,27 +26,27 @@ export function makeBroadcast(broadcast, organization) {
   });
 }
 
-export function createEntry(entry, organization) {
+export function createEntry(entry, organization, options = {}) {
   if (!entry.phone_number && !entry.facebook_entry_id) {
     throw new Error('Missing Entry ID');
   }
   if (entry.facebook_entry_id && !entry.access_token) {
     throw new Error('Missing Access Token');
   }
-  return axios.post(`https://graph.facebook.com/v2.8/${entry.facebook_entry_id}/subscribed_apps?access_token=${entry.access_token}`)
-    .then((response) => {
-      if (response.error) throw new Error(response.error.message);
-      return MessageEntry.forge({
-        ...entry,
-        organization_id: organization.id,
-      }).save(null, { method: 'insert' })
-        .then(res => res)
-        .catch((err) => {
-          throw new Error(err);
-        });
-    }).catch((error) => {
-      throw new Error(error);
-    });
+  return MessageEntry.forge({
+    ...entry,
+    organization_id: organization.id,
+  }).save(null, { method: 'insert' }).then((entryModel) => {
+    return axios.post(`https://graph.facebook.com/v2.8/${entry.facebook_entry_id}/subscribed_apps?access_token=${entry.access_token}`)
+      .then((response) => {
+        if (response.error) throw new Error(response.error.message);
+        return options.returnJSON ? entryModel.toJSON() : entryModel;
+      }).catch((error) => {
+        throw new Error(error);
+      });
+  }).catch((err) => {
+    throw new Error(err);
+  });
 }
 
 export function deleteEntry(entry) {

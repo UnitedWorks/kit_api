@@ -22,6 +22,9 @@ export const Constituent = bookshelf.Model.extend({
   cases: function() {
     return this.hasMany(CaseModels.Case, 'constituent_id');
   },
+  facebookEntry: function() {
+    return this.hasOne(ConversationModels.MessageEntry, 'facebook_entry_id', 'facebook_entry_id');
+  },
 });
 
 export const Organization = bookshelf.Model.extend({
