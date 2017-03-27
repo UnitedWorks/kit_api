@@ -21,7 +21,7 @@ export const stateMachines = {
   employment: EmploymentMachine,
   health: HealthMachine,
   socialServices: SocialServicesMachine,
-  'benefits-internet': BenefitsInternetMachine
+  'benefits-internet': BenefitsInternetMachine,
 };
 
 const RESPONSE_TIMEOUT_MS = 8.64e+7;

@@ -68,7 +68,6 @@ export const newCaseNotification = (caseObj, organization) => {
 
 export const createCase = (title, category, constituent, organization, location, attachments = [], seeClickFixId) => {
   if (!constituent.id) throw new Error('Missing Key: constituent.id');
-  if (!organization.id) throw new Error('Missing Key: organization.id');
   return new Promise((resolve, reject) => {
     const attachmentPromises = [];
     if (location) attachmentPromises.push(saveLocation(location, { returnJSON: true }));
@@ -89,10 +88,12 @@ export const createCase = (title, category, constituent, organization, location,
           const junctionPromises = [];
 
           // Organization Junction
-          junctionPromises.push(OrganizationsCases.forge({
-            case_id: newCaseModelJSON.id,
-            organization_id: organization.id,
-          }).save());
+          if (organization && organization.id) {
+            junctionPromises.push(OrganizationsCases.forge({
+              case_id: newCaseModelJSON.id,
+              organization_id: organization.id,
+            }).save());
+          }
 
           // Location & Media Junction
           attachmentModels.forEach((model) => {
@@ -106,10 +107,12 @@ export const createCase = (title, category, constituent, organization, location,
           });
 
           Promise.all(junctionPromises).then(() => {
-            newCaseNotification(Object.assign(newCaseModelJSON, {
-              location,
-              attachments,
-            }), organization);
+            if (organization && organization.id) {
+              newCaseNotification(Object.assign(newCaseModelJSON, {
+                location,
+                attachments,
+              }), organization);
+            }
             resolve(refreshedCaseModel);
           }).catch(err => reject(err));
         }).catch(err => reject(err));
