@@ -79,8 +79,13 @@ export default {
         });
       } else if (payload.text) {
         return geocoder(payload.text).then((geoData) => {
+          // Restrict acceptable locations to same country/state
+          const filteredGeoData = geoData.filter((location) => {
+            return location.address.country_code === (this.get('organization').location.address.country_code || this.get('location').address.country_code)
+              && location.address.state === (this.get('organization').location.address.state || this.get('location').address.state);
+          });
           const updatedComplaint = Object.assign({}, this.get('complaint'), {
-            location: geoData[0],
+            location: filteredGeoData[0] ? filteredGeoData[0] : payload.text,
           });
           this.set('complaint', updatedComplaint);
           return 'complaint_submit';

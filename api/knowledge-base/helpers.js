@@ -65,13 +65,17 @@ export const upsertEventRules = (eventRules, idsObj) => {
 };
 
 export const saveLocation = (location, options = {}) => {
-  return Location.forge({
-    id: (Object.prototype.hasOwnProperty.call(location, 'id')) ? undefined : location.id,
-    lat: location.lat,
-    lon: location.lon,
-    display_name: location.display_name,
-    address: location.address,
-  }).save()
+  const locationObj = {};
+  if (typeof location === 'string') {
+    locationObj.display_name = location;
+  } else {
+    locationObj.id = (Object.prototype.hasOwnProperty.call(location, 'id')) ? undefined : location.id;
+    locationObj.lat = location.lat;
+    locationObj.lon = location.lon;
+    locationObj.display_name = location.display_name;
+    locationObj.address = location.address;
+  }
+  return Location.forge(locationObj).save()
     .then(data => options.returnJSON ? data.toJSON() : data)
     .catch(error => error);
 };
