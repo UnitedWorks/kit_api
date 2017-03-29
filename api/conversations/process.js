@@ -107,8 +107,8 @@ function normalizeSessionsFromRequest(req, conversationClient) {
 
     return Promise.all(
       messages.map(function(input) {
-        return Constituent.where({ facebook_id: input.sender.id }).fetch().then((model) => {
-          return model || new Constituent({ facebook_id: input.sender.id }).save();
+        return Constituent.where({ facebook_id: input.sender.id }).fetch({ withRelated: ['facebookEntry'] }).then((model) => {
+          return model || new Constituent({ facebook_id: input.sender.id, facebook_entry_id: input.recipient.id }).save();
         }).then(function(c) {
           return setupConstituentState(c.toJSON());
         }).then((state) => {

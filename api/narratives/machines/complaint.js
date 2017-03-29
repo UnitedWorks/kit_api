@@ -70,7 +70,7 @@ export default {
       const payload = this.snapshot.input.payload;
       if (payload.attachments) {
         const coordinates = payload.attachments[0].payload.coordinates;
-        return geocoder(`${coordinates.lat}, ${coordinates.long}`).then((geoData) => {
+        return geocoder(`${coordinates.lat}, ${coordinates.lon}`).then((geoData) => {
           const updatedComplaint = Object.assign({}, this.get('complaint'), {
             location: geoData[0],
           });
@@ -79,8 +79,13 @@ export default {
         });
       } else if (payload.text) {
         return geocoder(payload.text).then((geoData) => {
+          // Restrict acceptable locations to same country/state
+          const filteredGeoData = geoData.filter((location) => {
+            return location.address.country_code === (this.get('organization').location.address.country_code || this.get('location').address.country_code)
+              && location.address.state === (this.get('organization').location.address.state || this.get('location').address.state);
+          });
           const updatedComplaint = Object.assign({}, this.get('complaint'), {
-            location: geoData[0],
+            location: filteredGeoData[0] ? filteredGeoData[0] : payload.text,
           });
           this.set('complaint', updatedComplaint);
           return 'complaint_submit';
@@ -93,7 +98,10 @@ export default {
   complaint_submit: {
     enter() {
       const complaint = this.get('complaint');
-      return handleConstituentRequest(complaint.headline, complaint.category, this.snapshot.constituent, this.get('organization'), complaint.location, complaint.attachments)
+      return handleConstituentRequest(complaint.headline, complaint.category,
+        this.snapshot.constituent,
+        this.get('organization') || { id: this.snapshot.organization_id },
+        complaint.location, complaint.attachments)
         .then(() => {
           this.messagingClient.send('I just sent your message along. I\'ll try to let you know when it\'s been addressed.');
           return 'smallTalk.start';

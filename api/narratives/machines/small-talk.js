@@ -305,7 +305,7 @@ export default {
 
     action() {
       return {
-        'MAKE_REQUEST': 'complaint.init',
+        'MAKE_REQUEST': 'complaint.waiting_for_complaint',
         'GET_REQUESTS': 'getRequests',
         'GET_STARTED': 'init',
         'CHANGE_CITY': 'setup.reset_organization',
@@ -316,11 +316,17 @@ export default {
 
   getRequests() {
     return getConstituentCases(this.snapshot.constituent).then(({ cases }) => {
-      cases.forEach((thisCase) => {
-        const message = `${thisCase.status.toUpperCase()} - ${thisCase.title.length > 48 ? thisCase.title.slice(0, 45).concat('...') : thisCase.title} (#${thisCase.id})`;
-        this.messagingClient.addToQuene(message);
-      });
-      return this.messagingClient.runQuene().then(() => 'start');
+      if (cases.length > 0) {
+        cases.forEach((thisCase) => {
+          const message = `${thisCase.status.toUpperCase()} - ${thisCase.title.length > 48 ? thisCase.title.slice(0, 45).concat('...') : thisCase.title} (#${thisCase.id})`;
+          this.messagingClient.addToQuene(message);
+        });
+        return this.messagingClient.runQuene().then(() => 'start');
+      }
+      this.messagingClient.send('Looks like you haven\'t made any requests yet!', [
+        { content_type: 'text', title: 'Leave a Request', payload: 'MAKE_REQUEST' },
+      ]);
+      return 'start';
     });
   },
 

@@ -23,7 +23,7 @@ export const getAdminOrganizationAtLocation = (geoData, options = {}) => {
       if (res.length === 1) {
         const orgJSON = JSON.parse(JSON.stringify(res[0]));
         return Organization.where({ id: orgJSON.id })
-          .fetch({ withRelated: ['location', 'integrations'] })
+          .fetch({ withRelated: ['location', 'integrations', 'messageEntries'] })
           .then(model => options.returnJSON ? model.toJSON() : model);
       }
       return null;

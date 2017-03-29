@@ -5,5 +5,3 @@ export const entityValueIs = (entities = [], searchValues = []) => {
   });
   return hasValue;
 };
-
-

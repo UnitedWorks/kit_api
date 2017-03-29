@@ -2,6 +2,7 @@ import { bookshelf } from '../orm';
 import * as KnowledgeModels from '../knowledge-base/models';
 import * as CaseModels from '../cases/models';
 import * as IntegrationModels from '../integrations/models';
+import * as ConversationModels from '../conversations/models';
 
 export const Representative = bookshelf.Model.extend({
   tableName: 'representatives',
@@ -21,6 +22,9 @@ export const Constituent = bookshelf.Model.extend({
   cases: function() {
     return this.hasMany(CaseModels.Case, 'constituent_id');
   },
+  facebookEntry: function() {
+    return this.hasOne(ConversationModels.MessageEntry, 'facebook_entry_id', 'facebook_entry_id');
+  },
 });
 
 export const Organization = bookshelf.Model.extend({
@@ -39,6 +43,9 @@ export const Organization = bookshelf.Model.extend({
   },
   cases: function() {
     return this.belongsToMany(CaseModels.Case, 'organizations_cases');
+  },
+  messageEntries: function() {
+    return this.hasMany(ConversationModels.MessageEntry, 'organization_id');
   },
 });
 
