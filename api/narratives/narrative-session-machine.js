@@ -1,6 +1,5 @@
-import { logger } from '../logger';
 import { NarrativeSession } from './models';
-import { getBaseState } from '../conversations/helpers';
+import { getBaseState } from './helpers';
 import StateMachine from './state-machine'
 
 // Base Machines

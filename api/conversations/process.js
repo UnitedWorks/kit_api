@@ -4,7 +4,7 @@ import * as interfaces from '../constants/interfaces';
 import { NarrativeSession } from '../narratives/models';
 import { Constituent } from '../accounts/models';
 import AWSClient from '../services/aws';
-import { getBaseState } from './helpers';
+import { getBaseState } from '../narratives/helpers';
 
 import * as clients from '../conversations/clients';
 import { NarrativeSessionMachine } from '../narratives/narrative-session-machine';
@@ -164,9 +164,6 @@ export function webhookHitWithMessage(req, res, conversationClient) {
 
   normalizeSessionsFromRequest(req, conversationClient).then((normalizedStates) => {
     normalizedStates.forEach((snapshot) => {
-      console.log('/////////')
-      console.log(snapshot)
-      console.log('/////////')
       if (!snapshot.over_ride_on) {
         logger.info(`Running Machine: ${snapshot.state_machine_name}`);
         logger.info({ c: snapshot.constituent });
@@ -176,9 +173,6 @@ export function webhookHitWithMessage(req, res, conversationClient) {
         const instance = new NarrativeSessionMachine(snapshot, messagingClient);
         let action;
 
-        console.log('/////////')
-        console.log(snapshot)
-        console.log('/////////')
         if (typeof snapshot.state_machine_current_state !== 'string' && typeof snapshot.organization_id !== 'string') {
           action = instance.input('enter');
         } else if (instance.current) {
