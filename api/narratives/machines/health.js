@@ -3,6 +3,7 @@ import { hasIntegration } from '../../integrations/helpers';
 import AskDarcelClient from '../clients/ask-darcel-client';
 import KitClient from '../clients/kit-client';
 import { messageToGeodata } from '../../services/nlp';
+import { getBaseState } from '../../conversations/helpers';
 
 export default {
   waiting_clinic_search: {
@@ -30,7 +31,9 @@ export default {
               resources.forEach((resource) => {
                 this.messagingClient.addToQuene(`${resource.name}\n${resource.phones[0] ? `${resource.phones[0].number}\n` : ''}${resource.website ? `${resource.website}\n` : ''}${resource.short_description || resource.long_description || ''}\n`.trim());
               });
-              return this.messagingClient.runQuene().then(() => 'smallTalk.start');
+              return this.messagingClient.runQuene().then(() => {
+                return getBaseState(this.snapshot.constituent.facebookEntry.organization.name);
+              });
             });
         });
       }

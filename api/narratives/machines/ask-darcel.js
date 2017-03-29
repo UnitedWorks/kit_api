@@ -45,7 +45,7 @@ export default {
       username: 'Misunderstood Request - AskDarcel',
       icon: 'question',
     }).send(`>*Request Message*: ${aux.input.payload.text}\n>*Constituent ID*: ${this.snapshot.constituent.id}`);
-    const message = 'Ah shoot, I\'m still learning so I don\'t understand that request yet. Can you give more description? <3';
+    const message = 'Im just a bot so I may not be understanding. I can help you find a shelter, clinics, or places to wash. Try asking, "Where is a shelter near me?"';
     this.messagingClient.send(message);
     return 'start';
   },
