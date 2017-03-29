@@ -91,6 +91,14 @@ export class NarrativeSessionMachine extends StateMachine {
     return fallbackState;
   }
 
+  getBaseState() {
+    if (this.snapshot.constituent.facebookEntry.organization &&
+      this.snapshot.constituent.facebookEntry.organization.name) {
+      return getBaseState(this.snapshot.constituent.facebookEntry.organization.name);
+    }
+    return getBaseState();
+  }
+
   setState(state) {
     let newState = state;
 

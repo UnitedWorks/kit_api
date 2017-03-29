@@ -32,7 +32,7 @@ export default {
                 this.messagingClient.addToQuene(`${resource.name}\n${resource.phones[0] ? `${resource.phones[0].number}\n` : ''}${resource.website ? `${resource.website}\n` : ''}${resource.short_description || resource.long_description || ''}\n`.trim());
               });
               return this.messagingClient.runQuene().then(() => {
-                return getBaseState(this.snapshot.constituent.facebookEntry.organization.name);
+                return this.getBaseState();
               });
             });
         });
@@ -71,7 +71,7 @@ export default {
                 this.messagingClient.addToQuene(`${resource.name}\n${resource.phones[0] ? `${resource.phones[0].number}\n` : ''}${resource.website ? `${resource.website}\n` : ''}${resource.short_description || resource.long_description || ''}\n`.trim());
               });
               return this.messagingClient.runQuene().then(() => {
-                return getBaseState(this.snapshot.constituent.facebookEntry.organization.name);
+                return this.getBaseState();
               });
             });
         });
@@ -109,7 +109,7 @@ export default {
                 this.messagingClient.addToQuene(`${resource.name}\n${resource.phones[0] ? `${resource.phones[0].number}\n` : ''}${resource.website ? `${resource.website}\n` : ''}${resource.short_description || resource.long_description || ''}\n`.trim());
               });
               return this.messagingClient.runQuene().then(() => {
-                return getBaseState(this.snapshot.constituent.facebookEntry.organization.name);
+                return this.getBaseState();
               });
             });
         });
