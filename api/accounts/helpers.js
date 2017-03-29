@@ -9,7 +9,7 @@ export const createOrganization = (organizationModel, options = {}) => {
   }).catch(error => error);
 };
 
-export const getAdminOrganizationAtLocation = (geoData, options = {}) => {
+export const getGovernmentOrganizationAtLocation = (geoData, options = {}) => {
   let subquery = knex('locations')
     .select('id')
     .whereRaw("address->>'state'=?", geoData.address.state);

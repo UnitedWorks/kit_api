@@ -1,16 +1,25 @@
 import { logger } from '../logger';
 import { NarrativeSession } from './models';
+import { getBaseState } from '../conversations/helpers';
 import StateMachine from './state-machine'
 
+// Base Machines
 import SmallTalkMachine from './machines/small-talk';
 import SetupMachine from './machines/setup';
-import VotingMachine from './machines/voting';
 import ComplaintMachine from './machines/complaint';
 import SanitationMachine from './machines/sanitation';
 import EmploymentMachine from './machines/employment';
 import HealthMachine from './machines/health';
 import SocialServicesMachine from './machines/social-services';
 import BenefitsInternetMachine from './machines/benefits-internet';
+import VotingMachine from './machines/voting';
+
+// Service Provider Machines
+import AskDarcelMachine from './machines/ask-darcel';
+// import BenefitKitchenMachine from './machines/benefitKitchen';
+// import EveryoneOnMachine from './machines/everyone-on';
+// import USVoteFoundationMachine from './machines/ask-darcel';
+
 
 export const stateMachines = {
   smallTalk: SmallTalkMachine,
@@ -22,6 +31,10 @@ export const stateMachines = {
   health: HealthMachine,
   socialServices: SocialServicesMachine,
   'benefits-internet': BenefitsInternetMachine,
+  askDarcel: AskDarcelMachine,
+  // benefitKitchen: BenefitKitchenMachine,
+  // everyoneOn: EveryoneOnMachine,
+  // usVoteFoundation: USVoteFoundationMachine,
 };
 
 const RESPONSE_TIMEOUT_MS = 8.64e+7;
@@ -29,7 +42,7 @@ const RESPONSE_TIMEOUT_MS = 8.64e+7;
 export class NarrativeSessionMachine extends StateMachine {
   constructor(snapshot, messagingClient) {
     if (Date.now() - (snapshot.data_store.last_checked || 0) > RESPONSE_TIMEOUT_MS) {
-      snapshot.state_machine_name = 'smallTalk';
+      snapshot.state_machine_name = snapshot.constituent.facebookEntry.organization ? getBaseState(snapshot.constituent.facebookEntry.organization.name, 'machine') : 'smallTalk';
       snapshot.state_machine_previous_state = snapshot.state_machine_current_state;
       snapshot.state_machine_current_state = 'start';
     }

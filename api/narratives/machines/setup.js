@@ -3,7 +3,7 @@ import { logger } from '../../logger';
 import { nlp } from '../../services/nlp';
 import { entityValueIs } from '../helpers';
 import SlackService from '../../services/slack';
-import { getAdminOrganizationAtLocation } from '../../accounts/helpers';
+import { getGovernmentOrganizationAtLocation } from '../../accounts/helpers';
 import * as TAGS from '../../constants/nlp-tagging';
 
 const i18n = function(key) {
@@ -65,7 +65,7 @@ export default {
 
         this.set('location', location);
 
-        return getAdminOrganizationAtLocation(location, { returnJSON: true })
+        return getGovernmentOrganizationAtLocation(location, { returnJSON: true })
           .then((orgModel) => {
             if (orgModel) {
               this.set('organization', orgModel);
