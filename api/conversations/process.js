@@ -4,7 +4,7 @@ import * as interfaces from '../constants/interfaces';
 import { NarrativeSession } from '../narratives/models';
 import { Constituent } from '../accounts/models';
 import AWSClient from '../services/aws';
-import { getBaseState } from '../narratives/helpers';
+import { getBaseState, getOrgNameFromConstituentEntry } from '../narratives/helpers';
 
 import * as clients from '../conversations/clients';
 import { NarrativeSessionMachine } from '../narratives/narrative-session-machine';
@@ -85,15 +85,9 @@ function setupConstituentState(constituent) {
     if (model !== null && model.toJSON()) {
       return (Object.assign({}, model.toJSON(), { constituent }));
     }
-    let entryOrganizationName;
-    if (constituent.facebookEntry && constituent.facebookEntry.organization) {
-      entryOrganizationName = constituent.facebookEntry.organization.name;
-    } else if (constituent.smsEntry && constituent.smsEntry.organization) {
-      entryOrganizationName = constituent.smsEntry.organization.name;
-    }
     return {
       session_id: uuid(),
-      state_machine_name: getBaseState(entryOrganizationName, 'machine'),
+      state_machine_name: getBaseState(getOrgNameFromConstituentEntry(constituent), 'machine'),
       state_machine_previous_state: null,
       state_machine_current_state: null,
       over_ride_on: false,

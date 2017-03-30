@@ -27,7 +27,7 @@ export function getBaseState(providerName, section) {
   return baseState;
 }
 
-export function getConstituentOrgName(constituent) {
+export function getOrgNameFromConstituentEntry(constituent) {
   let entryOrganizationName;
   if (constituent.facebookEntry && constituent.facebookEntry.organization) {
     entryOrganizationName = constituent.facebookEntry.organization.name;
