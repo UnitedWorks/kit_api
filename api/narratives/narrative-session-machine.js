@@ -84,7 +84,9 @@ export class NarrativeSessionMachine extends StateMachine {
   }
 
   checkMultiRedirect(checkState, fallbackState) {
-    if (this.get('stateRedirects') && this.get('stateRedirects')[0].whenExiting.includes(checkState)) {
+    if (this.get('stateRedirects').length > 0 &&
+        this.get('stateRedirects')[0].whenExiting.length &&
+        this.get('stateRedirects')[0].whenExiting.includes(checkState)) {
       return this.get('stateRedirects')[0].exitInstead;
     }
     return fallbackState;
