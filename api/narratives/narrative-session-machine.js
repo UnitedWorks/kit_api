@@ -1,5 +1,5 @@
 import { NarrativeSession } from './models';
-import { getBaseState } from './helpers';
+import { getBaseState, getConstituentOrgName } from './helpers';
 import StateMachine from './state-machine'
 
 // Base Machines
@@ -41,7 +41,7 @@ const RESPONSE_TIMEOUT_MS = 8.64e+7;
 export class NarrativeSessionMachine extends StateMachine {
   constructor(snapshot, messagingClient) {
     if (Date.now() - (snapshot.data_store.last_checked || 0) > RESPONSE_TIMEOUT_MS) {
-      snapshot.state_machine_name = snapshot.constituent.facebookEntry.organization ? getBaseState(snapshot.constituent.facebookEntry.organization.name, 'machine') : 'smallTalk';
+      snapshot.state_machine_name = getBaseState(getConstituentOrgName(snapshot.constituent), 'machine');
       snapshot.state_machine_previous_state = snapshot.state_machine_current_state;
       snapshot.state_machine_current_state = 'start';
     }
@@ -91,11 +91,7 @@ export class NarrativeSessionMachine extends StateMachine {
   }
 
   getBaseState() {
-    if (this.snapshot.constituent.facebookEntry.organization &&
-      this.snapshot.constituent.facebookEntry.organization.name) {
-      return getBaseState(this.snapshot.constituent.facebookEntry.organization.name);
-    }
-    return getBaseState();
+    return getBaseState(getConstituentOrgName(this.snapshot.constituent));
   }
 
   setState(state) {
@@ -158,8 +154,10 @@ export class NarrativeSessionMachine extends StateMachine {
       if (self.get('organization')) {
         attributes.organization_id = self.get('organization').id || null;
       // If no org is assigned org, default associate the entry point org id
-      } else if (!self.get('organization') && self.snapshot.constituent.facebookEntry.organization_id) {
+      } else if (!self.get('organization') && self.snapshot.constituent.facebookEntry) {
         attributes.organization_id = self.snapshot.constituent.facebookEntry.organization_id;
+      } else if (!self.get('organization') && self.snapshot.constituent.smsEntry) {
+        attributes.organization_id = self.snapshot.constituent.smsEntry.organization_id;
       }
 
       if (existingStore) {

@@ -26,3 +26,13 @@ export function getBaseState(providerName, section) {
   }
   return baseState;
 }
+
+export function getConstituentOrgName(constituent) {
+  let entryOrganizationName;
+  if (constituent.facebookEntry) {
+    entryOrganizationName = constituent.facebookEntry.organization.name;
+  } else if (constituent.smsEntry) {
+    entryOrganizationName = constituent.smsEntry.organization.name;
+  }
+  return entryOrganizationName;
+}

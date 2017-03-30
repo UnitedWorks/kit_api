@@ -85,9 +85,15 @@ function setupConstituentState(constituent) {
     if (model !== null && model.toJSON()) {
       return (Object.assign({}, model.toJSON(), { constituent }));
     }
+    let entryOrganizationName;
+    if (constituent.facebookEntry) {
+      entryOrganizationName = constituent.facebookEntry.organization.name;
+    } else if  (constituent.smsEntry) {
+      entryOrganizationName = constituent.smsEntry.organization.name;
+    }
     return {
       session_id: uuid(),
-      state_machine_name: constituent.facebookEntry.organization ? getBaseState(constituent.facebookEntry.organization.name, 'machine') : 'smallTalk',
+      state_machine_name: getBaseState(entryOrganizationName, 'machine'),
       state_machine_previous_state: null,
       state_machine_current_state: null,
       over_ride_on: false,
@@ -125,9 +131,11 @@ function normalizeSessionsFromRequest(req, conversationClient) {
     );
   } else if (conversationClient === interfaces.TWILIO) {
     return Constituent.where({ phone: input.From }).fetch().then((model) => {
-      return model || new Constituent({ phone: input.From }).save();
-    }).then(function(c) {
-      return setupConstituentState(c.toJSON());
+      return model || new Constituent({ phone: input.From, entry_phone_number: input.To }).save();
+    }).then((con) => {
+      return con.refresh({ withRelated: ['smsEntry', 'smsEntry.organization'] }).then((c) => {
+        return setupConstituentState(c.toJSON());
+      });
     }).then((state) => {
       return normalizeInput(conversationClient, input).then((normalizedInput) => {
         return [].concat(Object.assign(state, { input: normalizedInput }));

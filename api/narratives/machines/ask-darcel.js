@@ -16,6 +16,19 @@ export default {
     return 'start';
   },
   start: {
+    enter() {
+      if (!this.get('location')) {
+        this.set('location', {
+          address: {
+            city: 'SF',
+            state: 'California',
+            county: 'SF',
+            country: 'United States of America',
+            country_code: 'us',
+          },
+        });
+      }
+    },
     message() {
       const input = this.snapshot.input.payload;
       return nlp.message(input.text, {}).then((nlpData) => {
