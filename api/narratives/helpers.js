@@ -1,3 +1,5 @@
+import * as PROVIDERS from '../constants/providers';
+
 export const entityValueIs = (entities = [], searchValues = []) => {
   let hasValue = false;
   entities.forEach((entity) => {

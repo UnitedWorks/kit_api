@@ -4,7 +4,17 @@ import { nlp } from '../../services/nlp';
 import { entityValueIs } from '../helpers';
 import SlackService from '../../services/slack';
 
+const baseQuickReplies = [
+  { content_type: 'text', title: 'Nearby Shelters', payload: 'Nearby Shelters' },
+  { content_type: 'text', title: 'Public Restrooms', payload: 'Public Restrooms' },
+  { content_type: 'text', title: 'Open Clinics', payload: 'Open Clinics' },
+];
+
 export default {
+  handle_greeting() {
+    this.messagingClient.send('Hey there! I\'m AskDarcel, a robot to help you find a nearby shelter, clinic, public restroom, or job assistance. That\'s all I can do, but I hope it can help you!', baseQuickReplies);
+    return 'start';
+  },
   start: {
     message() {
       const input = this.snapshot.input.payload;
@@ -12,7 +22,13 @@ export default {
         this.set('nlp', nlpData.entities);
         const entities = nlpData.entities;
         logger.info(nlpData);
-        if (entities[TAGS.SOCIAL_SERVICES]) {
+
+        // Greeting
+        if (entities[TAGS.SMALL_TALK]) {
+          if (entityValueIs(entities[TAGS.SMALL_TALK], [TAGS.GREETING])) {
+            return 'handle_greeting';
+          }
+        } else if (entities[TAGS.SOCIAL_SERVICES]) {
           // Shelters
           if (entityValueIs(entities[TAGS.SOCIAL_SERVICES], [TAGS.SHELTER_SEARCH])) return 'socialServices.waiting_shelter_search';
           // Food
@@ -45,8 +61,8 @@ export default {
       username: 'Misunderstood Request - AskDarcel',
       icon: 'question',
     }).send(`>*Request Message*: ${aux.input.payload.text}\n>*Constituent ID*: ${this.snapshot.constituent.id}`);
-    const message = 'Im just a bot so I may not be understanding. I can help you find a shelter, clinics, or places to wash. Try asking, "Where is a shelter near me?"';
-    this.messagingClient.send(message);
+    const message = 'Im just a bot so I may not be understanding. I can help you find a shelter, clinics, or places to wash up';
+    this.messagingClient.send(message, baseQuickReplies);
     return 'start';
   },
 };
