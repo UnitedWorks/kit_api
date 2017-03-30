@@ -134,18 +134,10 @@ export const deleteIntegration = (params) => {
 };
 
 export const setForOrganization = (params) => {
-  console.log('///////')
-  console.log(params)
-  console.log('///////')
   return getIntegrations(params, { returnJSON: true }).then((orgIntegrations) => {
     const integrationToBeSet = orgIntegrations.filter(
       integration => integration.id === params.integration.id)[0];
     // If we're trying to enable an unavailable integration, throw error, otherwise go for it
-    console.log('///////')
-    console.log(orgIntegrations)
-    console.log('///////')
-    console.log(integrationToBeSet)
-    console.log('///////')
     if (!integrationToBeSet.available && params.integration.enabled) {
       throw Error('Integration Unavailable for this Organization');
     } else {
