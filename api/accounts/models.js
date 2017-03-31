@@ -25,6 +25,9 @@ export const Constituent = bookshelf.Model.extend({
   facebookEntry: function() {
     return this.hasOne(ConversationModels.MessageEntry, 'facebook_entry_id', 'facebook_entry_id');
   },
+  smsEntry: function() {
+    return this.hasOne(ConversationModels.MessageEntry, 'phone_number', 'entry_phone_number');
+  },
 });
 
 export const Organization = bookshelf.Model.extend({

@@ -3,6 +3,7 @@ import { logger } from '../logger';
 import { NarrativeSession } from '../narratives/models';
 import { MessageEntry } from './models';
 import Clients from './clients';
+import * as PROVIDERS from '../constants/providers';
 
 export function makeBroadcast(broadcast, organization) {
   return new Promise((resolve, reject) => {

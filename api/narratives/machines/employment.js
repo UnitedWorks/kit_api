@@ -30,14 +30,18 @@ export default {
               resources.forEach((resource) => {
                 this.messagingClient.addToQuene(`${resource.name}\n${resource.phones[0] ? `${resource.phones[0].number}\n` : ''}${resource.website ? `${resource.website}\n` : ''}${resource.short_description || resource.long_description || ''}\n`.trim());
               });
-              return this.messagingClient.runQuene().then(() => 'smallTalk.start');
+              return this.messagingClient.runQuene().then(() => {
+                return this.getBaseState();
+              });
             });
         });
       }
       return new KitClient({ organization: this.get('organization') })
         .getAnswer('employment-job-training').then((answers) => {
           this.messagingClient.addAll(KitClient.staticAnswer(answers));
-          return this.messagingClient.runQuene().then(() => 'smallTalk.start');
+          return this.messagingClient.runQuene().then(() => {
+            return this.getBaseState();
+          });
         });
     },
   },

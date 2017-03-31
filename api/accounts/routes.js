@@ -60,6 +60,21 @@ router.post('/organization', (req, res, next) => {
     }).catch(error => next(error));
 });
 
+router.post('/organizations/add-provider', (req, res, next) => {
+  try {
+    const organization = req.body.organization;
+    if (organization.type == null || organization.type !== 'provider') {
+      throw new Error('Not a Provider Organization');
+    }
+    helpers.createOrganization(organization, { returnJSON: true })
+    .then((newOrganization) => {
+      res.status(200).json({ organization: newOrganization });
+    }).catch(error => next(error));
+  } catch (e) {
+    next(e);
+  }
+});
+
 router.post('/organizations/add-representative', (req, res) => {
   helpers.addRepToOrganization(req.body.representative, req.body.organization, { returnJSON: true })
     .then(response => res.status(200).send({

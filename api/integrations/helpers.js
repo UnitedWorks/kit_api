@@ -21,48 +21,51 @@ export const getIntegrations = (params, options) => {
               updatedIntegration.enabled = true;
             }
           });
-          // Set 'available' flag - check org city against integration locations
+          // If government, set 'available' flag - check org city against integration locations
+          if (orgModel.toJSON().type === 'government') {
           const orgLocation = orgModel.toJSON().location;
-          updatedIntegration.locations.forEach((whiteListedLocation) => {
-            if (whiteListedLocation.country_code === orgLocation.country_code) {
-              if (!whiteListedLocation.address.state) {
-                updatedIntegration.available = true;
-              } else if (whiteListedLocation.address.state ===
-                  orgLocation.address.state) {
-                // If county or city dont exist, its good. If more details, do more checks
-                if (!whiteListedLocation.address.county ||
-                    !whiteListedLocation.city) {
+            updatedIntegration.locations.forEach((whiteListedLocation) => {
+              if (whiteListedLocation.country_code === orgLocation.country_code) {
+                if (!whiteListedLocation.address.state) {
                   updatedIntegration.available = true;
-                } else {
-                  // If county is specified, check for match
-                  if (whiteListedLocation.address.county) {
-                    updatedIntegration.available = (
-                      whiteListedLocation.address.county ===
-                      orgLocation.address.county);
-                    // If county matched, city may still be different and a city
-                    if (updatedIntegration.available && whiteListedLocation.city) {
-                      // Check if cities match
-                      updatedIntegration.available = whiteListedLocation.city === orgLocation.city;
+                } else if (whiteListedLocation.address.state ===
+                    orgLocation.address.state) {
+                  // If county or city dont exist, its good. If more details, do more checks
+                  if (!whiteListedLocation.address.county ||
+                      !whiteListedLocation.city) {
+                    updatedIntegration.available = true;
+                  } else {
+                    // If county is specified, check for match
+                    if (whiteListedLocation.address.county) {
+                      updatedIntegration.available = (
+                        whiteListedLocation.address.county ===
+                        orgLocation.address.county);
+                      // If county matched, city may still be different and a city
+                      if (updatedIntegration.available && whiteListedLocation.city) {
+                        // Check if cities match
+                        updatedIntegration.available = whiteListedLocation.city === orgLocation.city;
+                      }
+                    // If county wasn't specified, still check city
+                    } else if (whiteListedLocation.city) {
+                      updatedIntegration.available = (
+                        whiteListedLocation.address.county ===
+                        orgLocation.address.county);
                     }
-                  // If county wasn't specified, still check city
-                  } else if (whiteListedLocation.city) {
-                    updatedIntegration.available = (
-                      whiteListedLocation.address.county ===
-                      orgLocation.address.county);
                   }
                 }
               }
-            }
-          })
+            });
+          } else if (orgModel.toJSON().type === 'provider') {
+            updatedIntegration.available = true;
+          }
           return updatedIntegration;
         });
       }).catch(error => error);
     }).catch(error => error);
-  } else {
-    return Integration.fetchAll({ withRelated: ['locations'] }).then((integrationModels) => {
-      return options.returnJSON ? integrationModels.toJSON() : integrationModels;
-    });
   }
+  return Integration.fetchAll({ withRelated: ['locations'] }).then((integrationModels) => {
+    return options.returnJSON ? integrationModels.toJSON() : integrationModels;
+  });
 };
 
 export const checkIntegration = (organization, integration) => {

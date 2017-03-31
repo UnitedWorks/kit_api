@@ -189,9 +189,7 @@ export default {
 // TODO: Move to init
   start: {
     message() {
-      logger.info('State: Start');
       const input = this.snapshot.input.payload;
-
 
       return nlp.message(input.text, {}).then((nlpData) => {
         this.set('nlp', nlpData.entities);
