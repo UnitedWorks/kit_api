@@ -14,10 +14,10 @@ import BenefitsInternetMachine from './machines/benefits-internet';
 import VotingMachine from './machines/voting';
 
 // Service Provider Machines
-import AskDarcelMachine from './machines/ask-darcel';
+import AskDarcelMachine from './machines/small-talk-ask-darcel';
 // import BenefitKitchenMachine from './machines/benefitKitchen';
 // import EveryoneOnMachine from './machines/everyone-on';
-// import USVoteFoundationMachine from './machines/ask-darcel';
+import USVoteFoundationMachine from './machines/small-talk-us-vote';
 
 
 export const stateMachines = {
@@ -33,7 +33,7 @@ export const stateMachines = {
   askDarcel: AskDarcelMachine,
   // benefitKitchen: BenefitKitchenMachine,
   // everyoneOn: EveryoneOnMachine,
-  // usVoteFoundation: USVoteFoundationMachine,
+  usVoteFoundation: USVoteFoundationMachine,
 };
 
 const RESPONSE_TIMEOUT_MS = 8.64e+7;
