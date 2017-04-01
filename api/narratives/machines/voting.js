@@ -22,7 +22,7 @@ export default {
         }
       }
 
-      return this.messagingClient.runQuene().then(() => 'smallTalk.start');
+      return this.messagingClient.runQuene().then(() => this.getBaseState());
     });
   },
 
@@ -67,7 +67,7 @@ export default {
         });
         this.messagingClient.addToQuene(`You have ${Math.floor((earliestRegistrationDate.getTime() - Date.now()) / 86400000)} days left to register. Are you ready for the elections?`, quickReplies);
       }
-      return this.messagingClient.runQuene().then(() => 'smallTalk.start');
+      return this.messagingClient.runQuene().then(() => this.getBaseState());
     });
   },
 
@@ -104,7 +104,7 @@ export default {
         buttons: quickActions,
       });
 
-      return 'smallTalk.start';
+      return this.getBaseState();
     });
   },
 
@@ -128,7 +128,7 @@ export default {
         text: `Here's a way to check if your registered in ${this.get('location').address.state}:`,
         buttons: quickActions,
       }).then(() => {
-        return this.checkMultiRedirect('voterRegistrationCheck', 'smallTalk.start');
+        return this.checkMultiRedirect('voterRegistrationCheck', this.getBaseState());
       });
     });
   },
@@ -189,7 +189,7 @@ export default {
         elements,
       });
       return this.messagingClient.runQuene().then(() => {
-        return this.checkMultiRedirect('voterRegistrationGet', 'smallTalk.start');
+        return this.checkMultiRedirect('voterRegistrationGet', this.getBaseState());
       });
     });
   },
@@ -217,7 +217,7 @@ export default {
       } else {
         this.messagingClient.send('Hmm, your state doesn\'t seem to allow absentee voting.');
       }
-      return 'smallTalk.start';
+      return this.getBaseState();
     });
   },
 
@@ -231,7 +231,7 @@ export default {
       } else {
         this.messagingClient.send('Hmm, it doesn\'t seem that your state allows early voting.');
       }
-      return 'smallTalk.start';
+      return this.getBaseState();
     });
   },
 
@@ -252,7 +252,7 @@ export default {
         return { content_type: 'text', title: label, payload: label };
       });
       this.messagingClient.addToQuene(idMessage, quickReplies);
-      return this.messagingClient.runQuene().then(() => 'smallTalk.start');
+      return this.messagingClient.runQuene().then(() => this.getBaseState());
     });
   },
 
@@ -273,7 +273,7 @@ export default {
         return { content_type: 'text', title: label, payload: label };
       });
       this.messagingClient.addToQuene(notEligibleMessage, quickActions);
-      return this.messagingClient.runQuene().then(() => 'smallTalk.start');
+      return this.messagingClient.runQuene().then(() => this.getBaseState());
     });
   },
 
@@ -329,7 +329,7 @@ export default {
         text: 'If someone is preventing you from voting call these hotlines:',
         buttons: quickActions,
       });
-      return this.messagingClient.runQuene().then(() => 'smallTalk.start');
+      return this.messagingClient.runQuene().then(() => this.getBaseState());
     });
   },
 
@@ -368,7 +368,7 @@ export default {
         templateType: 'generic',
         elements,
       });
-      return this.messagingClient.runQuene().then(() => 'smallTalk.start');
+      return this.messagingClient.runQuene().then(() => this.getBaseState());
     });
   },
 
