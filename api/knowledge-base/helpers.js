@@ -269,6 +269,7 @@ export const makeQuestion = (label, question, categoryId, options = {}) => {
   if (!categoryId) throw new Error('Missing Category ID');
   return KnowledgeQuestion.where({ label }).fetch().then((foundModel) => {
     let query;
+    let originalJSON;
     if (!foundModel) {
       query = KnowledgeQuestion.forge({
         label,
@@ -276,27 +277,37 @@ export const makeQuestion = (label, question, categoryId, options = {}) => {
         knowledge_category_id: categoryId,
       }).save(null, { method: 'insert' });
     } else {
+      originalJSON = foundModel.toJSON();
       query = foundModel.save({
         question,
         knowledge_category_id: categoryId,
-      }, { method: 'update', patch: true });
+      }, { method: 'update', require: true });
     }
-    return query
-      .then((data) => {
-        if (options.returnMethod) {
-          if (!foundModel) {
-            return 'INSERTED';
-          }
-          return 'CHECKED';
+    return query.then((data) => {
+      if (options.returnMethod) {
+        if (!foundModel) {
+          return 'INSERTED';
         }
-        if (options.returnJSON) return data.toJSON();
-        return data;
-      }).catch(error => error);
+        if (originalJSON.question !== data.toJSON().question) {
+          return 'UPDATED';
+        }
+      }
+      if (options.returnJSON) return data.toJSON();
+      return data;
+    }).catch(error => error);
   });
 };
 
+export const deleteQuestion = (label) => {
+  if (!label) throw new Error('Missing Label');
+  return KnowledgeQuestion.where({ label }).fetch().then((foundModel) => {
+    if (foundModel) return foundModel.destroy().then(() => 'DELETED');
+    return null;
+  }).catch(error => error);
+};
+
 export const syncSheetKnowledgeBaseQuestions = () => {
-  return axios.get(`https://sheets.googleapis.com/v4/spreadsheets/${process.env.GOOGLE_SHEET_KNOWLEDGE_BASE_ID}/values/LIVE`, {
+  const upsertRequest = axios.get(`https://sheets.googleapis.com/v4/spreadsheets/${process.env.GOOGLE_SHEET_KNOWLEDGE_BASE_ID}/values/LIVE`, {
     params: {
       key: process.env.GOOGLE_SHEET_API_KEY,
     },
@@ -312,9 +323,31 @@ export const syncSheetKnowledgeBaseQuestions = () => {
       })).then((data) => {
         return {
           inserted: data.filter(result => result === 'INSERTED').length,
-          checked: data.filter(result => result === 'CHECKED').length,
+          updated: data.filter(result => result === 'UPDATED').length,
         };
       });
     });
   });
+  const deletionRequest = axios.get(`https://sheets.googleapis.com/v4/spreadsheets/${process.env.GOOGLE_SHEET_KNOWLEDGE_BASE_ID}/values/DELETED`, {
+    params: {
+      key: process.env.GOOGLE_SHEET_API_KEY,
+    },
+  }).then((sheetData) => {
+    const sheetValues = sheetData.data.values.slice(1);
+    return Promise.all(sheetValues.map((row) => {
+      return deleteQuestion(row[1]);
+    })).then((data) => {
+      return {
+        deleted: data.filter(result => result === 'DELETED').length,
+      };
+    });
+  });
+  return Promise.all([upsertRequest, deletionRequest])
+    .then((data) => {
+      return {
+        deleted: data[1].deleted,
+        inserted: data[0].inserted,
+        updated: data[0].updated,
+      };
+    }).catch(error => error);
 };

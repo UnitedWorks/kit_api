@@ -85,6 +85,7 @@ export const KnowledgeEvent = bookshelf.Model.extend({
 
 export const KnowledgeQuestion = bookshelf.Model.extend({
   tableName: 'knowledge_questions',
+  hasTimestamps: true,
   answers: function() {
     return this.hasMany(KnowledgeAnswer, 'question_id');
   },

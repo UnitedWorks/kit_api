@@ -188,7 +188,7 @@ router.get('/questions', (req, res, next) => {
     .catch(error => next(error));
 });
 
-router.get('/questions/pull-sheet', (req, res, next) => {
+router.get('/questions/sync', (req, res, next) => {
   syncSheetKnowledgeBaseQuestions()
     .then(results => res.status(200).send({ data: results }))
     .catch(error => next(error));
