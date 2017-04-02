@@ -190,7 +190,7 @@ router.get('/questions', (req, res, next) => {
 
 router.get('/questions/pull-sheet', (req, res, next) => {
   syncSheetKnowledgeBaseQuestions()
-    .then(() => res.status(200).send())
+    .then(results => res.status(200).send({ data: results }))
     .catch(error => next(error));
 });
 

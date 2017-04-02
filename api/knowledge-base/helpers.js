@@ -281,8 +281,17 @@ export const makeQuestion = (label, question, categoryId, options = {}) => {
         knowledge_category_id: categoryId,
       }, { method: 'update', patch: true });
     }
-    return query.then(data => options.returnJSON ? data.toJSON() : data)
-      .catch(error => error);
+    return query
+      .then((data) => {
+        if (options.returnMethod) {
+          if (!foundModel) {
+            return 'INSERTED';
+          }
+          return 'CHECKED';
+        }
+        if (options.returnJSON) return data.toJSON();
+        return data;
+      }).catch(error => error);
   });
 };
 
@@ -293,14 +302,19 @@ export const syncSheetKnowledgeBaseQuestions = () => {
     },
   }).then((sheetData) => {
     const categoryHash = {};
-    KnowledgeCategory.fetchAll().then((categories) => {
+    return KnowledgeCategory.fetchAll().then((categories) => {
       categories.toJSON().forEach((category) => {
         categoryHash[category.label] = category.id;
       });
-      const sheetValues = sheetData.data.values;
-      for (let i = 1; i < sheetValues.length; i += 1) {
-        makeQuestion(sheetValues[i][1], sheetValues[i][2], categoryHash[sheetValues[i][0]]);
-      }
+      const sheetValues = sheetData.data.values.slice(1);
+      return Promise.all(sheetValues.map((row) => {
+        return makeQuestion(row[1], row[2], categoryHash[row[0]], { returnMethod: true });
+      })).then((data) => {
+        return {
+          inserted: data.filter(result => result === 'INSERTED').length,
+          checked: data.filter(result => result === 'CHECKED').length,
+        };
+      });
     });
   });
 };
