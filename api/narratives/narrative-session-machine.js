@@ -15,9 +15,6 @@ import VotingMachine from './machines/voting';
 
 // Service Provider Machines
 import AskDarcelMachine from './machines/small-talk-ask-darcel';
-// import BenefitKitchenMachine from './machines/benefitKitchen';
-// import EveryoneOnMachine from './machines/everyone-on';
-// import USVoteFoundationMachine from './machines/ask-darcel';
 
 
 export const stateMachines = {
@@ -31,9 +28,6 @@ export const stateMachines = {
   socialServices: SocialServicesMachine,
   'benefits-internet': BenefitsInternetMachine,
   askDarcel: AskDarcelMachine,
-  // benefitKitchen: BenefitKitchenMachine,
-  // everyoneOn: EveryoneOnMachine,
-  // usVoteFoundation: USVoteFoundationMachine,
 };
 
 const RESPONSE_TIMEOUT_MS = 8.64e+7;

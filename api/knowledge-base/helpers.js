@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { EventRule, KnowledgeAnswer, KnowledgeCategory, KnowledgeFacility, KnowledgeService, KnowledgeQuestion, Location, Media } from './models';
 import { CaseLocations, CaseMedia } from '../cases/models';
 import geocoder from '../services/geocoder';
@@ -260,4 +261,46 @@ export const associateCaseMedia = (caseObj, media) => {
     case_id: caseObj.id,
     media_id: media.id,
   }).save();
+};
+
+export const makeQuestion = (label, question, categoryId, options = {}) => {
+  if (!label) throw new Error('Missing Label');
+  if (!question) throw new Error('Missing Question');
+  if (!categoryId) throw new Error('Missing Category ID');
+  return KnowledgeQuestion.where({ label }).fetch().then((foundModel) => {
+    let query;
+    if (!foundModel) {
+      query = KnowledgeQuestion.forge({
+        label,
+        question,
+        knowledge_category_id: categoryId,
+      }).save(null, { method: 'insert' });
+    } else {
+      query = foundModel.save({
+        question,
+        knowledge_category_id: categoryId,
+      }, { method: 'update', patch: true });
+    }
+    return query.then(data => options.returnJSON ? data.toJSON() : data)
+      .catch(error => error);
+  });
+};
+
+export const syncSheetKnowledgeBaseQuestions = () => {
+  return axios.get(`https://sheets.googleapis.com/v4/spreadsheets/${process.env.GOOGLE_SHEET_KNOWLEDGE_BASE_ID}/values/LIVE`, {
+    params: {
+      key: process.env.GOOGLE_SHEET_API_KEY,
+    },
+  }).then((sheetData) => {
+    const categoryHash = {};
+    KnowledgeCategory.fetchAll().then((categories) => {
+      categories.toJSON().forEach((category) => {
+        categoryHash[category.label] = category.id;
+      });
+      const sheetValues = sheetData.data.values;
+      for (let i = 1; i < sheetValues.length; i += 1) {
+        makeQuestion(sheetValues[i][1], sheetValues[i][2], categoryHash[sheetValues[i][0]]);
+      }
+    });
+  });
 };

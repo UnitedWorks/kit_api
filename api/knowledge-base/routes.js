@@ -2,7 +2,8 @@ import { Router } from 'express';
 import { logger } from '../logger';
 import { KnowledgeEvent, KnowledgeFacility, KnowledgeFacilityType, KnowledgeService } from './models';
 import { getAnswers, getCategories, getQuestions, makeAnswer, updateAnswer, deleteAnswer,
-  deleteService, createFacility, updateFacility, deleteFacility, createService, updateService } from './helpers';
+  deleteService, createFacility, updateFacility, deleteFacility, createService, updateService,
+  syncSheetKnowledgeBaseQuestions } from './helpers';
 
 const router = new Router();
 
@@ -184,6 +185,12 @@ router.route('/services')
 router.get('/questions', (req, res, next) => {
   getQuestions(req.query)
     .then(questions => res.status(200).send({ questions }))
+    .catch(error => next(error));
+});
+
+router.get('/questions/pull-sheet', (req, res, next) => {
+  syncSheetKnowledgeBaseQuestions()
+    .then(() => res.status(200).send())
     .catch(error => next(error));
 });
 
