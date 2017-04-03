@@ -14,10 +14,7 @@ import BenefitsInternetMachine from './machines/benefits-internet';
 import VotingMachine from './machines/voting';
 
 // Service Provider Machines
-import AskDarcelMachine from './machines/ask-darcel';
-// import BenefitKitchenMachine from './machines/benefitKitchen';
-// import EveryoneOnMachine from './machines/everyone-on';
-// import USVoteFoundationMachine from './machines/ask-darcel';
+import AskDarcelMachine from './machines/small-talk-ask-darcel';
 
 
 export const stateMachines = {
@@ -31,9 +28,6 @@ export const stateMachines = {
   socialServices: SocialServicesMachine,
   'benefits-internet': BenefitsInternetMachine,
   askDarcel: AskDarcelMachine,
-  // benefitKitchen: BenefitKitchenMachine,
-  // everyoneOn: EveryoneOnMachine,
-  // usVoteFoundation: USVoteFoundationMachine,
 };
 
 const RESPONSE_TIMEOUT_MS = 8.64e+7;
@@ -84,7 +78,7 @@ export class NarrativeSessionMachine extends StateMachine {
   }
 
   checkMultiRedirect(checkState, fallbackState) {
-    if (this.get('stateRedirects').length > 0 &&
+    if (this.get('stateRedirects') && this.get('stateRedirects').length > 0 &&
         this.get('stateRedirects')[0].whenExiting.length &&
         this.get('stateRedirects')[0].whenExiting.includes(checkState)) {
       return this.get('stateRedirects')[0].exitInstead;

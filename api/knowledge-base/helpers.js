@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { EventRule, KnowledgeAnswer, KnowledgeCategory, KnowledgeFacility, KnowledgeService, KnowledgeQuestion, Location, Media } from './models';
 import { CaseLocations, CaseMedia } from '../cases/models';
 import geocoder from '../services/geocoder';
@@ -260,4 +261,94 @@ export const associateCaseMedia = (caseObj, media) => {
     case_id: caseObj.id,
     media_id: media.id,
   }).save();
+};
+
+export const makeQuestion = (label, question, categoryId, options = {}) => {
+  if (!label) throw new Error('Missing Label');
+  if (!question) throw new Error('Missing Question');
+  if (!categoryId) throw new Error('Missing Category ID');
+  return KnowledgeQuestion.where({ label }).fetch().then((foundModel) => {
+    let query;
+    let originalJSON;
+    if (!foundModel) {
+      query = KnowledgeQuestion.forge({
+        label,
+        question,
+        knowledge_category_id: categoryId,
+      }).save(null, { method: 'insert' });
+    } else {
+      originalJSON = foundModel.toJSON();
+      query = foundModel.save({
+        question,
+        knowledge_category_id: categoryId,
+      }, { method: 'update', require: true });
+    }
+    return query.then((data) => {
+      if (options.returnMethod) {
+        if (!foundModel) {
+          return 'INSERTED';
+        }
+        if (originalJSON.question !== data.toJSON().question ||
+          originalJSON.knowledge_category_id !== data.toJSON().knowledge_category_id) {
+          return 'UPDATED';
+        }
+      }
+      if (options.returnJSON) return data.toJSON();
+      return data;
+    }).catch(error => error);
+  });
+};
+
+export const deleteQuestion = (label) => {
+  if (!label) throw new Error('Missing Label');
+  return KnowledgeQuestion.where({ label }).fetch().then((foundModel) => {
+    if (foundModel) return foundModel.destroy().then(() => 'DELETED');
+    return null;
+  }).catch(error => error);
+};
+
+export const syncSheetKnowledgeBaseQuestions = () => {
+  const upsertRequest = axios.get(`https://sheets.googleapis.com/v4/spreadsheets/${process.env.GOOGLE_SHEET_KNOWLEDGE_BASE_ID}/values/LIVE`, {
+    params: {
+      key: process.env.GOOGLE_SHEET_API_KEY,
+    },
+  }).then((sheetData) => {
+    const categoryHash = {};
+    return KnowledgeCategory.fetchAll().then((categories) => {
+      categories.toJSON().forEach((category) => {
+        categoryHash[category.label] = category.id;
+      });
+      const sheetValues = sheetData.data.values.slice(1);
+      return Promise.all(sheetValues.map((row) => {
+        return makeQuestion(row[1], row[2], categoryHash[row[0]], { returnMethod: true });
+      })).then((data) => {
+        return {
+          inserted: data.filter(result => result === 'INSERTED').length,
+          updated: data.filter(result => result === 'UPDATED').length,
+        };
+      });
+    });
+  });
+  const deletionRequest = axios.get(`https://sheets.googleapis.com/v4/spreadsheets/${process.env.GOOGLE_SHEET_KNOWLEDGE_BASE_ID}/values/DELETED`, {
+    params: {
+      key: process.env.GOOGLE_SHEET_API_KEY,
+    },
+  }).then((sheetData) => {
+    const sheetValues = sheetData.data.values.slice(1);
+    return Promise.all(sheetValues.map((row) => {
+      return deleteQuestion(row[1]);
+    })).then((data) => {
+      return {
+        deleted: data.filter(result => result === 'DELETED').length,
+      };
+    });
+  });
+  return Promise.all([upsertRequest, deletionRequest])
+    .then((data) => {
+      return {
+        deleted: data[1].deleted,
+        inserted: data[0].inserted,
+        updated: data[0].updated,
+      };
+    }).catch(error => error);
 };
