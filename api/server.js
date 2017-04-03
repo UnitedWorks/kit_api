@@ -52,12 +52,12 @@ app.use('/media', require('./media/routes'));
 // Log Viewing
 app.get('/logs/info', (req, res) => {
   fs.readFile(path.join(__dirname, '..', 'logs/info.log'), 'utf8', (err, data) => {
-    res.status(200).send(data);
+    res.status(200).json(data);
   });
 });
 app.get('/logs/error', (req, res) => {
   fs.readFile(path.join(__dirname, '..', 'logs/error.log'), 'utf8', (err, data) => {
-    res.status(200).send(data);
+    res.status(200).json(data);
   });
 });
 
