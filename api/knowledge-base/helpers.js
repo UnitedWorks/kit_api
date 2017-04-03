@@ -288,7 +288,8 @@ export const makeQuestion = (label, question, categoryId, options = {}) => {
         if (!foundModel) {
           return 'INSERTED';
         }
-        if (originalJSON.question !== data.toJSON().question) {
+        if (originalJSON.question !== data.toJSON().question ||
+          originalJSON.knowledge_category_id !== data.toJSON().knowledge_category_id) {
           return 'UPDATED';
         }
       }
