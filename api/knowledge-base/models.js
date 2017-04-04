@@ -87,6 +87,18 @@ export const KnowledgeEvent = bookshelf.Model.extend({
 export const KnowledgeContact = bookshelf.Model.extend({
   tableName: 'knowledge_contacts',
   hasTimestamps: true,
+  virtuals: {
+    full_name: {
+      get() {
+        if (this.get('middle_name')) {
+          return `${this.get('first_name')} ${this.get('middle_name')} ${this.get('last_name')}`;
+        } else if (this.get('first_name') && this.get('last_name')) {
+          return `${this.get('first_name')} ${this.get('last_name')}`;
+        }
+        return this.get('first_name');
+      },
+    },
+  },
   photo: function() {
     return this.hasOne(Media, 'photo_id');
   },

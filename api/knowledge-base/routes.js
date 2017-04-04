@@ -196,7 +196,7 @@ router.route('/contacts')
   .post((req, res, next) => {
     try {
       createContact(req.body, { returnJSON: true })
-        .then(contact => res.status(200).send({ contact }))
+        .then(contacts => res.status(200).send({ contacts }))
         .catch(error => next(error));
     } catch (e) {
       next(e);
@@ -205,7 +205,7 @@ router.route('/contacts')
   .put((req, res, next) => {
     try {
       updateContact(req.body.contact, { returnJSON: true })
-        .then(contact => res.status(200).send({ contact }))
+        .then(contacts => res.status(200).send({ contacts }))
         .catch(error => next(error));
     } catch (e) {
       next(e);
@@ -214,7 +214,7 @@ router.route('/contacts')
   .delete((req, res, next) => {
     try {
       deleteContact({ id: req.query.contact_id }, { returnJSON: true })
-        .then(contact => res.status(200).send({ contact }))
+        .then(contacts => res.status(200).send({ contacts }))
         .catch(error => next(error));
     } catch (e) {
       next(e);
