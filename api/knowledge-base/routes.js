@@ -1,8 +1,9 @@
 import { Router } from 'express';
 import { logger } from '../logger';
 import { KnowledgeEvent, KnowledgeFacility, KnowledgeFacilityType, KnowledgeService } from './models';
-import { getAnswers, getCategories, getQuestions, makeAnswer, updateAnswer, deleteAnswer,
-  deleteService, createFacility, updateFacility, deleteFacility, createService, updateService,
+import { getAnswers, getCategories, getContacts, createContact, updateContact, deleteContact,
+  getQuestions, makeAnswer, updateAnswer, deleteAnswer, deleteService, createFacility,
+  updateFacility, deleteFacility, createService, updateService,
   syncSheetKnowledgeBaseQuestions } from './helpers';
 
 const router = new Router();
@@ -177,6 +178,47 @@ router.route('/services')
     deleteService(req.query.service_id)
       .then(service => res.status(200).send({ service }))
       .catch(err => next(err));
+  });
+
+/**
+ * Contacts Endpoint
+ */
+router.route('/contacts')
+  .get((req, res, next) => {
+    try {
+      getContacts(req.query, { returnJSON: true })
+        .then(contacts => res.status(200).send({ contacts }))
+        .catch(error => next(error));
+    } catch (e) {
+      next(e);
+    }
+  })
+  .post((req, res, next) => {
+    try {
+      createContact(req.body, { returnJSON: true })
+        .then(contact => res.status(200).send({ contact }))
+        .catch(error => next(error));
+    } catch (e) {
+      next(e);
+    }
+  })
+  .put((req, res, next) => {
+    try {
+      updateContact(req.body.contact, { returnJSON: true })
+        .then(contact => res.status(200).send({ contact }))
+        .catch(error => next(error));
+    } catch (e) {
+      next(e);
+    }
+  })
+  .delete((req, res, next) => {
+    try {
+      deleteContact({ id: req.query.contact_id }, { returnJSON: true })
+        .then(contact => res.status(200).send({ contact }))
+        .catch(error => next(error));
+    } catch (e) {
+      next(e);
+    }
   });
 
 /**

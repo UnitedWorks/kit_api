@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { EventRule, KnowledgeAnswer, KnowledgeCategory, KnowledgeFacility, KnowledgeService, KnowledgeQuestion, Location, Media } from './models';
+import { EventRule, KnowledgeAnswer, KnowledgeCategory, KnowledgeFacility, KnowledgeService, KnowledgeQuestion, KnowledgeContact, Location } from './models';
 import { CaseLocations, CaseMedia } from '../cases/models';
 import geocoder from '../services/geocoder';
 
@@ -349,6 +349,42 @@ export const syncSheetKnowledgeBaseQuestions = () => {
         deleted: data[1].deleted,
         inserted: data[0].inserted,
         updated: data[0].updated,
+      };
+    }).catch(error => error);
+};
+
+export const getContacts = (params, options = {}) => {
+  return KnowledgeContact.where(params).fetchAll()
+    .then((data) => {
+      return options.returnJSON ? data.toJSON() : data;
+    }).catch(error => error);
+};
+
+export const createContact = (data, options = {}) => {
+  const contact = {
+    ...data.contact,
+    organization_id: data.organization.id,
+  };
+  return KnowledgeContact.forge(contact)
+    .save(null, { method: 'insert' })
+    .then((results) => {
+      return options.returnJSON ? results.toJSON() : results;
+    }).catch(error => error);
+};
+
+export const updateContact = (contact, options = {}) => {
+  return KnowledgeContact.where({ id: contact.id })
+    .save(contact, { method: 'update' })
+    .then((data) => {
+      return options.returnJSON ? data.toJSON() : data;
+    }).catch(error => error);
+};
+
+export const deleteContact = (contact) => {
+  return KnowledgeContact.where({ id: contact.id }).destroy()
+    .then(() => {
+      return {
+        id: contact.id,
       };
     }).catch(error => error);
 };
