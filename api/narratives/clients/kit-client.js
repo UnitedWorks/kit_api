@@ -37,7 +37,7 @@ export default class KitClient {
     if (objects.length > 0) {
       objects.forEach((object) => {
         const elementButtons = [];
-        let subtitleString;
+        let subtitleString = '';
         if (entityType === 'contact') {
           if (object.hasOwnProperty('phone_number')) {
             elementButtons.push({
@@ -46,7 +46,9 @@ export default class KitClient {
               payload: object.phone_number,
             });
           }
-          subtitleString = `${object.title}\n${object.organization}\n${object.email}`;
+          if (object.title) subtitleString += `${object.title}`;
+          if (object.organization) subtitleString += `\n${object.organization}`;
+          if (object.email) subtitleString += `\n${object.email}`;
         } else {
           if (object.hasOwnProperty('location') && object.location.display_name != null) {
             elementButtons.push({
@@ -70,7 +72,7 @@ export default class KitClient {
               webview_height_ratio: 'tall',
             });
           }
-          if (object.eventRules[0].rrule) {
+          if (object.eventRules.length > 0 && object.eventRules[0].rrule) {
             subtitleString = '';
             if (object.eventRules[0].t_start) {
               const timeStart = moment(object.eventRules[0].t_start, 'HH-mm-ss');
