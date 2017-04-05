@@ -27,7 +27,7 @@ export default class KitClient {
     return 'Sorry, I can\'t find an answer for you. :( I\'ll try to get one for you soon';
   }
 
-  static knowledgeEntityToTemplate(type, objects) {
+  static knowledgeEntityToTemplate(entityType, objects = []) {
     const template = {
       type: 'template',
       templateType: 'generic',
@@ -37,44 +37,57 @@ export default class KitClient {
     if (objects.length > 0) {
       objects.forEach((object) => {
         const elementButtons = [];
-        if (object.hasOwnProperty('location') && object.location.display_name != null) {
-          elementButtons.push({
-            type: 'web_url',
-            title: object.location.display_name,
-            url: getPlacesUrl(object.location.display_name),
-          });
-        }
-        if (object.hasOwnProperty('phone_number') && object.phone_number != null) {
-          elementButtons.push({
-            type: 'phone_number',
-            title: object.phone_number,
-            payload: object.phone_number,
-          });
-        }
-        if (object.hasOwnProperty('url') && object.url != null) {
-          elementButtons.push({
-            type: 'web_url',
-            title: object.url,
-            url: object.url,
-            webview_height_ratio: 'tall',
-          });
-        }
-        let scheduleString;
-        if (object.eventRules[0].rrule) {
-          scheduleString = '';
-          if (object.eventRules[0].t_start) {
-            const timeStart = moment(object.eventRules[0].t_start, 'HH-mm-ss');
-            scheduleString = scheduleString.concat(`From ${timeStart.format('h:mm A')}`);
+        let subtitleString;
+        if (entityType === 'contact') {
+          if (object.hasOwnProperty('phone_number')) {
+            elementButtons.push({
+              type: 'phone_number',
+              title: object.phone_number,
+              payload: object.phone_number,
+            });
           }
-          if (object.eventRules[0].t_start && object.eventRules[0].t_end) {
-            const timeEnd = moment(object.eventRules[0].t_end, 'HH-mm-ss');
-            scheduleString = scheduleString.concat(` to ${timeEnd.format('h:mm A')} `);
+          subtitleString = `${object.title}\n${object.organization}\n${object.email}`;
+        } else {
+          if (object.hasOwnProperty('location') && object.location.display_name != null) {
+            elementButtons.push({
+              type: 'web_url',
+              title: object.location.display_name,
+              url: getPlacesUrl(object.location.display_name),
+            });
           }
-          scheduleString = scheduleString.concat(`${RRule.fromString(object.eventRules[0].rrule).toText()}`);
+          if (object.hasOwnProperty('phone_number') && object.phone_number != null) {
+            elementButtons.push({
+              type: 'phone_number',
+              title: object.phone_number,
+              payload: object.phone_number,
+            });
+          }
+          if (object.hasOwnProperty('url') && object.url != null) {
+            elementButtons.push({
+              type: 'web_url',
+              title: object.url,
+              url: object.url,
+              webview_height_ratio: 'tall',
+            });
+          }
+          if (object.eventRules[0].rrule) {
+            subtitleString = '';
+            if (object.eventRules[0].t_start) {
+              const timeStart = moment(object.eventRules[0].t_start, 'HH-mm-ss');
+              subtitleString = subtitleString.concat(`From ${timeStart.format('h:mm A')}`);
+            }
+            if (object.eventRules[0].t_start && object.eventRules[0].t_end) {
+              const timeEnd = moment(object.eventRules[0].t_end, 'HH-mm-ss');
+              subtitleString = subtitleString.concat(` to ${timeEnd.format('h:mm A')} `);
+            }
+            subtitleString = subtitleString.concat(`${RRule.fromString(object.eventRules[0].rrule).toText()}`);
+          } else {
+            subtitleString = object.brief_description || object.description;
+          }
         }
         template.elements.push({
-          title: object.name,
-          subtitle: scheduleString || object.brief_description || object.description,
+          title: object.name || object.full_name,
+          subtitle: subtitleString,
           buttons: elementButtons,
         });
       });
@@ -88,6 +101,7 @@ export default class KitClient {
       KitClient.answerText(answers),
       ...KitClient.knowledgeEntityToTemplate('facility', answers.facilities),
       ...KitClient.knowledgeEntityToTemplate('service', answers.services),
+      ...KitClient.knowledgeEntityToTemplate('contact', answers.contacts),
     ];
   }
 

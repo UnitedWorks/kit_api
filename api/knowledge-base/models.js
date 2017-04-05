@@ -136,7 +136,7 @@ export const KnowledgeAnswer = bookshelf.Model.extend({
   service: function() {
     return this.hasOne(KnowledgeService, 'id', 'knowledge_service_id');
   },
-  contacts: function() {
+  contact: function() {
     return this.hasOne(KnowledgeContact, 'id', 'knowledge_contact_id');
   },
 });
