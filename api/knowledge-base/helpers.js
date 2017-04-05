@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { EventRule, KnowledgeAnswer, KnowledgeCategory, KnowledgeFacility, KnowledgeService, KnowledgeQuestion, Location, Media } from './models';
+import { EventRule, KnowledgeAnswer, KnowledgeCategory, KnowledgeFacility, KnowledgeService, KnowledgeQuestion, KnowledgeContact, Location } from './models';
 import { CaseLocations, CaseMedia } from '../cases/models';
 import geocoder from '../services/geocoder';
 
@@ -8,7 +8,7 @@ export const getAnswers = (params = {}, options) => {
     withRelated: [{
       answers: q => q.where('organization_id', params.organization_id),
     }, 'category', 'answers.facility', 'answers.facility.location', 'answers.facility.eventRules',
-      'answers.service', 'answers.service.location', 'answers.service.eventRules'],
+      'answers.service', 'answers.service.location', 'answers.service.eventRules', 'answers.contact'],
   }).then((data) => {
     if (!options.returnJSON) return data.get('answers');
     const answerJSON = data.toJSON().answers;
@@ -16,6 +16,7 @@ export const getAnswers = (params = {}, options) => {
       const answerGrouped = {
         facilities: answerJSON.filter(a => a.knowledge_facility_id).map(a => a.facility),
         services: answerJSON.filter(a => a.knowledge_service_id).map(a => a.service),
+        contacts: answerJSON.filter(a => a.knowledge_contact_id).map(a => a.contact),
       };
       if (answerJSON.filter(a => a.text != null).length > 0) {
         answerGrouped.text = answerJSON.filter(a => a.text != null)[0].text;
@@ -349,6 +350,42 @@ export const syncSheetKnowledgeBaseQuestions = () => {
         deleted: data[1].deleted,
         inserted: data[0].inserted,
         updated: data[0].updated,
+      };
+    }).catch(error => error);
+};
+
+export const getContacts = (params, options = {}) => {
+  return KnowledgeContact.where(params).fetchAll()
+    .then((data) => {
+      return options.returnJSON ? data.toJSON() : data;
+    }).catch(error => error);
+};
+
+export const createContact = (data, options = {}) => {
+  const contact = {
+    ...data.contact,
+    organization_id: data.organization.id,
+  };
+  return KnowledgeContact.forge(contact)
+    .save(null, { method: 'insert' })
+    .then((results) => {
+      return options.returnJSON ? results.toJSON() : results;
+    }).catch(error => error);
+};
+
+export const updateContact = (contact, options = {}) => {
+  return KnowledgeContact.where({ id: contact.id })
+    .save(contact, { method: 'update' })
+    .then((data) => {
+      return options.returnJSON ? data.toJSON() : data;
+    }).catch(error => error);
+};
+
+export const deleteContact = (contact) => {
+  return KnowledgeContact.where({ id: contact.id }).destroy()
+    .then(() => {
+      return {
+        id: contact.id,
       };
     }).catch(error => error);
 };

@@ -1,6 +1,7 @@
 import lodash from 'lodash';
 import { bookshelf } from '../orm';
 import { Organization } from '../accounts/models';
+import { Media } from '../media/models';
 
 // Information Entries - Referenced in knowledge and non-knowledge base tables
 export const Location = bookshelf.Model.extend({
@@ -28,20 +29,20 @@ export const KnowledgeFacility = bookshelf.Model.extend({
   category: function() {
     return this.belongsTo(KnowledgeCategory, 'knowledge_category_id');
   },
-  events: function() {
-    return this.hasMany(KnowledgeEvent, 'knowledge_facility_id');
+  type: function() {
+    return this.belongsTo(KnowledgeFacilityType, 'type_id');
   },
   location: function() {
     return this.belongsTo(Location, 'location_id');
+  },
+  events: function() {
+    return this.hasMany(KnowledgeEvent, 'knowledge_facility_id');
   },
   eventRules: function() {
     return this.hasMany(EventRule, 'knowledge_facility_id');
   },
   services: function() {
     return this.hasMany(KnowledgeService, 'knowledge_facility_id');
-  },
-  type: function() {
-    return this.belongsTo(KnowledgeFacilityType, 'type_id');
   },
 });
 
@@ -83,6 +84,26 @@ export const KnowledgeEvent = bookshelf.Model.extend({
   },
 });
 
+export const KnowledgeContact = bookshelf.Model.extend({
+  tableName: 'knowledge_contacts',
+  hasTimestamps: true,
+  virtuals: {
+    full_name: {
+      get() {
+        if (this.get('middle_name')) {
+          return `${this.get('first_name')} ${this.get('middle_name')} ${this.get('last_name')}`;
+        } else if (this.get('first_name') && this.get('last_name')) {
+          return `${this.get('first_name')} ${this.get('last_name')}`;
+        }
+        return this.get('first_name');
+      },
+    },
+  },
+  photo: function() {
+    return this.hasOne(Media, 'photo_id');
+  },
+});
+
 export const KnowledgeQuestion = bookshelf.Model.extend({
   tableName: 'knowledge_questions',
   hasTimestamps: true,
@@ -114,5 +135,8 @@ export const KnowledgeAnswer = bookshelf.Model.extend({
   },
   service: function() {
     return this.hasOne(KnowledgeService, 'id', 'knowledge_service_id');
+  },
+  contact: function() {
+    return this.hasOne(KnowledgeContact, 'id', 'knowledge_contact_id');
   },
 });
