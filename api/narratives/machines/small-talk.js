@@ -1,7 +1,6 @@
 import { logger } from '../../logger';
 import * as TAGS from '../../constants/nlp-tagging';
 import { nlp } from '../../services/nlp';
-import { entityValueIs } from '../helpers';
 import { getConstituentCases } from '../../cases/helpers';
 import SlackService from '../../services/slack';
 
@@ -70,16 +69,18 @@ export default {
       this.messagingClient.send(i18n('intro_information'), startingQuickReplies);
     },
     message() {
-      const input = this.snapshot.input.payload;
-      return nlp.message(input.text, {}).then((nlpData) => {
+      return nlp.message(this.snapshot.input.payload.text, {}).then((nlpData) => {
         this.snapshot.nlp = nlpData;
-
         const entities = nlpData.entities;
-        if (entities[TAGS.REACTION]) {
-          if (entityValueIs(entities[TAGS.REACTION], [TAGS.SKEPTICAL])) {
+
+        if (entities.intent && entities.intent[0]) {
+
+          if (entities.intent[0].value === 'speech_skeptical') {
             return this.messagingClient.send('Hmmmm, quite skeptical aren\'t we? :P')
               .then(() => 'waiting_for_starting_interaction_options');
-          } else if (entityValueIs(entities[TAGS.REACTION], [TAGS.ELABORATE])) {
+          } 
+
+          if (entities.intent[0].value === 'speech_elaborate') {
             this.messagingClient.addAll([
               {
                 type: 'image',
@@ -87,9 +88,11 @@ export default {
               },
               i18n('intro_explanation'),
             ]);
+
             return this.messagingClient.runQuene().then(() => 'waiting_for_starting_interaction_options');
           }
         }
+
         this.messagingClient.send(i18n('bot_apology'), startingQuickReplies);
       });
     },
@@ -104,31 +107,34 @@ export default {
       return nlp.message(input.text, {}).then((nlpData) => {
         this.snapshot.nlp = nlpData;
         const entities = nlpData.entities;
-        if (entities[TAGS.VOTING]) {
-          if (entityValueIs(entities[TAGS.VOTING], [TAGS.REGISTER_TO_VOTE])) {
+
+
+        if (entities.intent && entities.intent[0]) {
+          if ( entities.intent[0].value === 'voting_registration') {
             this.set('stateRedirects', [{
               whenExiting: 'voting.voterRegistrationGet',
               goTo: 'smallTalk.waiting_for_starting_interaction_end',
             }]);
+
             return 'voting.voterRegistrationGet';
-          } else if (entityValueIs(entities[TAGS.VOTING], [TAGS.CHECK_VOTER_REGISTRATION])) {
+          } else if ( entities.intent[0].value === 'voting_registration_check' ) {
             this.set('stateRedirects', [{
               whenExiting: 'voting.voterRegistrationCheck',
               goTo: 'smallTalk.waiting_for_starting_interaction_end',
             }]);
+
             return 'voting.voterRegistrationCheck';
-          }
-        }
-        if (entities[TAGS.CONFIRM_DENY]) {
-          if (entityValueIs(entities[TAGS.CONFIRM_DENY], [TAGS.NO])) {
+          } else if ( entities.intent[0].value === 'speech_deny') {
             this.messagingClient.addAll([
               'Ok! In that case, let me give you a run down of what I can do!',
               i18n('intro_explanation'),
               i18n('intro_ask_location'),
             ]);
+
             return this.messagingClient.runQuene().then(() => 'setup.waiting_organization');
           }
         }
+
         this.messagingClient.send(i18n('bot_apology')).then(() => 'waiting_for_starting_interaction_options');
       });
     },
@@ -147,18 +153,20 @@ export default {
         ...basicRequestQuickReplies,
         { content_type: 'text', title: 'What else can I ask?', payload: 'What can I ask?' },
       ];
-      const input = this.snapshot.input.payload;
-      return nlp.message(input.text, {}).then((nlpData) => {
+
+      return nlp.message(this.snapshot.input.payload, {}).then((nlpData) => {
         this.snapshot.nlp = nlpData;
         const entities = nlpData.entities;
-        if (entities[TAGS.REACTION]) {
-          if (entityValueIs(entities[TAGS.REACTION], [TAGS.ACCEPTING])) {
+
+        if (entities.intent && entities.intent[0]) {
+          if (entities.intent[0].value === 'speech_accepting') {
             this.messagingClient.addToQuene({
               type: 'image',
               url: 'http://i.giphy.com/Mxygn6lbNmh20.gif',
             });
           }
-          if (entityValueIs(entities[TAGS.REACTION], [TAGS.SKEPTICAL])) {
+
+          if (entities.intent[0].value === 'speech_skeptical') {
             this.messagingClient.addToQuene({
               type: 'image',
               url: 'http://i.giphy.com/l3q2PnJK8NqG9KM5G.gif',
@@ -166,7 +174,9 @@ export default {
             this.messagingClient.addToQuene('Tough crowd, huh. :|');
           }
         }
+
         this.messagingClient.addToQuene('In bot years, I\'m still young, but there are a few things I can help you and your local government with! Ask away.', quickReplies);
+
         return this.messagingClient.runQuene().then(() => 'start');
       });
     },
@@ -247,9 +257,8 @@ export default {
 
         };
 
-        logger.info({ intent_value: entities.intent[0] })
         if (entities.intent && entities.intent[0]) {
-          return intent_map[entities.intent[0].value];
+          return Promise.resolve(intent_map[entities.intent[0].value]);
         } else {
           return 'failedRequest';
         }
