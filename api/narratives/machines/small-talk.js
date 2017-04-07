@@ -72,7 +72,8 @@ export default {
     message() {
       const input = this.snapshot.input.payload;
       return nlp.message(input.text, {}).then((nlpData) => {
-        this.set('nlp', nlpData.entities);
+        this.snapshot.nlp = nlpData;
+
         const entities = nlpData.entities;
         if (entities[TAGS.REACTION]) {
           if (entityValueIs(entities[TAGS.REACTION], [TAGS.SKEPTICAL])) {
@@ -101,7 +102,7 @@ export default {
     message() {
       const input = this.snapshot.input.payload;
       return nlp.message(input.text, {}).then((nlpData) => {
-        this.set('nlp', nlpData.entities);
+        this.snapshot.nlp = nlpData;
         const entities = nlpData.entities;
         if (entities[TAGS.VOTING]) {
           if (entityValueIs(entities[TAGS.VOTING], [TAGS.REGISTER_TO_VOTE])) {
@@ -148,7 +149,7 @@ export default {
       ];
       const input = this.snapshot.input.payload;
       return nlp.message(input.text, {}).then((nlpData) => {
-        this.set('nlp', nlpData.entities);
+        this.snapshot.nlp = nlpData;
         const entities = nlpData.entities;
         if (entities[TAGS.REACTION]) {
           if (entityValueIs(entities[TAGS.REACTION], [TAGS.ACCEPTING])) {
@@ -188,120 +189,74 @@ export default {
     return 'start';
   },
 
-// TODO: Move to init
+  // TODO(nicksahler): Move to init
   start: {
     message() {
       logger.info('State: Start');
       const input = this.snapshot.input.payload;
-
+      let hrstart;
 
       return nlp.message(input.text, {}).then((nlpData) => {
-        this.set('nlp', nlpData.entities);
-        const entities = nlpData.entities;
+        hrstart = process.hrtime();
+        this.snapshot.nlp = nlpData;
+
         logger.info(nlpData);
 
-        // Help
-        if (entityValueIs(entities[TAGS.HELP], [TAGS.ASK_OPTIONS])) {
-          return 'askOptions';
+        const entities = nlpData.entities;
+        const intent_map = {
+          'help': 'askOptions',
+          'greeting': 'handle_greeting',
+          'benefits_internet': 'benefits-internet.init',
 
-        // Actual Small Talk
-        } else if (entities[TAGS.SMALL_TALK]) {
-          if (entityValueIs(entities[TAGS.SMALL_TALK], [TAGS.GREETING])) return 'handle_greeting';
+          'voting_deadlines': 'voting.votingDeadlines', // TODO(nicksahler): not trained
+          'voting_list_election': 'voting.electionSchedule',
+          'voting_registration': 'voting.voterRegistrationGet',
+          'voting_registration_check': 'voting.voterRegistrationCheck',
+          'voting_poll_info': 'voting.pollInfo',
+          'voting_id': 'voting.voterIdRequirements',
+          'voting_eligibility': 'voting.stateVotingRules',
+          'voting_sample_ballot': 'voting.sampleBallot',
+          'voting_absentee': 'voting.absenteeVote',
+          'voting_early': 'voting.earlyVoting',
+          'voting_problem': 'voting.voterProblem',
+          'voting_assistance': 'voting.voterAssistance',
 
-        // Benefits
-        } else if (entities[TAGS.BENEFITS]) {
-          // return this.messagingClient.send('Benefit Kitchen can help you learn about state and federal programs. For now, visit their website: https://app.benefitkitchen.com/');
-          if (entityValueIs(entities[TAGS.BENEFITS], [TAGS.HIGH_SPEED_INTERNET_CHECK])) {
-            return 'benefits-internet.init';
-          }
-        // Voting
-        } else if (entities[TAGS.VOTING]) {
-          // Deadlines
-          if (entityValueIs(entities[TAGS.VOTING], [TAGS.VOTING_DEADLINES])) return 'voting.votingDeadlines';
-          // Elections
-          if (entityValueIs(entities[TAGS.VOTING], [TAGS.LIST_ELECTIONS])) return 'voting.electionSchedule';
-          // Registration
-          if (entityValueIs(entities[TAGS.VOTING], [TAGS.REGISTER_TO_VOTE])) return 'voting.voterRegistrationGet';
-          if (entityValueIs(entities[TAGS.VOTING], [TAGS.CHECK_VOTER_REGISTRATION])) return 'voting.voterRegistrationCheck';
-          // Poll info
-          if (entityValueIs(entities[TAGS.VOTING], [TAGS.POLL_INFO])) return 'voting.pollInfo';
-          // Rules
-          if (entityValueIs(entities[TAGS.VOTING], [TAGS.VOTER_ID])) return 'voting.voterIdRequirements';
-          if (entityValueIs(entities[TAGS.VOTING], [TAGS.VOTER_ELIGIBILITY])) return 'voting.stateVotingRules';
-          // Sample ballot
-          if (entityValueIs(entities[TAGS.VOTING], [TAGS.SAMPLE_BALLOT])) return 'voting.sampleBallot';
-          // Absentee ballot
-          if (entityValueIs(entities[TAGS.VOTING], [TAGS.ABSENTEE_VOTE])) return 'voting.absenteeVote';
-          // Early Voting
-          if (entityValueIs(entities[TAGS.VOTING], [TAGS.EARLY_VOTING])) return 'voting.earlyVoting';
-          // Problem
-          if (entityValueIs(entities[TAGS.VOTING], [TAGS.VOTER_PROBLEM])) return 'voting.voterProblem';
-          // FAQ/Help
-          if (entityValueIs(entities[TAGS.VOTING], [TAGS.VOTER_ASSISTANCE])) return 'voting.voterAssistance';
-          // Fallback
-          return 'failedRequest';
+          'garbage_schedule': 'sanitation.garbageSchedule',
+          'garbage_location': 'sanitation.garbageDropOff',
 
-        // Sanitation Services
-        } else if (entities[TAGS.SANITATION]) {
-          // Garbage
-          if (entityValueIs(entities[TAGS.SANITATION], [TAGS.GARBAGE_SCHEDULE])) return 'sanitation.garbageSchedule';
-          if (entityValueIs(entities[TAGS.SANITATION], [TAGS.GARBAGE_DROP_OFF])) return 'sanitation.garbageDropOff';
-          // Recycling
-          if (entityValueIs(entities[TAGS.SANITATION], [TAGS.RECYCLING_SCHEDULE])) return 'sanitation.recyclingSchedule';
-          if (entityValueIs(entities[TAGS.SANITATION], [TAGS.RECYCLING_DROP_OFF])) return 'sanitation.recyclingDropOff';
-          // Compost
-          if (entityValueIs(entities[TAGS.SANITATION], [TAGS.COMPOST_DUMPING])) return 'sanitation.compostDumping';
-          // Bulk Pickup
-          if (entityValueIs(entities[TAGS.SANITATION], [TAGS.BULK_PICKUP])) return 'sanitation.bulkPickup';
-          // Electronics
-          if (entityValueIs(entities[TAGS.SANITATION], [TAGS.ELECTRONICS_DISPOSAL])) return 'sanitation.electronicsDisposal';
-          // Fallback
-          return 'failedRequest';
+          'recycling_schedule': 'sanitation.recyclingSchedule',
+          'recycling_location': 'sanitation.recyclingDropOff',
 
-        // Human Services
-        } else if (entities[TAGS.SOCIAL_SERVICES]) {
-          // Shelters
-          if (entityValueIs(entities[TAGS.SOCIAL_SERVICES], [TAGS.SHELTER_SEARCH])) return 'socialServices.waiting_shelter_search';
-          // Food
-          if (entityValueIs(entities[TAGS.SOCIAL_SERVICES], [TAGS.FOOD_SEARCH])) return 'socialServices.waiting_food_search';
-          // Hygiene
-          if (entityValueIs(entities[TAGS.SOCIAL_SERVICES], [TAGS.HYGIENE_SEARCH])) return 'socialServices.waiting_hygiene_search';
-          // Fallback
-          return 'failedRequest';
+          'compost_location': 'sanitation.compostDumping',
+          'compost': 'sanitation.compostDumping', // Oops.
 
-        // Medical Services
-        } else if (entities[TAGS.HEALTH]) {
-          // Clinics
-          if (entityValueIs(entities[TAGS.HEALTH], [TAGS.CLINIC_SEARCH])) return 'health.waiting_clinic_search';
-          // Fallback
-          return 'failedRequest';
+          'bulk_pickup': 'sanitation.bulkPickup',
+          'sanitation_electronics': 'sanitation.electronicsDisposal', // TODO(nicksahler): namespace all of these under sanitation
 
-        // Employment Services
-        } else if (entities[TAGS.EMPLOYMENT]) {
-          // Job Training
-          if (entityValueIs(entities[TAGS.EMPLOYMENT], [TAGS.JOB_TRAINING])) return 'employment.waiting_job_training';
-          // Fallback
-          return 'failedRequest';
+          'social_services_shelter': 'socialServices.waiting_shelter_search',
+          'social_services_food': 'socialServices.waiting_food_search',
+          'social_services_hygiene': 'socialServices.waiting_hygiene_search',
 
-        // Complaint
-        } else if (entities[TAGS.COMPLAINT]) {
-          if (entities[TAGS.TRANSACTION]) {
-            return 'getRequests';
-          } else {
-            return 'complaint.waiting_for_complaint';
-          }
+          'health_clinics': 'health.waiting_clinic_search',
 
-        // Settings
-        } else if (entities[TAGS.SETTINGS]) {
-          // Change City
-          if (entityValueIs(entities[TAGS.SETTINGS], [TAGS.CHANGE_CITY])) return 'setup.reset_organization';
-          // Fallback
-          return 'failedRequest';
+          'employment_job_training': 'employment.waiting_job_training',
 
-        // Failed to Understand Request
+          'complaint': 'complaint.waiting_for_complaint', // TODO(nicksahler): transaction -> getRequests,
+
+          'settings_city': 'setup.reset_organization'
+
+        };
+
+        logger.info({ intent_value: entities.intent[0] })
+        if (entities.intent && entities.intent[0]) {
+          return intent_map[entities.intent[0].value];
         } else {
           return 'failedRequest';
         }
+      }).then(function(val) {
+        let hrend = process.hrtime(hrstart);
+        logger.info(`Smalltalk message ran in: ${hrend[0]}s ${hrend[1]/1000000}ms`);
+        return val;
       });
     },
 
