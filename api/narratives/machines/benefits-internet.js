@@ -1,8 +1,6 @@
 import { logger } from '../../logger';
 import { nlp } from '../../services/nlp';
-import { entityValueIs } from '../helpers';
 import BenefitKitchen from '../clients/benefit-kitchen'
-import * as TAGS from '../../constants/nlp-tagging';
 
 export default {
   init: {
@@ -63,7 +61,7 @@ export default {
 
     message() {
       return nlp.message(this.snapshot.input.payload, {}).then((nlpData) => {
-        this.get('benefits')['school_lunch'] = (entityValueIs(nlpData.entities[TAGS.CONFIRM_DENY], TAGS.YES)) ? 'yes' : 'no ';
+        this.get('benefits')['school_lunch'] = (nlpData.entities.intent && nlpData.entities.intent[0].value === 'speech_confirm') ? 'yes' : 'no ';
         return 'calculate';
       });
     }
