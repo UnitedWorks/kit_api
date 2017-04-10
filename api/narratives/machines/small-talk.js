@@ -3,6 +3,7 @@ import * as TAGS from '../../constants/nlp-tagging';
 import { nlp } from '../../services/nlp';
 import { getConstituentCases } from '../../cases/helpers';
 import SlackService from '../../services/slack';
+import { fetchAnswers } from '../helpers';
 
 /* TODO(nicksahler) until I build the full i18n class */
 const i18n = function(key) {
@@ -231,18 +232,6 @@ export default {
           'voting_problem': 'voting.voterProblem',
           'voting_assistance': 'voting.voterAssistance',
 
-          'garbage_schedule': 'sanitation.garbageSchedule',
-          'garbage_location': 'sanitation.garbageDropOff',
-
-          'recycling_schedule': 'sanitation.recyclingSchedule',
-          'recycling_location': 'sanitation.recyclingDropOff',
-
-          'compost_location': 'sanitation.compostDumping',
-          'compost': 'sanitation.compostDumping', // Oops.
-
-          'bulk_pickup': 'sanitation.bulkPickup',
-          'sanitation_electronics': 'sanitation.electronicsDisposal', // TODO(nicksahler): namespace all of these under sanitation
-
           'social_services_shelter': 'socialServices.waiting_shelter_search',
           'social_services_food': 'socialServices.waiting_food_search',
           'social_services_hygiene': 'socialServices.waiting_hygiene_search',
@@ -258,7 +247,7 @@ export default {
         };
 
         if (entities.intent && entities.intent[0]) {
-          return Promise.resolve(intent_map[entities.intent[0].value]);
+          return Promise.resolve(intent_map[entities.intent[0].value] || fetchAnswers(entities.intent[0].value, this));
         } else {
           return 'failedRequest';
         }

@@ -35,7 +35,7 @@ export default {
         });
       }
       return new KitClient({ organization: this.get('organization') })
-        .getAnswer('social-services-shelters').then((answers) => {
+        .getAnswer('social_services_shelters').then((answers) => {
           this.messagingClient.addAll(KitClient.staticAnswer(answers));
           return this.messagingClient.runQuene().then(() => 'smallTalk.start');
         });
@@ -72,7 +72,7 @@ export default {
         });
       }
       return new KitClient({ organization: this.get('organization') })
-        .getAnswer('social-services-food-assistance').then((answers) => {
+        .getAnswer('social_services_food_assistance').then((answers) => {
           this.messagingClient.addAll(KitClient.staticAnswer(answers));
           return this.messagingClient.runQuene().then(() => 'smallTalk.start');
         });
@@ -108,7 +108,7 @@ export default {
         });
       }
       return new KitClient({ organization: this.get('organization') })
-        .getAnswer('social-services-hygiene').then((answers) => {
+        .getAnswer('social_services_hygiene').then((answers) => {
           this.messagingClient.addAll(KitClient.staticAnswer(answers));
           return this.messagingClient.runQuene().then(() => 'smallTalk.start');
         });
