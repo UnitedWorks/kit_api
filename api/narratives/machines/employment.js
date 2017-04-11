@@ -37,7 +37,7 @@ export default {
         });
       }
       return new KitClient({ organization: this.get('organization') })
-        .getAnswer('employment-job-training').then((answers) => {
+        .getAnswer('employment_job_training').then((answers) => {
           this.messagingClient.addAll(KitClient.staticAnswer(answers));
           return this.messagingClient.runQuene().then(() => {
             return this.getBaseState();

@@ -1,7 +1,6 @@
 import geocoder from '../../services/geocoder';
 import { logger } from '../../logger';
 import { nlp } from '../../services/nlp';
-import { entityValueIs } from '../helpers';
 import SlackService from '../../services/slack';
 import { getGovernmentOrganizationAtLocation } from '../../accounts/helpers';
 import * as TAGS from '../../constants/nlp-tagging';
@@ -90,21 +89,25 @@ export default {
     },
 
     message() {
-      const input = this.snapshot.input.payload.text || this.snapshot.payload.payload;
-      return nlp.message(input, {}).then((nlpData) => {
+      return nlp.message(this.snapshot.input.payload.text, {}).then((nlpData) => {
         const entities = nlpData.entities;
-        if (entityValueIs(entities[TAGS.CONFIRM_DENY], TAGS.YES)) {
-          if (!this.get('organization')) {
-            new SlackService({
-              username: 'Unregistered Town/City Requested!',
-              icon: 'round_pushpin',
-            }).send(`>*Location*: ${this.get('location').display_name}`);
+        
+        if (entities.intent && entities.intent[0]) {
+          switch(entities.intent[0].value) {
+            case 'speech_confirm':
+              if (!this.get('organization')) {
+                new SlackService({
+                  username: 'Unregistered Town/City Requested!',
+                  icon: 'round_pushpin',
+                }).send(`>*Location*: ${this.get('location').display_name}`);
+              }
+              return 'smallTalk.askOptions';
+            case 'speech_deny':
+              this.messagingClient.send('Oh! Can you tell me your CITY and STATE again?');
+              return 'waiting_organization';
           }
-          return 'smallTalk.askOptions';
-        } else if (entityValueIs(entities[TAGS.CONFIRM_DENY], TAGS.NO)) {
-          this.messagingClient.send('Oh! Can you tell me your CITY and STATE again?');
-          return 'waiting_organization';
         }
+
         this.messagingClient.send('Sorry, I didn\'t catch whether that was correct.');
       });
     },

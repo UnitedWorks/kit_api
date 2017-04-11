@@ -1,9 +1,9 @@
 import { logger } from '../../logger';
 import * as TAGS from '../../constants/nlp-tagging';
 import { nlp } from '../../services/nlp';
-import { entityValueIs } from '../helpers';
 import { getConstituentCases } from '../../cases/helpers';
 import SlackService from '../../services/slack';
+import { fetchAnswers } from '../helpers';
 
 /* TODO(nicksahler) until I build the full i18n class */
 const i18n = function(key) {
@@ -70,15 +70,17 @@ export default {
       this.messagingClient.send(i18n('intro_information'), startingQuickReplies);
     },
     message() {
-      const input = this.snapshot.input.payload;
-      return nlp.message(input.text, {}).then((nlpData) => {
-        this.set('nlp', nlpData.entities);
+      return nlp.message(this.snapshot.input.payload.text, {}).then((nlpData) => {
+        this.snapshot.nlp = nlpData;
         const entities = nlpData.entities;
-        if (entities[TAGS.REACTION]) {
-          if (entityValueIs(entities[TAGS.REACTION], [TAGS.SKEPTICAL])) {
+
+        if (entities.intent && entities.intent[0]) {
+          if (entities.intent[0].value === 'speech_skeptical') {
             return this.messagingClient.send('I get it. Governments can barely get a website working. How could they possibly have a chatbot!?! :P')
               .then(() => 'waiting_for_starting_interaction_options');
-          } else if (entityValueIs(entities[TAGS.REACTION], [TAGS.ELABORATE])) {
+          } 
+
+          if (entities.intent[0].value === 'speech_elaborate') {
             this.messagingClient.addAll([
               {
                 type: 'image',
@@ -86,9 +88,11 @@ export default {
               },
               i18n('intro_explanation'),
             ]);
+
             return this.messagingClient.runQuene().then(() => 'waiting_for_starting_interaction_options');
           }
         }
+
         this.messagingClient.send(i18n('bot_apology'), startingQuickReplies);
       });
     },
@@ -101,31 +105,35 @@ export default {
     message() {
       const input = this.snapshot.input.payload;
       return nlp.message(input.text, {}).then((nlpData) => {
-        this.set('nlp', nlpData.entities);
+        this.snapshot.nlp = nlpData;
         const entities = nlpData.entities;
-        if (entities[TAGS.VOTING]) {
-          if (entityValueIs(entities[TAGS.VOTING], [TAGS.REGISTER_TO_VOTE])) {
+
+        if (entities.intent && entities.intent[0]) {
+          if ( entities.intent[0].value === 'voting_registration') {
             return this.stateRedirect({
               whenExiting: 'voting.voterRegistrationGet',
               exitInstead: 'smallTalk.waiting_for_starting_interaction_end',
             }, 'voting.voterRegistrationGet');
-          } else if (entityValueIs(entities[TAGS.VOTING], [TAGS.CHECK_VOTER_REGISTRATION])) {
+
+            return 'voting.voterRegistrationGet';
+          } else if ( entities.intent[0].value === 'voting_registration_check' ) {
             return this.stateRedirect({
               whenExiting: 'voting.voterRegistrationCheck',
               exitInstead: 'smallTalk.waiting_for_starting_interaction_end',
             }, 'voting.voterRegistrationCheck');
-          }
-        }
-        if (entities[TAGS.CONFIRM_DENY]) {
-          if (entityValueIs(entities[TAGS.CONFIRM_DENY], [TAGS.NO])) {
+
+            return 'voting.voterRegistrationCheck';
+          } else if ( entities.intent[0].value === 'speech_deny') {
             this.messagingClient.addAll([
               'Ok! In that case, let me give you a run down of what I can do!',
               i18n('intro_explanation'),
               i18n('intro_ask_location'),
             ]);
+
             return this.messagingClient.runQuene().then(() => 'setup.waiting_organization');
           }
         }
+
         this.messagingClient.send(i18n('bot_apology')).then(() => 'waiting_for_starting_interaction_options');
       });
     },
@@ -144,18 +152,20 @@ export default {
         ...basicRequestQuickReplies,
         { content_type: 'text', title: 'What else can I ask?', payload: 'What can I ask?' },
       ];
-      const input = this.snapshot.input.payload;
-      return nlp.message(input.text, {}).then((nlpData) => {
-        this.set('nlp', nlpData.entities);
+
+      return nlp.message(this.snapshot.input.payload, {}).then((nlpData) => {
+        this.snapshot.nlp = nlpData;
         const entities = nlpData.entities;
-        if (entities[TAGS.REACTION]) {
-          if (entityValueIs(entities[TAGS.REACTION], [TAGS.ACCEPTING])) {
+
+        if (entities.intent && entities.intent[0]) {
+          if (entities.intent[0].value === 'speech_accepting') {
             this.messagingClient.addToQuene({
               type: 'image',
               url: 'http://i.giphy.com/Mxygn6lbNmh20.gif',
             });
           }
-          if (entityValueIs(entities[TAGS.REACTION], [TAGS.SKEPTICAL])) {
+
+          if (entities.intent[0].value === 'speech_skeptical') {
             this.messagingClient.addToQuene({
               type: 'image',
               url: 'http://i.giphy.com/l3q2PnJK8NqG9KM5G.gif',
@@ -163,7 +173,9 @@ export default {
             this.messagingClient.addToQuene('Tough crowd, huh. :|');
           }
         }
+
         this.messagingClient.addToQuene('In bot years, I\'m still young, but there are a few things I can help you and your local government with! Ask away.', quickReplies);
+
         return this.messagingClient.runQuene().then(() => 'start');
       });
     },
@@ -186,119 +198,54 @@ export default {
     return 'start';
   },
 
-// TODO: Move to init
+  // TODO(nicksahler): Move to init
   start: {
     message() {
       const input = this.snapshot.input.payload;
-
       return nlp.message(input.text, {}).then((nlpData) => {
-        this.set('nlp', nlpData.entities);
-        const entities = nlpData.entities;
+        this.snapshot.nlp = nlpData;
+
         logger.info(nlpData);
 
-        // Help
-        if (entityValueIs(entities[TAGS.HELP], [TAGS.ASK_OPTIONS])) {
-          return 'askOptions';
+        const entities = nlpData.entities;
+        const intent_map = {
+          'help': 'askOptions',
+          'greeting': 'handle_greeting',
+          'benefits_internet': 'benefits-internet.init',
 
-        // Actual Small Talk
-        } else if (entities[TAGS.SMALL_TALK]) {
-          if (entityValueIs(entities[TAGS.SMALL_TALK], [TAGS.GREETING])) return 'handle_greeting';
+          'voting_deadlines': 'voting.votingDeadlines', // TODO(nicksahler): not trained
+          'voting_list_election': 'voting.electionSchedule',
+          'voting_registration': 'voting.voterRegistrationGet',
+          'voting_registration_check': 'voting.voterRegistrationCheck',
+          'voting_poll_info': 'voting.pollInfo',
+          'voting_id': 'voting.voterIdRequirements',
+          'voting_eligibility': 'voting.stateVotingRules',
+          'voting_sample_ballot': 'voting.sampleBallot',
+          'voting_absentee': 'voting.absenteeVote',
+          'voting_early': 'voting.earlyVoting',
+          'voting_problem': 'voting.voterProblem',
+          'voting_assistance': 'voting.voterAssistance',
 
-        // Benefits
-        } else if (entities[TAGS.BENEFITS]) {
-          // return this.messagingClient.send('Benefit Kitchen can help you learn about state and federal programs. For now, visit their website: https://app.benefitkitchen.com/');
-          if (entityValueIs(entities[TAGS.BENEFITS], [TAGS.HIGH_SPEED_INTERNET_CHECK])) {
-            return 'benefits-internet.init';
-          }
-        // Voting
-        } else if (entities[TAGS.VOTING]) {
-          // Deadlines
-          if (entityValueIs(entities[TAGS.VOTING], [TAGS.VOTING_DEADLINES])) return 'voting.votingDeadlines';
-          // Elections
-          if (entityValueIs(entities[TAGS.VOTING], [TAGS.LIST_ELECTIONS])) return 'voting.electionSchedule';
-          // Registration
-          if (entityValueIs(entities[TAGS.VOTING], [TAGS.REGISTER_TO_VOTE])) return 'voting.voterRegistrationGet';
-          if (entityValueIs(entities[TAGS.VOTING], [TAGS.CHECK_VOTER_REGISTRATION])) return 'voting.voterRegistrationCheck';
-          // Poll info
-          if (entityValueIs(entities[TAGS.VOTING], [TAGS.POLL_INFO])) return 'voting.pollInfo';
-          // Rules
-          if (entityValueIs(entities[TAGS.VOTING], [TAGS.VOTER_ID])) return 'voting.voterIdRequirements';
-          if (entityValueIs(entities[TAGS.VOTING], [TAGS.VOTER_ELIGIBILITY])) return 'voting.stateVotingRules';
-          // Sample ballot
-          if (entityValueIs(entities[TAGS.VOTING], [TAGS.SAMPLE_BALLOT])) return 'voting.sampleBallot';
-          // Absentee ballot
-          if (entityValueIs(entities[TAGS.VOTING], [TAGS.ABSENTEE_VOTE])) return 'voting.absenteeVote';
-          // Early Voting
-          if (entityValueIs(entities[TAGS.VOTING], [TAGS.EARLY_VOTING])) return 'voting.earlyVoting';
-          // Problem
-          if (entityValueIs(entities[TAGS.VOTING], [TAGS.VOTER_PROBLEM])) return 'voting.voterProblem';
-          // FAQ/Help
-          if (entityValueIs(entities[TAGS.VOTING], [TAGS.VOTER_ASSISTANCE])) return 'voting.voterAssistance';
-          // Fallback
-          return 'failedRequest';
+          'social_services_shelter': 'socialServices.waiting_shelter_search',
+          'social_services_food': 'socialServices.waiting_food_search',
+          'social_services_hygiene': 'socialServices.waiting_hygiene_search',
 
-        // Sanitation Services
-        } else if (entities[TAGS.SANITATION]) {
-          // Garbage
-          if (entityValueIs(entities[TAGS.SANITATION], [TAGS.GARBAGE_SCHEDULE])) return 'sanitation.garbageSchedule';
-          if (entityValueIs(entities[TAGS.SANITATION], [TAGS.GARBAGE_DROP_OFF])) return 'sanitation.garbageDropOff';
-          // Recycling
-          if (entityValueIs(entities[TAGS.SANITATION], [TAGS.RECYCLING_SCHEDULE])) return 'sanitation.recyclingSchedule';
-          if (entityValueIs(entities[TAGS.SANITATION], [TAGS.RECYCLING_DROP_OFF])) return 'sanitation.recyclingDropOff';
-          // Compost
-          if (entityValueIs(entities[TAGS.SANITATION], [TAGS.COMPOST_DUMPING])) return 'sanitation.compostDumping';
-          // Bulk Pickup
-          if (entityValueIs(entities[TAGS.SANITATION], [TAGS.BULK_PICKUP])) return 'sanitation.bulkPickup';
-          // Electronics
-          if (entityValueIs(entities[TAGS.SANITATION], [TAGS.ELECTRONICS_DISPOSAL])) return 'sanitation.electronicsDisposal';
-          // Fallback
-          return 'failedRequest';
+          'health_clinics': 'health.waiting_clinic_search',
 
-        // Human Services
-        } else if (entities[TAGS.SOCIAL_SERVICES]) {
-          // Shelters
-          if (entityValueIs(entities[TAGS.SOCIAL_SERVICES], [TAGS.SHELTER_SEARCH])) return 'socialServices.waiting_shelter_search';
-          // Food
-          if (entityValueIs(entities[TAGS.SOCIAL_SERVICES], [TAGS.FOOD_SEARCH])) return 'socialServices.waiting_food_search';
-          // Hygiene
-          if (entityValueIs(entities[TAGS.SOCIAL_SERVICES], [TAGS.HYGIENE_SEARCH])) return 'socialServices.waiting_hygiene_search';
-          // Fallback
-          return 'failedRequest';
+          'employment_job_training': 'employment.waiting_job_training',
 
-        // Medical Services
-        } else if (entities[TAGS.HEALTH]) {
-          // Clinics
-          if (entityValueIs(entities[TAGS.HEALTH], [TAGS.CLINIC_SEARCH])) return 'health.waiting_clinic_search';
-          // Fallback
-          return 'failedRequest';
+          'complaint': 'complaint.waiting_for_complaint', // TODO(nicksahler): transaction -> getRequests,
 
-        // Employment Services
-        } else if (entities[TAGS.EMPLOYMENT]) {
-          // Job Training
-          if (entityValueIs(entities[TAGS.EMPLOYMENT], [TAGS.JOB_TRAINING])) return 'employment.waiting_job_training';
-          // Fallback
-          return 'failedRequest';
+          'settings_city': 'setup.reset_organization'
 
-        // Complaint
-        } else if (entities[TAGS.COMPLAINT]) {
-          if (entities[TAGS.TRANSACTION]) {
-            return 'getRequests';
-          } else {
-            return 'complaint.waiting_for_complaint';
-          }
+        };
 
-        // Settings
-        } else if (entities[TAGS.SETTINGS]) {
-          // Change City
-          if (entityValueIs(entities[TAGS.SETTINGS], [TAGS.CHANGE_CITY])) return 'setup.reset_organization';
-          // Fallback
-          return 'failedRequest';
-
-        // Failed to Understand Request
+        if (entities.intent && entities.intent[0]) {
+          return Promise.resolve(intent_map[entities.intent[0].value] || fetchAnswers(entities.intent[0].value, this));
         } else {
           return 'failedRequest';
         }
-      });
+      })
     },
 
     action() {
