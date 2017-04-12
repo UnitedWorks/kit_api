@@ -6,7 +6,6 @@ import StateMachine from './state-machine'
 import SmallTalkMachine from './machines/small-talk';
 import SetupMachine from './machines/setup';
 import ComplaintMachine from './machines/complaint';
-import SanitationMachine from './machines/sanitation';
 import EmploymentMachine from './machines/employment';
 import HealthMachine from './machines/health';
 import SocialServicesMachine from './machines/social-services';
@@ -22,7 +21,6 @@ export const stateMachines = {
   setup: SetupMachine,
   voting: VotingMachine,
   complaint: ComplaintMachine,
-  sanitation: SanitationMachine,
   employment: EmploymentMachine,
   health: HealthMachine,
   socialServices: SocialServicesMachine,
