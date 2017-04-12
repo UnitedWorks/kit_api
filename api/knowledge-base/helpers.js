@@ -11,6 +11,7 @@ export const getAnswers = (params = {}, options) => {
       'answers.service', 'answers.service.location', 'answers.service.eventRules', 'answers.contact'],
   }).then((data) => {
     if (!options.returnJSON) return data.get('answers');
+    if (data == null) return {};
     const answerJSON = data.toJSON().answers;
     if (options.groupKnowledge) {
       const answerGrouped = {

@@ -214,7 +214,7 @@ export default {
           'benefits_internet': 'benefits-internet.init',
 
           'voting_deadlines': 'voting.votingDeadlines', // TODO(nicksahler): not trained
-          'voting_list_election': 'voting.electionSchedule',
+          'voting_list_elections': 'voting.electionSchedule',
           'voting_registration': 'voting.voterRegistrationGet',
           'voting_registration_check': 'voting.voterRegistrationCheck',
           'voting_poll_info': 'voting.pollInfo',
@@ -226,8 +226,8 @@ export default {
           'voting_problem': 'voting.voterProblem',
           'voting_assistance': 'voting.voterAssistance',
 
-          'social_services_shelter': 'socialServices.waiting_shelter_search',
-          'social_services_food': 'socialServices.waiting_food_search',
+          'social_services_shelters': 'socialServices.waiting_shelter_search',
+          'social_services_food_assistance': 'socialServices.waiting_food_search',
           'social_services_hygiene': 'socialServices.waiting_hygiene_search',
 
           'health_clinics': 'health.waiting_clinic_search',
