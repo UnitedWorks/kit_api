@@ -17,6 +17,8 @@ export const getGovernmentOrganizationAtLocation = (geoData, options = {}) => {
     subquery = subquery.whereRaw("address->>'city'=?", geoData.address.city);
   } else if (geoData.address.town) {
     subquery = subquery.whereRaw("address->>'town'=?", geoData.address.town);
+  } else if (geoData.address.hamlet) {
+    subquery = subquery.whereRaw("address->>'hamlet'=?", geoData.address.hamlet);
   }
   return knex.select('*').from('organizations').whereIn('location_id', subquery)
     .then((res) => {
@@ -38,6 +40,8 @@ export const checkForAdminOrganizationAtLocation = (geoData) => {
     query = query.whereRaw("address->>'city'=?", geoData.address.city);
   } else if (geoData.address.town) {
     query = query.whereRaw("address->>'town'=?", geoData.address.town);
+  } else if (geoData.address.hamlet) {
+    query = query.whereRaw("address->>'hamlet'=?", geoData.address.hamlet);
   }
   return query.then((res) => {
     if (res.length > 0) {

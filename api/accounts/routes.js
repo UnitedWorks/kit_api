@@ -25,7 +25,7 @@ router.get('/organizations', (req, res) => {
  * @param {String} [organization.email] - General contact email
  * @param {String} [organization.phone] - General contact phone
  * @param {String} organization.category - Enum: 'public', 'private', 'ngo'
- * @param {String} [organization.type] - Enum: 'admin', 'division'
+ * @param {String} [organization.type] - Enum: 'government', 'provider'
  * @return {Object} Organization document on 'organization'
  */
 router.post('/organization', (req, res, next) => {
@@ -35,9 +35,9 @@ router.post('/organization', (req, res, next) => {
     next('Missing address city, state, or country');
   }
   const organization = req.body.organization;
-  if (!organization.type) organization.type = 'admin';
+  if (!organization.type) organization.type = 'government';
   // Get location
-  geocoder(`${address.city}, ${address.state}, ${address.country}`, [OSM.ADMINISTRATIVE, OSM.CITY, OSM.TOWN])
+  geocoder(`${address.city}, ${address.state}, ${address.country}`, [OSM.ADMINISTRATIVE, OSM.CITY, OSM.TOWN, OSM.HAMLET])
     .then((geoData) => {
       if (geoData.length === 0) {
         return next('No locations found.');

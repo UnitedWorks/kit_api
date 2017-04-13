@@ -17,9 +17,10 @@ export default function geocoder(input, filters = []) {
       let filteredResponses = response.data.filter(object => filters.includes(object.type));
       if (filters.includes(OSM.ADMINISTRATIVE)
         || filters.includes(OSM.CITY)
-        || filters.includes(OSM.TOWN)) {
+        || filters.includes(OSM.TOWN)
+        || filters.includes(OSM.HAMLET)) {
         filteredResponses = filteredResponses.filter((object) => {
-          return object.address.city || object.address.town;
+          return object.address.city || object.address.town || object.address.hamlet;
         });
       }
       return filteredResponses;

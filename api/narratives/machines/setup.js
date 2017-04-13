@@ -37,7 +37,7 @@ export default {
       return geocoder(input).then((data) => {
         logger.info(data);
         const valid_results = data.filter((result)=>{
-          return ["administrative", "city", "town", "neighbourhood", "hamlet", "village"].includes(result.type) && (result.address.city || result.address.town);
+          return ['administrative', 'city', 'town', 'neighbourhood', 'hamlet', 'village'].includes(result.type) && (result.address.city || result.address.town || result.address.hamlet);
         });
 
         logger.info(valid_results);
@@ -45,7 +45,7 @@ export default {
         // If more than one location is matched with our geolocation look up, ask for detail
         if (valid_results.length > 1) {
           const quickReplies = valid_results.map((location) => {
-            const text = `${location.address.city || location.address.town}, ${location.address.state}`;
+            const text = `${location.address.city || location.address.town || location.address.hamlet}, ${location.address.state}`;
             return {
               content_type: 'text',
               title: text,
