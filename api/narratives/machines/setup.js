@@ -68,6 +68,8 @@ export default {
           .then((orgModel) => {
             if (orgModel) {
               this.set('organization', orgModel);
+            } else {
+              this.set('organization', null);
             }
             return 'waiting_organization_confirm';
           });
@@ -91,7 +93,7 @@ export default {
     message() {
       return nlp.message(this.snapshot.input.payload.text, {}).then((nlpData) => {
         const entities = nlpData.entities;
-        
+
         if (entities.intent && entities.intent[0]) {
           switch(entities.intent[0].value) {
             case 'speech_confirm':

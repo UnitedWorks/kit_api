@@ -24,11 +24,16 @@ export function getBaseState(providerName, section) {
 }
 
 /* TODO(nicksahler) Move this all to higher order answering */
-export const fetchAnswers = (intent, session, filter) => {
+export const fetchAnswers = (intent, session) => {
   let entities = session.snapshot.nlp.entities;
   /*TODO(nicksahler) Move this higher up (into the filter argument) to clean + validate [wit makes this prone to crashing] */
   let schedule = (entities.schedule && entities.schedule[0])? entities.schedule[0].value : null;
 
+  if (!session.get('organization')) {
+    return session.messagingClient
+      .send('Your local government hasn\'t registered yet, so I unfortunately can\'t answer this :(')
+      .then(() => 'smallTalk.start');
+  }
   return new KitClient({ organization: session.get('organization') })
     .getAnswer(intent).then((answers) => {
       if (entities[TAGS.DATETIME]) {

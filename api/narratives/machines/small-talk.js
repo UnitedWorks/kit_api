@@ -78,7 +78,7 @@ export default {
           if (entities.intent[0].value === 'speech_skeptical') {
             return this.messagingClient.send('I get it. Governments can barely get a website working. How could they possibly have a chatbot!?! :P')
               .then(() => 'waiting_for_starting_interaction_options');
-          } 
+          }
 
           if (entities.intent[0].value === 'speech_elaborate') {
             this.messagingClient.addAll([
@@ -182,10 +182,10 @@ export default {
   },
 
   askOptions() {
-    if (this.get('organization').activated) {
+    if (this.get('organization') && this.get('organization').activated) {
       this.messagingClient.addToQuene('Your local government is great! They have told me quite a bit!', basicRequestQuickReplies);
     } else {
-      this.messagingClient.addToQuene('Your local government still has a lot to tell me, but I will do my best to help!', basicRequestQuickReplies);
+      this.messagingClient.addToQuene('I\'m still learning from your local government, but I can help still with questions about voting and elections!', basicRequestQuickReplies);
     }
     this.messagingClient.addToQuene('Some starting questions you can ask are: "When is my next election?", "What benefits are available to me?", and "I have a complaint"', basicRequestQuickReplies);
     return this.messagingClient.runQuene().then(() => {
