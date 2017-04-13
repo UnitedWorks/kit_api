@@ -1,7 +1,5 @@
 import { logger } from '../../logger';
-import * as TAGS from '../../constants/nlp-tagging';
 import { nlp } from '../../services/nlp';
-import { entityValueIs } from '../helpers';
 import SlackService from '../../services/slack';
 
 const baseQuickReplies = [
@@ -32,40 +30,25 @@ export default {
     message() {
       const input = this.snapshot.input.payload;
       return nlp.message(input.text, {}).then((nlpData) => {
-        this.set('nlp', nlpData.entities);
-        const entities = nlpData.entities;
+        this.snapshot.nlp = nlpData;
+
         logger.info(nlpData);
 
-        // Greeting
-        if (entities[TAGS.SMALL_TALK]) {
-          if (entityValueIs(entities[TAGS.SMALL_TALK], [TAGS.GREETING])) {
-            return 'handle_greeting';
-          }
-        } else if (entities[TAGS.SOCIAL_SERVICES]) {
-          // Shelters
-          if (entityValueIs(entities[TAGS.SOCIAL_SERVICES], [TAGS.SHELTER_SEARCH])) return 'socialServices.waiting_shelter_search';
-          // Food
-          if (entityValueIs(entities[TAGS.SOCIAL_SERVICES], [TAGS.FOOD_SEARCH])) return 'socialServices.waiting_food_search';
-          // Hygiene
-          if (entityValueIs(entities[TAGS.SOCIAL_SERVICES], [TAGS.HYGIENE_SEARCH])) return 'socialServices.waiting_hygiene_search';
-          // Fallback
-          return 'failedRequest';
+        const entities = nlpData.entities;
+        const intent_map = {
+          'greeting': 'handle_greeting',
+          'social_services_shelters': 'socialServices.waiting_shelter_search',
+          'social_services_food_assistance': 'socialServices.waiting_food_search',
+          'social_services_hygiene': 'socialServices.waiting_hygiene_search',
+          'health_clinics': 'health.waiting_clinic_search',
+          'employment_job_training': 'employment.waiting_job_training',
+        };
 
-        // Medical Services
-        } else if (entities[TAGS.HEALTH]) {
-          // Clinics
-          if (entityValueIs(entities[TAGS.HEALTH], [TAGS.CLINIC_SEARCH])) return 'health.waiting_clinic_search';
-          // Fallback
-          return 'failedRequest';
-
-        // Employment Services
-        } else if (entities[TAGS.EMPLOYMENT]) {
-          // Job Training
-          if (entityValueIs(entities[TAGS.EMPLOYMENT], [TAGS.JOB_TRAINING])) return 'employment.waiting_job_training';
-          // Fallback
+        if (entities.intent && entities.intent[0]) {
+          return Promise.resolve(intent_map[entities.intent[0].value]);
+        } else {
           return 'failedRequest';
         }
-        return 'failedRequest';
       });
     },
   },
