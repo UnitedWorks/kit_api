@@ -8,7 +8,10 @@ import { createRepresentative } from '../accounts/helpers';
 const router = new Router();
 
 router.post('/signin', requireSignIn, (req, res) => {
-  res.send({ representative: Object.assign(req.user, { token: tokenForUser(req.user) }) });
+  res.send({
+    representative: req.user,
+    token: tokenForUser(req.user),
+  });
 });
 
 router.post('/signup', (req, res, next) => {
@@ -19,7 +22,8 @@ router.post('/signup', (req, res, next) => {
     new SlackService({ username: 'Welcome', icon: 'capitol' })
       .send(`Representative joined: *${newRep.email}*`);
     res.status(200).json({
-      representative: Object.assign(newRep, { token: tokenForUser(newRep) }),
+      representative: newRep,
+      token: tokenForUser(newRep),
     });
   }).catch(error => next(error));
 });
