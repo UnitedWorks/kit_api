@@ -118,8 +118,6 @@ router.post('/representative', (req, res, next) => {
   const org = req.body.organization;
   helpers.createRepresentative(rep, org, { returnJSON: true })
     .then((newRepresentative) => {
-      new SlackService({ username: 'Welcome', icon: 'capitol' })
-        .send(`Representative joined: *${newRepresentative.email}*`);
       res.status(200).json({ representative: newRepresentative });
     }).catch(error => next(error));
 });
