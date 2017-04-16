@@ -5,6 +5,7 @@ import { getAnswers, getCategories, getContacts, createContact, updateContact, d
   getQuestions, makeAnswer, updateAnswer, deleteAnswer, deleteService, createFacility,
   updateFacility, deleteFacility, createService, updateService,
   syncSheetKnowledgeBaseQuestions } from './helpers';
+import { requireAuth } from '../services/passport';
 
 const router = new Router();
 
@@ -52,7 +53,7 @@ router.route('/facilities')
    * @param {Object} organization - Organization to associate facility with
    * @return {Object}
    */
-  .post((req, res, next) => {
+  .post(requireAuth, (req, res, next) => {
     createFacility(req.body.facility, req.body.organization, req.body.facility.location,
       { returnJSON: true })
       .then(facility => res.status(200).send({ facility }))
@@ -64,7 +65,7 @@ router.route('/facilities')
    * @param {Number} facility.id - Required: Id of updated object
    * @return {Object}
    */
-   .put((req, res, next) => {
+   .put(requireAuth, (req, res, next) => {
      updateFacility(req.body.facility, { returnJSON: true })
        .then(updated => res.status(200).send({ facility: updated }))
        .catch(err => next(err));
@@ -74,7 +75,7 @@ router.route('/facilities')
     * @param {Number} id - Id of the facility to be removed
     * @return {Object}
     */
-  .delete((req, res, next) => {
+  .delete(requireAuth, (req, res, next) => {
     deleteFacility(req.query.facility_id)
       .then(facility => res.status(200).send({ facility }))
       .catch(err => next(err));
@@ -98,7 +99,7 @@ router.route('/events')
    * Create event
    * @return {Object}
    */
-  .post((req, res) => {
+  .post(requireAuth, (req, res) => {
     KnowledgeEvent.forge(req.body.event).save(null, { method: 'insert' })
       .then((saved) => {
         res.status(200).send({ event: saved });
@@ -110,7 +111,7 @@ router.route('/events')
    * Update event
    * @return {Object}
    */
-  .put((req, res) => {
+  .put(requireAuth, (req, res) => {
     KnowledgeEvent.forge(req.body.event).save(null, { method: 'update' })
       .then((updated) => {
         res.status(200).send({ event: updated });
@@ -123,7 +124,7 @@ router.route('/events')
    * @param {Number} id - Id of the event to be removed
    * @return {Object}
    */
-  .delete((req, res) => {
+  .delete(requireAuth, (req, res) => {
     KnowledgeEvent.forge({ id: req.query.id }).destroy()
       .then(() => {
         res.status(200).send();
@@ -153,7 +154,7 @@ router.route('/services')
    * @param {Object} organization - Organization to associate service with
    * @return {Object}
    */
-  .post((req, res, next) => {
+  .post(requireAuth, (req, res, next) => {
     createService(req.body.service, req.body.organization, req.body.service.location,
       { returnJSON: true })
       .then(saved => res.status(200).send({ service: saved }))
@@ -164,7 +165,7 @@ router.route('/services')
    * @param {Object} service - Object for service update
    * @return {Object}
    */
-  .put((req, res, next) => {
+  .put(requireAuth, (req, res, next) => {
     updateService(req.body.service, { returnJSON: true })
       .then(saved => res.status(200).send({ service: saved }))
       .catch(err => next(err));
@@ -174,7 +175,7 @@ router.route('/services')
    * @param {Number} id - Id of the service to be deleted
    * @return {Object}
    */
-  .delete((req, res, next) => {
+  .delete(requireAuth, (req, res, next) => {
     deleteService(req.query.service_id)
       .then(service => res.status(200).send({ service }))
       .catch(err => next(err));
@@ -193,7 +194,7 @@ router.route('/contacts')
       next(e);
     }
   })
-  .post((req, res, next) => {
+  .post(requireAuth, (req, res, next) => {
     try {
       createContact(req.body, { returnJSON: true })
         .then(contacts => res.status(200).send({ contacts }))
@@ -202,7 +203,7 @@ router.route('/contacts')
       next(e);
     }
   })
-  .put((req, res, next) => {
+  .put(requireAuth, (req, res, next) => {
     try {
       updateContact(req.body.contact, { returnJSON: true })
         .then(contacts => res.status(200).send({ contacts }))
@@ -211,7 +212,7 @@ router.route('/contacts')
       next(e);
     }
   })
-  .delete((req, res, next) => {
+  .delete(requireAuth, (req, res, next) => {
     try {
       deleteContact({ id: req.query.contact_id }, { returnJSON: true })
         .then(contacts => res.status(200).send({ contacts }))
@@ -230,7 +231,7 @@ router.get('/questions', (req, res, next) => {
     .catch(error => next(error));
 });
 
-router.get('/questions/sync', (req, res, next) => {
+router.get('/questions/sync', requireAuth, (req, res, next) => {
   syncSheetKnowledgeBaseQuestions()
     .then(results => res.status(200).send({ data: results }))
     .catch(error => next(error));
@@ -256,7 +257,7 @@ router.route('/answers')
    * Create Answer
    * @return {Object}
    */
-  .post((req, res, next) => {
+  .post(requireAuth, (req, res, next) => {
     try {
       makeAnswer(req.body.organization, req.body.question, req.body.answer, { returnJSON: true })
         .then(answerModel => res.status(200).send({ answer: answerModel }))
@@ -269,7 +270,7 @@ router.route('/answers')
    * Update Answer
    * @return {Object}
    */
-  .put((req, res, next) => {
+  .put(requireAuth, (req, res, next) => {
     updateAnswer(req.body.answer, { returnJSON: true })
       .then(answerModel => res.status(200).send({ answer: answerModel }))
       .catch(err => next(err));
@@ -279,7 +280,7 @@ router.route('/answers')
    * @param {Number} id - Id of the answer to be deleted
    * @return {Object}
    */
-  .delete((req, res, next) => {
+  .delete(requireAuth, (req, res, next) => {
     deleteAnswer(req.query.answer_id)
       .then(answer => res.status(200).send({ answer }))
       .catch(err => next(err));
