@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt-nodejs';
 import { knex } from '../orm';
 import { Constituent, Organization, Representative } from './models';
 
@@ -80,6 +81,20 @@ export const updateRepresentative = (update, options) => {
     .then((updatedRepModel) => {
       return options.returnJSON ? updatedRepModel.toJSON() : updatedRepModel;
     }).catch(err => err);
+};
+
+export const changePassword = (rep) => {
+  return new Promise((resolve, reject) => {
+    bcrypt.genSalt(10, (err, salt) => {
+      if (err) reject(err);
+      bcrypt.hash(rep.password, salt, null, (err, hash) => {
+        if (err) reject(err);
+        Representative.where({ email: rep.email }).save({ password: hash }, { patch: true, method: 'update' })
+          .then(() => resolve())
+          .catch(err => reject(err));
+      });
+    });
+  });
 };
 
 export const addRepToOrganization = (rep, org, options) => {

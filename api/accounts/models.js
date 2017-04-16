@@ -10,16 +10,18 @@ export const Representative = bookshelf.Model.extend({
   hasTimeStamps: true,
   initialize() {
     this.on('creating', (model) => {
-      return new Promise((resolve, reject) => {
-        bcrypt.genSalt(10, (err, salt) => {
-          if (err) reject();
-          bcrypt.hash(model.attributes.password, salt, null, (err, hash) => {
+      if (model.attributes.password) {
+        return new Promise((resolve, reject) => {
+          bcrypt.genSalt(10, (err, salt) => {
             if (err) reject();
-            model.attributes.password = hash;
-            resolve();
+            bcrypt.hash(model.attributes.password, salt, null, (err, hash) => {
+              if (err) reject();
+              model.attributes.password = hash;
+              resolve();
+            });
           });
         });
-      });
+      }
     });
   },
   organization() {
