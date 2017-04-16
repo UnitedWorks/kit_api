@@ -52,25 +52,47 @@ export const checkForAdminOrganizationAtLocation = (geoData) => {
   }).catch(error => error);
 };
 
+export const changePassword = (rep) => {
+  return new Promise((resolve, reject) => {
+    bcrypt.genSalt(10, (err, salt) => {
+      if (err) reject(err);
+      bcrypt.hash(rep.password, salt, null, (err, hash) => {
+        if (err) reject(err);
+        Representative.where({ email: rep.email }).save({ password: hash }, { patch: true, method: 'update' })
+          .then(updatedRep => resolve(updatedRep))
+          .catch(err => reject(err));
+      });
+    });
+  });
+};
+
 export const createRepresentative = (rep, org, options = {}) => {
   let repObj = rep;
-  if (org) {
-    repObj = Object.assign(rep, { organization_id: org.id });
-  }
-  return Representative.forge(repObj).save(null, { method: 'insert' })
-    .then((createdRep) => {
-      if (!org) {
-        return options.returnJSON ? createdRep.toJSON() : createdRep;
-      }
-      return createdRep.refresh({ withRelated: ['organization'] })
-        .then((populatedRep) => {
-          return options.returnJSON ? populatedRep.toJSON() : populatedRep;
-        }).catch((error) => {
-          throw new Error(error);
-        });
-    }).catch((error) => {
-      throw new Error(error);
-    });
+  if (org) repObj = Object.assign(rep, { organization_id: org.id });
+  return Representative.where({ email: repObj.email }).fetch().then((foundRep) => {
+    // If we have a rep without password, update password
+    if (foundRep && foundRep.get('password')) {
+      throw new Error('User with that email already exists');
+    // If no password is in use, update
+    } else if (foundRep && !foundRep.get('password')) {
+      return changePassword(repObj).then((updatedRep) => {
+        return updatedRep.refresh({ withRelated: ['organization', 'organization.integrations', 'organization.messageEntries'] })
+          .then((populatedRep) => {
+            return options.returnJSON ? populatedRep.toJSON() : populatedRep;
+          }).catch((error) => { throw new Error(error); });
+      }).catch((error) => { throw new Error(error); });
+    // Otherwise, create a new rep
+    } else {
+      return Representative.forge(repObj).save(null, { method: 'insert' })
+      .then((createdRep) => {
+        if (!org) return options.returnJSON ? createdRep.toJSON() : createdRep;
+        return createdRep.refresh({ withRelated: ['organization'] })
+          .then((populatedRep) => {
+            return options.returnJSON ? populatedRep.toJSON() : populatedRep;
+          }).catch((error) => { throw new Error(error); });
+      }).catch((error) => { throw new Error(error); });
+    }
+  });
 };
 
 export const updateRepresentative = (update, options) => {
@@ -81,20 +103,6 @@ export const updateRepresentative = (update, options) => {
     .then((updatedRepModel) => {
       return options.returnJSON ? updatedRepModel.toJSON() : updatedRepModel;
     }).catch(err => err);
-};
-
-export const changePassword = (rep) => {
-  return new Promise((resolve, reject) => {
-    bcrypt.genSalt(10, (err, salt) => {
-      if (err) reject(err);
-      bcrypt.hash(rep.password, salt, null, (err, hash) => {
-        if (err) reject(err);
-        Representative.where({ email: rep.email }).save({ password: hash }, { patch: true, method: 'update' })
-          .then(() => resolve())
-          .catch(err => reject(err));
-      });
-    });
-  });
 };
 
 export const addRepToOrganization = (rep, org, options) => {
