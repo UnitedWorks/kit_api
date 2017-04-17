@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt-nodejs';
 
 export const tokenForUser = (user) => {
   const timestamp = new Date().getTime();
-  return jwt.encode({ sub: user.id, iat: timestamp }, process.env.PASSWORD_SECRET);
+  return jwt.encode({ sub: user.id, iat: timestamp }, process.env.TOKEN_SECRET);
 };
 
 export const comparePassword = (rep, candidatePassword) => {

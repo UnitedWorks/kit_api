@@ -21,7 +21,7 @@ const localLogin = new LocalStrategy(localOptions, (email, password, done) => {
 // Create JWT Strategy
 const jwtOptions = {
   jwtFromRequest: ExtractJwt.fromHeader('authorization'),
-  secretOrKey: process.env.PASSWORD_SECRET,
+  secretOrKey: process.env.TOKEN_SECRET,
 };
 const jwtLogin = new JwtStrategy(jwtOptions, (payload, done) => {
   Representative.where({ id: payload.sub }).fetch({ withRelated: ['organization', 'organization.integrations', 'organization.messageEntries'] })
