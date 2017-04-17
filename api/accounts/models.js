@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt-nodejs';
 import { bookshelf } from '../orm';
 import * as KnowledgeModels from '../knowledge-base/models';
 import * as CaseModels from '../cases/models';
@@ -6,10 +7,27 @@ import * as ConversationModels from '../conversations/models';
 
 export const Representative = bookshelf.Model.extend({
   tableName: 'representatives',
-  organization: function () {
+  hasTimeStamps: true,
+  initialize() {
+    this.on('creating', (model) => {
+      if (model.attributes.password) {
+        return new Promise((resolve, reject) => {
+          bcrypt.genSalt(10, (err, salt) => {
+            if (err) reject();
+            bcrypt.hash(model.attributes.password, salt, null, (err, hash) => {
+              if (err) reject();
+              model.attributes.password = hash;
+              resolve();
+            });
+          });
+        });
+      }
+    });
+  },
+  organization() {
     return this.belongsTo(Organization, 'organization_id');
   },
-  cases: function () {
+  cases() {
     return this.belongsToMany(CaseModels.Case, 'representatives_cases');
   },
 });

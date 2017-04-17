@@ -42,6 +42,7 @@ app.get('/', (req, res) => {
 });
 
 // API
+app.use('/auth', require('./auth/routes'));
 app.use('/accounts', require('./accounts/routes'));
 app.use('/cases', require('./cases/routes'));
 app.use('/conversations', require('./conversations/routes'));

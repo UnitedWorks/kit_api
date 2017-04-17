@@ -5,11 +5,12 @@ import * as process from './process';
 import * as verify from './verify';
 import * as helpers from './helpers';
 import * as conversationClient from '../constants/interfaces';
+import { requireAuth } from '../services/passport';
 
 const router = new Router();
 
-router.post('/broadcast', (req, res, next) => {
-  logger.info('Constituent Broadcast');
+router.post('/broadcast', requireAuth, (req, res, next) => {
+  logger.info(`Constituent Broadcast - Org: ${req.body.organization.id} - ${req.body.broadcast}`);
   try {
     helpers.makeBroadcast(req.body.broadcast, req.body.organization, { returnJSON: true })
       .then(() => res.status(200).send())
@@ -20,7 +21,7 @@ router.post('/broadcast', (req, res, next) => {
 });
 
 router.route('/entry')
-  .post((req, res, next) => {
+  .post(requireAuth, (req, res, next) => {
     logger.info('Creating Entry');
     try {
       helpers.createEntry(req.body.entry, req.body.organization)
@@ -30,7 +31,7 @@ router.route('/entry')
       next(e);
     }
   })
-  .delete((req, res, next) => {
+  .delete(requireAuth, (req, res, next) => {
     logger.info('Disconnecting Entry');
     try {
       helpers.deleteEntry({ id: req.query.entry_id })

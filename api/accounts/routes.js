@@ -5,6 +5,7 @@ import * as helpers from './helpers';
 import { logger } from '../logger';
 import { saveLocation } from '../knowledge-base/helpers';
 import { Constituent, Representative, Organization } from './models';
+import { requireAuth } from '../services/passport';
 import SlackService from '../services/slack';
 
 const router = new Router();
@@ -28,7 +29,7 @@ router.get('/organizations', (req, res) => {
  * @param {String} [organization.type] - Enum: 'government', 'provider'
  * @return {Object} Organization document on 'organization'
  */
-router.post('/organization', (req, res, next) => {
+router.post('/organization', requireAuth, (req, res, next) => {
   logger.info('Creation Requested - Organization');
   const address = req.body.address;
   if (!address.city || !address.state || !address.country) {
@@ -60,7 +61,7 @@ router.post('/organization', (req, res, next) => {
     }).catch(error => next(error));
 });
 
-router.post('/organizations/add-provider', (req, res, next) => {
+router.post('/organizations/add-provider', requireAuth, (req, res, next) => {
   try {
     const organization = req.body.organization;
     if (organization.type == null || organization.type !== 'provider') {
@@ -75,7 +76,7 @@ router.post('/organizations/add-provider', (req, res, next) => {
   }
 });
 
-router.post('/organizations/add-representative', (req, res) => {
+router.post('/organizations/add-representative', requireAuth, (req, res) => {
   helpers.addRepToOrganization(req.body.representative, req.body.organization, { returnJSON: true })
     .then(response => res.status(200).send({
       representative: response,
@@ -84,49 +85,52 @@ router.post('/organizations/add-representative', (req, res) => {
 });
 
 // Representatives
-router.get('/representative', (req, res) => {
-  Representative.where(req.query).fetch({ withRelated: ['organization', 'organization.integrations', 'organization.messageEntries'] })
-    .then((representative) => {
-      if (representative) {
-        res.status(200).send({ representative });
-      } else {
-        res.status(400).send('No representative found');
-      }
-    }).catch(error => res.status(400).send({ error }));
+router.route('/representative')
+  .get((req, res) => {
+    Representative.where(req.query).fetch({ withRelated: ['organization', 'organization.integrations', 'organization.messageEntries'] })
+      .then((representative) => {
+        if (representative) {
+          res.status(200).send({ representative });
+        } else {
+          res.status(400).send('No representative found');
+        }
+      }).catch(error => res.status(400).send({ error }));
+  })
+  /**
+   * Create a representative and associate with an organization
+   * @param {Object} representative - Representative Object
+   * @param {String} [representative.name] - Representative's full name
+   * @param {String} [representative.title] - Job title
+   * @param {String} representative.email - Work email
+   * @param {String} [representative.phone] - Phone number (eventually should be an object)
+   * @param {Object} [organization] - Organization to associate the representative with
+   * @param {Number} [organization.id] - Organization identifier
+   * @return {Object} Representative document on 'representative'
+   */
+  .post(requireAuth, (req, res, next) => {
+    logger.info('Creation Requested - Representative');
+    const rep = req.body.representative;
+    const org = req.body.organization;
+    helpers.createRepresentative(rep, org, { returnJSON: true })
+      .then((newRepresentative) => {
+        res.status(200).json({ representative: newRepresentative });
+      }).catch(error => next(error));
+  })
+  .put(requireAuth, (req, res) => {
+    helpers.updateRepresentative(req.body.representative, { returnJSON: true })
+      .then(updatedRep => res.status(200).send({ representative: updatedRep }))
+      .catch(error => res.status(400).send({ error }));
+  });
+
+router.put('/representative/change-password', requireAuth, (req, res) => {
+  helpers.changePassword(req.body.representative)
+    .then(() => res.status(200).send())
+    .catch(error => res.status(400).send({ error }));
 });
 
 router.get('/representatives', (req, res) => {
   Representative.where(req.query).fetchAll({ withRelated: ['organization'] })
     .then(representatives => res.status(200).send({ representatives }))
-    .catch(error => res.status(400).send({ error }));
-});
-
-/**
- * Create a representative and associate with an organization
- * @param {Object} representative - Representative Object
- * @param {String} [representative.name] - Representative's full name
- * @param {String} [representative.title] - Job title
- * @param {String} representative.email - Work email
- * @param {String} [representative.phone] - Phone number (eventually should be an object)
- * @param {Object} [organization] - Organization to associate the representative with
- * @param {Number} [organization.id] - Organization identifier
- * @return {Object} Representative document on 'representative'
- */
-router.post('/representative', (req, res, next) => {
-  logger.info('Creation Requested - Representative');
-  const rep = req.body.representative;
-  const org = req.body.organization;
-  helpers.createRepresentative(rep, org, { returnJSON: true })
-    .then((newRepresentative) => {
-      new SlackService({ username: 'Welcome', icon: 'capitol' })
-        .send(`Representative joined: *${newRepresentative.email}*`);
-      res.status(200).json({ representative: newRepresentative });
-    }).catch(error => next(error));
-});
-
-router.put('/representative', (req, res) => {
-  helpers.updateRepresentative(req.body.representative, { returnJSON: true })
-    .then(updatedRep => res.status(200).send({ representative: updatedRep }))
     .catch(error => res.status(400).send({ error }));
 });
 
