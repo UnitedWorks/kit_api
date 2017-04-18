@@ -83,8 +83,7 @@ export const createRepresentative = (rep, org, options = {}) => {
       }).catch((error) => { throw new Error(error); });
     // Otherwise, create a new rep
     } else {
-      return Representative.forge(repObj).save(null, { method: 'insert' })
-      .then((createdRep) => {
+      return Representative.forge(repObj).save(null, { method: 'insert' }).then((createdRep) => {
         if (!org) return options.returnJSON ? createdRep.toJSON() : createdRep;
         return createdRep.refresh({ withRelated: ['organization'] })
           .then((populatedRep) => {

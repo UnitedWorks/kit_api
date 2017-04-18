@@ -49,6 +49,7 @@ export function baseErrorHandler(err, req, res, next) {
     res.send({
       error: {
         status: 500,
+        message: 'Unknown error occurred.',
       },
     });
   }
