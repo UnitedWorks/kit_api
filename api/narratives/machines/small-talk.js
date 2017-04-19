@@ -1,7 +1,7 @@
 import { logger } from '../../logger';
 import * as TAGS from '../../constants/nlp-tagging';
 import { nlp } from '../../services/nlp';
-import * as CASE_TYPES from '../../constants/case-types';
+import * as CASE_CONSTANTS from '../../constants/cases';
 import { getConstituentCases, handleConstituentRequest } from '../../cases/helpers';
 import SlackService from '../../services/slack';
 import { fetchAnswers } from '../helpers';
@@ -284,7 +284,7 @@ export default {
     const message = 'Ah shoot, I\'m still learning so I don\'t understand that request yet. Can you give more description? <3';
     handleConstituentRequest({
       title: aux.input.payload.text,
-      type: CASE_TYPES.STATEMENT,
+      type: CASE_CONSTANTS.STATEMENT,
     },
       this.snapshot.constituent,
       this.get('organization') || { id: this.snapshot.organization_id,

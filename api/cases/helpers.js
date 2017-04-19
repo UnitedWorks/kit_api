@@ -3,7 +3,7 @@ import { knex } from '../orm';
 import { logger } from '../logger';
 import * as AccountModels from '../accounts/models';
 import { Case, CaseCategory, OrganizationsCases } from './models';
-import * as CASE_CONSTANTS from '../constants/case-statuses';
+import * as CASE_CONSTANTS from '../constants/cases';
 import { FacebookMessengerClient, TwilioSMSClient } from '../conversations/clients';
 import { saveLocation, associateCaseLocation, associateCaseMedia } from '../knowledge-base/helpers';
 import { saveMedia } from '../media/helpers';
