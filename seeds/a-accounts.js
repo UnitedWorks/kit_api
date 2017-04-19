@@ -4,12 +4,9 @@ exports.seed = (knex, Promise) => {
   // Deletes ALL existing entries
   return new Promise.all([
     // Clear relationships between orgs and other entities
-    knex('organizations_constituents').del(),
     knex('organizations_integrations').del(),
     knex('narrative_sessions').del(),
-    knex('case_category_representative_assignments').del(),
     knex('organizations_cases').del(),
-    knex('representatives_cases').del(),
   ])
   .then(() => {
     // Clearing knowledge entities in a particular order because of relationships

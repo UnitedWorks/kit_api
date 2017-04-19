@@ -23,14 +23,6 @@ export const OrganizationsCases = bookshelf.Model.extend({
   tableName: 'organizations_cases',
 });
 
-export const RepresentativesCases = bookshelf.Model.extend({
-  tableName: 'representatives_cases',
-});
-
-export const CaseCategoryAssignments = bookshelf.Model.extend({
-  tableName: 'case_category_representative_assignments',
-});
-
 export const Case = bookshelf.Model.extend({
   tableName: 'cases',
   hasTimeStamps: true,

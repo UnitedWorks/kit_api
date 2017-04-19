@@ -27,9 +27,6 @@ export const Representative = bookshelf.Model.extend({
   organization() {
     return this.belongsTo(Organization, 'organization_id');
   },
-  cases() {
-    return this.belongsToMany(CaseModels.Case, 'representatives_cases');
-  },
 });
 
 export const Constituent = bookshelf.Model.extend({
@@ -68,8 +65,4 @@ export const Organization = bookshelf.Model.extend({
   messageEntries: function() {
     return this.hasMany(ConversationModels.MessageEntry, 'organization_id');
   },
-});
-
-export const OrganizationConstituents = bookshelf.Model.extend({
-  tableName: 'organizations_constituents',
 });
