@@ -38,9 +38,9 @@ export default {
       return this.messagingClient.send('Can you describe the problem for me?');
     },
     message() {
-      const headline = this.snapshot.input.payload.text;
-      if (headline) {
-        this.set('complaint', Object.assign({}, this.get('complaint'), { headline }));
+      const title = this.snapshot.input.payload.text;
+      if (title) {
+        this.set('complaint', Object.assign({}, this.get('complaint'), { title }));
       }
       return 'wait_for_complaint_picture';
     },
@@ -98,14 +98,18 @@ export default {
   complaint_submit: {
     enter() {
       const complaint = this.get('complaint');
-      return handleConstituentRequest(complaint.headline, complaint.category,
-        this.snapshot.constituent,
-        this.get('organization') || { id: this.snapshot.organization_id },
-        complaint.location, complaint.attachments)
-        .then(() => {
-          this.messagingClient.send('I just sent your message along. I\'ll try to let you know when it\'s been addressed.');
-          return 'smallTalk.start';
-        });
+      return handleConstituentRequest({
+        title: complaint.title,
+        category: complaint.category,
+        location: complaint.location,
+        attachments: complaint.attachments,
+      },
+      this.snapshot.constituent,
+      this.get('organization') || { id: this.snapshot.organization_id,
+      }).then(() => {
+        this.messagingClient.send('I just sent your message along. I\'ll try to let you know when it\'s been addressed.');
+        return 'smallTalk.start';
+      });
     },
   },
 

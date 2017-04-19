@@ -75,7 +75,7 @@ export const newCaseNotification = (caseObj, organization) => {
   });
 };
 
-export const createCase = (title, category, constituent, organization, location, attachments = [], seeClickFixId) => {
+export const createCase = ({ title, category, location, attachments = [], seeClickFixId }, constituent, organization) => {
   if (!constituent.id) throw new Error('Missing Key: constituent.id');
   return new Promise((resolve, reject) => {
     const attachmentPromises = [];
@@ -130,32 +130,22 @@ export const createCase = (title, category, constituent, organization, location,
   });
 };
 
-export const handleConstituentRequest = (headline, category, constituent, organization, location, attachments) => {
+export const handleConstituentRequest = (caseObj, constituent, organization) => {
   return new Promise((resolve, reject) => {
     // Check for integrations to push to
     hasIntegration(organization, INTEGRATIONS.SEE_CLICK_FIX).then((integrated) => {
-      if (integrated && new SeeClickFixClient().requestCategoryAllowed(category.label)) {
-        new SeeClickFixClient().report(location, headline, attachments).then((scfIssue) => {
-          createCase(headline, category, constituent, organization, location, attachments,
-            scfIssue.id).then(caseObj => resolve(caseObj.toJSON()));
-        });
+      if (integrated && new SeeClickFixClient().requestCategoryAllowed(caseObj.category.label)) {
+        new SeeClickFixClient().report(caseObj.location, caseObj.title, caseObj.attachments)
+          .then((scfIssue) => {
+            createCase({ ...caseObj, seeClickFixId: scfIssue.id }, constituent, organization)
+              .then(returnedCase => resolve(returnedCase.toJSON()));
+          });
       } else {
-        createCase(headline, category, constituent, organization, location, attachments)
-          .then(caseObj => resolve(caseObj.toJSON()));
+        createCase(caseObj, constituent, organization)
+          .then(returnedCase => resolve(returnedCase.toJSON()));
       }
     });
   });
-};
-
-export const compileCase = (caseObj, constituent, organization) => {
-  return handleConstituentRequest(
-    caseObj.description,
-    caseObj.category,
-    constituent,
-    organization,
-    caseObj.location,
-    caseObj.attachments,
-  );
 };
 
 export const getConstituentCases = (constituent) => {

@@ -31,12 +31,12 @@ router.route('/')
         if (typeof req.body.case.location === 'string') {
           geocoder(req.body.case.location).then((geoJSON) => {
             req.body.case.location = geoJSON.length > 0 ? geoJSON[0] : null;
-            helpers.compileCase(req.body.case, constituentJSON, req.body.organization)
+            helpers.handleConstituentRequest(req.body.case, constituentJSON, req.body.organization)
               .then(caseJSON => res.status(200).send({ case: caseJSON }))
               .catch(error => next(error));
           });
         } else {
-          helpers.compileCase(req.body.caseModel, constituentJSON, req.body.organization)
+          helpers.handleConstituentRequest(req.body.caseModel, constituentJSON, req.body.organization)
             .then(caseJSON => res.status(200).send({ case: caseJSON }))
             .catch(error => next(error));
         }
