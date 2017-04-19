@@ -33,6 +33,7 @@ export const CaseCategoryAssignments = bookshelf.Model.extend({
 
 export const Case = bookshelf.Model.extend({
   tableName: 'cases',
+  hasTimeStamps: true,
   organizations: function() {
     return this.belongsToMany(AccountModels.Organization, 'organizations_cases');
   },

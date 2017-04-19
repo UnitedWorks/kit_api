@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { knex } from '../../orm';
-import { SEE_CLICK_FIX_CATEGORIES } from '../../constants/case-categories';
+import { SEE_CLICK_FIX_CATEGORIES } from '../../constants/cases';
 
 export default class SeeClickFix {
   constructor() {

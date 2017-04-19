@@ -1,5 +1,5 @@
 import { logger } from '../api/logger';
-import { PRIMARY_CATEGORIES } from '../api/constants/case-categories';
+import { PRIMARY_CATEGORIES } from '../api/constants/cases';
 
 exports.seed = function(knex, Promise) {
   return Promise.all([

@@ -31,12 +31,12 @@ router.route('/')
         if (typeof req.body.case.location === 'string') {
           geocoder(req.body.case.location).then((geoJSON) => {
             req.body.case.location = geoJSON.length > 0 ? geoJSON[0] : null;
-            helpers.compileCase(req.body.case, constituentJSON, req.body.organization)
+            helpers.handleConstituentRequest(req.body.case, constituentJSON, req.body.organization)
               .then(caseJSON => res.status(200).send({ case: caseJSON }))
               .catch(error => next(error));
           });
         } else {
-          helpers.compileCase(req.body.caseModel, constituentJSON, req.body.organization)
+          helpers.handleConstituentRequest(req.body.caseModel, constituentJSON, req.body.organization)
             .then(caseJSON => res.status(200).send({ case: caseJSON }))
             .catch(error => next(error));
         }
@@ -59,8 +59,10 @@ router.get('/categories', (req, res, next) => {
 router.put('/update_status', requireAuth, (req, res, next) => {
   try {
     const caseId = req.body.case.id;
-    const status = req.body.case.status;
-    helpers.updateCaseStatus(caseId, status, { returnJSON: true })
+    const status = req.body.status;
+    const silent = req.body.silent;
+    const response = req.body.response;
+    helpers.updateCaseStatus(caseId, { response, status, silent }, { returnJSON: true })
       .then(data => res.status(200).send({ case: data }))
       .catch(error => next(error));
   } catch (e) {
