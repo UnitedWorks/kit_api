@@ -82,6 +82,7 @@ export class FacebookMessengerClient extends BaseClient {
   }
 
   send(content, quickActions) {
+    if (!content) throw new Error('No content sent to Facebook Messenger interface');
     const sendData = {
       recipient: {
         id: this.config.constituent.facebook_id,

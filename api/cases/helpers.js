@@ -3,7 +3,7 @@ import { knex } from '../orm';
 import { logger } from '../logger';
 import * as AccountModels from '../accounts/models';
 import { Case, CaseCategory, OrganizationsCases } from './models';
-import { CASE_STATUSES } from '../constants/case-statuses';
+import * as CASE_CONSTANTS from '../constants/case-statuses';
 import { FacebookMessengerClient, TwilioSMSClient } from '../conversations/clients';
 import { saveLocation, associateCaseLocation, associateCaseMedia } from '../knowledge-base/helpers';
 import { saveMedia } from '../media/helpers';
@@ -14,18 +14,27 @@ import { hasIntegration } from '../integrations/helpers';
 import * as INTEGRATIONS from '../constants/integrations';
 import SeeClickFixClient from './clients/see-click-fix-client';
 
-export const notifyConstituentOfCaseStatusUpdate = (caseJSON, status, constituentJSON) => {
+export const notifyConstituentOfCaseStatusUpdate = (caseObj, status, { constituent, response }) => {
   let message;
   if (status === 'closed') {
-    message = `Your case (#${caseJSON.id}) has been taken care of!`;
+    if (response) {
+      message = response;
+    } else {
+      message = `Your case (#${caseObj.id}) has been addressed!`;
+    }
+  } else if (status === 'viewed') {
+    message = `Your request #${caseObj.id} has been seen by someone in government! We will let you know when it's addressed.`;
+  } else if (status === 'open') {
+    message = `Your request #${caseObj.id} has been reopened.`;
   }
-  if (status === 'viewed') {
-    message = `Your request #${caseJSON.id} has been seen by someone in government! We will let you know when it's addressed.`;
-  }
-  if (constituentJSON.facebook_id) {
-    new FacebookMessengerClient({ constituent: constituentJSON }).send(message);
-  } else if (constituentJSON.phone) {
-    new TwilioSMSClient({ constituent: constituentJSON }).send(message);
+  try {
+    if (constituent.facebook_id) {
+      new FacebookMessengerClient({ constituent }).send(message);
+    } else if (constituent.phone) {
+      new TwilioSMSClient({ constituent }).send(message);
+    }
+  } catch (e) {
+    logger.error(e);
   }
 };
 
@@ -187,7 +196,7 @@ export function webhookHitWithEmail(req) {
           updatedCaseModel.refresh({ withRelated: ['constituent', 'constituent.facebookEntry'] }).then((refreshedCaseModel) => {
             logger.info(`Case Resolved for Constituent #${refreshedCaseModel.get('constituentId')}`);
             const caseJSON = refreshedCaseModel.toJSON();
-            notifyConstituentOfCaseStatusUpdate(caseJSON, 'closed', caseJSON.constituent);
+            notifyConstituentOfCaseStatusUpdate(caseJSON, 'closed', { constituent: caseJSON.constituent });
           });
         });
       }
@@ -222,7 +231,7 @@ export function webhookEmailEvent(req) {
         Case.where({ id: event.case_id }).fetch({ withRelated: ['constituent', 'constituent.facebookEntry'] }).then((fetchedCase) => {
           const constituent = fetchedCase.toJSON().constituent;
           if (!fetchedCase.toJSON().lastViewed) {
-            notifyConstituentOfCaseStatusUpdate(fetchedCase.toJSON(), 'viewed', constituent);
+            notifyConstituentOfCaseStatusUpdate(fetchedCase.toJSON(), 'viewed', { constituent });
           }
           fetchedCase.save({
             last_viewed: knex.raw('now()'),
@@ -275,16 +284,22 @@ export const getCases = (orgId, options = {}) => {
     }).catch(err => err);
 };
 
-export const updateCaseStatus = (caseId, status, options = {}) => {
-  if (!CASE_STATUSES.includes(status)) throw new Error(`Unacceptable Status: ${status}`);
-  return Case.where({ id: caseId }).save({ status }, { method: 'update' })
-    .then(() => {
-      return Case.where({ id: caseId }).fetch({ withRelated: ['constituent', 'constituent.facebookEntry'] }).then((refreshedModel) => {
-        const caseJSON = refreshedModel.toJSON();
-        notifyConstituentOfCaseStatusUpdate(caseJSON, status, caseJSON.constituent);
-        return options.returnJSON ? refreshedModel.toJSON() : refreshedModel;
-      }).catch(error => error);
+export const updateCaseStatus = (caseId, { response, status, silent = false }, options = {}) => {
+  if (!CASE_CONSTANTS.CASE_STATUSES.includes(status)) throw new Error(`Unacceptable Status: ${status}`);
+  const updates = { status, response: null };
+  if (status === CASE_CONSTANTS.CLOSED) updates.response = response;
+  return Case.where({ id: caseId }).save(updates, { method: 'update' }).then(() => {
+    return Case.where({ id: caseId }).fetch({ withRelated: ['constituent', 'constituent.facebookEntry', 'constituent.smsEntry'] }).then((refreshedModel) => {
+      const caseJSON = refreshedModel.toJSON();
+      if (!silent) {
+        notifyConstituentOfCaseStatusUpdate(caseJSON, status, {
+          constituent: caseJSON.constituent,
+          response,
+        });
+      }
+      return options.returnJSON ? refreshedModel.toJSON() : refreshedModel;
     }).catch(error => error);
+  }).catch(error => error);
 };
 
 export const getCaseCategories = (params, options) => {

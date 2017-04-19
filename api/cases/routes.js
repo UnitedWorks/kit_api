@@ -59,8 +59,10 @@ router.get('/categories', (req, res, next) => {
 router.put('/update_status', requireAuth, (req, res, next) => {
   try {
     const caseId = req.body.case.id;
-    const status = req.body.case.status;
-    helpers.updateCaseStatus(caseId, status, { returnJSON: true })
+    const status = req.body.status;
+    const silent = req.body.silent;
+    const response = req.body.response;
+    helpers.updateCaseStatus(caseId, { response, status, silent }, { returnJSON: true })
       .then(data => res.status(200).send({ case: data }))
       .catch(error => next(error));
   } catch (e) {
