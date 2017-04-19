@@ -1,4 +1,5 @@
 import geocoder from '../../services/geocoder';
+import * as CASE_TYPES from '../../constants/case-types';
 import { PRIMARY_CATEGORIES as PRIMARY_CASE_CATEGORIES } from '../../constants/case-categories';
 import { handleConstituentRequest } from '../../cases/helpers';
 import { CaseCategory } from '../../cases/models';
@@ -100,6 +101,7 @@ export default {
       const complaint = this.get('complaint');
       return handleConstituentRequest({
         title: complaint.title,
+        type: CASE_TYPES.REQUEST,
         category: complaint.category,
         location: complaint.location,
         attachments: complaint.attachments,

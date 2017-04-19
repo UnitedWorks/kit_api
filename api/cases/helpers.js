@@ -20,12 +20,13 @@ export const notifyConstituentOfCaseStatusUpdate = (caseObj, status, { constitue
     if (response) {
       message = response;
     } else {
-      message = `Your case (#${caseObj.id}) has been addressed!`;
+      message = `Your request has been addressed! #${caseObj.id} - ${caseObj.title.length > 50 ? caseObj.title.slice(0, 50) : caseObj.title}`;
     }
   } else if (status === 'viewed') {
     message = `Your request #${caseObj.id} has been seen by someone in government! We will let you know when it's addressed.`;
-  } else if (status === 'open') {
-    message = `Your request #${caseObj.id} has been reopened.`;
+  } else {
+    // Don't send a notification about something being opened or re-opened -- status === 'open'
+    return;
   }
   try {
     if (constituent.facebook_id) {
@@ -61,7 +62,7 @@ export const newCaseNotification = (caseObj, organization) => {
       });
     });
     // Slack Notification
-    let slackMessage = `>*City/Organization*: ${returnedOrg.get('name')}\n>*Category*: ${caseObj.category.label}\n>*Constituent ID*: ${caseObj.constituent_id}\n>*Complaint*: ${caseObj.title}`;
+    let slackMessage = `>*City/Organization*: ${returnedOrg.get('name')}\n>*Category*: ${caseObj.category ? caseObj.category.label : 'Undefined '}\n>*Constituent ID*: ${caseObj.constituent_id}\n>*Complaint*: ${caseObj.title}`;
     if (caseObj.location) {
       slackMessage += `\n>*Geo-location*: <http://maps.google.com/maps/place/${caseObj.location.display_name}|${caseObj.location.display_name}>`;
     }
@@ -75,7 +76,7 @@ export const newCaseNotification = (caseObj, organization) => {
   });
 };
 
-export const createCase = ({ title, category, location, attachments = [], seeClickFixId }, constituent, organization) => {
+export const createCase = ({ title, type, category, location, attachments = [], seeClickFixId }, constituent, organization) => {
   if (!constituent.id) throw new Error('Missing Key: constituent.id');
   return new Promise((resolve, reject) => {
     const attachmentPromises = [];
@@ -85,12 +86,13 @@ export const createCase = ({ title, category, location, attachments = [], seeCli
     });
     Promise.all(attachmentPromises).then((attachmentModels) => {
       const newCase = {
-        status: 'open',
-        category_id: category.id || category,
-        constituent_id: constituent.id || constituent,
         title,
-        see_click_fix_id: seeClickFixId,
+        status: 'open',
       };
+      if (type) newCase.type = type;
+      if (category) newCase.category_id = category.id;
+      if (constituent) newCase.constituent_id = constituent.id;
+      if (seeClickFixId) newCase.see_click_fix_id = seeClickFixId;
       Case.forge(newCase).save().then((caseResponse) => {
         caseResponse.refresh({ withRelated: ['category', 'constituent', 'constituent.facebookEntry'] }).then((refreshedCaseModel) => {
           const newCaseModelJSON = refreshedCaseModel.toJSON();
