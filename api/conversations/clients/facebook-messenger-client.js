@@ -17,7 +17,7 @@ export class FacebookMessengerClient extends BaseClient {
 
   static configurePersistentMenu(pageToken, enable) {
     if (enable) {
-      console.log('Enabling Persistent Menu');
+      logger.info('Enabling Persistent Menu');
       return axios.post(`https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${pageToken}`, {
         persistent_menu: [
           {
@@ -35,11 +35,11 @@ export class FacebookMessengerClient extends BaseClient {
               type: 'postback',
               payload: 'ASK_OPTIONS',
             }],
-          }
+          },
         ],
       }).then(data => data).catch(error => error);
     }
-    console.log('Disabling Persistent Menu');
+    logger.info('Disabling Persistent Menu');
     return axios.delete(`https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${pageToken}`, {
       data: { fields: ['persistent_menu'] },
     }).then(data => data).catch(error => error);
@@ -47,14 +47,14 @@ export class FacebookMessengerClient extends BaseClient {
 
   static configureStartingButton(pageToken, enable) {
     if (enable) {
-      console.log('Enabling Starting Button');
+      logger.info('Enabling Starting Button');
       return axios.post(`https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${pageToken}`, {
         get_started: {
           payload: 'GET_STARTED',
-        }
+        },
       }).then(data => data).catch(error => error);
     }
-    console.log('Disabling Starting Button');
+    logger.info('Disabling Starting Button');
     return axios.delete(`https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${pageToken}`, {
       data: { fields: ['get_started'] },
     }).then(data => data).catch(error => error);
