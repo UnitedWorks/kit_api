@@ -108,34 +108,31 @@ export default {
       return nlp.message(input.text, {}).then((nlpData) => {
         this.snapshot.nlp = nlpData;
         const entities = nlpData.entities;
-
+        console.log('///////')
+        console.log(this.snapshot)
+        console.log('///////')
         if (entities.intent && entities.intent[0]) {
-          if ( entities.intent[0].value === 'voting_registration') {
+          if (entities.intent[0].value === 'voting_registration') {
             return this.stateRedirect({
               whenExiting: 'voting.voterRegistrationGet',
               exitInstead: 'smallTalk.waiting_for_starting_interaction_end',
             }, 'voting.voterRegistrationGet');
-
-            return 'voting.voterRegistrationGet';
-          } else if ( entities.intent[0].value === 'voting_registration_check' ) {
+          } else if (entities.intent[0].value === 'voting_registration_check') {
             return this.stateRedirect({
               whenExiting: 'voting.voterRegistrationCheck',
               exitInstead: 'smallTalk.waiting_for_starting_interaction_end',
             }, 'voting.voterRegistrationCheck');
-
-            return 'voting.voterRegistrationCheck';
-          } else if ( entities.intent[0].value === 'speech_deny') {
+          } else if (entities.intent[0].value === 'speech_deny') {
             this.messagingClient.addAll([
               'Ok! In that case, let me give you a run down of what I can do!',
               i18n('intro_explanation'),
               i18n('intro_ask_location'),
             ]);
-
             return this.messagingClient.runQuene().then(() => 'setup.waiting_organization');
           }
         }
 
-        this.messagingClient.send(i18n('bot_apology')).then(() => 'waiting_for_starting_interaction_options');
+        this.messagingClient.send(i18n('bot_apology'), skpeticQuickReplies).then(() => 'waiting_for_starting_interaction_options');
       });
     },
   },

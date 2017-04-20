@@ -78,14 +78,14 @@ function normalizeInput(conversationClient, input) {
 }
 
 // TODO(youmustfight, nicksahler): We eventually need to filter interface properties too
-function setupConstituentState(constituent) {
+function setupConstituentState(constituent, organization, location) {
   return NarrativeSession.where({
     constituent_id: constituent.id,
   }).fetch().then((model) => {
     if (model !== null && model.toJSON()) {
       return (Object.assign({}, model.toJSON(), { constituent }));
     }
-    return {
+    const newConstituentState = {
       session_id: uuid(),
       state_machine_name: getBaseState(getOrgNameFromConstituentEntry(constituent), 'machine'),
       state_machine_previous_state: null,
@@ -94,6 +94,12 @@ function setupConstituentState(constituent) {
       data_store: {},
       constituent,
     };
+    if (organization) {
+      newConstituentState.organization_id = organization.id;
+      newConstituentState.data_store.organization = organization;
+    }
+    if (location) newConstituentState.location = location;
+    return newConstituentState;
   });
 }
 
@@ -111,8 +117,11 @@ function normalizeSessionsFromRequest(req, conversationClient) {
         return Constituent.where({ facebook_id: input.sender.id }).fetch().then((model) => {
           return model || new Constituent({ facebook_id: input.sender.id, facebook_entry_id: input.recipient.id }).save();
         }).then((con) => {
-          return con.refresh({ withRelated: ['facebookEntry', 'facebookEntry.organization'] }).then((c) => {
-            return setupConstituentState(c.toJSON());
+          return con.refresh({ withRelated: ['facebookEntry', 'facebookEntry.organization', 'facebookEntry.organization.location'] }).then((c) => {
+            const refreshedCon = c.toJSON();
+            const pulledOrg = refreshedCon.facebookEntry.organization;
+            const pulledLocation = pulledOrg && pulledOrg.location ? pulledOrg.location : null;
+            return setupConstituentState(refreshedCon, pulledOrg, pulledLocation);
           });
         }).then((state) => {
           // Mark: Gets narrative_state snapshot and adds to data store's context?
@@ -127,8 +136,11 @@ function normalizeSessionsFromRequest(req, conversationClient) {
     return Constituent.where({ phone: input.From }).fetch().then((model) => {
       return model || new Constituent({ phone: input.From, entry_phone_number: input.To }).save();
     }).then((con) => {
-      return con.refresh({ withRelated: ['smsEntry', 'smsEntry.organization'] }).then((c) => {
-        return setupConstituentState(c.toJSON());
+      return con.refresh({ withRelated: ['smsEntry', 'smsEntry.organization', 'smsEntry.organization.location'] }).then((c) => {
+        const refreshedCon = c.toJSON();
+        const pulledOrg = refreshedCon.smsEntry.organization;
+        const pulledLocation = pulledOrg && pulledOrg.location ? pulledOrg.location : null;
+        return setupConstituentState(refreshedCon, pulledOrg, pulledLocation);
       });
     }).then((state) => {
       return normalizeInput(conversationClient, input).then((normalizedInput) => {
