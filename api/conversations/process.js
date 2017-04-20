@@ -98,7 +98,7 @@ function setupConstituentState(constituent, organization, location) {
       newConstituentState.organization_id = organization.id;
       newConstituentState.data_store.organization = organization;
     }
-    if (location) newConstituentState.location = location;
+    if (location) newConstituentState.data_store.location = location;
     return newConstituentState;
   });
 }
