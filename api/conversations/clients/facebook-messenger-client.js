@@ -2,45 +2,6 @@ import axios from 'axios';
 import { logger } from '../../logger';
 import BaseClient from './base-client';
 
-const persistentMenu = {
-  setting_type: 'call_to_actions',
-  thread_state: 'existing_thread',
-  call_to_actions: [{
-    type: 'postback',
-    title: 'Make a Request / Complaint',
-    payload: 'MAKE_REQUEST',
-  }, {
-    type: 'postback',
-    title: 'My Requests',
-    payload: 'GET_REQUESTS',
-  }, {
-    type: 'postback',
-    title: 'Change my city',
-    payload: 'CHANGE_CITY',
-  }, {
-    type: 'postback',
-    title: 'What can I ask?',
-    payload: 'ASK_OPTIONS',
-  }],
-};
-
-const startingMenu = {
-  setting_type: 'call_to_actions',
-  thread_state: 'new_thread',
-  call_to_actions: [{
-    payload: 'GET_STARTED',
-  }],
-};
-
-export const configureExternalInterfaces = () => {
-  // Send FB the persistent menu settings for the sake of it
-  axios.post(`https://graph.facebook.com/v2.6/me/thread_settings?access_token=${process.env.FB_PAGE_TOKEN}`, persistentMenu)
-    .catch(error => logger.error(error));
-  // Send FB the getting started settings for the sake of it
-  axios.post(`https://graph.facebook.com/v2.6/me/thread_settings?access_token=${process.env.FB_PAGE_TOKEN}`, startingMenu)
-    .catch(error => logger.error(error));
-};
-
 export class FacebookMessengerClient extends BaseClient {
   constructor(config) {
     super();
@@ -52,6 +13,53 @@ export class FacebookMessengerClient extends BaseClient {
       maxCharacters: 640,
     };
     this.config = Object.assign({}, defaults, config, this.config);
+  }
+
+  static configurePersistentMenu(pageToken, enable) {
+    if (enable) {
+      console.log('Enabling Persistent Menu');
+      return axios.post(`https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${pageToken}`, {
+        persistent_menu: [{
+          locale: 'en_US',
+          call_to_actions: [{
+            type: 'postback',
+            title: 'Make a Request / Complaint',
+            payload: 'MAKE_REQUEST',
+          }, {
+            type: 'postback',
+            title: 'My Requests',
+            payload: 'GET_REQUESTS',
+          }, {
+            type: 'postback',
+            title: 'Change my city',
+            payload: 'CHANGE_CITY',
+          }, {
+            type: 'postback',
+            title: 'What can I ask?',
+            payload: 'ASK_OPTIONS',
+          }],
+        }],
+      }).then(data => data).catch(error => logger.error(error));
+    }
+    console.log('Disabling Persistent Menu');
+    return axios.delete(`https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${pageToken}`, {
+      fields: ['persistent_menu'],
+    }).then(data => data).catch(error => logger.error(error));
+  }
+
+  static configureStartingButton(pageToken, enable) {
+    if (enable) {
+      console.log('Enabling Starting Button');
+      return axios.post(`https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${pageToken}`, {
+        get_started: {
+          payload: 'GET_STARTED',
+        }
+      }).then(data => data).catch(error => logger.error(error));
+    }
+    console.log('Disabling Starting Button');
+    return axios.delete(`https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${pageToken}`, {
+      fields: ['get_started'],
+    }).then(data => data).catch(error => logger.error(error));
   }
 
   callAPI(messageData) {

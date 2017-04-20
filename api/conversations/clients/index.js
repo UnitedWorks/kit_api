@@ -3,14 +3,9 @@ import * as Messenger from './facebook-messenger-client';
 import * as Twilio from './twilio-client';
 import { HTTPClient } from './http-client';
 
-const configureExternalInterfaces = () => {
-  Messenger.configureExternalInterfaces();
-};
-
 module.exports = {
   BaseClient,
   FacebookMessengerClient: Messenger.FacebookMessengerClient,
   TwilioSMSClient: Twilio.TwilioSMSClient,
-  HTTPClient: HTTPClient,
-  configureExternalInterfaces,
+  HTTPClient,
 };

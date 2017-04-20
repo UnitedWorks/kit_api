@@ -31,6 +31,15 @@ router.route('/entry')
       next(e);
     }
   })
+  .put(requireAuth, (req, res, next) => {
+    try {
+      helpers.updateEntry(req.body.entry)
+        .then(data => res.status(200).send({ data }))
+        .catch(err => next(err));
+    } catch (e) {
+      next(e);
+    }
+  })
   .delete(requireAuth, (req, res, next) => {
     logger.info('Disconnecting Entry');
     try {

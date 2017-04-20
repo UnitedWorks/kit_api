@@ -67,6 +67,29 @@ export function createEntry(entry, organization, options = {}) {
   });
 }
 
+export function updateEntry(entry, options = {}) {
+  return MessageEntry.where({ id: entry.id }).fetch().then((fetchedEntry) => {
+    const updateRequests = [fetchedEntry.save(entry)];
+    if (entry.facebook_entry_id) {
+      if (entry.persistent_menu_enabled !== fetchedEntry.get('persistent_menu_enabled')) {
+        updateRequests.push(Clients.FacebookMessengerClient.configurePersistentMenu(
+          fetchedEntry.get('access_token'), entry.persistent_menu_enabled));
+      }
+      if (entry.starting_action_enabled !== fetchedEntry.get('starting_action_enabled')) {
+        updateRequests.push(Clients.FacebookMessengerClient.configureStartingButton(
+          fetchedEntry.get('access_token'), entry.starting_action_enabled));
+      }
+    }
+    return Promise.all(updateRequests).then((responses) => {
+      return options.returnJSON ? fetchedEntry.toJSON() : fetchedEntry;
+    }).catch((err) => {
+      throw new Error(err);
+    })
+  }).catch((err) => {
+    throw new Error(err);
+  });
+}
+
 export function deleteEntry(entry) {
   return MessageEntry.where({ id: entry.id }).fetch().then((entryModel) => {
     return axios.delete(`https://graph.facebook.com/v2.8/${entryModel.toJSON().facebook_entry_id}/subscribed_apps?access_token=${entryModel.toJSON().access_token}`)
