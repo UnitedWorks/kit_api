@@ -108,9 +108,6 @@ export default {
       return nlp.message(input.text, {}).then((nlpData) => {
         this.snapshot.nlp = nlpData;
         const entities = nlpData.entities;
-        console.log('///////')
-        console.log(this.snapshot)
-        console.log('///////')
         if (entities.intent && entities.intent[0]) {
           if (entities.intent[0].value === 'voting_registration') {
             return this.stateRedirect({

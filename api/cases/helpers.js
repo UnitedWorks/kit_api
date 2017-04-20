@@ -23,7 +23,7 @@ export const notifyConstituentOfCaseStatusUpdate = (caseObj, status, { constitue
       message = `Your request has been addressed! #${caseObj.id} - ${caseObj.title.length > 50 ? caseObj.title.slice(0, 50) : caseObj.title}`;
     }
   } else if (status === 'viewed') {
-    message = `Your request #${caseObj.id} has been seen by someone in government! We will let you know when it's addressed.`;
+    message = `Your request #${caseObj.id} has been seen! I'll let you know when it has been addressed.`;
   } else {
     // Don't send a notification about something being opened or re-opened -- status === 'open'
     return;
@@ -40,8 +40,13 @@ export const notifyConstituentOfCaseStatusUpdate = (caseObj, status, { constitue
 };
 
 export const newCaseNotification = (caseObj, organization) => {
+  // Only send notifications when it's a service request
+  if (!caseObj.type !== CASE_CONSTANTS.REQUEST) return;
+  // Get Representatives of an Org
   AccountModels.Organization.where({ id: organization.id }).fetch({ withRelated: ['representatives'] }).then((returnedOrg) => {
     // Emails
+    // Disabling until we nail the normal case situation
+    /*
     let emailMessage = '';
     if (caseObj.category) {
       emailMessage += `Category: ${caseObj.category.label}<br/>`;
@@ -61,6 +66,8 @@ export const newCaseNotification = (caseObj, organization) => {
         case_id: caseObj.id,
       });
     });
+    */
+
     // Slack Notification
     let slackMessage = `>*City/Organization*: ${returnedOrg.get('name')}\n>*Category*: ${caseObj.category ? caseObj.category.label : 'Undefined '}\n>*Constituent ID*: ${caseObj.constituent_id}\n>*Complaint*: ${caseObj.title}`;
     if (caseObj.location) {
