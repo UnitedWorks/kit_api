@@ -19,32 +19,30 @@ export class FacebookMessengerClient extends BaseClient {
     if (enable) {
       console.log('Enabling Persistent Menu');
       return axios.post(`https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${pageToken}`, {
-        persistent_menu: [{
-          locale: 'en_US',
-          call_to_actions: [{
-            type: 'postback',
-            title: 'Make a Request / Complaint',
-            payload: 'MAKE_REQUEST',
-          }, {
-            type: 'postback',
-            title: 'My Requests',
-            payload: 'GET_REQUESTS',
-          }, {
-            type: 'postback',
-            title: 'Change my city',
-            payload: 'CHANGE_CITY',
-          }, {
-            type: 'postback',
-            title: 'What can I ask?',
-            payload: 'ASK_OPTIONS',
-          }],
-        }],
-      }).then(data => data).catch(error => logger.error(error));
+        persistent_menu: [
+          {
+            locale: 'default',
+            call_to_actions: [{
+              title: 'Make a Request',
+              type: 'postback',
+              payload: 'MAKE_REQUEST',
+            }, {
+              title: 'Change my city',
+              type: 'postback',
+              payload: 'CHANGE_CITY',
+            }, {
+              title: 'What can I ask?',
+              type: 'postback',
+              payload: 'ASK_OPTIONS',
+            }],
+          }
+        ],
+      }).then(data => data).catch(error => error);
     }
     console.log('Disabling Persistent Menu');
     return axios.delete(`https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${pageToken}`, {
-      fields: ['persistent_menu'],
-    }).then(data => data).catch(error => logger.error(error));
+      data: { fields: ['persistent_menu'] },
+    }).then(data => data).catch(error => error);
   }
 
   static configureStartingButton(pageToken, enable) {
@@ -54,12 +52,12 @@ export class FacebookMessengerClient extends BaseClient {
         get_started: {
           payload: 'GET_STARTED',
         }
-      }).then(data => data).catch(error => logger.error(error));
+      }).then(data => data).catch(error => error);
     }
     console.log('Disabling Starting Button');
     return axios.delete(`https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${pageToken}`, {
-      fields: ['get_started'],
-    }).then(data => data).catch(error => logger.error(error));
+      data: { fields: ['get_started'] },
+    }).then(data => data).catch(error => error);
   }
 
   callAPI(messageData) {

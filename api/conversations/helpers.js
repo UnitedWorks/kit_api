@@ -80,11 +80,11 @@ export function updateEntry(entry, options = {}) {
           fetchedEntry.get('access_token'), entry.starting_action_enabled));
       }
     }
-    return Promise.all(updateRequests).then((responses) => {
+    return Promise.all(updateRequests).then(() => {
       return options.returnJSON ? fetchedEntry.toJSON() : fetchedEntry;
     }).catch((err) => {
       throw new Error(err);
-    })
+    });
   }).catch((err) => {
     throw new Error(err);
   });
