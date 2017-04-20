@@ -2,6 +2,29 @@ import axios from 'axios';
 import { logger } from '../../logger';
 import BaseClient from './base-client';
 
+const defaultPersistentMenu = [
+  {
+    locale: 'default',
+    call_to_actions: [{
+      title: 'Make a Request',
+      type: 'postback',
+      payload: 'MAKE_REQUEST',
+    }, {
+      title: 'Change my city',
+      type: 'postback',
+      payload: 'CHANGE_CITY',
+    }, {
+      title: 'What can I ask?',
+      type: 'postback',
+      payload: 'ASK_OPTIONS',
+    }],
+  },
+];
+
+const gettingStarted = {
+  payload: 'GET_STARTED',
+};
+
 export class FacebookMessengerClient extends BaseClient {
   constructor(config) {
     super();
@@ -15,28 +38,11 @@ export class FacebookMessengerClient extends BaseClient {
     this.config = Object.assign({}, defaults, config, this.config);
   }
 
-  static configurePersistentMenu(pageToken, enable) {
+  static configurePersistentMenu(pageToken, enable, menu) {
     if (enable) {
       logger.info('Enabling Persistent Menu');
       return axios.post(`https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${pageToken}`, {
-        persistent_menu: [
-          {
-            locale: 'default',
-            call_to_actions: [{
-              title: 'Make a Request',
-              type: 'postback',
-              payload: 'MAKE_REQUEST',
-            }, {
-              title: 'Change my city',
-              type: 'postback',
-              payload: 'CHANGE_CITY',
-            }, {
-              title: 'What can I ask?',
-              type: 'postback',
-              payload: 'ASK_OPTIONS',
-            }],
-          },
-        ],
+        persistent_menu: menu || defaultPersistentMenu,
       }).then(data => data).catch(error => error);
     }
     logger.info('Disabling Persistent Menu');
@@ -45,13 +51,14 @@ export class FacebookMessengerClient extends BaseClient {
     }).then(data => data).catch(error => error);
   }
 
+  // FYI, FB seemingly requires a Getting Started button
+  // Error code: 2018145 =>
+  // You must set a Get Started button if you also wish to use persistent menu.
   static configureStartingButton(pageToken, enable) {
     if (enable) {
       logger.info('Enabling Starting Button');
       return axios.post(`https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${pageToken}`, {
-        get_started: {
-          payload: 'GET_STARTED',
-        },
+        get_started: gettingStarted,
       }).then(data => data).catch(error => error);
     }
     logger.info('Disabling Starting Button');

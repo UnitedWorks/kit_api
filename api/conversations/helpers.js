@@ -49,16 +49,21 @@ export function createEntry(entry, organization, options = {}) {
     // Save new token and entry page information
     return MessageEntry.forge({
       ...refreshedEntry,
+      starting_action_enabled: true,
       organization_id: organization.id,
     }).save(null, { method: 'insert' }).then((entryModel) => {
       // Have the app listen to the page, forwarding along messages to our webhook
       return axios.post(`https://graph.facebook.com/v2.8/${refreshedEntry.facebook_entry_id}/subscribed_apps?access_token=${refreshedEntry.access_token}`)
-      .then((response) => {
-        if (response.error) throw new Error(response.error.message);
-        return options.returnJSON ? entryModel.toJSON() : entryModel;
-      }).catch((error) => {
-        throw new Error(error);
-      });
+        .then((response) => {
+          // Enable the Getting Started Button
+          Clients.FacebookMessengerClient.configureStartingButton(
+            refreshedEntry.access_token, entry.starting_action_enabled)
+          // And respond to the original request!
+          if (response.error) throw new Error(response.error.message);
+          return options.returnJSON ? entryModel.toJSON() : entryModel;
+        }).catch((error) => {
+          throw new Error(error);
+        });
     }).catch((err) => {
       throw new Error(err);
     });
