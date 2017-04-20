@@ -41,7 +41,7 @@ export const notifyConstituentOfCaseStatusUpdate = (caseObj, status, { constitue
 
 export const newCaseNotification = (caseObj, organization) => {
   // Only send notifications when it's a service request
-  if (!caseObj.type !== CASE_CONSTANTS.REQUEST) return;
+  if (!caseObj.type === CASE_CONSTANTS.REQUEST) return;
   // Get Representatives of an Org
   AccountModels.Organization.where({ id: organization.id }).fetch({ withRelated: ['representatives'] }).then((returnedOrg) => {
     // Emails
