@@ -2,32 +2,25 @@ import { logger } from '../../logger';
 import * as TAGS from '../../constants/nlp-tagging';
 import { nlp } from '../../services/nlp';
 import * as CASE_CONSTANTS from '../../constants/cases';
+import * as ORGANIZATION_CONSTANTS from '../../constants/organizations';
 import { getConstituentCases, handleConstituentRequest } from '../../cases/helpers';
 import SlackService from '../../services/slack';
 import { fetchAnswers } from '../helpers';
 
 /* TODO(nicksahler) until I build the full i18n class */
-const i18n = function(key) {
+const i18n = function(key, inserts = {}) {
   var translations = {
-    'intro_hello': 'Hey there! :) I’m the Mayor, a chatbot to help you make sense of government large and small!',
-    'intro_information': 'I can help you register to vote, navigate state/federal benefits, alert you of school closings, and more! How great is that?',
-    'intro_excitement': ':D Thought you\'d never ask!',
-    'intro_explanation': 'Local governments and service providers tell me answers for frequently asked questions. When you ask, I sift through all it to give you the best answer! I want to save you from struggling with websites and phone calls.',
-    'intro_ask_location': 'So I can give you the right answers, what CITY and STATE are you in?',
-    'bot_apology': 'Sorry, I may not be understanding :( Can you try saying that with more detail?',
+    'intro_hello': `Hey there! Thanks for sending me a message :D I'm ${inserts.name ? `${inserts.name}, ` : ''}an artifically intelligent assistant for your local government! Pretty cool huh?`,
+    'intro_information': `I can help you leave complaints, request services, and so much more!`,
+    'organization_confirmation': `You're interested in engaging ${inserts.organizationName}, right?`,
+    'bot_apology': `Sorry, I wasn't expeting that answer or may have misunderstood. ${inserts.appendQuestion ? inserts.appendQuestion : ''}`,
   };
   return translations[key];
 };
 
 const startingQuickReplies = [
-  { content_type: 'text', title: 'Tell me more!', payload: 'Tell me more!' },
-  { content_type: 'text', title: 'Hmm...', payload: 'Hmm...' },
-];
-
-const skpeticQuickReplies = [
-  { content_type: 'text', title: 'Get registered!', payload: 'Get registered to vote' },
-  { content_type: 'text', title: 'Am I registered?', payload: 'Am I registered to vote?' },
-  { content_type: 'text', title: 'No thanks', payload: 'No thanks' },
+  { content_type: 'text', title: 'Yes!', payload: 'Yes!' },
+  { content_type: 'text', title: 'No', payload: 'No' },
 ];
 
 const basicRequestQuickReplies = [
@@ -39,15 +32,29 @@ const basicRequestQuickReplies = [
 export default {
   init: {
     enter() {
+      let name;
+      let pictureUrl = 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/16422989_187757401706018_5896478987148979475_o.png?oh=e1edeead1710b85f3d42e669685f3d59&oe=590603C2';
+      if (this.snapshot.constituent.facebookEntry) {
+        name = this.snapshot.constituent.facebookEntry.intro_name;
+        if (this.snapshot.constituent.facebookEntry.intro_picture_url) {
+          pictureUrl = this.snapshot.constituent.facebookEntry.intro_picture_url;
+        }
+      } else if (this.snapshot.constituent.smsEntry) {
+        name = this.snapshot.constituent.smsEntry.intro_name;
+        if (this.snapshot.constituent.smsEntry.intro_picture_url) {
+          pictureUrl = this.snapshot.constituent.smsEntry.intro_picture_url;
+        }
+      }
       this.messagingClient.addAll([
-        i18n('intro_hello'),
+        i18n('intro_hello', { name }),
         {
           type: 'image',
-          url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/16422989_187757401706018_5896478987148979475_o.png?oh=e1edeead1710b85f3d42e669685f3d59&oe=590603C2',
+          url: pictureUrl,
         },
+        i18n('intro_information'),
       ]);
       return this.messagingClient.runQuene().then(() => {
-        return 'waiting_for_starting_interaction';
+        return 'waiting_for_organization_confirmation';
       });
     },
   },
@@ -66,130 +73,54 @@ export default {
     }
   },
 
-  waiting_for_starting_interaction: {
+  waiting_for_organization_confirmation: {
     enter() {
-      this.messagingClient.send(i18n('intro_information'), startingQuickReplies);
+      this.messagingClient.send(i18n('organization_confirmation', {
+        organizationName: this.snapshot.data_store.organization.name,
+      }), startingQuickReplies);
     },
     message() {
       return nlp.message(this.snapshot.input.payload.text, {}).then((nlpData) => {
         this.snapshot.nlp = nlpData;
         const entities = nlpData.entities;
-
         if (entities.intent && entities.intent[0]) {
-          if (entities.intent[0].value === 'speech_skeptical') {
-            return this.messagingClient.send('I get it. Governments can barely get a website working. How could they possibly have a chatbot!?! :P')
-              .then(() => 'waiting_for_starting_interaction_options');
+          if (entities.intent[0].value === 'speech_confirm') {
+            return this.messagingClient.send('Great! I’m going to do my best to help with your local concerns, but remember I’m not an encylopedia :P')
+              .then(() => 'what_can_i_do');
           }
-
-          if (entities.intent[0].value === 'speech_elaborate') {
-            this.messagingClient.addAll([
-              {
-                type: 'image',
-                url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/16463485_187743068374118_731666577286732253_o.png?oh=145d7d19e62113f3d2a56a74f1632d13&oe=590ABC31',
-              },
-              i18n('intro_explanation'),
-            ]);
-
-            return this.messagingClient.runQuene().then(() => 'waiting_for_starting_interaction_options');
+          if (entities.intent[0].value === 'speech_deny') {
+            return this.stateRedirect('location', 'smallTalk.what_can_i_do');
           }
         }
-
-        this.messagingClient.send(i18n('bot_apology'), startingQuickReplies);
+        this.messagingClient.send(i18n('bot_apology', { appendQuestion: i18n('organization_confirmation', {
+          organizationName: this.snapshot.data_store.organization.name,
+        }) }), startingQuickReplies);
       });
     },
   },
 
-  waiting_for_starting_interaction_options: {
+  what_can_i_do: {
     enter() {
-      this.messagingClient.send('How about I tell you how to register to vote?', skpeticQuickReplies);
-    },
-    message() {
-      const input = this.snapshot.input.payload;
-      return nlp.message(input.text, {}).then((nlpData) => {
-        this.snapshot.nlp = nlpData;
-        const entities = nlpData.entities;
-        if (entities.intent && entities.intent[0]) {
-          if (entities.intent[0].value === 'voting_registration') {
-            return this.stateRedirect({
-              whenExiting: 'voting.voterRegistrationGet',
-              exitInstead: 'smallTalk.waiting_for_starting_interaction_end',
-            }, 'voting.voterRegistrationGet');
-          } else if (entities.intent[0].value === 'voting_registration_check') {
-            return this.stateRedirect({
-              whenExiting: 'voting.voterRegistrationCheck',
-              exitInstead: 'smallTalk.waiting_for_starting_interaction_end',
-            }, 'voting.voterRegistrationCheck');
-          } else if (entities.intent[0].value === 'speech_deny') {
-            this.messagingClient.addAll([
-              'Ok! In that case, let me give you a run down of what I can do!',
-              i18n('intro_explanation'),
-              i18n('intro_ask_location'),
-            ]);
-            return this.messagingClient.runQuene().then(() => 'setup.waiting_organization');
-          }
-        }
-
-        this.messagingClient.send(i18n('bot_apology'), skpeticQuickReplies).then(() => 'waiting_for_starting_interaction_options');
+      this.messagingClient.addToQuene('Here are some ways I can help you interact with government!');
+      this.messagingClient.addToQuene({
+        type: 'template',
+        templateType: 'generic',
+        elements: [{
+          title: 'Voting',
+          subtitle: 'Do its',
+          buttons: [{
+            type: 'postback',
+            title: 'Start Chatting',
+            payload: 'Start Chatting',
+          }],
+        }],
       });
+      return this.messagingClient.runQuene().then(() => 'start');
     },
-  },
-
-  waiting_for_starting_interaction_end: {
-    enter() {
-      const quickReplies = [
-        { content_type: 'text', title: 'WOH!', payload: 'Awesome!' },
-        { content_type: 'text', title: 'Unimpressive', payload: 'Unimpressed' },
-      ];
-      this.messagingClient.send('How awesome was that?! :D', quickReplies);
-    },
-    message() {
-      const quickReplies = [
-        ...basicRequestQuickReplies,
-        { content_type: 'text', title: 'What else can I ask?', payload: 'What can I ask?' },
-      ];
-
-      return nlp.message(this.snapshot.input.payload, {}).then((nlpData) => {
-        this.snapshot.nlp = nlpData;
-        const entities = nlpData.entities;
-
-        if (entities.intent && entities.intent[0]) {
-          if (entities.intent[0].value === 'speech_accepting') {
-            this.messagingClient.addToQuene({
-              type: 'image',
-              url: 'http://i.giphy.com/Mxygn6lbNmh20.gif',
-            });
-          }
-
-          if (entities.intent[0].value === 'speech_skeptical') {
-            this.messagingClient.addToQuene({
-              type: 'image',
-              url: 'http://i.giphy.com/l3q2PnJK8NqG9KM5G.gif',
-            });
-            this.messagingClient.addToQuene('Tough crowd, huh. :|');
-          }
-        }
-
-        this.messagingClient.addToQuene('In bot years, I\'m still young, but there are a few things I can help you and your local government with! Ask away.', quickReplies);
-
-        return this.messagingClient.runQuene().then(() => 'start');
-      });
-    },
-  },
-
-  askOptions() {
-    if (this.get('organization') && this.get('organization').activated) {
-      this.messagingClient.addToQuene('Your local government is great! They have told me quite a bit!', basicRequestQuickReplies);
-    } else {
-      this.messagingClient.addToQuene('I\'m still learning from your local government, but I can help still with questions about voting and elections!', basicRequestQuickReplies);
-    }
-    this.messagingClient.addToQuene('Some starting questions you can ask are: "When is my next election?", "What benefits are available to me?", and "I have a complaint"', basicRequestQuickReplies);
-    return this.messagingClient.runQuene().then(() => {
-      return 'start';
-    });
   },
 
   handle_greeting() {
-    this.messagingClient.send('Hey there! I\'m not much for small talk at the moment :/ Focusing on learning ways to help you interact with city governments right now!', basicRequestQuickReplies)
+    this.messagingClient.send('Hey there! I\'m not much for small talk at the moment :/ Focusing on learning ways to help you interact with city governments right now!', basicRequestQuickReplies);
     return 'start';
   },
 
@@ -204,7 +135,7 @@ export default {
 
         const entities = nlpData.entities;
         const intent_map = {
-          'help': 'askOptions',
+          'help': 'what_can_i_do',
           'greeting': 'handle_greeting',
           'benefits_internet': 'benefits-internet.init',
 
@@ -249,7 +180,7 @@ export default {
         'GET_REQUESTS': 'getRequests',
         'GET_STARTED': 'init',
         'CHANGE_CITY': 'setup.reset_organization',
-        'ASK_OPTIONS': 'askOptions',
+        'ASK_OPTIONS': 'what_can_i_do',
       }[this.snapshot.input.payload.payload];
     }
   },
