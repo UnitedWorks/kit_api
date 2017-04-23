@@ -5,10 +5,10 @@ import BaseClient from './base-client';
 const defaultPersistentMenu = [{
   locale: 'default',
   call_to_actions: [{
-    title: 'Quick Actions',
+    title: '📌 Quick Actions',
     type: 'nested',
     call_to_actions: [{
-      title: 'Local Gov Services',
+      title: '🏦 Local Gov Services',
       type: 'nested',
       call_to_actions: [{
         type: 'postback',
@@ -24,7 +24,7 @@ const defaultPersistentMenu = [{
         payload: 'Check School Closure',
       }],
     }, {
-      title: 'Raise an Issue',
+      title: '😡 Raise an Issue',
       type: 'nested',
       call_to_actions: [{
         type: 'postback',
@@ -36,7 +36,7 @@ const defaultPersistentMenu = [{
         payload: 'See My Requests',
       }],
     }, {
-      title: 'Voting and Elections',
+      title: '🎫 Voting and Elections',
       type: 'nested',
       call_to_actions: [{
         type: 'postback',
@@ -52,7 +52,7 @@ const defaultPersistentMenu = [{
         payload: 'Problem at Polls',
       }],
     }, {
-      title: 'Services and Benefits',
+      title: '❤️ Services and Benefits',
       type: 'nested',
       call_to_actions: [{
         type: 'postback',
@@ -73,7 +73,7 @@ const defaultPersistentMenu = [{
       }],
     }],
   }, {
-    title: 'Change Language',
+    title: '🔃 Change Language',
     type: 'nested',
     call_to_actions: [{
       type: 'postback',
@@ -85,8 +85,8 @@ const defaultPersistentMenu = [{
       payload: 'Set Espanol',
     }],
   }, {
-    title: 'Help',
-    payload: 'nested',
+    title: '❔ Help',
+    type: 'nested',
     call_to_actions: [{
       type: 'postback',
       title: 'What can I ask?',
