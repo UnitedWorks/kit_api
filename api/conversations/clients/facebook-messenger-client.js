@@ -2,24 +2,107 @@ import axios from 'axios';
 import { logger } from '../../logger';
 import BaseClient from './base-client';
 
-const defaultPersistentMenu = [
-  {
-    locale: 'default',
+const defaultPersistentMenu = [{
+  locale: 'default',
+  call_to_actions: [{
+    title: 'Quick Actions',
+    type: 'nested',
     call_to_actions: [{
-      title: 'Make a Request',
-      type: 'postback',
-      payload: 'MAKE_REQUEST',
+      title: 'Local Gov Services',
+      type: 'nested',
+      call_to_actions: [{
+        type: 'postback',
+        title: 'Get a Trash Schedule',
+        payload: 'Get a Trash Schedule',
+      }, {
+        type: 'postback',
+        title: 'Get a Pet License',
+        payload: 'Get a Pet License',
+      }, {
+        type: 'postback',
+        title: 'Check School Closure',
+        payload: 'Check School Closure',
+      }],
     }, {
-      title: 'Change my city',
-      type: 'postback',
-      payload: 'CHANGE_CITY',
+      title: 'Raise an Issue',
+      type: 'nested',
+      call_to_actions: [{
+        type: 'postback',
+        title: 'Raise an Issue',
+        payload: 'Raise an Issue',
+      }, {
+        type: 'postback',
+        title: 'See My Requests',
+        payload: 'See My Requests',
+      }],
     }, {
-      title: 'What can I ask?',
-      type: 'postback',
-      payload: 'ASK_OPTIONS',
+      title: 'Voting and Elections',
+      type: 'nested',
+      call_to_actions: [{
+        type: 'postback',
+        title: 'Upcoming Elections',
+        payload: 'Upcoming Elections',
+      }, {
+        type: 'postback',
+        title: 'Register to Vote',
+        payload: 'Register to Vote',
+      }, {
+        type: 'postback',
+        title: 'Problem at Polls',
+        payload: 'Problem at Polls',
+      }],
+    }, {
+      title: 'Services and Benefits',
+      type: 'nested',
+      call_to_actions: [{
+        type: 'postback',
+        title: 'Benefits Screener',
+        payload: 'Benefits Screener',
+      }, {
+        type: 'postback',
+        title: 'Job Assistance',
+        payload: 'Job Assistance',
+      }, {
+        type: 'postback',
+        title: 'Find a Shelter',
+        payload: 'Find a Shelter',
+      }, {
+        type: 'postback',
+        title: 'Find a Washroom',
+        payload: 'Find a Washroom',
+      }],
     }],
-  },
-];
+  }, {
+    title: 'Change Language',
+    type: 'nested',
+    call_to_actions: [{
+      type: 'postback',
+      title: 'Set English',
+      payload: 'Set English',
+    }, {
+      type: 'postback',
+      title: 'Set Espanol',
+      payload: 'Set Espanol',
+    }],
+  }, {
+    title: 'Help',
+    payload: 'nested',
+    call_to_actions: [{
+      type: 'postback',
+      title: 'What can I ask?',
+      payload: 'What can I ask?',
+    }, {
+      type: 'postback',
+      title: 'Leave Feedback',
+      payload: 'Leave Feedback',
+    }, {
+      type: 'web_url',
+      title: 'Want your own bot?',
+      url: 'https://mayor.chat',
+      webview_height_ratio: 'full',
+    }],
+  }],
+}];
 
 const gettingStarted = {
   payload: 'GET_STARTED',
@@ -38,11 +121,11 @@ export class FacebookMessengerClient extends BaseClient {
     this.config = Object.assign({}, defaults, config, this.config);
   }
 
-  static configurePersistentMenu(pageToken, enable, menu) {
+  static configurePersistentMenu(pageToken, enable, menu = defaultPersistentMenu) {
     if (enable) {
       logger.info('Enabling Persistent Menu');
       return axios.post(`https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${pageToken}`, {
-        persistent_menu: menu || defaultPersistentMenu,
+        persistent_menu: menu,
       }).then(data => data).catch(error => error);
     }
     logger.info('Disabling Persistent Menu');
