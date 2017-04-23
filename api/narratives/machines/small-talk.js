@@ -54,6 +54,7 @@ export default {
         i18n('intro_information'),
       ]);
       return this.messagingClient.runQuene().then(() => {
+        if (!this.get('organization')) return this.stateRedirect('location', 'smallTalk.what_can_i_do');
         return 'waiting_for_organization_confirmation';
       });
     },
@@ -76,7 +77,7 @@ export default {
   waiting_for_organization_confirmation: {
     enter() {
       this.messagingClient.send(i18n('organization_confirmation', {
-        organizationName: this.snapshot.data_store.organization.name,
+        organizationName: this.get('organization').name,
       }), startingQuickReplies);
     },
     message() {
@@ -85,15 +86,14 @@ export default {
         const entities = nlpData.entities;
         if (entities.intent && entities.intent[0]) {
           if (entities.intent[0].value === 'speech_confirm') {
-            return this.messagingClient.send('Great! Seems like a good community :)')
-              .then(() => 'what_can_i_do');
+            return this.messagingClient.send('Great! :)').then(() => 'what_can_i_do');
           }
           if (entities.intent[0].value === 'speech_deny') {
             return this.stateRedirect('location', 'smallTalk.what_can_i_do');
           }
         }
         this.messagingClient.send(i18n('bot_apology', { appendQuestion: i18n('organization_confirmation', {
-          organizationName: this.snapshot.data_store.organization.name,
+          organizationName: this.get('organization').name,
         }) }), startingQuickReplies);
       });
     },
