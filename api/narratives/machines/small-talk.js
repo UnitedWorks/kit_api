@@ -215,7 +215,8 @@ export default {
   start: {
     message() {
       const input = this.snapshot.input.payload;
-      return nlp.message(input.text, {}).then((nlpData) => {
+      const text = input.text || input.payload.replace(/([A-Z])/g, ' $1').trim();
+      return nlp.message(text, {}).then((nlpData) => {
         this.snapshot.nlp = nlpData;
 
         logger.info(nlpData);
@@ -262,14 +263,16 @@ export default {
     },
 
     action() {
-      return {
+      const goTo = {
         'MAKE_REQUEST': 'complaint.waiting_for_complaint',
         'GET_REQUESTS': 'getRequests',
         'GET_STARTED': 'init',
         'CHANGE_CITY': 'setup.reset_organization',
         'ASK_OPTIONS': 'what_can_i_do',
       }[this.snapshot.input.payload.payload];
-    }
+      if (!goTo) return this.input('message');
+      return goTo;
+    },
   },
 
   getRequests() {
