@@ -9,9 +9,9 @@ import { fetchAnswers } from '../helpers';
 /* TODO(nicksahler) until I build the full i18n class */
 const i18n = function(key, inserts = {}) {
   var translations = {
-    'intro_hello': `Hey there! :D I'm ${inserts.name ? `${inserts.name}, ` : ''}an artifically intelligent assistant for your to engage local gov!`,
-    'intro_information': `I let you can leave complaints, request services, and more!`,
-    'organization_confirmation': `Your wondering about ${inserts.organizationName}, right?`,
+    'intro_hello': `Hey there! :D I'm ${inserts.name ? `${inserts.name}, ` : ''}an artifically intelligent assistant connecting you to local gov!`,
+    'intro_information': `I can let you leave complaints, request services, and more!`,
+    'organization_confirmation': `You're interested in ${inserts.organizationName}, right?`,
     'bot_apology': `Sorry, I wasn't expeting that answer or may have misunderstood. ${inserts.appendQuestion ? inserts.appendQuestion : ''}`,
   };
   return translations[key];
