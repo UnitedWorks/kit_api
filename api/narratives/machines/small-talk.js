@@ -215,8 +215,10 @@ export default {
   start: {
     message() {
       const input = this.snapshot.input.payload;
-      const text = input.text || input.payload.replace(/([A-Z])/g, ' $1').trim();
-      return nlp.message(text, {}).then((nlpData) => {
+      if (!input.text && input.payload) {
+        this.snapshot.input.payload.text = input.payload.replace(/([A-Z])/g, ' $1').trim();
+      }
+      return nlp.message(input.text, {}).then((nlpData) => {
         this.snapshot.nlp = nlpData;
 
         logger.info(nlpData);
@@ -291,14 +293,14 @@ export default {
     });
   },
 
-  failedRequest(aux = {}) {
+  failedRequest() {
     new SlackService({
       username: 'Misunderstood Request',
       icon: 'question',
-    }).send(`>*Request Message*: ${aux.input.payload.text}\n>*Constituent ID*: ${this.snapshot.constituent.id}`);
+    }).send(`>*Request Message*: ${this.snapshot.input.payload.text}\n>*Constituent ID*: ${this.snapshot.constituent.id}`);
     const message = 'Ah shoot, I\'m still learning so I don\'t understand that request yet. Can you give more description? <3';
     handleConstituentRequest({
-      title: aux.input.payload.text,
+      title: this.snapshot.input.payload.text,
       type: CASE_CONSTANTS.STATEMENT,
     },
       this.snapshot.constituent,
