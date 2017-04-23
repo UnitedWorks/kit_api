@@ -2,7 +2,6 @@ import { logger } from '../../logger';
 import * as TAGS from '../../constants/nlp-tagging';
 import { nlp } from '../../services/nlp';
 import * as CASE_CONSTANTS from '../../constants/cases';
-import * as ORGANIZATION_CONSTANTS from '../../constants/organizations';
 import { getConstituentCases, handleConstituentRequest } from '../../cases/helpers';
 import SlackService from '../../services/slack';
 import { fetchAnswers } from '../helpers';
@@ -12,7 +11,7 @@ const i18n = function(key, inserts = {}) {
   var translations = {
     'intro_hello': `Hey there! Thanks for sending me a message :D I'm ${inserts.name ? `${inserts.name}, ` : ''}an artifically intelligent assistant for your local government! Pretty cool huh?`,
     'intro_information': `I can help you leave complaints, request services, and so much more!`,
-    'organization_confirmation': `You're interested in engaging ${inserts.organizationName}, right?`,
+    'organization_confirmation': `You care about ${inserts.organizationName}, right?`,
     'bot_apology': `Sorry, I wasn't expeting that answer or may have misunderstood. ${inserts.appendQuestion ? inserts.appendQuestion : ''}`,
   };
   return translations[key];
@@ -24,6 +23,7 @@ const startingQuickReplies = [
 ];
 
 const basicRequestQuickReplies = [
+  { content_type: 'text', title: 'What can I ask?', payload: 'What can I ask?' },
   { content_type: 'text', title: 'Upcoming Elections', payload: 'Upcoming Elections' },
   { content_type: 'text', title: 'Available Benefits', payload: 'Available Benefits' },
   { content_type: 'text', title: 'Raise an Issue', payload: 'MAKE_REQUEST' },
@@ -35,12 +35,12 @@ export default {
       let name;
       let pictureUrl = 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/16422989_187757401706018_5896478987148979475_o.png?oh=e1edeead1710b85f3d42e669685f3d59&oe=590603C2';
       if (this.snapshot.constituent.facebookEntry) {
-        name = this.snapshot.constituent.facebookEntry.intro_name;
+        name = this.snapshot.constituent.facebookEntry.intro_name || this.snapshot.constituent.facebookEntry.name;
         if (this.snapshot.constituent.facebookEntry.intro_picture_url) {
           pictureUrl = this.snapshot.constituent.facebookEntry.intro_picture_url;
         }
       } else if (this.snapshot.constituent.smsEntry) {
-        name = this.snapshot.constituent.smsEntry.intro_name;
+        name = this.snapshot.constituent.smsEntry.intro_name || this.snapshot.constituent.smsEntry.name;
         if (this.snapshot.constituent.smsEntry.intro_picture_url) {
           pictureUrl = this.snapshot.constituent.smsEntry.intro_picture_url;
         }
@@ -85,7 +85,7 @@ export default {
         const entities = nlpData.entities;
         if (entities.intent && entities.intent[0]) {
           if (entities.intent[0].value === 'speech_confirm') {
-            return this.messagingClient.send('Great! I’m going to do my best to help with your local concerns, but remember I’m not an encylopedia :P')
+            return this.messagingClient.send('Great! I’m going to do my best to help with your local concerns. Just remember that I’m not an encylopedia :P')
               .then(() => 'what_can_i_do');
           }
           if (entities.intent[0].value === 'speech_deny') {
@@ -101,17 +101,103 @@ export default {
 
   what_can_i_do: {
     enter() {
-      this.messagingClient.addToQuene('Here are some ways I can help you interact with government!');
+      this.messagingClient.addToQuene('Here are some ways I can help you interact with government! If you have something else on your mind, just ask!');
       this.messagingClient.addToQuene({
         type: 'template',
         templateType: 'generic',
         elements: [{
-          title: 'Voting',
-          subtitle: 'Do its',
+          title: 'Local Gov Services',
+          subtitle: 'Ask about the trash schedule, how to get pet licenses, and other local services.',
+          image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/16463485_187743068374118_731666577286732253_o.png?oh=34db605884afb6fa415694f76f7b8214&oe=59816331',
           buttons: [{
             type: 'postback',
-            title: 'Start Chatting',
-            payload: 'Start Chatting',
+            title: 'Get a Trash Schedule',
+            payload: 'Get a Trash Schedule',
+          }, {
+            type: 'postback',
+            title: 'Get a Pet License',
+            payload: 'Get a Pet License',
+          }, {
+            type: 'postback',
+            title: 'Check School Closure',
+            payload: 'Check School Closure',
+          }],
+        }, {
+          title: 'Reporting Issues and Concerns',
+          subtitle: 'Record a problem you are facing, and a repersentative will get back to you with a response or resolution',
+          image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/18077241_232809757200782_8664249297555360938_o.png?oh=ff0af5e7afe55f651fd7d367dfa11574&oe=598B1E56',
+          buttons: [{
+            type: 'postback',
+            title: 'Raise an Issue',
+            payload: 'Raise an Issue',
+          }, {
+            type: 'postback',
+            title: 'See My Requests',
+            payload: 'See My Requests',
+          }],
+        }, {
+          title: 'Voting and Elections',
+          subtitle: 'Ask about elections, voter ID laws, registration deadlines, and anything else to help you elect representatives!',
+          image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/16586922_193481711133587_230696876501689696_o.png?oh=00e2b4adcd61378777e5ce3801a44650&oe=59985D7E',
+          buttons: [{
+            type: 'postback',
+            title: 'Upcoming Elections',
+            payload: 'Upcoming Elections',
+          }, {
+            type: 'postback',
+            title: 'Register to Vote',
+            payload: 'Register to Vote',
+          }, {
+            type: 'postback',
+            title: 'Problem at Polls',
+            payload: 'Problem at Polls',
+          }],
+        }, {
+          title: 'Service Providers and Benefits',
+          subtitle: 'Find out what state and federal benefits programs may be available for you and your family.',
+          image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/18056257_232842120530879_6922898701508692950_o.png?oh=1c387a889c56b387e8ca55b5c4b756af&oe=5994A489',
+          buttons: [{
+            type: 'postback',
+            title: 'Benefits Screener',
+            payload: 'Benefits Screener',
+          }, {
+            type: 'postback',
+            title: 'Job Assistance',
+            payload: 'Job Assistance',
+          }],
+        }, {
+          title: 'Immediate Help',
+          subtitle: 'Find immediate or short-term assistance if you are facing tough times.',
+          image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/18076480_232825243865900_3433821028911633831_o.png?oh=fcc2d52c34dfb837272ccda9b928de22&oe=59766CF9',
+          buttons: [{
+            type: 'postback',
+            title: 'Find a Shelter',
+            payload: 'Find a Shelter',
+          }, {
+            type: 'postback',
+            title: 'Find a Clinic',
+            payload: 'Find a Clinic',
+          }, {
+            type: 'postback',
+            title: 'Find a Washroom',
+            payload: 'Find a Washroom',
+          }],
+        }, {
+          title: 'About',
+          subtitle: 'Learn more about this bot and what it does!',
+          image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/18056595_232810460534045_3606142951231659741_o.png?oh=9c2656704b2d8a0793f54a16e89234e1&oe=598D0793',
+          buttons: [{
+            type: 'postback',
+            title: 'Leave Feedback',
+            payload: 'Leave Feedback',
+          }, {
+            type: 'postback',
+            title: 'How Does This Work?',
+            payload: 'How Does This Work?',
+          }, {
+            type: 'postback',
+            title: 'Change Language',
+            payload: 'Change Language',
           }],
         }],
       });
