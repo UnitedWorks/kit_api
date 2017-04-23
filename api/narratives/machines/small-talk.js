@@ -9,9 +9,9 @@ import { fetchAnswers } from '../helpers';
 /* TODO(nicksahler) until I build the full i18n class */
 const i18n = function(key, inserts = {}) {
   var translations = {
-    'intro_hello': `Hey there! Thanks for sending me a message :D I'm ${inserts.name ? `${inserts.name}, ` : ''}an artifically intelligent assistant for your local government! Pretty cool huh?`,
-    'intro_information': `I can help you leave complaints, request services, and so much more!`,
-    'organization_confirmation': `You care about ${inserts.organizationName}, right?`,
+    'intro_hello': `Hey there! :D I'm ${inserts.name ? `${inserts.name}, ` : ''}an artifically intelligent assistant for your to engage local gov!`,
+    'intro_information': `I let you can leave complaints, request services, and more!`,
+    'organization_confirmation': `Your wondering about ${inserts.organizationName}, right?`,
     'bot_apology': `Sorry, I wasn't expeting that answer or may have misunderstood. ${inserts.appendQuestion ? inserts.appendQuestion : ''}`,
   };
   return translations[key];
@@ -85,7 +85,7 @@ export default {
         const entities = nlpData.entities;
         if (entities.intent && entities.intent[0]) {
           if (entities.intent[0].value === 'speech_confirm') {
-            return this.messagingClient.send('Great! I’m going to do my best to help with your local concerns. Just remember that I’m not an encylopedia :P')
+            return this.messagingClient.send('Great! Seems like a good community :)')
               .then(() => 'what_can_i_do');
           }
           if (entities.intent[0].value === 'speech_deny') {
@@ -101,7 +101,7 @@ export default {
 
   what_can_i_do: {
     enter() {
-      this.messagingClient.addToQuene('Here are some ways I can help you interact with government! If you have something else on your mind, just ask!');
+      this.messagingClient.addToQuene('Here are some ways you can interact with your local government!');
       this.messagingClient.addToQuene({
         type: 'template',
         templateType: 'generic',
@@ -111,12 +111,12 @@ export default {
           image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/16463485_187743068374118_731666577286732253_o.png?oh=34db605884afb6fa415694f76f7b8214&oe=59816331',
           buttons: [{
             type: 'postback',
-            title: 'Get a Trash Schedule',
-            payload: 'Get a Trash Schedule',
+            title: 'Get Trash Schedule',
+            payload: 'Get Trash Schedule',
           }, {
             type: 'postback',
-            title: 'Get a Pet License',
-            payload: 'Get a Pet License',
+            title: 'Get Pet License',
+            payload: 'Get Pet License',
           }, {
             type: 'postback',
             title: 'Check School Closure',
@@ -128,8 +128,8 @@ export default {
           image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/18077241_232809757200782_8664249297555360938_o.png?oh=ff0af5e7afe55f651fd7d367dfa11574&oe=598B1E56',
           buttons: [{
             type: 'postback',
-            title: 'Raise an Issue',
-            payload: 'Raise an Issue',
+            title: 'Raise Issue',
+            payload: 'Raise Issue',
           }, {
             type: 'postback',
             title: 'See My Requests',
@@ -145,12 +145,12 @@ export default {
             payload: 'Upcoming Elections',
           }, {
             type: 'postback',
-            title: 'Register to Vote',
-            payload: 'Register to Vote',
+            title: 'Register To Vote',
+            payload: 'Register To Vote',
           }, {
             type: 'postback',
-            title: 'Problem at Polls',
-            payload: 'Problem at Polls',
+            title: 'Problem At Polls',
+            payload: 'Problem At Polls',
           }],
         }, {
           title: 'Service Providers and Benefits',
@@ -171,16 +171,16 @@ export default {
           image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/18076480_232825243865900_3433821028911633831_o.png?oh=fcc2d52c34dfb837272ccda9b928de22&oe=59766CF9',
           buttons: [{
             type: 'postback',
-            title: 'Find a Shelter',
-            payload: 'Find a Shelter',
+            title: 'Find Nearby Shelter',
+            payload: 'Find Nearby Shelter',
           }, {
             type: 'postback',
-            title: 'Find a Clinic',
-            payload: 'Find a Clinic',
+            title: 'Find Nearby Clinic',
+            payload: 'Find Nearby Clinic',
           }, {
             type: 'postback',
-            title: 'Find a Washroom',
-            payload: 'Find a Washroom',
+            title: 'Find Nearby Washroom',
+            payload: 'Find Nearby Washroom',
           }],
         }, {
           title: 'About',
@@ -201,12 +201,13 @@ export default {
           }],
         }],
       });
+      this.messagingClient.addToQuene('If you don\'t see it here, ask anyways! I might have an answer for you, and if not, I\'ll get back to you with it when I can.');
       return this.messagingClient.runQuene().then(() => 'start');
     },
   },
 
   handle_greeting() {
-    this.messagingClient.send('Hey there! I\'m not much for small talk at the moment :/ Focusing on learning ways to help you interact with city governments right now!', basicRequestQuickReplies);
+    this.messagingClient.send('Hey there! I\'m not much for small talk at the moment :/ I still have lots to focus on learning!', basicRequestQuickReplies);
     return 'start';
   },
 

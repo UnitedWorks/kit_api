@@ -5,10 +5,10 @@ import BaseClient from './base-client';
 const defaultPersistentMenu = [{
   locale: 'default',
   call_to_actions: [{
-    title: '📌 Quick Actions',
+    title: '🎯 Quick Actions',
     type: 'nested',
     call_to_actions: [{
-      title: '🏦 Local Gov Services',
+      title: '🚨 Local Gov Services',
       type: 'nested',
       call_to_actions: [{
         type: 'postback',
@@ -36,7 +36,7 @@ const defaultPersistentMenu = [{
         payload: 'See My Requests',
       }],
     }, {
-      title: '🎫 Voting and Elections',
+      title: '📅 Voting and Elections',
       type: 'nested',
       call_to_actions: [{
         type: 'postback',
@@ -73,7 +73,7 @@ const defaultPersistentMenu = [{
       }],
     }],
   }, {
-    title: '🔃 Change Language',
+    title: 'Change Language',
     type: 'nested',
     call_to_actions: [{
       type: 'postback',
@@ -85,7 +85,7 @@ const defaultPersistentMenu = [{
       payload: 'Set Espanol',
     }],
   }, {
-    title: '❔ Help',
+    title: 'Help',
     type: 'nested',
     call_to_actions: [{
       type: 'postback',
@@ -99,7 +99,7 @@ const defaultPersistentMenu = [{
       type: 'web_url',
       title: 'Want your own bot?',
       url: 'https://mayor.chat',
-      webview_height_ratio: 'full',
+      webview_height_ratio: 'tall',
     }],
   }],
 }];
