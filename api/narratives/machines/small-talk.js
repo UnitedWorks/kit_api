@@ -106,8 +106,8 @@ export default {
         type: 'template',
         templateType: 'generic',
         elements: [{
-          title: 'Sanitation Questions',
-          subtitle: 'I can give general schedule information and reminders!',
+          title: 'The basics!',
+          subtitle: 'Schedule information and reminders about garbage and recycling!',
           image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/18121443_233251170489974_389513167860373774_o.png?oh=5fdb797d78ed294fab4caeeca524e8dc&oe=598B0541',
           buttons: [{
             type: 'postback',
