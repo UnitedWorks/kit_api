@@ -5,7 +5,7 @@ import BaseClient from './base-client';
 const defaultPersistentMenu = [{
   locale: 'default',
   call_to_actions: [{
-    title: '🎯 Quick Actions',
+    title: '🎯 Quick Questions',
     type: 'nested',
     call_to_actions: [{
       title: '🚨 Local Gov Services',

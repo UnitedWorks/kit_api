@@ -106,21 +106,38 @@ export default {
         type: 'template',
         templateType: 'generic',
         elements: [{
+          title: 'Sanitation Questions',
+          subtitle: 'I can give general schedule information and reminders!',
+          image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/18121443_233251170489974_389513167860373774_o.png?oh=5fdb797d78ed294fab4caeeca524e8dc&oe=598B0541',
+          buttons: [{
+            type: 'postback',
+            title: 'Garbage pickup tomorrow?',
+            payload: 'Garbage Pickup Tomorrow?',
+          }, {
+            type: 'postback',
+            title: 'Garbage pickup next week?',
+            payload: 'Garbage Pickup Next Week?',
+          }, {
+            type: 'postback',
+            title: 'Bulk Pickup Request',
+            payload: 'Bulk Pickup Request',
+          }],
+        }, {
           title: 'Local Gov Services',
-          subtitle: 'Ask about the trash schedule, how to get pet licenses, and other local services.',
+          subtitle: 'Common questions about constituent and business needs',
           image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/16463485_187743068374118_731666577286732253_o.png?oh=34db605884afb6fa415694f76f7b8214&oe=59816331',
           buttons: [{
             type: 'postback',
-            title: 'Get Trash Schedule',
-            payload: 'Get Trash Schedule',
+            title: 'Get Marriage Certificate Copy',
+            payload: 'Get Marriage Certificate Copy',
           }, {
             type: 'postback',
             title: 'Get Pet License',
             payload: 'Get Pet License',
           }, {
             type: 'postback',
-            title: 'Check School Closure',
-            payload: 'Check School Closure',
+            title: 'Get Copy of a Deed',
+            payload: 'Get Copy of a Deed',
           }],
         }, {
           title: 'Reporting Issues and Concerns',
@@ -128,12 +145,16 @@ export default {
           image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/18077241_232809757200782_8664249297555360938_o.png?oh=ff0af5e7afe55f651fd7d367dfa11574&oe=598B1E56',
           buttons: [{
             type: 'postback',
-            title: 'Raise Issue',
-            payload: 'Raise Issue',
+            title: 'Request a Service',
+            payload: 'Request A Service',
+          }, {
+            type: 'postback',
+            title: 'Make a Complaint',
+            payload: 'MAKE_REQUEST',
           }, {
             type: 'postback',
             title: 'See My Requests',
-            payload: 'See My Requests',
+            payload: 'GET_REQUESTS',
           }],
         }, {
           title: 'Voting and Elections',
@@ -158,12 +179,16 @@ export default {
           image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/18056257_232842120530879_6922898701508692950_o.png?oh=1c387a889c56b387e8ca55b5c4b756af&oe=5994A489',
           buttons: [{
             type: 'postback',
+            title: 'Report Unfair Wages',
+            payload: 'Report Unfair Wages',
+          }, {
+            type: 'postback',
             title: 'Benefits Screener',
             payload: 'Benefits Screener',
           }, {
             type: 'postback',
-            title: 'Job Assistance',
-            payload: 'Job Assistance',
+            title: 'Find Job Training',
+            payload: 'Find Job Training',
           }],
         }, {
           title: 'Immediate Help',
