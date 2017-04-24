@@ -5,35 +5,55 @@ import BaseClient from './base-client';
 const defaultPersistentMenu = [{
   locale: 'default',
   call_to_actions: [{
-    title: '🎯 Quick Questions',
+    title: '🔦 Quick Questions',
     type: 'nested',
     call_to_actions: [{
+      title: '📍 Common Questions',
+      type: 'nested',
+      call_to_actions: [{
+        type: 'postback',
+        title: 'Get Trash Schedule',
+        payload: 'Get Trash Schedule',
+      }, {
+        type: 'postback',
+        title: 'Get Recycling Schedule',
+        payload: 'Get Recycling Schedule',
+      }, {
+        type: 'postback',
+        title: 'Get Parking Schedule',
+        payload: 'Get Parking Schedule',
+      }, {
+        type: 'postback',
+        title: 'Are Schools Open Tomorrow?',
+        payload: 'Are Schools Open Tomorrow?',
+      }, {
+        type: 'postback',
+        title: 'Deadlines I Should Know Of',
+        payload: 'Deadlines I Should Know Of',
+      }],
+    }, {
       title: '🚨 Local Gov Services',
       type: 'nested',
       call_to_actions: [{
         type: 'postback',
-        title: 'Get a Trash Schedule',
-        payload: 'Get a Trash Schedule',
+        title: 'Upcoming Town Meetings',
+        payload: 'Upcoming Town Meetings',
       }, {
         type: 'postback',
-        title: 'Get a Pet License',
-        payload: 'Get a Pet License',
+        title: 'When Are Taxes Due?',
+        payload: 'When Are Taxes Due?',
       }, {
         type: 'postback',
-        title: 'Check School Closure',
-        payload: 'Check School Closure',
-      }],
-    }, {
-      title: '😡 Raise an Issue',
-      type: 'nested',
-      call_to_actions: [{
-        type: 'postback',
-        title: 'Raise an Issue',
-        payload: 'Raise an Issue',
+        title: 'Get Marriage Certificate Copy',
+        payload: 'Get Marriage Certificate Copy',
       }, {
         type: 'postback',
-        title: 'See My Requests',
-        payload: 'See My Requests',
+        title: 'Get Pet License',
+        payload: 'Get Pet License',
+      }, {
+        type: 'postback',
+        title: 'Get Copy of a Deed',
+        payload: 'Get Copy of a Deed',
       }],
     }, {
       title: '📅 Voting and Elections',
@@ -45,14 +65,22 @@ const defaultPersistentMenu = [{
       }, {
         type: 'postback',
         title: 'Register to Vote',
-        payload: 'Register to Vote',
+        payload: 'Register To Vote',
+      }, {
+        type: 'postback',
+        title: 'Voter ID Requirements',
+        payload: 'Voter ID Requirements',
+      }, {
+        type: 'postback',
+        title: 'Early Voting Rules',
+        payload: 'Early Voting Rules',
       }, {
         type: 'postback',
         title: 'Problem at Polls',
-        payload: 'Problem at Polls',
+        payload: 'Problem At Polls',
       }],
     }, {
-      title: '❤️ Services and Benefits',
+      title: '🔔 Employment and Benefits',
       type: 'nested',
       call_to_actions: [{
         type: 'postback',
@@ -60,12 +88,24 @@ const defaultPersistentMenu = [{
         payload: 'Benefits Screener',
       }, {
         type: 'postback',
+        title: 'Report Wage Theft',
+        payload: 'Report Wage Theft',
+      }, {
+        type: 'postback',
         title: 'Job Assistance',
         payload: 'Job Assistance',
-      }, {
+      }],
+    }, {
+      title: '❤️ Immediate Assistance',
+      type: 'nested',
+      call_to_actions: [{
         type: 'postback',
         title: 'Find a Shelter',
         payload: 'Find a Shelter',
+      }, {
+        type: 'postback',
+        title: 'Find Health Clinic',
+        payload: 'Find Health Clinic',
       }, {
         type: 'postback',
         title: 'Find a Washroom',
@@ -73,24 +113,80 @@ const defaultPersistentMenu = [{
       }],
     }],
   }, {
-    title: 'Change Language',
+    title: '🎯 Quick Actions',
     type: 'nested',
     call_to_actions: [{
-      type: 'postback',
-      title: 'Set English',
-      payload: 'Set English',
+      title: '🔨 Report a Problem',
+      type: 'nested',
+      call_to_actions: [{
+        type: 'postback',
+        title: 'Report Pothole',
+        payload: 'Report Pothole',
+      }, {
+        type: 'postback',
+        title: 'Report Broken Sidewalk',
+        payload: 'Report Broken Sidewalk',
+      }, {
+        type: 'postback',
+        title: 'Report Broken Sign',
+        payload: 'Report Broken Sign',
+      }, {
+        type: 'postback',
+        title: 'Report Light Outage',
+        payload: 'Report Light Outage',
+      }, {
+        type: 'postback',
+        title: 'Report General Problem',
+        payload: 'Report General Problem',
+      }],
+    }, {
+      title: '🔧 Request a Service',
+      type: 'nested',
+      call_to_actions: [{
+        type: 'postback',
+        title: 'Request Bulk Pickup',
+        payload: 'Request Bulk Pickup'
+      }, {
+        type: 'postback',
+        title: 'Request Parking Permit',
+        payload: 'Request Parking Permit'
+      }, {
+        type: 'postback',
+        title: 'Request Disability Tags',
+        payload: 'Request Disability Tags'
+      }, {
+        type: 'postback',
+        title: 'Request Building Inspection',
+        payload: 'Request Building Inspection'
+      }, {
+        type: 'postback',
+        title: 'Request Fire Inspection',
+        payload: 'Request Fire Inspection'
+      }],
     }, {
       type: 'postback',
-      title: 'Set Espanol',
-      payload: 'Set Espanol',
+      title: '📥 View My Requests',
+      payload: 'View My Requests',
     }],
   }, {
-    title: 'Help',
+    title: '🔮 Help',
     type: 'nested',
     call_to_actions: [{
       type: 'postback',
       title: 'What can I ask?',
       payload: 'What can I ask?',
+    }, {
+      title: 'Language',
+      type: 'nested',
+      call_to_actions: [{
+        type: 'postback',
+        title: 'Change language to English',
+        payload: 'Change language to English',
+      }, {
+        type: 'postback',
+        title: 'Cambiar el idioma al Espanol',
+        payload: 'Change Language To Espanol',
+      }],
     }, {
       type: 'postback',
       title: 'Leave Feedback',
