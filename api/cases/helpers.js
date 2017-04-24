@@ -41,46 +41,47 @@ export const notifyConstituentOfCaseStatusUpdate = (caseObj, status, { constitue
 
 export const newCaseNotification = (caseObj, organization) => {
   // Only send notifications when it's a service request
-  if (!caseObj.type === CASE_CONSTANTS.REQUEST) return;
-  // Get Representatives of an Org
-  AccountModels.Organization.where({ id: organization.id }).fetch({ withRelated: ['representatives'] }).then((returnedOrg) => {
-    // Emails
-    // Disabling until we nail the normal case situation
-    /*
-    let emailMessage = '';
-    if (caseObj.category) {
-      emailMessage += `Category: ${caseObj.category.label}<br/>`;
-    }
-    emailMessage += `Complaint: ${caseObj.title}<br/>`;
-    if (caseObj.location) {
-      emailMessage += `Geo-location: http://maps.google.com/maps/place/${caseObj.location.lat},${caseObj.location.lon}<br/>`;
-    }
-    if (caseObj.attachments) {
-      emailMessage += 'Attachments:<br/>';
-      caseObj.attachments.forEach((attachment, index) => {
-        emailMessage += `${index + 1}: ${attachment.type || 'Attachment'} - ${attachment.payload.url}`;
+  if (caseObj.type === CASE_CONSTANTS.REQUEST) {
+    // Get Representatives of an Org
+    AccountModels.Organization.where({ id: organization.id }).fetch({ withRelated: ['representatives'] }).then((returnedOrg) => {
+      // Emails
+      // Disabling until we nail the normal case situation
+      /*
+      let emailMessage = '';
+      if (caseObj.category) {
+        emailMessage += `Category: ${caseObj.category.label}<br/>`;
+      }
+      emailMessage += `Complaint: ${caseObj.title}<br/>`;
+      if (caseObj.location) {
+        emailMessage += `Geo-location: http://maps.google.com/maps/place/${caseObj.location.lat},${caseObj.location.lon}<br/>`;
+      }
+      if (caseObj.attachments) {
+        emailMessage += 'Attachments:<br/>';
+        caseObj.attachments.forEach((attachment, index) => {
+          emailMessage += `${index + 1}: ${attachment.type || 'Attachment'} - ${attachment.payload.url}`;
+        });
+      }
+      returnedOrg.toJSON().representatives.forEach((rep) => {
+        new EmailService().send(`Constituent Complaint #${caseObj.id}: ${caseObj.title}`, emailMessage, rep.email, 'cases@kit.community', {
+          case_id: caseObj.id,
+        });
       });
-    }
-    returnedOrg.toJSON().representatives.forEach((rep) => {
-      new EmailService().send(`Constituent Complaint #${caseObj.id}: ${caseObj.title}`, emailMessage, rep.email, 'cases@kit.community', {
-        case_id: caseObj.id,
-      });
-    });
-    */
+      */
 
-    // Slack Notification
-    let slackMessage = `>*City/Organization*: ${returnedOrg.get('name')}\n>*Category*: ${caseObj.category ? caseObj.category.label : 'Undefined '}\n>*Constituent ID*: ${caseObj.constituent_id}\n>*Complaint*: ${caseObj.title}`;
-    if (caseObj.location) {
-      slackMessage += `\n>*Geo-location*: <http://maps.google.com/maps/place/${caseObj.location.display_name}|${caseObj.location.display_name}>`;
-    }
-    if (caseObj.attachments) {
-      slackMessage += '\n>*Attachments*:';
-      caseObj.attachments.forEach((attachment) => {
-        slackMessage += ` <${attachment.payload.url}|${attachment.type || 'Attachment'}>`;
-      });
-    }
-    new SlackService({ username: 'Constituent Complaint', icon: 'rage' }).send(slackMessage);
-  });
+      // Slack Notification
+      let slackMessage = `>*City/Organization*: ${returnedOrg.get('name')}\n>*Category*: ${caseObj.category ? caseObj.category.label : 'Undefined '}\n>*Constituent ID*: ${caseObj.constituent_id}\n>*Complaint*: ${caseObj.title}`;
+      if (caseObj.location) {
+        slackMessage += `\n>*Geo-location*: <http://maps.google.com/maps/place/${caseObj.location.display_name}|${caseObj.location.display_name}>`;
+      }
+      if (caseObj.attachments) {
+        slackMessage += '\n>*Attachments*:';
+        caseObj.attachments.forEach((attachment) => {
+          slackMessage += ` <${attachment.payload.url}|${attachment.type || 'Attachment'}>`;
+        });
+      }
+      new SlackService({ username: 'Constituent Complaint', icon: 'rage' }).send(slackMessage);
+    });
+  }
 };
 
 export const createCase = ({ title, type, category, location, attachments = [], seeClickFixId }, constituent, organization) => {
