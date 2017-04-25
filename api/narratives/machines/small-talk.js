@@ -304,7 +304,7 @@ export default {
     return getConstituentCases(this.snapshot.constituent).then(({ cases }) => {
       if (cases.length > 0) {
         cases.forEach((thisCase) => {
-          const message = `${thisCase.status.toUpperCase()} - ${thisCase.title.length > 48 ? thisCase.title.slice(0, 45).concat('...') : thisCase.title} (#${thisCase.id})`;
+          const message = `${thisCase.status.toUpperCase()} (#${thisCase.id})`;
           this.messagingClient.addToQuene(message);
         });
         return this.messagingClient.runQuene().then(() => 'start');
