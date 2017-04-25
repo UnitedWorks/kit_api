@@ -273,6 +273,7 @@ export default {
           'employment_job_training': 'employment.waiting_job_training',
 
           'complaint': 'complaint.waiting_for_complaint', // TODO(nicksahler): transaction -> getRequests,
+          'complaint_list': 'getRequests',
 
           'settings_city': 'setup.reset_organization'
 
