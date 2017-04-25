@@ -166,7 +166,7 @@ const defaultPersistentMenu = [{
     }, {
       type: 'postback',
       title: '📥 View My Requests',
-      payload: 'View My Requests',
+      payload: 'GET_REQUESTS',
     }],
   }, {
     title: '🔮 Help',

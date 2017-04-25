@@ -103,7 +103,7 @@ export default {
                   icon: 'round_pushpin',
                 }).send(`>*Location*: ${this.get('location').display_name}`);
               }
-              return 'smallTalk.askOptions';
+              return 'smallTalk.what_can_i_do';
             case 'speech_deny':
               this.messagingClient.send('Oh! Can you tell me your CITY and STATE again?');
               return 'waiting_organization';
