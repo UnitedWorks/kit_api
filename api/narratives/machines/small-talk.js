@@ -240,9 +240,6 @@ export default {
   start: {
     message() {
       const input = this.snapshot.input.payload;
-      if (!input.text && input.payload) {
-        this.snapshot.input.payload.text = input.payload.replace(/([A-Z])/g, ' $1').trim();
-      }
       return nlp.message(input.text, {}).then((nlpData) => {
         this.snapshot.nlp = nlpData;
 
