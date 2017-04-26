@@ -239,8 +239,10 @@ export default {
   // TODO(nicksahler): Move to init
   start: {
     message() {
-      const input = this.snapshot.input.payload;
-      return nlp.message(input.text, {}).then((nlpData) => {
+      if (!this.snapshot.input.payload.text && this.snapshot.input.payload.payload) {
+        this.snapshot.input.payload.text = this.snapshot.input.payload.payload.replace(/([A-Z])/g, ' $1').trim();
+      }
+      return nlp.message(this.snapshot.input.payload.text, {}).then((nlpData) => {
         this.snapshot.nlp = nlpData;
 
         logger.info(nlpData);
