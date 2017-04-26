@@ -7,6 +7,7 @@ import { messageToGeodata } from '../../services/nlp';
 export default {
   waiting_shelter_search: {
     enter() {
+      if (!this.get('location')) return this.stateRedirect('location', 'socialServices.waiting_shelter_search');
       return hasIntegration(this.datastore.organization, INTEGRATIONS.ASK_DARCEL)
         .then((integrated) => {
           if (integrated) {
@@ -46,6 +47,7 @@ export default {
 
   waiting_food_search: {
     enter() {
+      if (!this.get('location')) return this.stateRedirect('location', 'socialServices.waiting_food_search');
       return hasIntegration(this.datastore.organization, INTEGRATIONS.ASK_DARCEL)
         .then((integrated) => {
           if (integrated) {
@@ -84,6 +86,7 @@ export default {
   },
   waiting_hygiene_search: {
     enter() {
+      if (!this.get('location')) return this.stateRedirect('location', 'socialServices.waiting_hygiene_search');
       return hasIntegration(this.datastore.organization, INTEGRATIONS.ASK_DARCEL)
         .then((integrated) => {
           if (integrated) {
