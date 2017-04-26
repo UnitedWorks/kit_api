@@ -13,7 +13,7 @@ const router = new Router();
  * Get knowledge base categories
  * @return {Array}
  */
-router.get('/categories', (req, res) => {
+router.get('/categories', requireAuth, (req, res) => {
   logger.info('Pinged: knowledge-base/categories');
   getCategories(req.query)
     .then(categories => res.status(200).send({ categories }))
@@ -24,7 +24,7 @@ router.get('/categories', (req, res) => {
  * Get facility types
  * @return {Array}
  */
-router.get('/facility-types', (req, res) => {
+router.get('/facility-types', requireAuth, (req, res) => {
   logger.info('Pinged: knowledge-base/facility-types');
   KnowledgeFacilityType.fetchAll().then((typesArray) => {
     res.status(200).send({ types: typesArray });
@@ -39,7 +39,7 @@ router.route('/facilities')
    * Get Facilities
    * @return {Array}
    */
-  .get((req, res) => {
+  .get(requireAuth, (req, res) => {
     const whereFilters = {};
     if (req.query.organization_id) whereFilters.organization_id = req.query.organization_id;
     KnowledgeFacility.where(whereFilters).fetchAll({ withRelated: ['category', 'location', 'eventRules', 'services', 'type'] })
@@ -89,7 +89,7 @@ router.route('/events')
    * Get events
    * @return {Array}
    */
-  .get((req, res) => {
+  .get(requireAuth, (req, res) => {
     KnowledgeEvent.fetchAll({ withRelated: ['category', 'facility', 'location', 'service', 'eventRules'] })
       .then((eventsArray) => {
         res.status(200).send({ events: eventsArray });
@@ -141,7 +141,7 @@ router.route('/services')
    * Get services
    * @return {Array}
    */
-  .get((req, res, next) => {
+  .get(requireAuth, (req, res, next) => {
     const whereFilters = {};
     if (req.query.organization_id) whereFilters.organization_id = req.query.organization_id;
     KnowledgeService.where(whereFilters).fetchAll({ withRelated: ['category', 'facility', 'location', 'eventRules'] })
@@ -225,7 +225,7 @@ router.route('/contacts')
 /**
  * Questions Endpoint
  */
-router.get('/questions', (req, res, next) => {
+router.get('/questions', requireAuth, (req, res, next) => {
   getQuestions(req.query)
     .then(questions => res.status(200).send({ questions }))
     .catch(error => next(error));
@@ -245,7 +245,7 @@ router.route('/answers')
    * Get answers
    * @return {Array}
    */
-  .get((req, res) => {
+  .get(requireAuth, (req, res) => {
     const params = req.query;
     getAnswers(params, {}).then((payload) => {
       res.status(200).send({
