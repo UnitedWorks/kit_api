@@ -7,7 +7,7 @@ import { messageToGeodata } from '../../services/nlp';
 export default {
   waiting_job_training: {
     enter() {
-      if (!this.get('location')) return this.stateRedirect('location', 'employment.waiting_job_training');
+      if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'employment.waiting_job_training');
       return hasIntegration(this.datastore.organization, INTEGRATIONS.ASK_DARCEL)
         .then((integrated) => {
           if (integrated) {

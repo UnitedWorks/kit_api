@@ -7,7 +7,7 @@ import { messageToGeodata } from '../../services/nlp';
 export default {
   waiting_clinic_search: {
     enter() {
-      if (!this.get('location')) return this.stateRedirect('location', 'health.waiting_clinic_search');
+      if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'health.waiting_clinic_search');
       return hasIntegration(this.datastore.organization, INTEGRATIONS.ASK_DARCEL)
         .then((integrated) => {
           if (integrated) {

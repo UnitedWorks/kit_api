@@ -5,7 +5,7 @@ import { getPlacesUrl } from '../../utils';
 
 export default {
   votingDeadlines() {
-    if (!this.get('location')) return this.stateRedirect('location', 'voting.votingDeadlines');
+    if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting.votingDeadlines');
     return new VotingClient({ location: this.get('location') }).getElections().then((elections) => {
       if (elections.length === 0) {
         this.messagingClient.addToQuene('There are no upcoming elections!');
@@ -27,7 +27,7 @@ export default {
   },
 
   electionSchedule() {
-    if (!this.get('location')) return this.stateRedirect('location', 'voting.electionSchedule');
+    if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting.electionSchedule');
     this.messagingClient.send('Hmmm, let me go grab the calendar!');
     return new VotingClient({ location: this.get('location') }).getElections().then((elections) => {
       if (elections.length === 0) {
@@ -109,7 +109,7 @@ export default {
   },
 
   voterRegistrationCheck() {
-    if (!this.get('location')) return this.stateRedirect('location', 'voting.voterRegistrationCheck');
+    if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting.voterRegistrationCheck');
     const quickActions = [];
     return new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
       info.lookup_tools.forEach((tool) => {
@@ -134,7 +134,7 @@ export default {
   },
 
   voterRegistrationGet() {
-    if (!this.get('location')) return this.stateRedirect('location', 'voting.voterRegistrationGet');
+    if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting.voterRegistrationGet');
     this.messagingClient.addToQuene('Let\'s get you registered!');
     const votingClientInstance = new VotingClient({ location: this.get('location') });
     return Promise.all([
@@ -195,7 +195,7 @@ export default {
   },
 
   sampleBallot() {
-    if (!this.get('location')) return this.stateRedirect('location', 'voting.sampleBallot');
+    if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting.sampleBallot');
     return new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
       info.lookup_tools.forEach((tool) => {
         if (tool.lookup_tool.kind === 'sample_ballot') {
@@ -208,7 +208,7 @@ export default {
   },
 
   absenteeVote() {
-    if (!this.get('location')) return this.stateRedirect('location', 'voting.absenteeVote');
+    if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting.absenteeVote');
     return new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
       const absenteeVotingDetails = VotingClient.extractAbsenteeVoteDetails(
         info.voting_general_info);
@@ -222,7 +222,7 @@ export default {
   },
 
   earlyVoting() {
-    if (!this.get('location')) return this.stateRedirect('location', 'voting.earlyVoting');
+    if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting.earlyVoting');
     return new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
       const earlyVotingDetails = VotingClient.extractEarlyVotingDetails(
         info.voting_general_info);
@@ -236,7 +236,7 @@ export default {
   },
 
   voterIdRequirements() {
-    if (!this.get('location')) return this.stateRedirect('location', 'voting.voterIdRequirements');
+    if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting.voterIdRequirements');
     return new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
       // Identification
       let idMessage = '';
@@ -257,7 +257,7 @@ export default {
   },
 
   stateVotingRules() {
-    if (!this.get('location')) return this.stateRedirect('location', 'voting.stateVotingRules');
+    if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting.stateVotingRules');
     return new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
       // Eligibility
       let eligibleMessage = `${info.eligibility_requirements[0].header} `;
@@ -278,7 +278,7 @@ export default {
   },
 
   voterProblem() {
-    if (!this.get('location')) return this.stateRedirect('location', 'voting.voterProblem');
+    if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting.voterProblem');
     return new VotingClient({ location: this.get('location') }).getLocalElectionOffice().then((info) => {
       if (info.office) {
         const officeElements = [{
@@ -334,7 +334,7 @@ export default {
   },
 
   voterAssistance() {
-    if (!this.get('location')) return this.stateRedirect('location', 'voting.voterAssistance');
+    if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting.voterAssistance');
     const votingClientInstance = new VotingClient({ location: this.get('location') });
     return Promise.all([
       votingClientInstance.getGeneralStateInfo(),
