@@ -69,7 +69,7 @@ export const newCaseNotification = (caseObj, organization) => {
       */
 
       // Slack Notification
-      let slackMessage = `>*City/Organization*: ${returnedOrg.get('name')}\n>*Category*: ${caseObj.category ? caseObj.category.label : 'Undefined '}\n>*Constituent ID*: ${caseObj.constituent_id}\n>*Complaint*: ${caseObj.title}`;
+      let slackMessage = `>*City/Organization*: ${returnedOrg.get('name')}\n>*Category*: ${caseObj.category ? caseObj.category.label : 'Undefined '}\n>*Constituent ID*: ${caseObj.constituent_id}\n>*Request*: ${caseObj.title} - ${caseObj.description}`;
       if (caseObj.location) {
         slackMessage += `\n>*Geo-location*: <http://maps.google.com/maps/place/${caseObj.location.display_name}|${caseObj.location.display_name}>`;
       }
@@ -79,12 +79,12 @@ export const newCaseNotification = (caseObj, organization) => {
           slackMessage += ` <${attachment.payload.url}|${attachment.type || 'Attachment'}>`;
         });
       }
-      new SlackService({ username: 'Constituent Complaint', icon: 'rage' }).send(slackMessage);
+      new SlackService({ username: 'Constituent Inbound', icon: 'rage' }).send(slackMessage);
     });
   }
 };
 
-export const createCase = ({ title, type, category, location, attachments = [], seeClickFixId }, constituent, organization) => {
+export const createCase = ({ title, description, type, category, location, attachments = [], seeClickFixId }, constituent, organization) => {
   if (!constituent.id) throw new Error('Missing Key: constituent.id');
   return new Promise((resolve, reject) => {
     const attachmentPromises = [];
@@ -95,6 +95,7 @@ export const createCase = ({ title, type, category, location, attachments = [], 
     Promise.all(attachmentPromises).then((attachmentModels) => {
       const newCase = {
         title,
+        description,
         status: 'open',
       };
       if (type) newCase.type = type;

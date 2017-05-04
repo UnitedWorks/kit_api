@@ -27,7 +27,7 @@ export function getBaseState(providerName, section) {
 export const fetchAnswers = (intent, session) => {
   let entities = session.snapshot.nlp.entities;
   /*TODO(nicksahler) Move this higher up (into the filter argument) to clean + validate [wit makes this prone to crashing] */
-  let schedule = (entities.schedule && entities.schedule[0])? entities.schedule[0].value : null;
+  let schedule = (entities.schedule && entities.schedule[0]) ? entities.schedule[0].value : null;
 
   if (!session.get('organization')) {
     return session.messagingClient
@@ -43,7 +43,16 @@ export const fetchAnswers = (intent, session) => {
       } else {
         session.messagingClient.addAll(KitClient.staticAnswer(answers));
       }
-      return session.messagingClient.runQuene().then(() => 'smallTalk.start');
+      return session.messagingClient.runQuene().then(() => {
+        if (answers.expect_response) {
+          session.set('expected_response', {
+            question: session.snapshot.input.payload.text,
+            category: answers.category,
+          });
+          return 'smallTalk.expect_response';
+        }
+        return 'smallTalk.start';
+      });
     });
 };
 

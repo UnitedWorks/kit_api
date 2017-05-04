@@ -74,6 +74,25 @@ export default {
     }
   },
 
+  expect_response: {
+    message() {
+      const expectedResponse = this.get('expected_response');
+      return handleConstituentRequest({
+        title: `Following up: "${expectedResponse.question}"`,
+        type: CASE_CONSTANTS.REQUEST,
+        description: this.snapshot.input.payload.text,
+        category: expectedResponse.category,
+      },
+      this.snapshot.constituent,
+      this.get('organization') || { id: this.snapshot.organization_id,
+      }).then(() => {
+        this.set('expected_response', null);
+        this.messagingClient.send('Ok! I sent your message along and will let you know when I have an answer!');
+        return 'start';
+      });
+    },
+  },
+
   waiting_for_organization_confirmation: {
     enter() {
       this.messagingClient.send(i18n('organization_confirmation', {

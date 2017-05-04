@@ -18,10 +18,16 @@ export const getAnswers = (params = {}, options) => {
         facilities: answerJSON.filter(a => a.knowledge_facility_id).map(a => a.facility),
         services: answerJSON.filter(a => a.knowledge_service_id).map(a => a.service),
         contacts: answerJSON.filter(a => a.knowledge_contact_id).map(a => a.contact),
+        category: data.toJSON().category,
       };
-      if (answerJSON.filter(a => a.text != null).length > 0) {
-        answerGrouped.text = answerJSON.filter(a => a.text != null)[0].text;
-        answerGrouped.url = answerJSON.filter(a => a.url != null)[0].url;
+      const baseTextAnswer = answerJSON.filter(a => a.text != null);
+      const baseUrlAnswer = answerJSON.filter(a => a.url != null);
+      if (baseTextAnswer.length > 0) {
+        answerGrouped.text = baseTextAnswer[0].text;
+        answerGrouped.expect_response = baseTextAnswer[0].expect_response;
+      }
+      if (baseUrlAnswer.length > 0) {
+        answerGrouped.url = baseUrlAnswer[0].url;
       }
       return answerGrouped;
     }
