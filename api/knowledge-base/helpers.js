@@ -77,14 +77,28 @@ export const getQuestions = (params = {}) => {
 };
 
 export const getCategories = (params = {}) => {
-  return KnowledgeCategory.fetchAll({ withRelated: ['questions'] })
-    .then(data => data.toJSON().map((category) => {
-      // I hate that I have to do this. Tried initializing this data on model
-      const newObj = category;
-      newObj.totalQuestions = category.questions.length;
-      delete newObj.questions;
-      return newObj;
-    })).catch(error => error);
+  const withRelated = [];
+  if (params.organization_id) {
+    withRelated.push('questions');
+    withRelated.push('questions.answers');
+  }
+  return KnowledgeCategory.fetchAll({ withRelated })
+    .then((data) => {
+      if (!params.organization_id) return data.toJSON();
+      return data.toJSON().map((category) => {
+        // I hate that I have to do this. Tried initializing this data on model
+        const newObj = category;
+        newObj.totalQuestions = category.questions.length;
+        newObj.answeredQuestions = 0;
+        category.questions.forEach((q) => {
+          if (q.answers.length > 0) {
+            newObj.answeredQuestions += 1;
+          }
+        });
+        delete newObj.questions;
+        return newObj;
+      });
+    }).catch(error => error);
 };
 
 export const makeAnswer = (organization, question, answer, options) => {
@@ -147,16 +161,19 @@ export const createLocation = (location, options = {}) => {
   }).catch(err => err);
 };
 
-export const updateAnswer = (answer, options) => {
-  return KnowledgeAnswer.forge(answer).save(null, { method: 'update' })
-    .then(data => options.returnJSON ? data.toJSON() : data)
-    .catch(err => err);
-};
-
 export const deleteAnswer = (answerId) => {
   return KnowledgeAnswer.forge({ id: answerId }).destroy().then(() => {
     return { id: answerId };
   }).catch(err => err);
+};
+
+export const updateAnswer = (answer, options) => {
+  if (typeof answer.text === 'string' && answer.text.length === 0) {
+    return deleteAnswer(answer.id);
+  }
+  return KnowledgeAnswer.forge(answer).save(null, { method: 'update' })
+    .then(data => options.returnJSON ? data.toJSON() : data)
+    .catch(err => err);
 };
 
 export const createFacility = (facility, organization, location, options) => {
