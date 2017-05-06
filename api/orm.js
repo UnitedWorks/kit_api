@@ -13,5 +13,6 @@ export const bookshelf = require('bookshelf')(knex);
 bookshelf.plugin('pagination');
 bookshelf.plugin('registry');
 bookshelf.plugin('virtuals');
+bookshelf.plugin('visibility');
 
 export const st = require('knex-postgis')(knex);

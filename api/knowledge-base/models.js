@@ -106,6 +106,7 @@ export const KnowledgeContact = bookshelf.Model.extend({
 
 export const KnowledgeQuestionStats = bookshelf.Model.extend({
   tableName: 'knowledge_question_stats',
+  hidden: ['id', 'question_id', 'organization_id'],
 });
 
 export const KnowledgeQuestion = bookshelf.Model.extend({
@@ -119,6 +120,9 @@ export const KnowledgeQuestion = bookshelf.Model.extend({
   },
   category: function() {
     return this.belongsTo(KnowledgeCategory, 'knowledge_category_id');
+  },
+  stats: function() {
+    return this.hasOne(KnowledgeQuestionStats, 'question_id');
   },
 });
 

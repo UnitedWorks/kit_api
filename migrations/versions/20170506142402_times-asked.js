@@ -2,8 +2,7 @@
 exports.up = function(knex, Promise) {
   return knex.schema
     .createTable('knowledge_question_stats', (table) => {
-      table.increments('id').primary();
-      table.integer('knowledge_question_id')
+      table.integer('question_id')
         .references('id').inTable('knowledge_questions');
       table.integer('organization_id')
         .references('id').inTable('organizations');

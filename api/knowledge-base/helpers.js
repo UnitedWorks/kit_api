@@ -3,18 +3,17 @@ import { knex } from '../orm';
 import { EventRule, KnowledgeAnswer, KnowledgeCategory, KnowledgeFacility, KnowledgeService, KnowledgeQuestion, KnowledgeContact, Location } from './models';
 import { CaseLocations, CaseMedia } from '../cases/models';
 import geocoder from '../services/geocoder';
-import { logger } from '../logger';
 
 export const incrementTimesAsked = (questionId, orgId) => {
   if (!questionId || !orgId) return;
   return knex('knowledge_question_stats')
-    .where('knowledge_question_id', '=', questionId)
+    .where('question_id', '=', questionId)
     .andWhere('organization_id', '=', orgId)
     .increment('times_asked', 1)
     .then((rows) => {
       if (rows === 0) {
         return knex.insert({
-          knowledge_question_id: questionId,
+          question_id: questionId,
           organization_id: orgId,
           times_asked: 1,
         }).into('knowledge_question_stats');
@@ -60,10 +59,21 @@ export const getAnswers = (params = {}, options) => {
 };
 
 export const getQuestions = (params = {}) => {
-  return KnowledgeQuestion.fetchAll({ withRelated: {
-    category: q => q,
-    answers: q => q.where('organization_id', params.organization_id),
-  } });
+  return KnowledgeQuestion.query((qb) => {
+    qb.select(['knowledge_questions.id', 'knowledge_questions.question',
+      'knowledge_questions.knowledge_category_id', 'knowledge_question_stats.times_asked'])
+      .where('knowledge_question_stats.organization_id', '=', params.organization_id)
+      .orWhereNull('knowledge_question_stats.organization_id')
+      .leftOuterJoin('knowledge_question_stats', function() {
+        this.on('knowledge_questions.id', '=', 'knowledge_question_stats.question_id');
+      })
+      .orderByRaw('times_asked DESC NULLS LAST');
+  }).fetchAll({
+    withRelated: {
+      category: q => q,
+      answers: q => q.where('organization_id', params.organization_id),
+    },
+  });
 };
 
 export const getCategories = (params = {}) => {
