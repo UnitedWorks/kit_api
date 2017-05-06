@@ -1,7 +1,26 @@
 import axios from 'axios';
+import { knex } from '../orm';
 import { EventRule, KnowledgeAnswer, KnowledgeCategory, KnowledgeFacility, KnowledgeService, KnowledgeQuestion, KnowledgeContact, Location } from './models';
 import { CaseLocations, CaseMedia } from '../cases/models';
 import geocoder from '../services/geocoder';
+import { logger } from '../logger';
+
+export const incrementTimesAsked = (questionId, orgId) => {
+  if (!questionId || !orgId) return;
+  return knex('knowledge_question_stats')
+    .where('knowledge_question_id', '=', questionId)
+    .andWhere('organization_id', '=', orgId)
+    .increment('times_asked', 1)
+    .then((rows) => {
+      if (rows === 0) {
+        return knex.insert({
+          knowledge_question_id: questionId,
+          organization_id: orgId,
+          times_asked: 1,
+        }).into('knowledge_question_stats');
+      }
+    });
+};
 
 export const getAnswers = (params = {}, options) => {
   return KnowledgeQuestion.where({ label: params.label }).fetch({
@@ -12,7 +31,12 @@ export const getAnswers = (params = {}, options) => {
   }).then((data) => {
     if (!options.returnJSON) return data.get('answers');
     if (data == null) return {};
+    // If from state machine, we're passing a flag to increment times_asked
+    if (options.incrementTimesAsked) {
+      incrementTimesAsked(data.get('id'), params.organization_id);
+    }
     const answerJSON = data.toJSON().answers;
+    // Reformat Answers
     if (options.groupKnowledge) {
       const answerGrouped = {
         facilities: answerJSON.filter(a => a.knowledge_facility_id).map(a => a.facility),

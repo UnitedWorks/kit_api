@@ -13,6 +13,7 @@ export default class KitClient {
       withRelated: true,
       returnJSON: true,
       groupKnowledge: true,
+      incrementTimesAsked: true,
     }, config);
     return getAnswersHelper({
       label,

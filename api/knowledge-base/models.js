@@ -104,6 +104,10 @@ export const KnowledgeContact = bookshelf.Model.extend({
   },
 });
 
+export const KnowledgeQuestionStats = bookshelf.Model.extend({
+  tableName: 'knowledge_question_stats',
+});
+
 export const KnowledgeQuestion = bookshelf.Model.extend({
   tableName: 'knowledge_questions',
   hasTimestamps: true,
