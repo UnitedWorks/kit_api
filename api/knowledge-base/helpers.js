@@ -77,14 +77,13 @@ export const getQuestions = (params = {}) => {
 };
 
 export const getCategories = (params = {}) => {
-  const withRelated = [];
   if (params.organization_id) {
-    withRelated.push('questions');
-    withRelated.push('questions.answers');
-  }
-  return KnowledgeCategory.fetchAll({ withRelated })
-    .then((data) => {
-      if (!params.organization_id) return data.toJSON();
+    return KnowledgeCategory.fetchAll({
+      withRelated: {
+        questions: q => q,
+        'questions.answers': q => q.where('organization_id', params.organization_id),
+      },
+    }).then((data) => {
       return data.toJSON().map((category) => {
         // I hate that I have to do this. Tried initializing this data on model
         const newObj = category;
@@ -99,6 +98,10 @@ export const getCategories = (params = {}) => {
         return newObj;
       });
     }).catch(error => error);
+  }
+  return KnowledgeCategory.fetchAll().then((data) => {
+    return data.toJSON();
+  }).catch(error => error);
 };
 
 export const makeAnswer = (organization, question, answer, options) => {
