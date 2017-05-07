@@ -2,6 +2,7 @@ import formidable from 'formidable';
 import { knex } from '../orm';
 import { logger } from '../logger';
 import * as AccountModels from '../accounts/models';
+import { NarrativeSession } from '../narratives/models';
 import { Case, CaseCategory, OrganizationsCases } from './models';
 import * as CASE_CONSTANTS from '../constants/cases';
 import { FacebookMessengerClient, TwilioSMSClient } from '../conversations/clients';
@@ -89,6 +90,7 @@ export const newCaseNotification = (caseObj, organization) => {
 export const createConstituentCase = (caseObj, constituent, organization) => {
   // Basic Checks
   if (!constituent.id) throw new Error('Missing Key: constituent.id');
+  if (!organization.id) throw new Error('Missing Key: organization.id');
   // Helper
   const runCreateCase = ({ title, description, type, category, location, attachments = [], seeClickFixId }) => {
     return new Promise((resolve, reject) => {
@@ -316,4 +318,36 @@ export const getCaseCategories = (params, options) => {
   return CaseCategory.fetchAll()
     .then(categories => options.returnJSON ? categories.toJSON() : categories)
     .catch(error => error);
+};
+
+
+export const addCaseNote = (caseId, message) => {
+  // For now, I'm just appending a message to the description.
+  // We're probably going to want to build a table for this
+  // Probably also going to need to make a "waiting for reply" status in addition to open/closed
+  return Case.where({ id: caseId }).fetch()
+    .then((foundCase) => {
+      const newDescription = foundCase.get('description') || '';
+      return foundCase.save({ description: newDescription.concat(message) }, { method: 'update' });
+    }).catch(error => error);
+};
+
+
+export const messageConstituent = (constituentId, message, caseId) => {
+  return NarrativeSession.where({ constituent_id: constituentId }).fetch({ withRelated: ['constituent', 'constituent.facebookEntry', 'constituent.smsEntry'] })
+    .then((foundSession) => {
+      // Message Constituent
+      const constituent = foundSession.toJSON().constituent;
+      if (constituent.facebook_id) {
+        new FacebookMessengerClient({ constituent }).send(message);
+      } else if (constituent.phone) {
+        new TwilioSMSClient({ constituent }).send(message);
+      }
+      // If a case was passed in, update Narrative Session to capture response
+      if (caseId) {
+        const dataStore = foundSession.get('data_store');
+        dataStore.expected_response = { case_id: caseId, question: message };
+        return foundSession.save({ data_store: dataStore, state_machine_current_state: 'expect_response' }, { method: 'update' });
+      }
+    }).catch(error => error);
 };
