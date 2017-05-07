@@ -31,12 +31,12 @@ router.route('/')
         if (typeof req.body.case.location === 'string') {
           geocoder(req.body.case.location).then((geoJSON) => {
             req.body.case.location = geoJSON.length > 0 ? geoJSON[0] : null;
-            helpers.handleConstituentRequest(req.body.case, constituentJSON, req.body.organization)
+            helpers.createConstituentCase(req.body.case, constituentJSON, req.body.organization)
               .then(caseJSON => res.status(200).send({ case: caseJSON }))
               .catch(error => next(error));
           });
         } else {
-          helpers.handleConstituentRequest(req.body.caseModel, constituentJSON, req.body.organization)
+          helpers.createConstituentCase(req.body.caseModel, constituentJSON, req.body.organization)
             .then(caseJSON => res.status(200).send({ case: caseJSON }))
             .catch(error => next(error));
         }
@@ -64,6 +64,16 @@ router.put('/update_status', requireAuth, (req, res, next) => {
     const response = req.body.response;
     helpers.updateCaseStatus(caseId, { response, status, silent }, { returnJSON: true })
       .then(data => res.status(200).send({ case: data }))
+      .catch(error => next(error));
+  } catch (e) {
+    next(e);
+  }
+});
+
+router.post('/message_constituent', requireAuth, (req, res, next) => {
+  try {
+    helpers.messageConstituent()
+      .then(() => res.status(200).send())
       .catch(error => next(error));
   } catch (e) {
     next(e);

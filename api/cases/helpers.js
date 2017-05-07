@@ -39,6 +39,7 @@ export const notifyConstituentOfCaseStatusUpdate = (caseObj, status, { constitue
   }
 };
 
+
 export const newCaseNotification = (caseObj, organization) => {
   // Only send notifications when it's a service request
   if (caseObj.type === CASE_CONSTANTS.REQUEST) {
@@ -84,80 +85,83 @@ export const newCaseNotification = (caseObj, organization) => {
   }
 };
 
-export const createCase = ({ title, description, type, category, location, attachments = [], seeClickFixId }, constituent, organization) => {
+
+export const createConstituentCase = (caseObj, constituent, organization) => {
+  // Basic Checks
   if (!constituent.id) throw new Error('Missing Key: constituent.id');
-  return new Promise((resolve, reject) => {
-    const attachmentPromises = [];
-    if (location) attachmentPromises.push(saveLocation(location, { returnJSON: true }));
-    attachments.forEach((attachment) => {
-      attachmentPromises.push(saveMedia(attachment, { returnJSON: true }));
-    });
-    Promise.all(attachmentPromises).then((attachmentModels) => {
-      const newCase = {
-        title,
-        description,
-        status: 'open',
-      };
-      if (type) newCase.type = type;
-      if (category) newCase.category_id = category.id;
-      if (constituent) newCase.constituent_id = constituent.id;
-      if (seeClickFixId) newCase.see_click_fix_id = seeClickFixId;
-      Case.forge(newCase).save().then((caseResponse) => {
-        caseResponse.refresh({ withRelated: ['category', 'constituent', 'constituent.facebookEntry'] }).then((refreshedCaseModel) => {
-          const newCaseModelJSON = refreshedCaseModel.toJSON();
-          const junctionPromises = [];
-
-          // Organization Junction
-          if (organization && organization.id) {
-            junctionPromises.push(OrganizationsCases.forge({
-              case_id: newCaseModelJSON.id,
-              organization_id: organization.id,
-            }).save());
-          }
-
-          // Location & Media Junction
-          attachmentModels.forEach((model) => {
-            let joinFn;
-            if (model.lat || model.display_name || (model.address && model.address.country_code)) {
-              joinFn = associateCaseLocation(newCaseModelJSON, model);
-            } else if (model.type) {
-              joinFn = associateCaseMedia(newCaseModelJSON, model);
-            }
-            junctionPromises.push(joinFn);
-          });
-
-          Promise.all(junctionPromises).then(() => {
+  // Helper
+  const runCreateCase = ({ title, description, type, category, location, attachments = [], seeClickFixId }) => {
+    return new Promise((resolve, reject) => {
+      const attachmentPromises = [];
+      if (location) attachmentPromises.push(saveLocation(location, { returnJSON: true }));
+      attachments.forEach((attachment) => {
+        attachmentPromises.push(saveMedia(attachment, { returnJSON: true }));
+      });
+      Promise.all(attachmentPromises).then((attachmentModels) => {
+        const newCase = {
+          title,
+          description,
+          status: 'open',
+        };
+        if (type) newCase.type = type;
+        if (category) newCase.category_id = category.id;
+        if (constituent) newCase.constituent_id = constituent.id;
+        if (seeClickFixId) newCase.see_click_fix_id = seeClickFixId;
+        Case.forge(newCase).save().then((caseResponse) => {
+          caseResponse.refresh({ withRelated: ['category', 'constituent', 'constituent.facebookEntry'] }).then((refreshedCaseModel) => {
+            const newCaseModelJSON = refreshedCaseModel.toJSON();
+            const junctionPromises = [];
+            // Organization Junction
             if (organization && organization.id) {
-              newCaseNotification(Object.assign(newCaseModelJSON, {
-                location,
-                attachments,
-              }), organization);
+              junctionPromises.push(OrganizationsCases.forge({
+                case_id: newCaseModelJSON.id,
+                organization_id: organization.id,
+              }).save());
             }
-            resolve(refreshedCaseModel);
+            // Location & Media Junction
+            attachmentModels.forEach((model) => {
+              let joinFn;
+              if (model.lat || model.display_name || (model.address && model.address.country_code)) {
+                joinFn = associateCaseLocation(newCaseModelJSON, model);
+              } else if (model.type) {
+                joinFn = associateCaseMedia(newCaseModelJSON, model);
+              }
+              junctionPromises.push(joinFn);
+            });
+            Promise.all(junctionPromises).then(() => {
+              if (organization && organization.id) {
+                newCaseNotification(Object.assign(newCaseModelJSON, {
+                  location,
+                  attachments,
+                }), organization);
+              }
+              resolve(refreshedCaseModel);
+            }).catch(err => reject(err));
           }).catch(err => reject(err));
         }).catch(err => reject(err));
       }).catch(err => reject(err));
-    }).catch(err => reject(err));
-  });
-};
-
-export const handleConstituentRequest = (caseObj, constituent, organization) => {
+    });
+  };
+  // Check integrations before creating
   return new Promise((resolve, reject) => {
     // Check for integrations to push to
     hasIntegration(organization, INTEGRATIONS.SEE_CLICK_FIX).then((integrated) => {
       if (integrated && new SeeClickFixClient().requestCategoryAllowed(caseObj.category.label)) {
         new SeeClickFixClient().report(caseObj.location, caseObj.title, caseObj.attachments)
           .then((scfIssue) => {
-            createCase({ ...caseObj, seeClickFixId: scfIssue.id }, constituent, organization)
-              .then(returnedCase => resolve(returnedCase.toJSON()));
-          });
+            runCreateCase({ ...caseObj, seeClickFixId: scfIssue.id })
+              .then(returnedCase => resolve(returnedCase.toJSON()))
+              .catch(error => reject(error));
+          }).catch(error => reject(error));
       } else {
-        createCase(caseObj, constituent, organization)
-          .then(returnedCase => resolve(returnedCase.toJSON()));
+        runCreateCase(caseObj)
+          .then(returnedCase => resolve(returnedCase.toJSON()))
+          .catch(error => reject(error));
       }
     });
   });
 };
+
 
 export const getConstituentCases = (constituent) => {
   return AccountModels.Constituent.where({ id: constituent.id }).fetch({ withRelated: ['cases'] }).then((constituentModel) => {
@@ -176,6 +180,7 @@ export const getConstituentCases = (constituent) => {
     });
   });
 };
+
 
 export function webhookHitWithEmail(req) {
   const form = new formidable.IncomingForm();
@@ -204,6 +209,7 @@ export function webhookHitWithEmail(req) {
     }
   });
 }
+
 
 export function webhookEmailEvent(req) {
   logger.info(`Email Events: ${JSON.stringify(req.body)}`);
@@ -246,6 +252,7 @@ export function webhookEmailEvent(req) {
   });
 }
 
+
 export const getCases = (orgId, options = {}) => {
   let baseQuery = Case.query((qb) => {
     qb.select('*')
@@ -285,6 +292,7 @@ export const getCases = (orgId, options = {}) => {
     }).catch(err => err);
 };
 
+
 export const updateCaseStatus = (caseId, { response, status, silent = false }, options = {}) => {
   if (!CASE_CONSTANTS.CASE_STATUSES.includes(status)) throw new Error(`Unacceptable Status: ${status}`);
   const updates = { status, response: null };
@@ -302,6 +310,7 @@ export const updateCaseStatus = (caseId, { response, status, silent = false }, o
     }).catch(error => error);
   }).catch(error => error);
 };
+
 
 export const getCaseCategories = (params, options) => {
   return CaseCategory.fetchAll()

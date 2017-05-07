@@ -2,7 +2,7 @@ import { logger } from '../../logger';
 import * as TAGS from '../../constants/nlp-tagging';
 import { nlp } from '../../services/nlp';
 import * as CASE_CONSTANTS from '../../constants/cases';
-import { getConstituentCases, handleConstituentRequest } from '../../cases/helpers';
+import { getConstituentCases, createConstituentCase } from '../../cases/helpers';
 import SlackService from '../../services/slack';
 import { fetchAnswers } from '../helpers';
 
@@ -77,7 +77,7 @@ export default {
   expect_response: {
     message() {
       const expectedResponse = this.get('expected_response');
-      return handleConstituentRequest({
+      return createConstituentCase({
         title: `Following up: "${expectedResponse.question}"`,
         type: CASE_CONSTANTS.REQUEST,
         description: this.snapshot.input.payload.text,
@@ -343,7 +343,7 @@ export default {
       icon: 'question',
     }).send(`>*Request Message*: ${this.snapshot.input.payload.text}\n>*Constituent ID*: ${this.snapshot.constituent.id}`);
     const message = 'Ah shoot, I\'m still learning so I don\'t understand that request yet. Can you give more description? <3';
-    handleConstituentRequest({
+    createConstituentCase({
       title: this.snapshot.input.payload.text,
       type: CASE_CONSTANTS.STATEMENT,
     },

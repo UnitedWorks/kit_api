@@ -1,7 +1,7 @@
 import geocoder from '../../services/geocoder';
 import * as CASE_CONSTANTS from '../../constants/cases';
 import { PRIMARY_CATEGORIES as PRIMARY_CASE_CATEGORIES } from '../../constants/cases';
-import { handleConstituentRequest } from '../../cases/helpers';
+import { createConstituentCase } from '../../cases/helpers';
 import { CaseCategory } from '../../cases/models';
 
 export default {
@@ -99,7 +99,7 @@ export default {
   complaint_submit: {
     enter() {
       const complaint = this.get('complaint');
-      return handleConstituentRequest({
+      return createConstituentCase({
         title: complaint.title,
         type: CASE_CONSTANTS.REQUEST,
         category: complaint.category,
