@@ -62,8 +62,6 @@ export const getQuestions = (params = {}) => {
   return KnowledgeQuestion.query((qb) => {
     qb.select(['knowledge_questions.id', 'knowledge_questions.question',
       'knowledge_questions.knowledge_category_id', 'knowledge_question_stats.times_asked'])
-      .where('knowledge_question_stats.organization_id', '=', params.organization_id)
-      .orWhereNull('knowledge_question_stats.organization_id')
       .leftOuterJoin('knowledge_question_stats', function() {
         this.on('knowledge_questions.id', '=', 'knowledge_question_stats.question_id');
       })
