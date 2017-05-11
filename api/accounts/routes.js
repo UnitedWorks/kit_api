@@ -11,7 +11,7 @@ import SlackService from '../services/slack';
 const router = new Router();
 
 // Organizations
-router.get('/organizations', (req, res) => {
+router.get('/organizations', requireAuth, (req, res) => {
   Organization.fetchAll({ withRelated: ['location', 'integrations', 'messageEntries'] }).then((orgs) => {
     res.status(200).send({ organizations: orgs });
   });

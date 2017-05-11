@@ -5,7 +5,7 @@ import StateMachine from './state-machine'
 // Base Machines
 import SmallTalkMachine from './machines/small-talk';
 import SetupMachine from './machines/setup';
-import ComplaintMachine from './machines/complaint';
+import SurveyMachine from './machines/survey';
 import EmploymentMachine from './machines/employment';
 import HealthMachine from './machines/health';
 import SocialServicesMachine from './machines/social-services';
@@ -20,7 +20,7 @@ export const stateMachines = {
   smallTalk: SmallTalkMachine,
   setup: SetupMachine,
   voting: VotingMachine,
-  complaint: ComplaintMachine,
+  survey: SurveyMachine,
   employment: EmploymentMachine,
   health: HealthMachine,
   socialServices: SocialServicesMachine,

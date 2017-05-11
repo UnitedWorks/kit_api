@@ -3,10 +3,12 @@ import * as AccountModels from '../accounts/models';
 
 export const SurveyQuestion = bookshelf.Model.extend({
   tableName: 'survey_questions',
+  hasTimeStamps: true,
 });
 
 export const SurveyAnswer = bookshelf.Model.extend({
   tableName: 'survey_answers',
+  hasTimeStamps: true,
   question() {
     return this.hasOne(SurveyQuestion, 'question_id');
   },
@@ -17,8 +19,9 @@ export const SurveyAnswer = bookshelf.Model.extend({
 
 export const Survey = bookshelf.Model.extend({
   tableName: 'surveys',
+  hasTimeStamps: true,
   questions() {
-    return this.belongsToMany(SurveyQuestion, 'survey_id');
+    return this.hasMany(SurveyQuestion, 'survey_id');
   },
   organization() {
     return this.hasOne(AccountModels.Organization, 'organization_id');

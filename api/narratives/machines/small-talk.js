@@ -303,8 +303,8 @@ export default {
 
           'employment_job_training': 'employment.waiting_job_training',
 
-          'complaint': 'complaint.waiting_for_complaint', // TODO(nicksahler): transaction -> getRequests,
-          'complaint_list': 'getRequests',
+          'general_complaint': () => this.fire('survey', 'loading_survey', { label: 'general_complaint' }), // TODO(nicksahler): transaction -> getCases,
+          'cases_list': 'getCases',
 
           'settings_city': 'setup.reset_organization'
 
@@ -320,8 +320,8 @@ export default {
 
     action() {
       const goTo = {
-        'MAKE_REQUEST': 'complaint.waiting_for_complaint',
-        'GET_REQUESTS': 'getRequests',
+        'MAKE_REQUEST': () => this.fire('survey', 'loading_survey', { label: 'general_complaint' }),
+        'GET_REQUESTS': 'getCases',
         'GET_STARTED': 'init',
         'CHANGE_CITY': 'setup.reset_organization',
         'ASK_OPTIONS': 'what_can_i_do',
@@ -331,7 +331,7 @@ export default {
     },
   },
 
-  getRequests() {
+  getCases() {
     return getConstituentCases(this.snapshot.constituent).then(({ cases }) => {
       if (cases.length > 0) {
         cases.forEach((thisCase) => {

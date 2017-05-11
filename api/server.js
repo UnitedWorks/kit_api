@@ -49,6 +49,7 @@ app.use('/conversations', require('./conversations/routes'));
 app.use('/integrations', require('./integrations/routes'));
 app.use('/knowledge', require('./knowledge-base/routes'));
 app.use('/media', require('./media/routes'));
+app.use('/surveys', require('./surveys/routes'));
 
 // Log Viewing
 app.get('/logs/info', (req, res) => {
