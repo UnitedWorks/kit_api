@@ -1,19 +1,22 @@
 import { bookshelf } from '../orm';
 import * as AccountModels from '../accounts/models';
 
-export const SurveyQuestion = bookshelf.Model.extend({
-  tableName: 'survey_questions',
-  hasTimeStamps: true,
-});
-
 export const SurveyAnswer = bookshelf.Model.extend({
   tableName: 'survey_answers',
   hasTimeStamps: true,
   question() {
-    return this.hasOne(SurveyQuestion, 'question_id');
+    return this.hasOne(SurveyQuestion, 'survey_question_id');
   },
   constituent() {
     return this.hasOne(AccountModels.Constituent, 'constituent_id');
+  },
+});
+
+export const SurveyQuestion = bookshelf.Model.extend({
+  tableName: 'survey_questions',
+  hasTimeStamps: true,
+  answers() {
+    return this.hasMany(SurveyAnswer, 'survey_question_id');
   },
 });
 

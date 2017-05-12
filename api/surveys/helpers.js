@@ -47,9 +47,22 @@ export const updateSurvey = (surveyProps, options = { returnJSON: true }) => {
 };
 
 export const deleteSurvey = ({ id }) => {
-  return SurveyModels.Survey.forge({ id })
-    .destroy()
-    .then(() => {
-      return { id };
+  return SurveyModels.SurveyQuestion.where({ survey_id: id })
+    .fetchAll({ withRelated: 'answers' })
+    .then((questionModels) => {
+      const destroyAnswers = [];
+      questionModels.models.forEach((model) => {
+        destroyAnswers.push(model.related('answers').invokeThen('destroy'));
+      });
+      // Destroy Answers
+      return Promise.all(destroyAnswers).then(() => {
+        // Destroy Questions
+        return questionModels.invokeThen('destroy').then(() => {
+          // Destroy Survey
+          return SurveyModels.Survey.forge({ id }).destroy().then(() => {
+            return { id };
+          }).catch(err => err);
+        }).catch(err => err);
+      }).catch(err => err);
     }).catch(err => err);
 };
