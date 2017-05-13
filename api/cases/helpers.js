@@ -6,7 +6,7 @@ import { NarrativeSession } from '../narratives/models';
 import { Case, CaseCategory, OrganizationsCases } from './models';
 import * as CASE_CONSTANTS from '../constants/cases';
 import { FacebookMessengerClient, TwilioSMSClient } from '../conversations/clients';
-import { saveLocation, associateCaseLocation, associateCaseMedia } from '../knowledge-base/helpers';
+import { createLocation, associateCaseLocation, associateCaseMedia } from '../knowledge-base/helpers';
 import { saveMedia } from '../media/helpers';
 import SlackService from '../services/slack';
 import EmailService from '../services/email';
@@ -95,10 +95,12 @@ export const createConstituentCase = (caseObj, constituent, organization) => {
   const runCreateCase = ({ title, description, type, category, location, attachments = [], seeClickFixId }) => {
     return new Promise((resolve, reject) => {
       const attachmentPromises = [];
-      if (location) attachmentPromises.push(saveLocation(location, { returnJSON: true }));
-      attachments.forEach((attachment) => {
-        attachmentPromises.push(saveMedia(attachment, { returnJSON: true }));
-      });
+      if (location) attachmentPromises.push(createLocation(location, { returnJSON: true }));
+      if (attachments) {
+        attachments.forEach((attachment) => {
+          attachmentPromises.push(saveMedia(attachment, { returnJSON: true }));
+        });
+      }
       Promise.all(attachmentPromises).then((attachmentModels) => {
         const newCase = {
           title,

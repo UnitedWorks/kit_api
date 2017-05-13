@@ -303,7 +303,7 @@ export default {
 
           'employment_job_training': 'employment.waiting_job_training',
 
-          'general_complaint': () => this.fire('survey', 'loading_survey', { label: 'general_complaint' }), // TODO(nicksahler): transaction -> getCases,
+          'general_complaint': 'survey.loading_survey', // TODO(nicksahler): transaction -> getCases,
           'cases_list': 'getCases',
 
           'settings_city': 'setup.reset_organization'
@@ -320,7 +320,7 @@ export default {
 
     action() {
       const goTo = {
-        'MAKE_REQUEST': () => this.fire('survey', 'loading_survey', { label: 'general_complaint' }),
+        'MAKE_REQUEST': 'survey.loading_survey', // Dont think this will work cause we dont have intent to pull off of
         'GET_REQUESTS': 'getCases',
         'GET_STARTED': 'init',
         'CHANGE_CITY': 'setup.reset_organization',

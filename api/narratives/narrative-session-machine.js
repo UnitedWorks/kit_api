@@ -18,9 +18,9 @@ import AskDarcelMachine from './machines/small-talk-ask-darcel';
 
 export const stateMachines = {
   smallTalk: SmallTalkMachine,
+  survey: SurveyMachine,
   setup: SetupMachine,
   voting: VotingMachine,
-  survey: SurveyMachine,
   employment: EmploymentMachine,
   health: HealthMachine,
   socialServices: SocialServicesMachine,
