@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { requireAuth } from '../services/passport';
 
-import { getSurveys, createSurvey, deleteSurvey } from './helpers';
+import { getSurveys, createSurvey, deleteSurvey, broadcastSurvey } from './helpers';
 
 const router = new Router();
 
@@ -37,5 +37,11 @@ router.route('/')
       }).catch(error => res.status(400).send({ error }));
   });
 
+router.route('/broadcast')
+  .post(requireAuth, (req, res) => {
+    broadcastSurvey(req.body.survey)
+      .then(() => res.status(200).send())
+      .catch(error => res.status(400).send({ error }));
+  });
 
 module.exports = router;

@@ -17,6 +17,10 @@ export default class StateMachine {
     return this.datastore[key];
   }
 
+  delete(key) {
+    delete this.datastore[key];
+  }
+
   input(event, aux) {
     return this.fire(this.current, event, aux);
   }

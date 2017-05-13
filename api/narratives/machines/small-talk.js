@@ -96,7 +96,7 @@ export default {
       this.snapshot.constituent,
       this.get('organization') || { id: this.snapshot.organization_id,
       }).then(() => {
-        this.set('expected_response', null);
+        this.delete('expected_response');
         this.messagingClient.send('I\'ve pass your message along and will keep you updated!');
         return 'start';
       });
