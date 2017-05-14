@@ -315,7 +315,7 @@ export default {
         } else {
           return 'failedRequest';
         }
-      })
+      });
     },
 
     action() {

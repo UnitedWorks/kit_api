@@ -15,9 +15,6 @@ export default {
       const label = this.snapshot.nlp.entities.intent[0].value;
       if (!label) return 'smallTalk.failedRequest';
       return getSurvey({ label }).then((survey) => {
-        console.log('////')
-        console.log(survey)
-        console.log('////')
         this.set('survey', survey);
         return 'waiting_for_answer';
       });

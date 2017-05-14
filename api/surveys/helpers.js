@@ -1,3 +1,4 @@
+import { knex } from '../orm';
 import * as SurveyModels from './models';
 import Clients from '../conversations/clients';
 import { NarrativeSession } from '../narratives/models';
@@ -120,3 +121,33 @@ export function saveSurveyAnswers(questions, constituent) {
     return data;
   }).catch(error => error);
 }
+
+export function getSurveyAnswers(params, options = { returnJSON: true }) {
+  if (!params.id) throw new Error('No survey id');
+  return knex.raw(`SELECT replace(lower(survey_questions.prompt), ' ', '_') AS prompt, survey_answers.constituent_id AS constituent_id, survey_answers.response->>'text' AS response
+    FROM survey_answers
+    LEFT JOIN survey_questions ON survey_answers.survey_question_id = survey_questions.id
+    WHERE survey_questions.survey_id = ${params.id}
+  `).then((data) => {
+    // One day we'll be able to use crosstabview and wont need to do any mutations funk
+    // \crosstabview constituent_id prompt response;
+    const answerDataHash = {};
+    data.rows.forEach((row) => {
+      if (!answerDataHash[row.constituent_id]) {
+        answerDataHash[row.constituent_id] = {};
+      }
+      answerDataHash[row.constituent_id][row.prompt] = row.response;
+    });
+    const finalFormat = [];
+    Object.keys(answerDataHash).forEach((id) => {
+      const constituentObj = {
+        constituent_id: id,
+      };
+      Object.keys(answerDataHash[id]).forEach((key) => {
+        constituentObj[key] = answerDataHash[id][key];
+      });
+      finalFormat.push(constituentObj);
+    });
+    return { rows: finalFormat };
+  });
+};
