@@ -12,7 +12,7 @@ const router = new Router();
 router.post('/broadcast', requireAuth, (req, res, next) => {
   logger.info(`Constituent Broadcast - Org: ${req.body.organization.id} - ${req.body.broadcast}`);
   try {
-    helpers.broadcastMessage(req.body.broadcast, req.body.organization, { returnJSON: true })
+    helpers.broadcastHelper(req.body.broadcast, req.body.organization)
       .then(() => res.status(200).send())
       .catch(err => next(err));
   } catch (e) {

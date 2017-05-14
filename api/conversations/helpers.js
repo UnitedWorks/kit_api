@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { NarrativeSession } from '../narratives/models';
 import { MessageEntry } from './models';
+import { broadcastSurvey } from '../surveys/helpers';
 import Clients from './clients';
 
 export function broadcastMessage(broadcast, organization) {
@@ -18,6 +19,15 @@ export function broadcastMessage(broadcast, organization) {
         }
       });
     }).catch(err => err);
+}
+
+export function broadcastHelper(broadcast, organization) {
+  if (broadcast.survey) {
+    return broadcastSurvey(broadcast.survey);
+  } else if (broadcast.message) {
+    return broadcastMessage(broadcast, organization);
+  }
+  throw new Error('Unable to broadcast');
 }
 
 export function createEntry(entry, organization, options = {}) {

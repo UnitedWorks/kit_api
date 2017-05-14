@@ -74,18 +74,18 @@ export function deleteSurvey({ id }) {
 }
 
 const acceptanceQuickReplies = [
-  { content_type: 'text', title: 'Sure!', payload: 'Sure!' },
+  { content_type: 'text', title: 'Ok!', payload: 'Ok!' },
   { content_type: 'text', title: 'No thanks', payload: 'No thanks' },
 ];
 
-export function broadcastSurvey(survey = {}, message) {
+export function broadcastSurvey(survey = {}) {
   if (!survey.id) throw new Error('No Survey ID provided');
   return SurveyModels.Survey.where({ id: survey.id }).fetch({ withRelated: ['questions'] })
     .then((foundSurvey) => {
       return NarrativeSession.where({ organization_id: foundSurvey.get('organization_id') })
         .fetchAll({ withRelated: ['constituent', 'constituent.facebookEntry', 'constituent.smsEntry'] })
         .then((sessions) => {
-          const finalMessage = message || `Hey there! Do you have a moment to help me with a quick survey, "${foundSurvey.get('name')}"?`;
+          const message = `Hey there! Do you have a moment to help me with a quick survey, "${foundSurvey.get('name')}"?`;
           sessions.models.forEach((session) => {
             // Set state to waiting for acceptance
             session.save({
@@ -99,11 +99,11 @@ export function broadcastSurvey(survey = {}, message) {
               if (session.related('constituent').get('facebook_id')) {
                 new Clients.FacebookMessengerClient({
                   constituent: session.related('constituent').toJSON(),
-                }).send(finalMessage, acceptanceQuickReplies);
+                }).send(message, acceptanceQuickReplies);
               } else if (session.related('constituent').get('phone')) {
                 new Clients.TwilioSMSClient({
                   constituent: session.related('constituent').toJSON(),
-                }).send(finalMessage, acceptanceQuickReplies);
+                }).send(message, acceptanceQuickReplies);
               }
             });
           });
