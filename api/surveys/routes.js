@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { requireAuth } from '../services/passport';
 
-import { getSurveys, createSurvey, deleteSurvey, broadcastSurvey, getSurveyAnswers } from './helpers';
+import { getSurveys, createSurvey, updateSurvey, deleteSurvey, broadcastSurvey, getSurveyAnswers } from './helpers';
 
 const router = new Router();
 
@@ -27,6 +27,18 @@ router.route('/')
         survey: data,
       });
     }).catch(error => res.status(400).send({ error }));
+  })
+  .put(requireAuth, (req, res, next) => {
+    try {
+      updateSurvey(req.body.survey)
+        .then((data) => {
+          res.status(200).send({
+            survey: data,
+          });
+        }).catch(error => next(error));
+    } catch (e) {
+      next(e);
+    }
   })
   .delete(requireAuth, (req, res) => {
     deleteSurvey(req.query)

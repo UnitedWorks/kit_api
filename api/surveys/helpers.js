@@ -42,11 +42,14 @@ export function createSurvey({ survey, questions = [], organization }, options =
 }
 
 export function updateSurvey(surveyProps, options = { returnJSON: true }) {
+  if (!surveyProps.id) throw new Error('No Survey ID provided');
   return SurveyModels.Survey.where({ id: surveyProps.id })
     .save(surveyProps, { method: 'update' })
     .then((updatedModel) => {
       return options.returnJSON ? updatedModel.toJSON() : updatedModel;
-    }).catch(err => err);
+    }).catch((err) => {
+      throw new Error(err);
+    });
 }
 
 export function deleteSurvey({ id }) {
