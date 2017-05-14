@@ -49,13 +49,6 @@ router.route('/')
       }).catch(error => res.status(400).send({ error }));
   });
 
-router.route('/broadcast')
-  .post(requireAuth, (req, res) => {
-    broadcastSurvey(req.body.survey)
-      .then(() => res.status(200).send())
-      .catch(error => res.status(400).send({ error }));
-  });
-
 router.route('/download')
   .get(requireAuth, (req, res) => {
     getSurveyAnswers(req.query)

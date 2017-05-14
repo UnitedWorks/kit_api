@@ -15,6 +15,7 @@ export default {
       const label = this.snapshot.nlp.entities.intent[0].value;
       if (!label) return 'smallTalk.failedRequest';
       return getSurvey({ label }).then((survey) => {
+        if (!survey) return 'smallTalk.failedRequest';
         this.set('survey', survey);
         return 'waiting_for_answer';
       });
@@ -47,6 +48,10 @@ export default {
     enter() {
       if (!this.snapshot.data_store.survey) return 'smallTalk.start';
       const questions = this.snapshot.data_store.survey.questions;
+      if (!questions) {
+        this.delete('survey');
+        return 'smallTalk.start';
+      }
       for (let i = 0; i < questions.length; i += 1) {
         if (questions[i].answer === undefined) {
           return this.messagingClient.send(this.snapshot.data_store.survey.questions[i].prompt);
@@ -57,6 +62,10 @@ export default {
     message() {
       if (!this.snapshot.data_store.survey) return 'smallTalk.start';
       const questions = this.snapshot.data_store.survey.questions;
+      if (!questions) {
+        this.delete('survey');
+        return 'smallTalk.start';
+      }
       for (let i = 0; i < questions.length; i += 1) {
         if (questions[i].answer === undefined) {
           const newQuestions = this.snapshot.data_store.survey.questions;
