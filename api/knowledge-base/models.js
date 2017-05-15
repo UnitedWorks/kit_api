@@ -2,6 +2,7 @@ import lodash from 'lodash';
 import { bookshelf } from '../orm';
 import { Organization } from '../accounts/models';
 import { Media } from '../media/models';
+import { Survey } from '../surveys/models';
 
 // Information Entries - Referenced in knowledge and non-knowledge base tables
 export const Location = bookshelf.Model.extend({
@@ -147,4 +148,7 @@ export const KnowledgeAnswer = bookshelf.Model.extend({
   contact: function() {
     return this.hasOne(KnowledgeContact, 'id', 'knowledge_contact_id');
   },
+  survey: function() {
+    return this.hasOne(Survey, 'id', 'survey_id');
+  }
 });
