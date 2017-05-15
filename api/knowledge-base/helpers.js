@@ -26,7 +26,8 @@ export const getAnswers = (params = {}, options) => {
     withRelated: [{
       answers: q => q.where('organization_id', params.organization_id),
     }, 'category', 'answers.facility', 'answers.facility.location', 'answers.facility.eventRules',
-      'answers.service', 'answers.service.location', 'answers.service.eventRules', 'answers.contact'],
+      'answers.service', 'answers.service.location', 'answers.service.eventRules',
+      'answers.contact', 'answers.survey', 'answers.survey.questions'],
   }).then((data) => {
     if (!options.returnJSON) return data.get('answers');
     if (data == null) return {};
@@ -41,6 +42,7 @@ export const getAnswers = (params = {}, options) => {
         facilities: answerJSON.filter(a => a.knowledge_facility_id).map(a => a.facility),
         services: answerJSON.filter(a => a.knowledge_service_id).map(a => a.service),
         contacts: answerJSON.filter(a => a.knowledge_contact_id).map(a => a.contact),
+        survey: answerJSON.filter(a => a.survey_id)[0].survey,
         category: data.toJSON().category,
       };
       const baseTextAnswer = answerJSON.filter(a => a.text != null);

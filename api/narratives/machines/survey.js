@@ -5,16 +5,16 @@ import * as CASE_CONSTANTS from '../../constants/cases';
 import * as SURVEY_CONSTANTS from '../../constants/surveys';
 
 const acceptanceQuickReplies = [
-  { content_type: 'text', title: 'Sure!', payload: 'Sure!' },
+  { content_type: 'text', title: 'Yes', payload: 'Yes' },
   { content_type: 'text', title: 'No thanks', payload: 'No thanks' },
 ];
 
 export default {
   loading_survey: {
-    enter() {
+    enter(aux = {}) {
       const label = this.snapshot.nlp.entities.intent[0].value;
-      if (!label) return 'smallTalk.failedRequest';
-      return getSurvey({ label }).then((survey) => {
+      if (!label && !aux.id) return 'smallTalk.failedRequest';
+      return getSurvey({ id: aux.id, label }).then((survey) => {
         if (!survey) return 'smallTalk.failedRequest';
         this.set('survey', survey);
         return 'waiting_for_answer';
@@ -24,7 +24,7 @@ export default {
 
   waiting_for_acceptance: {
     enter(aux = {}) {
-      return this.messagingClient.send(aux.message || 'Hey there! Mind if I ask you a few questions?', acceptanceQuickReplies);
+      return this.messagingClient.send(aux.message || `I can help you with ${`"${this.get('survey').name}"` || 'this'}, but I need to ask a few questions. Want to continue?`, acceptanceQuickReplies);
     },
     message() {
       return nlp.message(this.snapshot.input.payload.text, {}).then((nlpData) => {
@@ -36,7 +36,7 @@ export default {
           }
           if (entities.intent.filter(i => i.value === 'speech_deny').length > 0) {
             this.delete('survey');
-            return this.messagingClient.send('No problem!').then(() => 'smallTalk.start');
+            return this.messagingClient.send('Ok! No problem.').then(() => 'smallTalk.start');
           }
         }
         return this.messagingClient.send('Sorry, didn\'t catch that. Want to do the survey?', acceptanceQuickReplies);
