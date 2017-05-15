@@ -125,12 +125,12 @@ export function saveSurveyAnswers(questions, constituent) {
   }).catch(error => error);
 }
 
-export function getSurveyAnswers(params, options = { returnJSON: true }) {
+export function getSurveyAnswers(params) {
   if (!params.id) throw new Error('No survey id');
-  return knex.raw(`SELECT replace(lower(survey_questions.prompt), ' ', '_') AS prompt, survey_answers.constituent_id AS constituent_id, survey_answers.response->>'text' AS response
+  return knex.raw(`SELECT replace(lower(survey_questions.prompt), ' ', '_') AS prompt, survey_answers.constituent_id AS constituent_id, survey_answers.response->>'text' AS response, date_trunc('hour', survey_answers.created_at) AS answered_on
     FROM survey_answers
     LEFT JOIN survey_questions ON survey_answers.survey_question_id = survey_questions.id
-    WHERE survey_questions.survey_id = ${params.id}
+    WHERE survey_questions.survey_id = ${params.id} ${params.fromNow ? `AND EXTRACT(EPOCH FROM (now() - survey_answers.created_at)) < ${params.fromNow}` : ''}
   `).then((data) => {
     // One day we'll be able to use crosstabview and wont need to do any mutations funk
     // \crosstabview constituent_id prompt response;
@@ -139,18 +139,27 @@ export function getSurveyAnswers(params, options = { returnJSON: true }) {
       if (!answerDataHash[row.constituent_id]) {
         answerDataHash[row.constituent_id] = {};
       }
-      answerDataHash[row.constituent_id][row.prompt] = row.response;
+      if (!answerDataHash[row.constituent_id][row.answered_on]) {
+        answerDataHash[row.constituent_id][row.answered_on] = {};
+      }
+      answerDataHash[row.constituent_id][row.answered_on][row.prompt] = row.response;
     });
     const finalFormat = [];
-    Object.keys(answerDataHash).forEach((id) => {
-      const constituentObj = {
-        constituent_id: id,
-      };
-      Object.keys(answerDataHash[id]).forEach((key) => {
-        constituentObj[key] = answerDataHash[id][key];
+    Object.keys(answerDataHash).forEach((cId) => {
+      Object.keys(answerDataHash[cId]).forEach((dt) => {
+        const constituentObj = {
+          constituent_id: cId,
+          answered_on: dt,
+        };
+        Object.keys(answerDataHash[cId][dt]).forEach((key) => {
+          constituentObj[key] = answerDataHash[cId][dt][key];
+        });
+        finalFormat.push(constituentObj);
       });
-      finalFormat.push(constituentObj);
     });
+    // Update Last Downloaded
+
+    // Return
     return { rows: finalFormat };
   });
 };
