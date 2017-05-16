@@ -29,7 +29,7 @@ export const nlp = {
 
 export const messageToGeodata = (input, userLocation) => {
   // Get Text
-  return nlp.message(input, {}).then((nlpData) => {
+  return nlp.message(input).then((nlpData) => {
     if (!nlpData.entities.location) return null;
     const locationString = nlpData.entities.location[0].value;
     // Get GeoLocation

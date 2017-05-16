@@ -91,7 +91,7 @@ export default {
     },
 
     message() {
-      return nlp.message(this.snapshot.input.payload.text, {}).then((nlpData) => {
+      return nlp.message(this.snapshot.input.payload.text).then((nlpData) => {
         const entities = nlpData.entities;
 
         if (entities.intent && entities.intent[0]) {

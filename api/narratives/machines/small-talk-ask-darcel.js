@@ -29,7 +29,7 @@ export default {
     },
     message() {
       const input = this.snapshot.input.payload;
-      return nlp.message(input.text, {}).then((nlpData) => {
+      return nlp.message(input.text).then((nlpData) => {
         this.snapshot.nlp = nlpData;
 
         logger.info(nlpData);

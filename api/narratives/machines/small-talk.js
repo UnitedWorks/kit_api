@@ -81,7 +81,7 @@ export default {
       }), startingQuickReplies);
     },
     message() {
-      return nlp.message(this.snapshot.input.payload.text, {}).then((nlpData) => {
+      return nlp.message(this.snapshot.input.payload.text).then((nlpData) => {
         this.snapshot.nlp = nlpData;
         const entities = nlpData.entities;
         if (entities.intent && entities.intent[0]) {
@@ -237,7 +237,7 @@ export default {
       if (!this.snapshot.input.payload.text && this.snapshot.input.payload.payload) {
         this.snapshot.input.payload.text = this.snapshot.input.payload.payload.replace(/([A-Z])/g, ' $1').trim();
       }
-      return nlp.message(this.snapshot.input.payload.text, {}).then((nlpData) => {
+      return nlp.message(this.snapshot.input.payload.text).then((nlpData) => {
         this.snapshot.nlp = nlpData;
 
         logger.info(nlpData);

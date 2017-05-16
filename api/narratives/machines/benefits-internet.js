@@ -55,12 +55,12 @@ export default {
         { content_type: 'text', title: 'Yep!', payload: 'Yep!' },
         { content_type: 'text', title: 'No', payload: 'No' },
       ];
-      
+
       this.messagingClient.send('Do you get free school lunch?', quickReplies);
     },
 
     message() {
-      return nlp.message(this.snapshot.input.payload, {}).then((nlpData) => {
+      return nlp.message(this.snapshot.input.payload).then((nlpData) => {
         this.get('benefits')['school_lunch'] = (nlpData.entities.intent && nlpData.entities.intent[0].value === 'speech_confirm') ? 'yes' : 'no ';
         return 'calculate';
       });
