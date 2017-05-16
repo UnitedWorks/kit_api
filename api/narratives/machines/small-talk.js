@@ -110,12 +110,12 @@ export default {
           image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/18121443_233251170489974_389513167860373774_o.png?oh=5fdb797d78ed294fab4caeeca524e8dc&oe=598B0541',
           buttons: [{
             type: 'postback',
-            title: 'Garbage schedule?',
+            title: 'Garbage Schedule',
             payload: 'Garbage Schedule',
           }, {
             type: 'postback',
-            title: 'Recycling schedule?',
-            payload: 'Garbage Schedule',
+            title: 'Recycling Schedule',
+            payload: 'Recycling Schedule',
           }, {
             type: 'postback',
             title: 'Bulk Pickup Request',
@@ -338,7 +338,7 @@ export default {
       'Hey there! :) What can I help you with?',
       'Hey there! :) What can I help you with?',
       'Hey there! :) What can I help you with?',
-      'Yo yoooooooo',
+      'Yo yooooo',
       'yo yo yo',
     ];
     const greeting = greetings[Math.floor(Math.random() * greetings.length)];

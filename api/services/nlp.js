@@ -2,7 +2,7 @@ import { Wit } from 'node-wit';
 import { logger } from '../logger';
 import geocoder from './geocoder';
 
-export const nlp = new Wit({
+export const WitInstance = new Wit({
   accessToken: process.env.WIT_ACCESS_TOKEN,
   actions: {
     send(request, response) {
@@ -15,6 +15,17 @@ export const nlp = new Wit({
     },
   },
 });
+
+export const nlp = {
+  message(text, config = {}) {
+    return WitInstance.message(text, config).then((nlpData) => {
+      if (nlpData.entities && nlpData.entities.intent) {
+        nlpData.entities.intent = nlpData.entities.intent.filter(i => !i.suggested);
+      }
+      return nlpData;
+    });
+  },
+};
 
 export const messageToGeodata = (input, userLocation) => {
   // Get Text
