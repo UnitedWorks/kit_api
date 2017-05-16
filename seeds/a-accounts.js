@@ -65,14 +65,14 @@ exports.seed = (knex, Promise) => {
         country_code: 'us',
       },
     }, 'id');
-    const seedHanoverTownship = knex('locations').insert({
+    const seedHighlandPark = knex('locations').insert({
       lat: 40.828898,
       lon: -74.449686,
-      display_name: 'Hanover, NJ 07927, USA',
+      display_name: 'Highland Park, Middlesex County, New Jersey, United States of America',
       address: {
-        town: 'Hanover',
+        city: 'Highland Park',
         state: 'New Jersey',
-        county: 'Morris County',
+        county: 'Middlesex County',
         country: 'United States of America',
         country_code: 'us',
       },
@@ -89,12 +89,12 @@ exports.seed = (knex, Promise) => {
         country_code: 'us',
       },
     }, 'id');
-    return Promise.join(seedJerseyCity, seedNewBrunswick, seedHanoverTownship, seedSanFrancisco, (jC, nB, hT, sF) => {
+    return Promise.join(seedJerseyCity, seedNewBrunswick, seedHighlandPark, seedSanFrancisco, (jC, nB, hT, sF) => {
       return {
         locationIds: {
           jerseyCityLocation: jC[0],
           newBrunswickLocation: nB[0],
-          hanoverTownshipLocation: hT[0],
+          highlandParkLocation: hT[0],
           sanFranciscoLocation: sF[0],
         },
       };
@@ -105,31 +105,27 @@ exports.seed = (knex, Promise) => {
     return Promise.all([
       knex('organizations').insert({
         name: 'Jersey City',
-        category: 'public',
-        type: 'admin',
+        type: 'government',
         activated: true,
         website: 'http://www.cityofjerseycity.com',
         location_id: passedObj.locationIds.jerseyCityLocation,
       }, 'id').then((ids) => { return ids[0]; }),
       knex('organizations').insert({
         name: 'City of New Brunswick',
-        category: 'public',
-        type: 'admin',
+        type: 'government',
         activated: true,
         website: 'http://www.thecityofnewbrunswick.org',
         location_id: passedObj.locationIds.newBrunswickLocation,
       }, 'id').then((ids) => { return ids[0] }),
       knex('organizations').insert({
-        name: 'Hanover Township',
-        category: 'public',
-        type: 'admin',
-        website: 'http://www.hanovertownship.com/',
-        location_id: passedObj.locationIds.hanoverTownshipLocation,
+        name: 'Highland Park',
+        type: 'government',
+        website: 'www.hpboro.com/',
+        location_id: passedObj.locationIds.highlandParkLocation,
       }, 'id').then((ids) => { return ids[0] }),
       knex('organizations').insert({
         name: 'San Francisco',
-        category: 'public',
-        type: 'admin',
+        type: 'government',
         activated: true,
         website: 'http://sfgov.org/',
         location_id: passedObj.locationIds.sanFranciscoLocation,
@@ -147,7 +143,7 @@ exports.seed = (knex, Promise) => {
       knex('representatives').insert({
         name: 'Mark Hansen',
         email: 'markhansen09@gmail.com',
-        organization_id: idsObj.organizationIds[1],
+        organization_id: idsObj.organizationIds[2],
       }, 'id'),
     ]).then((ids) => {
       idsObj.representativeIds = [].concat(...ids);

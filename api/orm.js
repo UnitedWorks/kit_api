@@ -10,6 +10,7 @@ export const knex = require('knex')({
 });
 
 export const bookshelf = require('bookshelf')(knex);
+// Native Bookshelf Plugins
 bookshelf.plugin('pagination');
 bookshelf.plugin('registry');
 bookshelf.plugin('virtuals');

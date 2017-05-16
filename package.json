@@ -47,7 +47,7 @@
     "express": "^4.14.0",
     "express-formidable": "^1.0.0",
     "jwt-simple": "^0.5.1",
-    "knex": "^0.12.6",
+    "knex": "^0.12.9",
     "knex-postgis": "^0.2.0",
     "lodash": "^4.17.4",
     "moment": "^2.17.1",

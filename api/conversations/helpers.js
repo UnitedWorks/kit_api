@@ -1,31 +1,33 @@
 import axios from 'axios';
-import { logger } from '../logger';
 import { NarrativeSession } from '../narratives/models';
 import { MessageEntry } from './models';
+import { broadcastSurvey } from '../surveys/helpers';
 import Clients from './clients';
-import * as PROVIDERS from '../constants/providers';
 
-export function makeBroadcast(broadcast, organization) {
-  return new Promise((resolve, reject) => {
-    NarrativeSession.where({ organization_id: organization.id })
-      .fetchAll({ withRelated: ['constituent', 'constituent.facebookEntry'] }).then((citySessions) => {
-        citySessions.toJSON().forEach((session) => {
-          if (session.constituent.facebook_id) {
-            new Clients.FacebookMessengerClient({
-              constituent: session.constituent,
-            }).send(broadcast.message)
-              .then(() => resolve())
-              .catch(err => reject(err));
-          } else if (session.constituent.phone) {
-            new Clients.TwilioSMSClient({
-              constituent: session.constituent,
-            }).send(broadcast.message)
-              .then(() => resolve())
-              .catch(err => reject(err));
-          }
-        });
-      }).catch(err => reject(err));
-  });
+export function broadcastMessage(broadcast, organization) {
+  return NarrativeSession.where({ organization_id: organization.id })
+    .fetchAll({ withRelated: ['constituent', 'constituent.facebookEntry', 'constituent.smsEntry'] }).then((citySessions) => {
+      citySessions.toJSON().forEach((session) => {
+        if (session.constituent.facebook_id) {
+          new Clients.FacebookMessengerClient({
+            constituent: session.constituent,
+          }).send(broadcast.message);
+        } else if (session.constituent.phone) {
+          new Clients.TwilioSMSClient({
+            constituent: session.constituent,
+          }).send(broadcast.message);
+        }
+      });
+    }).catch(err => err);
+}
+
+export function broadcastHelper(broadcast, organization) {
+  if (broadcast.survey) {
+    return broadcastSurvey(broadcast.survey);
+  } else if (broadcast.message) {
+    return broadcastMessage(broadcast, organization);
+  }
+  throw new Error('Unable to broadcast');
 }
 
 export function createEntry(entry, organization, options = {}) {

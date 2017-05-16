@@ -6,7 +6,8 @@ import { NarrativeSession } from '../narratives/models';
 import { Case, CaseCategory, OrganizationsCases } from './models';
 import * as CASE_CONSTANTS from '../constants/cases';
 import { FacebookMessengerClient, TwilioSMSClient } from '../conversations/clients';
-import { saveLocation, associateCaseLocation, associateCaseMedia } from '../knowledge-base/helpers';
+import { createLocation, associateCaseLocation, associateCaseMedia } from '../knowledge-base/helpers';
+import { getSurvey } from '../surveys/helpers';
 import { saveMedia } from '../media/helpers';
 import SlackService from '../services/slack';
 import EmailService from '../services/email';
@@ -95,10 +96,12 @@ export const createConstituentCase = (caseObj, constituent, organization) => {
   const runCreateCase = ({ title, description, type, category, location, attachments = [], seeClickFixId }) => {
     return new Promise((resolve, reject) => {
       const attachmentPromises = [];
-      if (location) attachmentPromises.push(saveLocation(location, { returnJSON: true }));
-      attachments.forEach((attachment) => {
-        attachmentPromises.push(saveMedia(attachment, { returnJSON: true }));
-      });
+      if (location) attachmentPromises.push(createLocation(location, { returnJSON: true }));
+      if (attachments) {
+        attachments.forEach((attachment) => {
+          attachmentPromises.push(saveMedia(attachment, { returnJSON: true }));
+        });
+      }
       Promise.all(attachmentPromises).then((attachmentModels) => {
         const newCase = {
           title,
@@ -346,8 +349,18 @@ export const messageConstituent = (constituentId, message, caseId) => {
       // If a case was passed in, update Narrative Session to capture response
       if (caseId) {
         const dataStore = foundSession.get('data_store');
-        dataStore.expected_response = { case_id: caseId, question: message };
-        return foundSession.save({ data_store: dataStore, state_machine_current_state: 'expect_response' }, { method: 'update' });
+        return getSurvey({ label: 'text_response' }).then((survey) => {
+          dataStore.survey = {
+            ...survey,
+            name: message,
+            case_id: caseId,
+          };
+          return foundSession.save({
+            data_store: dataStore,
+            state_machine_name: 'survey',
+            state_machine_current_state: 'waiting_for_answer',
+          }, { method: 'update' });
+        }).catch(error => error);
       }
     }).catch(error => error);
 };

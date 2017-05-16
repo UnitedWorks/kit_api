@@ -21,12 +21,13 @@ export const incrementTimesAsked = (questionId, orgId) => {
     });
 };
 
-export const getAnswers = (params = {}, options) => {
+export const getAnswers = (params = {}, options = {}) => {
   return KnowledgeQuestion.where({ label: params.label }).fetch({
     withRelated: [{
       answers: q => q.where('organization_id', params.organization_id),
     }, 'category', 'answers.facility', 'answers.facility.location', 'answers.facility.eventRules',
-      'answers.service', 'answers.service.location', 'answers.service.eventRules', 'answers.contact'],
+      'answers.service', 'answers.service.location', 'answers.service.eventRules',
+      'answers.contact', 'answers.survey', 'answers.survey.questions'],
   }).then((data) => {
     if (!options.returnJSON) return data.get('answers');
     if (data == null) return {};
@@ -34,25 +35,26 @@ export const getAnswers = (params = {}, options) => {
     if (options.incrementTimesAsked) {
       incrementTimesAsked(data.get('id'), params.organization_id);
     }
-    const answerJSON = data.toJSON().answers;
+    const questionJSON = data.toJSON();
+    const answerJSON = questionJSON.answers;
     // Reformat Answers
     if (options.groupKnowledge) {
       const answerGrouped = {
         facilities: answerJSON.filter(a => a.knowledge_facility_id).map(a => a.facility),
         services: answerJSON.filter(a => a.knowledge_service_id).map(a => a.service),
         contacts: answerJSON.filter(a => a.knowledge_contact_id).map(a => a.contact),
-        category: data.toJSON().category,
+        survey: answerJSON.filter(a => a.survey_id).map(a => a.survey)[0],
+        category: questionJSON.category,
       };
       const baseTextAnswer = answerJSON.filter(a => a.text != null);
       const baseUrlAnswer = answerJSON.filter(a => a.url != null);
       if (baseTextAnswer.length > 0) {
         answerGrouped.text = baseTextAnswer[0].text;
-        answerGrouped.expect_response = baseTextAnswer[0].expect_response;
       }
       if (baseUrlAnswer.length > 0) {
         answerGrouped.url = baseUrlAnswer[0].url;
       }
-      return answerGrouped;
+      return { question: questionJSON, answers: answerGrouped };
     }
     return answerJSON;
   });

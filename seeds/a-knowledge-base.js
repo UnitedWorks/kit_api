@@ -1,5 +1,6 @@
 import { logger } from '../api/logger';
 import * as KnowledgeConstants from '../api/constants/knowledge-base';
+import { syncSheetKnowledgeBaseQuestions } from '../api/knowledge-base/helpers';
 
 exports.seed = function(knex, Promise) {
 
@@ -17,70 +18,7 @@ exports.seed = function(knex, Promise) {
   };
 
   const questionSeed = (obj) => {
-    const questionInserts = [];
-    const generalCategoryId = obj.categoryIds[obj.categoryIds.length - 1];
-    questionInserts.push(knex('knowledge_questions').insert({
-      label: 'employment-job-training',
-      question: 'Where can I get basic job training?',
-      knowledge_category_id: generalCategoryId,
-    }, 'id'));
-    questionInserts.push(knex('knowledge_questions').insert({
-      label: 'sanitation-garbage-schedule',
-      question: 'What day is trash pickup?',
-      knowledge_category_id: generalCategoryId,
-    }, 'id'));
-    questionInserts.push(knex('knowledge_questions').insert({
-      label: 'sanitation-recycling-schedule',
-      question: 'Which day is recycling?',
-      knowledge_category_id: generalCategoryId,
-    }, 'id'));
-    questionInserts.push(knex('knowledge_questions').insert({
-      label: 'sanitation-garbage-drop-off',
-      question: 'Where do I dispose of my garbage?',
-      knowledge_category_id: generalCategoryId,
-    }, 'id'));
-    questionInserts.push(knex('knowledge_questions').insert({
-      label: 'sanitation-recycling-drop-off',
-      question: 'Where do I dispose of my recycling?',
-      knowledge_category_id: generalCategoryId,
-    }, 'id'));
-    questionInserts.push(knex('knowledge_questions').insert({
-      label: 'sanitation-compost',
-      question: 'When do you collect compost?',
-      knowledge_category_id: generalCategoryId,
-    }, 'id'));
-    questionInserts.push(knex('knowledge_questions').insert({
-      label: 'sanitation-bulk-pickup',
-      question: 'How can I request bulk item pickup?',
-      knowledge_category_id: generalCategoryId,
-    }, 'id'));
-    questionInserts.push(knex('knowledge_questions').insert({
-      label: 'sanitation-electronics-disposal',
-      question: 'Where can I dispose of electronics?',
-      knowledge_category_id: generalCategoryId,
-    }, 'id'));
-    questionInserts.push(knex('knowledge_questions').insert({
-      label: 'social-services-shelters',
-      question: 'What shelters are available?',
-      knowledge_category_id: generalCategoryId,
-    }, 'id'));
-    questionInserts.push(knex('knowledge_questions').insert({
-      label: 'social-services-food-assistance',
-      question: 'Where can I go for food assistance?',
-      knowledge_category_id: generalCategoryId,
-    }, 'id'));
-    questionInserts.push(knex('knowledge_questions').insert({
-      label: 'social-services-hygiene',
-      question: 'Where can I get access to a public shower or toilet?',
-      knowledge_category_id: generalCategoryId,
-    }, 'id'));
-    questionInserts.push(knex('knowledge_questions').insert({
-      label: 'health-clinic',
-      question: 'Where can I find a health clinic or basic medical care?',
-      knowledge_category_id: generalCategoryId,
-    }, 'id'));
-    return Promise.all(questionInserts).then((data) => {
-      obj['eventIds'] = [].concat(...data);
+    return syncSheetKnowledgeBaseQuestions().then((data) => {
       return finishSeed(obj);
     });
   }
@@ -91,14 +29,14 @@ exports.seed = function(knex, Promise) {
   const startSeed = () => {
     const getNewBrunswick = knex.select().where('name', 'City of New Brunswick').from('organizations');
     const getJerseyCity = knex.select().where('name', 'Jersey City').from('organizations');
-    const getHanover = knex.select().where('name', 'Hanover Township').from('organizations');
+    const getHighlandPark = knex.select().where('name', 'Highland Park').from('organizations');
     const getSanFrancisco = knex.select().where('name', 'San Francisco').from('organizations');
-    return new Promise.join(getNewBrunswick, getJerseyCity, getHanover, getSanFrancisco,
-      (newBrunswick, jerseyCity, hanover, sanFrancisco) => {
+    return new Promise.join(getNewBrunswick, getJerseyCity, getHighlandPark, getSanFrancisco,
+      (newBrunswick, jerseyCity, highlandPark, sanFrancisco) => {
         return {
           newBrunswick: newBrunswick[0].id,
           jerseyCity: jerseyCity[0].id,
-          hanover: hanover[0].id,
+          highlandPark: highlandPark[0].id,
           sanFrancisco: sanFrancisco[0].id,
         };
     }).then((orgs) => {
