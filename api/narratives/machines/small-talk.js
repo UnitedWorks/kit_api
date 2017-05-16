@@ -9,8 +9,8 @@ import { fetchAnswers } from '../helpers';
 /* TODO(nicksahler) until I build the full i18n class */
 const i18n = function(key, inserts = {}) {
   var translations = {
-    'intro_hello': `Hey there! :D I'm ${inserts.name ? `${inserts.name}, ` : ''}an artifically intelligent assistant connecting you to local gov!`,
-    'intro_information': `I can let you leave complaints, request services, and more!`,
+    'intro_hello': `Hey there! :D I'm ${inserts.name ? `${inserts.name}, ` : ''}a chatbot connecting you to the local gov!`,
+    'intro_information': `I let you ask questions, leave complaints, request services, and more with just a text message!`,
     'organization_confirmation': `You're interested in ${inserts.organizationName}, right?`,
     'bot_apology': `Sorry, I wasn't expeting that answer or may have misunderstood. ${inserts.appendQuestion ? inserts.appendQuestion : ''}`,
   };
@@ -101,7 +101,6 @@ export default {
 
   what_can_i_do: {
     enter() {
-      this.messagingClient.addToQuene('Here are some ways you can interact with your local government!');
       this.messagingClient.addToQuene({
         type: 'template',
         templateType: 'generic',
@@ -226,13 +225,14 @@ export default {
           }],
         }],
       });
-      this.messagingClient.addToQuene('If you don\'t see it here, ask anyways! I might have an answer for you, and if not, I\'ll get back to you with it when I can.');
+      this.messagingClient.addToQuene('Those are examples questions you can ask me.');
+      this.messagingClient.addToQuene('But there are many many more I can help with! If I don\'t have an answer now, I\'ll get back to you.');
       return this.messagingClient.runQuene().then(() => 'start');
     },
   },
 
   handle_greeting() {
-    this.messagingClient.send('Hey there! I\'m not much for small talk at the moment :/ I still have lots to focus on learning!', basicRequestQuickReplies);
+    this.messagingClient.send('Hey there! :) What can I help you with?', basicRequestQuickReplies);
     return 'start';
   },
 
