@@ -110,12 +110,12 @@ export default {
           image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/18121443_233251170489974_389513167860373774_o.png?oh=5fdb797d78ed294fab4caeeca524e8dc&oe=598B0541',
           buttons: [{
             type: 'postback',
-            title: 'Garbage pickup tomorrow?',
-            payload: 'Garbage Pickup Tomorrow?',
+            title: 'Garbage schedule?',
+            payload: 'Garbage Schedule',
           }, {
             type: 'postback',
-            title: 'Garbage pickup next week?',
-            payload: 'Garbage Pickup Next Week?',
+            title: 'Recycling schedule?',
+            payload: 'Garbage Schedule',
           }, {
             type: 'postback',
             title: 'Bulk Pickup Request',
@@ -225,15 +225,10 @@ export default {
           }],
         }],
       });
-      this.messagingClient.addToQuene('Those are examples questions you can ask me.');
-      this.messagingClient.addToQuene('But there are many many more I can help with! If I don\'t have an answer now, I\'ll get back to you.');
+      this.messagingClient.addToQuene('Above are some examples questions you can ask me.');
+      this.messagingClient.addToQuene('But there are many more I can help with! When I don\'t have an answer for you, I ask your local government and send you the answer ASAP!');
       return this.messagingClient.runQuene().then(() => 'start');
     },
-  },
-
-  handle_greeting() {
-    this.messagingClient.send('Hey there! :) What can I help you with?', basicRequestQuickReplies);
-    return 'start';
   },
 
   // TODO(nicksahler): Move to init
@@ -251,6 +246,8 @@ export default {
         const intent_map = {
           'help': 'what_can_i_do',
           'greeting': 'handle_greeting',
+          'thanks': 'handle_thank_you',
+          'praise': 'handle_praise',
           'benefits_internet': 'benefits-internet.init',
 
           'voting_deadlines': 'voting.votingDeadlines', // TODO(nicksahler): not trained
@@ -332,6 +329,41 @@ export default {
       this.get('organization') || { id: this.snapshot.organization_id,
     });
     this.messagingClient.send(message);
+    return 'start';
+  },
+
+  handle_greeting() {
+    const greetings = [
+      'Hey there! :) What can I help you with?',
+      'Hey there! :) What can I help you with?',
+      'Hey there! :) What can I help you with?',
+      'Hey there! :) What can I help you with?',
+      'Yo yoooooooo',
+      'yo yo yo',
+    ];
+    const greeting = greetings[Math.floor(Math.random() * greetings.length)];
+    this.messagingClient.send(greeting, basicRequestQuickReplies);
+    return 'start';
+  },
+
+  handle_praise() {
+    const thanks = [
+      'Thanks!!! :D',
+      '<3',
+    ];
+    const thank = thanks[Math.floor(Math.random() * thanks.length)];
+    this.messagingClient.send(thank);
+    return 'start';
+  },
+
+  handle_thank_you() {
+    const youreWelcomes = [
+      'Anytime :)',
+      'You are very welcome! :)',
+      'No problem! :)',
+    ];
+    const youreWelcome = youreWelcomes[Math.floor(Math.random() * youreWelcomes.length)];
+    this.messagingClient.send(youreWelcome);
     return 'start';
   },
 };
