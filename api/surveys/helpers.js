@@ -11,9 +11,10 @@ export function getSurvey(params, options = { returnJSON: true }) {
     }).catch(err => err);
 }
 
-export function getSurveys(params, options = { returnJSON: true }) {
-  return SurveyModels.Survey.where(params)
-    .fetchAll({ withRelated: ['questions'] })
+export function getSurveys(params = {}, options = { returnJSON: true }) {
+  return SurveyModels.Survey.query(qb => {
+    qb.where('organization_id', '=', params.organization_id).orWhere('template', '=', true);
+  }).fetchAll({ withRelated: ['questions'] })
     .then((surveyModels) => {
       return options.returnJSON ? surveyModels.toJSON() : surveyModels;
     }).catch(err => err);

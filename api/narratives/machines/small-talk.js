@@ -2,7 +2,7 @@ import { logger } from '../../logger';
 import * as TAGS from '../../constants/nlp-tagging';
 import { nlp } from '../../services/nlp';
 import * as CASE_CONSTANTS from '../../constants/cases';
-import { getConstituentCases, createConstituentCase, addCaseNote } from '../../cases/helpers';
+import { getConstituentCases, createConstituentCase } from '../../cases/helpers';
 import SlackService from '../../services/slack';
 import { fetchAnswers } from '../helpers';
 
@@ -72,35 +72,6 @@ export default {
      // Not done yet lol
       return 'start';
     }
-  },
-
-  expect_response: {
-    message() {
-      const expectedResponse = this.get('expected_response');
-      // If there is a case_id, we need to add a note.
-      if (expectedResponse.case_id) {
-        // For now, just going to concat question and answer
-        return addCaseNote(expectedResponse.case_id, `Q: ${expectedResponse.question} -- A: ${this.snapshot.input.payload.text}  `)
-          .then(() => {
-            this.messagingClient.send('I\'ve passed your message along!');
-            return 'start';
-          });
-      }
-      // If not, we're creating a new case!
-      return createConstituentCase({
-        title: `Following up: "${expectedResponse.question}"`,
-        type: CASE_CONSTANTS.REQUEST,
-        description: this.snapshot.input.payload.text,
-        category: expectedResponse.category,
-      },
-      this.snapshot.constituent,
-      this.get('organization') || { id: this.snapshot.organization_id,
-      }).then(() => {
-        this.delete('expected_response');
-        this.messagingClient.send('I\'ve pass your message along and will keep you updated!');
-        return 'start';
-      });
-    },
   },
 
   waiting_for_organization_confirmation: {

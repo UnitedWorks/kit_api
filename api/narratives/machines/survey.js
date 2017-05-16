@@ -1,5 +1,5 @@
 import { nlp } from '../../services/nlp';
-import { createConstituentCase } from '../../cases/helpers';
+import { createConstituentCase, addCaseNote } from '../../cases/helpers';
 import { getSurvey, saveSurveyAnswers } from '../../surveys/helpers';
 import * as CASE_CONSTANTS from '../../constants/cases';
 import * as SURVEY_CONSTANTS from '../../constants/surveys';
@@ -11,11 +11,10 @@ const acceptanceQuickReplies = [
 
 export default {
   loading_survey: {
-    enter(aux = {}) {
-      const label = this.snapshot.nlp.entities.intent[0].value;
-      if (!label && !aux.id) return 'smallTalk.failedRequest';
-      return getSurvey({ id: aux.id, label }).then((survey) => {
-        if (!survey) return 'smallTalk.failedRequest';
+    enter() {
+      const label = this.snapshot.nlp.entities ?
+        this.snapshot.nlp.entities.intent[0].value : 'general_complaint';
+      return getSurvey({ label }).then((survey) => {
         this.set('survey', survey);
         return 'waiting_for_answer';
       });
@@ -96,6 +95,10 @@ export default {
     enter() {
       this.input(this.get('survey').concluding_action || 'default');
     },
+    message() {
+      // Backup incase an error was thrown and state didnt resolve from enter()
+      this.input(this.get('survey').concluding_action || 'default');
+    },
     default() {
       this.messagingClient.send('Great, those were all my questions. Thank you so much!');
       return saveSurveyAnswers(this.snapshot.data_store.survey.questions, this.snapshot.constituent)
@@ -110,20 +113,37 @@ export default {
     create_case() {
       const questions = this.get('survey').questions;
       const title = this.get('survey').name;
+      const caseId = this.get('survey').case_id;
       const description = questions.filter(q => q.type === SURVEY_CONSTANTS.TEXT)[0].answer.text;
-      const pictures = questions.filter(q => q.type === SURVEY_CONSTANTS.PICTURE)[0].answer.pictures;
-      const location = questions.filter(q => q.type === SURVEY_CONSTANTS.LOCATION)[0].answer.location;
-      return createConstituentCase({
-        title,
-        description,
-        type: CASE_CONSTANTS.REQUEST,
-        location,
-        attachments: pictures,
-      },
-      this.snapshot.constituent,
-      this.get('organization') || { id: this.snapshot.organization_id,
-      }).then(() => {
-        this.messagingClient.send('I just sent your message along. I\'ll try to let you know when it\'s been addressed.');
+      const pictureQuestions = questions.filter(q => q.type === SURVEY_CONSTANTS.PICTURE);
+      let pictures;
+      if (pictureQuestions.length > 0) {
+        pictures = pictureQuestions[0].answer.pictures;
+      }
+      const locationQuestions = questions.filter(q => q.type === SURVEY_CONSTANTS.LOCATION);
+      let location;
+      if (locationQuestions.length > 0) {
+        location = locationQuestions[0].answer.location;
+      }
+      let query;
+      // If ID exists, update case rather than create new
+      if (caseId) {
+        query = addCaseNote(caseId, `Q: ${title} -- A: ${description} `);
+      } else {
+        // Create New
+        query = createConstituentCase({
+          title,
+          description,
+          type: CASE_CONSTANTS.REQUEST,
+          location,
+          attachments: pictures,
+        },
+        this.snapshot.constituent,
+        this.get('organization') || { id: this.snapshot.organization_id,
+        });
+      }
+      return query.then(() => {
+        this.messagingClient.send('I\'ve sent your message along and will keep you updated!');
         this.delete('survey');
         this.snapshot.state_machine_name = 'smallTalk';
         this.current = 'start';

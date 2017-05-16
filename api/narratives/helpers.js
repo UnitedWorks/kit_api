@@ -35,7 +35,7 @@ export const fetchAnswers = (intent, session) => {
       .then(() => 'smallTalk.start');
   }
   return new KitClient({ organization: session.get('organization') })
-    .getAnswer(intent).then((answers) => {
+    .getAnswer(intent).then(({ question, answers }) => {
       if (entities[TAGS.DATETIME]) {
         session.messagingClient.addAll(KitClient.dynamicAnswer(answers, entities[TAGS.DATETIME]));
       } else if (schedule === 'day') {
@@ -46,15 +46,13 @@ export const fetchAnswers = (intent, session) => {
       return session.messagingClient.runQuene().then(() => {
         // If we have a survey, prompt user about it
         if (answers.survey && answers.survey.questions.length > 0) {
-          session.set('survey', answers.survey);
-          return 'survey.waiting_for_acceptance';
-        // If we have a simple expected response, prompt user about it
-        } else if (answers.expect_response) {
-          session.set('expected_response', {
-            question: session.snapshot.input.payload.text,
-            category: answers.category,
-          });
-          return 'smallTalk.expect_response';
+          const surveyObj = {
+            ...answers.survey,
+            name: answers.survey.name || question.question,
+          };
+          if (answers.category) surveyObj.category = answers.category;
+          session.set('survey', surveyObj);
+          return 'survey.waiting_for_answer';
         }
         // Otherwise end user back at start
         return 'smallTalk.start';

@@ -247,9 +247,9 @@ router.route('/answers')
    */
   .get(requireAuth, (req, res) => {
     const params = req.query;
-    getAnswers(params, {}).then((payload) => {
+    getAnswers(params, {}).then(({ answers }) => {
       res.status(200).send({
-        answers: payload,
+        answers,
       });
     });
   })
