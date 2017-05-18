@@ -4,7 +4,7 @@ import { KnowledgeEvent, KnowledgeFacility, KnowledgeFacilityType, KnowledgeServ
 import { getAnswers, getCategories, getContacts, createContact, updateContact, deleteContact,
   getQuestions, makeAnswer, updateAnswer, deleteAnswer, deleteService, createFacility,
   updateFacility, deleteFacility, createService, updateService,
-  syncSheetKnowledgeBaseQuestions, getQuestionsAsTable } from './helpers';
+  syncSheetKnowledgeBaseQuestions, getQuestionsAsTable, createAnswersFromRows } from './helpers';
 import { requireAuth } from '../services/passport';
 
 const router = new Router();
@@ -295,5 +295,15 @@ router.route('/answers')
       .then(answer => res.status(200).send({ answer }))
       .catch(err => next(err));
   });
+
+router.post('/answers/batch', requireAuth, (req, res, next) => {
+  try {
+    createAnswersFromRows(req.body)
+      .then(() => res.status(200).send())
+      .catch(error => next(error));
+  } catch (e) {
+    next(e);
+  }
+});
 
 module.exports = router;

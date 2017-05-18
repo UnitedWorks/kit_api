@@ -481,3 +481,49 @@ export function getQuestionsAsTable(params = {}) {
     return { rows: finalResults };
   });
 }
+
+export function createAnswersFromRows({ answers, organization }, options = { returnJSON: true }) {
+  const headerPositions = {
+    question_id: null,
+    question: null,
+    answer: null,
+  };
+  answers[0].forEach((h, index) => {
+    if (h === 'question_id') {
+      headerPositions.question_id = index;
+    } else if (h === 'question') {
+      headerPositions.question = index;
+    } else if (h === 'answer') {
+      headerPositions.answer = index;
+    }
+  });
+  if (headerPositions.question_id == null) {
+    throw new Error('Trouble identifying columns');
+  }
+  const filteredRows = answers.slice(1)
+    .filter(row => row[headerPositions.answer] != null && row[headerPositions.answer].length > 0)
+    .map((row) => {
+      const rowData = {
+        organization_id: organization.id,
+        question_id: row[headerPositions.question_id],
+        text: row[headerPositions.answer],
+      };
+      return KnowledgeAnswer.where({
+        organization_id: organization.id,
+        question_id: rowData.question_id,
+      }).fetchAll().then((results) => {
+        const textResult = results.toJSON().filter(r => r.text);
+        console.log(textResult)
+        if (textResult.length > 0) {
+          return KnowledgeAnswer.forge({ ...rowData, id: textResult[0].id })
+            .save(null, { method: 'update' });
+        }
+        return KnowledgeAnswer.forge({ ...rowData })
+          .save(null, { method: 'insert' });
+      });
+    });
+
+  return Promise.all(filteredRows)
+    .then(data => data)
+    .catch(error => error);
+}
