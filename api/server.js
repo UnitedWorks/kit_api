@@ -3,10 +3,7 @@ import cors from 'cors';
 import express from 'express';
 import fs from 'fs';
 import path from 'path';
-import * as env from './env';
-import * as environments from './constants/environments';
 import { logger } from './logger';
-import * as clients from './conversations/clients';
 import { baseErrorHandler } from './utils';
 
 const app = express();

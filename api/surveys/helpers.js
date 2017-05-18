@@ -126,7 +126,7 @@ export function saveSurveyAnswers(questions, constituent) {
   }).catch(error => error);
 }
 
-export function getSurveyAnswers(params) {
+export function getSurveyAnswersAsTable(params) {
   if (!params.id) throw new Error('No survey id');
   return knex.raw(`SELECT replace(lower(survey_questions.prompt), ' ', '_') AS prompt, survey_answers.constituent_id AS constituent_id, survey_answers.response->>'text' AS response, date_trunc('hour', survey_answers.created_at) AS answered_on
     FROM survey_answers

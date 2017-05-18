@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { requireAuth } from '../services/passport';
 
-import { getSurveys, createSurvey, updateSurvey, deleteSurvey, broadcastSurvey, getSurveyAnswers } from './helpers';
+import { getSurveys, createSurvey, updateSurvey, deleteSurvey, broadcastSurvey, getSurveyAnswersAsTable } from './helpers';
 
 const router = new Router();
 
@@ -51,7 +51,7 @@ router.route('/')
 
 router.route('/download')
   .get(requireAuth, (req, res) => {
-    getSurveyAnswers(req.query)
+    getSurveyAnswersAsTable(req.query)
       .then((data) => {
         res.status(200).send({ survey: data });
       }).catch(error => res.status(400).send({ error }));

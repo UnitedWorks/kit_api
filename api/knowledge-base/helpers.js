@@ -450,3 +450,34 @@ export const deleteContact = (contact) => {
       };
     }).catch(error => error);
 };
+
+export function getQuestionsAsTable(params = {}) {
+  const questionFilter = {};
+  if (params.knowledge_category_id) {
+    questionFilter.knowledge_category_id = params.knowledge_category_id;
+  }
+  return KnowledgeQuestion.where(questionFilter).fetchAll({
+    withRelated: [{
+      answers: q => q.where('organization_id', params.organization_id),
+    }, 'category'],
+  }).then((questionsCollection) => {
+    const questionJSON = params.unanswered
+      ? questionsCollection.toJSON().filter(q => q.answers.length === 0)
+      : questionsCollection.toJSON();
+    const finalResults = [];
+    questionJSON.forEach((q) => {
+      let textAnswer = q.answers.filter(a => a.text);
+      if (textAnswer.length === 1) {
+        textAnswer = textAnswer[0].text;
+      } else {
+        textAnswer = '';
+      }
+      finalResults.push({
+        question_id: q.id,
+        question: q.question,
+        answer: textAnswer,
+      });
+    });
+    return { rows: finalResults };
+  });
+}
