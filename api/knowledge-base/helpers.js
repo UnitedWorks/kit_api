@@ -513,7 +513,6 @@ export function createAnswersFromRows({ answers, organization }, options = { ret
         question_id: rowData.question_id,
       }).fetchAll().then((results) => {
         const textResult = results.toJSON().filter(r => r.text);
-        console.log(textResult)
         if (textResult.length > 0) {
           return KnowledgeAnswer.forge({ ...rowData, id: textResult[0].id })
             .save(null, { method: 'update' });
