@@ -474,6 +474,7 @@ export function getQuestionsAsTable(params = {}) {
       }
       finalResults.push({
         question_id: q.id,
+        category: q.category.label,
         question: q.question,
         answer: textAnswer,
       });
@@ -500,6 +501,10 @@ export function createAnswersFromRows({ answers, organization }, options = { ret
   if (headerPositions.question_id == null) {
     throw new Error('Trouble identifying columns');
   }
+
+  // TODO: Fix this query.
+  // Everytime this promise runs, a kitten cries.
+  // Tried doing batch inserts w/ unique table constraints but kept hitting edges
   const filteredRows = answers.slice(1)
     .filter(row => row[headerPositions.answer] != null && row[headerPositions.answer].length > 0)
     .map((row) => {
