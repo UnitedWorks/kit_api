@@ -3,15 +3,7 @@ import { createConstituentCase, addCaseNote } from '../../cases/helpers';
 import { getSurvey, saveSurveyAnswers } from '../../surveys/helpers';
 import * as CASE_CONSTANTS from '../../constants/cases';
 import * as SURVEY_CONSTANTS from '../../constants/surveys';
-
-const acceptanceQuickReplies = [
-  { content_type: 'text', title: 'Yes', payload: 'Yes' },
-  { content_type: 'text', title: 'No thanks', payload: 'No thanks' },
-];
-
-const locationQuickReply = {
-  content_type: 'location',
-};
+import * as replyTemplates from '../templates/quick-replies';
 
 export default {
   loading_survey: {
@@ -27,7 +19,7 @@ export default {
 
   waiting_for_acceptance: {
     enter(aux = {}) {
-      return this.messagingClient.send(aux.message || `I can help you with ${`"${this.get('survey').name}"` || 'this'}, but I need to ask a few questions. Want to continue?`, acceptanceQuickReplies);
+      return this.messagingClient.send(aux.message || `I can help you with ${`"${this.get('survey').name}"` || 'this'}, but I need to ask a few questions. Want to continue?`, replyTemplates.sureNoThanks);
     },
     message() {
       return nlp.message(this.snapshot.input.payload.text).then((nlpData) => {
@@ -42,7 +34,7 @@ export default {
             return this.messagingClient.send('Ok! No problem.').then(() => 'smallTalk.start');
           }
         }
-        return this.messagingClient.send('Sorry, didn\'t catch that. Want to do the survey?', acceptanceQuickReplies);
+        return this.messagingClient.send('Sorry, didn\'t catch that. Want to do the survey?', replyTemplates.sureNoThanks);
       });
     },
   },
@@ -59,7 +51,7 @@ export default {
         if (questions[i].answer === undefined) {
           const quickReplies = [];
           if (questions[i].type === SURVEY_CONSTANTS.LOCATION) {
-            quickReplies.push(locationQuickReply);
+            quickReplies.push(replyTemplates.location);
           }
           return this.messagingClient.send(
             this.snapshot.data_store.survey.questions[i].prompt, quickReplies);

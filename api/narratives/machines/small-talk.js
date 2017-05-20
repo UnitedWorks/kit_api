@@ -4,18 +4,19 @@ import * as CASE_CONSTANTS from '../../constants/cases';
 import { getConstituentCases, createConstituentCase } from '../../cases/helpers';
 import SlackService from '../../services/slack';
 import { fetchAnswers } from '../helpers';
-import * as elTemplates from '../element-templates';
+import * as elementTemplates from '../templates/elements';
+import * as replyTemplates from '../templates/quick-replies';
 import * as ATTRIBUTES from '../../constants/attributes';
 
 /* TODO(nicksahler) until I build the full i18n class */
 const i18n = (key, inserts = {}) => {
   const translations = {
-    intro_hello: `Hey there! :D I'm ${inserts.name ? `${inserts.name}, ` : ''}a chatbot letting you engage local gov!`,
-    intro_information: 'I let you ask questions, make requests, and more any time and where.',
-    intro_survey_ask: 'Can I ask a few Yes/No questions? It will help me help you!',
+    intro_hello: `Hey there! :D I'm ${inserts.name ? `${inserts.name}, ` : ''}a chatbot connecting you to your local government!`,
+    intro_information: 'I can answers your questions, record suggestions/complaints, find you government contracts, and more!',
+    intro_survey_ask: 'We should get to know each other a little bit so I can be more helpful. Can I ask you some quick questions?',
     intro_survey_attribute_housing: 'Are you currently renting, an owner, or homeless?',
     intro_survey_attribute_new_resident: `Are you a new resident${inserts.organizationName ? ` to ${inserts.organizationName}` : ''}?`,
-    intro_survey_attribute_business_owner: `Do you run a business${inserts.organizationName ? ` in ${inserts.organizationName}` : ''}?`,
+    intro_survey_attribute_business_owner: `Do you have a business${inserts.organizationName ? ` in ${inserts.organizationName}` : ''}?`,
     intro_survey_attribute_children: 'Do you have any young children in the schools here?',
     intro_survey_attribute_dogs_or_cats: 'Whats better... 🐱Cats or 🐶Dogs?',
     organization_confirmation: `You're interested in ${inserts.organizationName}, right?`,
@@ -23,11 +24,6 @@ const i18n = (key, inserts = {}) => {
   };
   return translations[key];
 };
-
-const confirmDenyQuickReplies = [
-  { content_type: 'text', title: 'Yes!', payload: 'Yes!' },
-  { content_type: 'text', title: 'No', payload: 'No' },
-];
 
 const basicRequestQuickReplies = [
   { content_type: 'text', title: 'What can I ask?', payload: 'What can I ask?' },
@@ -45,7 +41,6 @@ const housingRequestQuickReplies = [
 const petQuickReplies = [
   { content_type: 'text', title: 'Cats🐱', payload: 'Cats' },
   { content_type: 'text', title: 'Dogs🐶', payload: 'Dogs' },
-  { content_type: 'text', title: 'No pets', payload: 'No Pets' },
 ];
 
 export default {
@@ -83,7 +78,7 @@ export default {
 
   waiting_for_intro_survey_confirmation: {
     enter() {
-      this.messagingClient.send(i18n('intro_survey_ask'), confirmDenyQuickReplies);
+      this.messagingClient.send(i18n('intro_survey_ask'), replyTemplates.sureNoThanks);
     },
     message() {
       return nlp.message(this.snapshot.input.payload.text)
@@ -94,10 +89,11 @@ export default {
             if (entities.intent[0].value === 'speech_confirm') {
               return this.messagingClient.send('Great! :)').then(() => 'waiting_for_attribute_housing');
             } else if (entities.intent[0].value === 'speech_deny') {
-              return this.stateRedirect('location', 'smallTalk.what_can_i_do');
+              this.set('attributes', {});
+              return 'what_can_i_do';
             }
           }
-          this.messagingClient.send(i18n('bot_apology', { appendQuestion: i18n('intro_survey_ask') }), confirmDenyQuickReplies);
+          this.messagingClient.send(i18n('bot_apology', { appendQuestion: i18n('intro_survey_ask') }), replyTemplates.sureNoThanks);
         });
     },
   },
@@ -134,7 +130,7 @@ export default {
     enter() {
       this.messagingClient.send(i18n('intro_survey_attribute_new_resident', {
         organizationName: this.get('organization').name,
-      }), confirmDenyQuickReplies);
+      }), replyTemplates.yesNoMix());
     },
     message() {
       return nlp.message(this.snapshot.input.payload.text)
@@ -152,7 +148,7 @@ export default {
           }
           this.messagingClient.send(i18n('bot_apology', { appendQuestion: i18n('intro_survey_attribute_new_resident', {
             organizationName: this.get('organization').name,
-          }) }), confirmDenyQuickReplies);
+          }) }), replyTemplates.yesNoMix());
         });
     },
   },
@@ -161,7 +157,7 @@ export default {
     enter() {
       this.messagingClient.send(i18n('intro_survey_attribute_business_owner', {
         organizationName: this.get('organization').name,
-      }), confirmDenyQuickReplies);
+      }), replyTemplates.yesNoMix());
     },
     message() {
       return nlp.message(this.snapshot.input.payload.text)
@@ -179,7 +175,7 @@ export default {
           }
           this.messagingClient.send(i18n('bot_apology', { appendQuestion: i18n('intro_survey_attribute_business_owner', {
             organizationName: this.get('organization').name,
-          }) }), confirmDenyQuickReplies);
+          }) }), replyTemplates.yesNoMix());
         });
     },
   },
@@ -208,28 +204,31 @@ export default {
   what_can_i_do: {
     enter() {
       const elements = [
-        elTemplates.genericVotingAndElections,
+        elementTemplates.genericVotingAndElections,
       ];
       // Add elements depending on constituent attributes
       // Housing
       if (this.get('attributes').housing === ATTRIBUTES.HOUSING_OWNER) {
-        elements.unshift(elTemplates.genericDocumentation);
-        elements.unshift(elTemplates.genericSanitation);
+        elements.unshift(elementTemplates.genericDocumentation);
+        elements.unshift(elementTemplates.genericSanitation);
       } else if (this.get('attributes').housing === ATTRIBUTES.HOUSING_TENANT) {
-        elements.push(elTemplates.genericBenefits);
-        elements.unshift(elTemplates.genericRenter);
+        elements.push(elementTemplates.genericBenefits);
+        elements.unshift(elementTemplates.genericRenter);
       } else if (this.get('attributes').housing === ATTRIBUTES.HOUSING_HOMELESS) {
-        elements.unshift(elTemplates.genericBenefits);
-        elements.unshift(elTemplates.genericAssistance);
+        elements.unshift(elementTemplates.genericBenefits);
+        elements.unshift(elementTemplates.genericAssistance);
+      } else {
+        elements.unshift(elementTemplates.genericDocumentation);
+        elements.unshift(elementTemplates.genericSanitation);
+        elements.push(elementTemplates.genericBenefits);
+        elements.push(elementTemplates.genericAssistance);
       }
       // Business
-      if (this.get('attributes').business_owner) {
-        elements.unshift(elTemplates.genericBusiness);
+      if (this.get('attributes').business_owner || this.get('attributes').business_owner == null) {
+        elements.unshift(elementTemplates.genericBusiness);
       }
       // New Resident
-      elements.unshift(elTemplates.genericNewResident);
-      // About
-      elements.push(elTemplates.genericAbout);
+      elements.unshift(elementTemplates.genericNewResident);
       this.messagingClient.addToQuene({
         type: 'template',
         templateType: 'generic',
@@ -312,22 +311,22 @@ export default {
   },
 
   resident_question_list() {
-    return this.messagingClient.send({ type: 'template', templateType: 'generic', elements: elTemplates.genericNewResidentFAQList })
+    return this.messagingClient.send({ type: 'template', templateType: 'generic', elements: elementTemplates.genericNewResidentFAQList })
       .then(() => 'start');
   },
 
   resident_service_list() {
-    return this.messagingClient.send({ type: 'template', templateType: 'generic', elements: elTemplates.genericNewResidentServicesList })
+    return this.messagingClient.send({ type: 'template', templateType: 'generic', elements: elementTemplates.genericNewResidentServicesList })
       .then(() => 'start');
   },
 
   business_questions_list() {
-    return this.messagingClient.send({ type: 'template', templateType: 'generic', elements: elTemplates.genericBusinessQuestions })
+    return this.messagingClient.send({ type: 'template', templateType: 'generic', elements: elementTemplates.genericBusinessQuestions })
       .then(() => 'start');
   },
 
   business_requirements_list() {
-    return this.messagingClient.send({ type: 'template', templateType: 'generic', elements: elTemplates.genericBusinessRequirements })
+    return this.messagingClient.send({ type: 'template', templateType: 'generic', elements: elementTemplates.genericBusinessRequirements })
       .then(() => 'start');
   },
 
