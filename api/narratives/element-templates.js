@@ -249,11 +249,11 @@ export const genericBusiness = {
   }, {
     type: 'postback',
     title: 'Business Checklist',
-    payload: 'FREQ_BUSINESS_QUESTIONS',
+    payload: 'FREQ_BUSINESS_QUESTIONS_LIST',
   }, {
     type: 'postback',
     title: 'Permits, Licenses, ...',
-    payload: 'FREQ_BUSINESS_REQUIREMENTS',
+    payload: 'FREQ_BUSINESS_REQUIREMENTS_LIST',
   }],
 };
 

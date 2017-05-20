@@ -313,7 +313,7 @@ export class FacebookMessengerClient extends BaseClient {
         },
       };
     }
-    if (quickActions) sendData.message.quick_replies = quickActions;
+    if (quickActions && quickActions.length > 0) sendData.message.quick_replies = quickActions;
     return new Promise((resolve) => {
       this.isTyping(false);
       this.callAPI(sendData).then(() => resolve());

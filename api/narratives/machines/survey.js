@@ -9,6 +9,10 @@ const acceptanceQuickReplies = [
   { content_type: 'text', title: 'No thanks', payload: 'No thanks' },
 ];
 
+const locationQuickReply = {
+  content_type: 'location',
+};
+
 export default {
   loading_survey: {
     enter() {
@@ -53,7 +57,12 @@ export default {
       }
       for (let i = 0; i < questions.length; i += 1) {
         if (questions[i].answer === undefined) {
-          return this.messagingClient.send(this.snapshot.data_store.survey.questions[i].prompt);
+          const quickReplies = [];
+          if (questions[i].type === SURVEY_CONSTANTS.LOCATION) {
+            quickReplies.push(locationQuickReply);
+          }
+          return this.messagingClient.send(
+            this.snapshot.data_store.survey.questions[i].prompt, quickReplies);
         }
       }
       return 'concluding_survey';
@@ -74,11 +83,13 @@ export default {
             };
           } else if (questions[i].type === SURVEY_CONSTANTS.PICTURE) {
             newQuestions[i].answer = {
-              pictures: this.snapshot.input.payload.attachments ? this.snapshot.input.payload.attachments : null,
+              pictures: this.snapshot.input.payload.attachments ?
+                this.snapshot.input.payload.attachments : null,
             };
           } else if (questions[i].type === SURVEY_CONSTANTS.LOCATION) {
             newQuestions[i].answer = {
-              location: this.snapshot.input.payload.attachments ? this.snapshot.input.payload.attachments[0] : null,
+              location: this.snapshot.input.payload.attachments ?
+                this.snapshot.input.payload.attachments[0] : null,
             };
           }
           const newSurveyStore = this.get('survey');

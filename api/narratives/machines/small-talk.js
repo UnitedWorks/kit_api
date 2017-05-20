@@ -303,8 +303,8 @@ export default {
         ASK_OPTIONS: 'what_can_i_do',
         FREQ_QUESTION_LIST: 'resident_question_list',
         FREQ_SERVICE_LIST: 'resident_service_list',
-        FREQ_BUSINESS_QUESTIONS: 'business_questions_list',
-        FREQ_BUSINESS_REQUIREMENTS: 'business_requirements_list',
+        FREQ_BUSINESS_QUESTIONS_LIST: 'business_questions_list',
+        FREQ_BUSINESS_REQUIREMENTS_LIST: 'business_requirements_list',
       }[this.snapshot.input.payload.payload];
       if (!goTo) return this.input('message');
       return goTo;
