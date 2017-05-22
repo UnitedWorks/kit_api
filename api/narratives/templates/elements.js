@@ -320,3 +320,27 @@ export const genericBusinessRequirements = [{
     payload: 'Schedule Health Inspection',
   }],
 }];
+
+export function genericContact(contact) {
+  const element = {
+    title: contact.name,
+    subtitle: contact.responsibilities,
+  };
+  const buttons = [];
+  if (contact.phone_number) {
+    buttons.push({
+      type: 'phone_number',
+      title: contact.phone_number,
+      payload: contact.phone_number,
+    });
+  }
+  if (contact.email) {
+    buttons.push({
+      type: 'postback',
+      title: contact.email,
+      payload: contact.email,
+    });
+  }
+  if (buttons.length > 0) element.buttons = buttons;
+  return element;
+}

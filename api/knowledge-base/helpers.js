@@ -577,13 +577,11 @@ export function createAnswersFromRows({ answers, organization }, options = { ret
     .catch(error => error);
 }
 
-export function getResponsibleEntitiesForCategory(label) {
+export function getCategoryEntities(label, orgId) {
   return KnowledgeCategory.where({ label })
-    .fetch({ withRelated: ['responsibleContacts', 'responsibleDepartments'] }).then((data) => {
-      console.log('////////')
-      console.log(data.id)
-      console.log('////////')
-      console.log(data)
-      console.log('////////')
-    });
+    .fetch({ withRelated: [{
+      contacts: q => q.where('organization_id', '=', orgId),
+    }, {
+      departments: q => q.where('organization_id', '=', orgId),
+    }] }).then(data => data.toJSON());
 }

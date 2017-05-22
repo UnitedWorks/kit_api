@@ -4,7 +4,7 @@ import * as CASE_CONSTANTS from '../../constants/cases';
 import { getConstituentCases, createConstituentCase } from '../../cases/helpers';
 import SlackService from '../../services/slack';
 import { fetchAnswers } from '../helpers';
-import { getResponsibleEntitiesForCategory } from '../../knowledge-base/helpers';
+import { getCategoryEntities } from '../../knowledge-base/helpers';
 import * as elementTemplates from '../templates/elements';
 import * as replyTemplates from '../templates/quick-replies';
 import * as ATTRIBUTES from '../../constants/attributes';
@@ -348,24 +348,49 @@ export default {
   },
 
   failedRequest() {
-    getResponsibleEntitiesForCategory(this.snapshot.nlp.entities.category[0].value)
-      .then(() => {
-        const message = 'Ah shoot, I\'m still learning so I don\'t understand that request yet. Can you give more description? <3';
-        this.messagingClient.send(message);
-        // new SlackService({
-        //   username: 'Misunderstood Request',
-        //   icon: 'question',
-        // }).send(`>*Request Message*: ${this.snapshot.input.payload.text}\n>
-        // *Constituent ID*: ${this.snapshot.constituent.id}`);
-        // createConstituentCase({
-        //   title: this.snapshot.input.payload.text,
-        //   type: CASE_CONSTANTS.STATEMENT,
-        // },
-        //   this.snapshot.constituent,
-        //   this.get('organization') || { id: this.snapshot.organization_id,
-        // });
-        return 'start';
+    new SlackService({
+      username: 'Misunderstood Request',
+      icon: 'question',
+    }).send(`>*Request Message*: ${this.snapshot.input.payload.text}\n>*Constituent ID*: ${this.snapshot.constituent.id}`);
+    // If first failure, ask for a repeat of question
+    if (this.snapshot.state_machine_previous_state !== 'failedRequest') {
+      return this.messagingClient.send('I\'m doing my best but I couldn\'t find an answer or might be misunderstanding. Can you try saying that another way?')
+        .then(() => 'start');
+    }
+    // If second failure, fetch resources to assist
+    const label = this.snapshot.nlp.entities.category[0].value || 'general';
+    return getCategoryEntities(label, this.snapshot.organization_id).then((labelData) => {
+      // See if we have fallback help for this category
+      // If none found (and we werent already general), fetch general fallback contacts/departments
+      if (labelData.contacts.length === 0 && label !== 'general') {
+        return getCategoryEntities('general', this.snapshot.organization_id).then((generalData) => {
+          // If we have fallbacks
+          if (generalData.contacts.length === 0) {
+            this.messagingClient.addToQuene('I don\'t have an answer to this, but I\'ve gathered potentially helpful employees for you. Give them a shot:');
+            this.messagingClient.addToQuene({
+              type: 'template',
+              templateType: 'generic',
+              elements: generalData.contacts.map(contact => elementTemplates.genericContact(contact)),
+            });
+            this.messagingClient.addToQuene('Or if you prefer you can also "Make a Request"!', replyTemplates.makeRequest);
+          // If we don't have fallbacks
+          } else {
+            this.messagingClient.addToQuene('I\'m don\'t think I can help with this :(');
+            this.messagingClient.addToQuene('I recommend you "Make a Request", so I can forward it to the local government for you! I can let you know when they respond with an answer.', replyTemplates.makeRequest);
+          }
+          return this.messagingClient.runQuene().then(() => 'start');
+        });
+      }
+      // Run Category Specific Response
+      this.messagingClient.addToQuene('I don\'t have an answer to this, but I\'ve gathered potentially helpful employees for you. Give them a shot:');
+      this.messagingClient.addToQuene({
+        type: 'template',
+        templateType: 'generic',
+        elements: labelData.contacts.map(contact => elementTemplates.genericContact(contact)),
       });
+      this.messagingClient.addToQuene('If you prefer, you can also "Make a Request"!', replyTemplates.makeRequest);
+      return this.messagingClient.runQuene().then(() => 'start');
+    }).catch(() => 'start');
   },
 
   handle_greeting() {

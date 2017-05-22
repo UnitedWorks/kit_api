@@ -7,6 +7,8 @@ exports.up = function(knex, Promise) {
       table.string('name');
       table.text('brief_description');
       table.text('responsibilities');
+      table.integer('organization_id')
+        .unsigned().references('id').inTable('organizations');
       table.datetime('created_at').defaultTo(knex.raw('now()'));
       table.datetime('updated_at');
     })
