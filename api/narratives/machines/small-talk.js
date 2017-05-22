@@ -4,7 +4,7 @@ import * as CASE_CONSTANTS from '../../constants/cases';
 import { getConstituentCases, createConstituentCase } from '../../cases/helpers';
 import SlackService from '../../services/slack';
 import { fetchAnswers } from '../helpers';
-import { getCategoryEntities } from '../../knowledge-base/helpers';
+import { getCategoryFallback } from '../../knowledge-base/helpers';
 import * as elementTemplates from '../templates/elements';
 import * as replyTemplates from '../templates/quick-replies';
 import * as ATTRIBUTES from '../../constants/attributes';
@@ -359,36 +359,22 @@ export default {
     }
     // If second failure, fetch resources to assist
     const label = this.snapshot.nlp.entities.category[0].value || 'general';
-    return getCategoryEntities(label, this.snapshot.organization_id).then((labelData) => {
+    return getCategoryFallback(label, this.snapshot.organization_id).then((fallbackData) => {
       // See if we have fallback help for this category
-      // If none found (and we werent already general), fetch general fallback contacts/departments
-      if (labelData.contacts.length === 0 && label !== 'general') {
-        return getCategoryEntities('general', this.snapshot.organization_id).then((generalData) => {
-          // If we have fallbacks
-          if (generalData.contacts.length === 0) {
-            this.messagingClient.addToQuene('Darn :( I don\'t have an answer to this, but I\'ve gathered potentially helpful employees for you. Give them a shot:');
-            this.messagingClient.addToQuene({
-              type: 'template',
-              templateType: 'generic',
-              elements: generalData.contacts.map(contact => elementTemplates.genericContact(contact)),
-            });
-            this.messagingClient.addToQuene('If you want, you can "Make a Request" and I\'ll get you a response for the local government!', replyTemplates.makeRequest);
-          // If we don't have fallbacks
-          } else {
-            this.messagingClient.addToQuene('I\'m don\'t think I can help with this :(');
-            this.messagingClient.addToQuene('You should "Make a Request" so I can forward it to the local government for you! I can let you know when they respond with an answer.', replyTemplates.makeRequest);
-          }
-          return this.messagingClient.runQuene().then(() => 'start');
-        });
+      // If none found (and we werent already general), fetch general fallback contacts
+      if (fallbackData.contacts.length === 0) {
+        this.messagingClient.addToQuene('I\'m don\'t think I can help with this :(');
+        this.messagingClient.addToQuene('You should "Make a Request" so I can forward it to the local government for you! I can let you know when they respond with an answer.', replyTemplates.makeRequest);
+        return this.messagingClient.runQuene().then(() => 'start');
       }
       // Run Category Specific Response
-      this.messagingClient.addToQuene('Darn :( I don\'t have an answer to this, but I\'ve gathered potentially helpful employees for you. Give them a shot:');
+      this.messagingClient.addToQuene('Darn :( I don\'t have an answer to this, but these contacts might be helpful!');
       this.messagingClient.addToQuene({
         type: 'template',
         templateType: 'generic',
-        elements: labelData.contacts.map(contact => elementTemplates.genericContact(contact)),
+        elements: fallbackData.contacts.map(contact => elementTemplates.genericContact(contact)),
       });
-      this.messagingClient.addToQuene('Or if you want, you can "Make a Request" and I\'ll get you a response for the local government!', replyTemplates.makeRequest);
+      this.messagingClient.addToQuene('If you want, "Make a Request" and an employee will message you back with an answer ASAP!', replyTemplates.makeRequest);
       return this.messagingClient.runQuene().then(() => 'start');
     }).catch(() => 'start');
   },

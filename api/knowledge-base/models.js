@@ -21,15 +21,7 @@ export const KnowledgeContact = bookshelf.Model.extend({
     return this.hasOne(Media, 'photo_id');
   },
   knowledgeCategories() {
-    return this.belongsToMany(KnowledgeCategory, 'knowledge_category_responsibilitys', 'knowledge_contact_id');
-  },
-});
-
-export const KnowledgeDepartment = bookshelf.Model.extend({
-  tableName: 'knowledge_departments',
-  hasTimestamps: true,
-  contacts() {
-    return this.belongsToMany(KnowledgeContact, 'department_id');
+    return this.belongsToMany(KnowledgeCategory, 'knowledge_categorys_knowledge_contacts', 'knowledge_contact_id');
   },
 });
 
@@ -38,11 +30,8 @@ export const KnowledgeCategory = bookshelf.Model.extend({
   questions() {
     return this.hasMany(KnowledgeQuestion, 'knowledge_category_id');
   },
-  departments() {
-    return this.belongsToMany(KnowledgeDepartment, 'knowledge_category_responsibilitys', 'knowledge_category_id');
-  },
   contacts() {
-    return this.belongsToMany(KnowledgeContact, 'knowledge_category_responsibilitys', 'knowledge_category_id');
+    return this.belongsToMany(KnowledgeContact, 'knowledge_categorys_knowledge_contacts', 'knowledge_category_id');
   },
 });
 

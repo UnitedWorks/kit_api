@@ -428,7 +428,7 @@ function createResponsibilities(model) {
   if (!model.knowledge_contact_id && !model.knowledge_department_id) {
     throw new Error('No Entity Described');
   }
-  return knex('knowledge_category_responsibilitys').insert({
+  return knex('knowledge_categorys_knowledge_contacts').insert({
     ...model,
   });
 }
@@ -468,7 +468,7 @@ export const updateContact = (contact, options = {}) => {
   return KnowledgeContact.where({ id: contact.id })
     .save(contact, { method: 'update' })
     .then((contactModel) => {
-      const responsibilityInserts = [knex('knowledge_category_responsibilitys')
+      const responsibilityInserts = [knex('knowledge_categorys_knowledge_contacts')
         .where('knowledge_contact_id', '=', contact.id).del()];
       if (categoryResponsibilities.length > 0) {
         categoryResponsibilities.forEach((cat) => {
@@ -485,7 +485,7 @@ export const updateContact = (contact, options = {}) => {
 };
 
 export const deleteContact = (contact) => {
-  return knex('knowledge_category_responsibilitys')
+  return knex('knowledge_categorys_knowledge_contacts')
     .where('knowledge_contact_id', '=', contact.id)
     .del().then(() => {
       return KnowledgeContact.where({ id: contact.id }).destroy().then(() => {
@@ -577,11 +577,30 @@ export function createAnswersFromRows({ answers, organization }, options = { ret
     .catch(error => error);
 }
 
-export function getCategoryEntities(label, orgId) {
+export function getCategoryFallback(label, orgId) {
   return KnowledgeCategory.where({ label })
     .fetch({ withRelated: [{
       contacts: q => q.where('organization_id', '=', orgId),
-    }, {
-      departments: q => q.where('organization_id', '=', orgId),
-    }] }).then(data => data.toJSON());
+    }] }).then((labelData) => {
+      // If no contacts, look farther up
+      if (labelData.toJSON().contacts.length === 0) {
+        return KnowledgeCategory.where({ label: 'general' })
+          .fetch({ withRelated: [{
+            contacts: q => q.where('organization_id', '=', orgId),
+          }] }).then((generalData) => {
+            return {
+              label: 'general',
+              fellback: true,
+              organizationId: orgId,
+              contacts: generalData.toJSON(),
+            };
+          });
+      }
+      return {
+        label,
+        fellback: false,
+        organizationId: orgId,
+        contacts: labelData.toJSON().contacts,
+      };
+    });
 }
