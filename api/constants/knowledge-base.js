@@ -2,8 +2,10 @@
 export const FACILITY = 'facility';
 export const EVENT = 'event';
 export const SERVICE = 'service';
+export const CONTACT = 'contact';
+export const DEPARTMENT = 'department';
 export const ANSWER = 'answer';
-export const ENTITIES = [FACILITY, EVENT, SERVICE, ANSWER];
+export const ENTITIES = [FACILITY, EVENT, SERVICE, ANSWER, CONTACT, DEPARTMENT];
 
 // FAQ Categories
 export const TRANSPORTATION = 'Transportation, Streets, and Sidewalks';

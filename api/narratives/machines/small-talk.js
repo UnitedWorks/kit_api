@@ -4,6 +4,7 @@ import * as CASE_CONSTANTS from '../../constants/cases';
 import { getConstituentCases, createConstituentCase } from '../../cases/helpers';
 import SlackService from '../../services/slack';
 import { fetchAnswers } from '../helpers';
+import { getResponsibleEntitiesForCategory } from '../../knowledge-base/helpers';
 import * as elementTemplates from '../templates/elements';
 import * as replyTemplates from '../templates/quick-replies';
 import * as ATTRIBUTES from '../../constants/attributes';
@@ -279,7 +280,7 @@ export default {
 
           employment_job_training: 'employment.waiting_job_training',
 
-          general_complaint: 'survey.loading_survey', // TODO(nicksahler): transaction -> getCases,
+          general_complaint: 'survey.loading_survey',
           cases_list: 'getCases',
 
           settings_city: 'setup.reset_organization',
@@ -347,20 +348,24 @@ export default {
   },
 
   failedRequest() {
-    new SlackService({
-      username: 'Misunderstood Request',
-      icon: 'question',
-    }).send(`>*Request Message*: ${this.snapshot.input.payload.text}\n>*Constituent ID*: ${this.snapshot.constituent.id}`);
-    const message = 'Ah shoot, I\'m still learning so I don\'t understand that request yet. Can you give more description? <3';
-    createConstituentCase({
-      title: this.snapshot.input.payload.text,
-      type: CASE_CONSTANTS.STATEMENT,
-    },
-      this.snapshot.constituent,
-      this.get('organization') || { id: this.snapshot.organization_id,
-    });
-    this.messagingClient.send(message);
-    return 'start';
+    getResponsibleEntitiesForCategory(this.snapshot.nlp.entities.category[0].value)
+      .then(() => {
+        const message = 'Ah shoot, I\'m still learning so I don\'t understand that request yet. Can you give more description? <3';
+        this.messagingClient.send(message);
+        // new SlackService({
+        //   username: 'Misunderstood Request',
+        //   icon: 'question',
+        // }).send(`>*Request Message*: ${this.snapshot.input.payload.text}\n>
+        // *Constituent ID*: ${this.snapshot.constituent.id}`);
+        // createConstituentCase({
+        //   title: this.snapshot.input.payload.text,
+        //   type: CASE_CONSTANTS.STATEMENT,
+        // },
+        //   this.snapshot.constituent,
+        //   this.get('organization') || { id: this.snapshot.organization_id,
+        // });
+        return 'start';
+      });
   },
 
   handle_greeting() {

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { knex } from '../orm';
-import { EventRule, KnowledgeAnswer, KnowledgeCategory, KnowledgeFacility, KnowledgeService, KnowledgeQuestion, KnowledgeContact, Location } from './models';
+import { EventRule, KnowledgeAnswer, KnowledgeCategory, KnowledgeFacility, KnowledgeService,
+  KnowledgeQuestion, KnowledgeContact, KnowledgeDepartment, Location } from './models';
 import { CaseLocations, CaseMedia } from '../cases/models';
 import geocoder from '../services/geocoder';
 
@@ -416,39 +417,83 @@ export const syncSheetKnowledgeBaseQuestions = () => {
 };
 
 export const getContacts = (params, options = {}) => {
-  return KnowledgeContact.where(params).fetchAll()
+  return KnowledgeContact.where(params).fetchAll({ withRelated: ['knowledgeCategories'] })
     .then((data) => {
       return options.returnJSON ? data.toJSON() : data;
     }).catch(error => error);
 };
+
+function createResponsibilities(model) {
+  if (!model.knowledge_category_id) throw new Error('No Category ID');
+  if (!model.knowledge_contact_id && !model.knowledge_department_id) {
+    throw new Error('No Entity Described');
+  }
+  return knex('knowledge_category_responsibilitys').insert({
+    ...model,
+  });
+}
 
 export const createContact = (data, options = {}) => {
   const contact = {
     ...data.contact,
     organization_id: data.organization.id,
   };
+  // Prune Responsibilities
+  const categoryResponsibilities = contact.knowledgeCategories;
+  delete contact.knowledgeCategories;
+  // Run CRUD
   return KnowledgeContact.forge(contact)
     .save(null, { method: 'insert' })
-    .then((results) => {
-      return options.returnJSON ? results.toJSON() : results;
+    .then((contactModel) => {
+      const responsibilityInserts = [];
+      if (categoryResponsibilities.length > 0) {
+        categoryResponsibilities.forEach((cat) => {
+          responsibilityInserts.push(createResponsibilities({
+            knowledge_category_id: cat.id,
+            knowledge_contact_id: contactModel.get('id'),
+          }));
+        });
+      }
+      return Promise.all(responsibilityInserts).then(() => {
+        return options.returnJSON ? contactModel.toJSON() : contactModel;
+      });
     }).catch(error => error);
 };
 
 export const updateContact = (contact, options = {}) => {
+  // Prune Categories
+  const categoryResponsibilities = contact.knowledgeCategories;
+  delete contact.knowledgeCategories;
+  // Run CRUD
   return KnowledgeContact.where({ id: contact.id })
     .save(contact, { method: 'update' })
-    .then((data) => {
-      return options.returnJSON ? data.toJSON() : data;
+    .then((contactModel) => {
+      const responsibilityInserts = [knex('knowledge_category_responsibilitys')
+        .where('knowledge_contact_id', '=', contact.id).del()];
+      if (categoryResponsibilities.length > 0) {
+        categoryResponsibilities.forEach((cat) => {
+          responsibilityInserts.push(createResponsibilities({
+            knowledge_category_id: cat.id,
+            knowledge_contact_id: contact.id,
+          }));
+        });
+      }
+      return Promise.all(responsibilityInserts).then(() => {
+        return options.returnJSON ? contactModel.toJSON() : contactModel;
+      });
     }).catch(error => error);
 };
 
 export const deleteContact = (contact) => {
-  return KnowledgeContact.where({ id: contact.id }).destroy()
-    .then(() => {
-      return {
-        id: contact.id,
-      };
-    }).catch(error => error);
+  return knex('knowledge_category_responsibilitys')
+    .where('knowledge_contact_id', '=', contact.id)
+    .del().then(() => {
+      return KnowledgeContact.where({ id: contact.id }).destroy().then(() => {
+        return {
+          id: contact.id,
+        };
+      }).catch(error => error);
+    });
 };
 
 export function getQuestionsAsTable(params = {}) {
@@ -530,4 +575,15 @@ export function createAnswersFromRows({ answers, organization }, options = { ret
   return Promise.all(filteredRows)
     .then(data => data)
     .catch(error => error);
+}
+
+export function getResponsibleEntitiesForCategory(label) {
+  return KnowledgeCategory.where({ label })
+    .fetch({ withRelated: ['responsibleContacts', 'responsibleDepartments'] }).then((data) => {
+      console.log('////////')
+      console.log(data.id)
+      console.log('////////')
+      console.log(data)
+      console.log('////////')
+    });
 }

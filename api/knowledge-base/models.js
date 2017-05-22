@@ -13,11 +13,36 @@ export const EventRule = bookshelf.Model.extend({
   tableName: 'event_rules',
 });
 
-// Knowledge Base Entries - Think of as complex objects
+// Knowledge Base Entities
+export const KnowledgeContact = bookshelf.Model.extend({
+  tableName: 'knowledge_contacts',
+  hasTimestamps: true,
+  photo() {
+    return this.hasOne(Media, 'photo_id');
+  },
+  knowledgeCategories() {
+    return this.belongsToMany(KnowledgeCategory, 'knowledge_category_responsibilitys', 'knowledge_contact_id');
+  },
+});
+
+export const KnowledgeDepartment = bookshelf.Model.extend({
+  tableName: 'knowledge_departments',
+  hasTimestamps: true,
+  contacts() {
+    return this.belongsToMany(KnowledgeContact, 'department_id');
+  },
+});
+
 export const KnowledgeCategory = bookshelf.Model.extend({
   tableName: 'knowledge_categorys',
-  questions: function() {
+  questions() {
     return this.hasMany(KnowledgeQuestion, 'knowledge_category_id');
+  },
+  departments() {
+    return this.belongsToMany(KnowledgeDepartment, 'knowledge_category_responsibilitys', 'knowledge_category_id');
+  },
+  contacts() {
+    return this.belongsToMany(KnowledgeContact, 'knowledge_category_responsibilitys', 'knowledge_category_id');
   },
 });
 
@@ -82,26 +107,6 @@ export const KnowledgeEvent = bookshelf.Model.extend({
   },
   service: function() {
     return this.belongsTo(KnowledgeService, 'knowledge_service_id');
-  },
-});
-
-export const KnowledgeContact = bookshelf.Model.extend({
-  tableName: 'knowledge_contacts',
-  hasTimestamps: true,
-  virtuals: {
-    full_name: {
-      get() {
-        if (this.get('middle_name')) {
-          return `${this.get('first_name')} ${this.get('middle_name')} ${this.get('last_name')}`;
-        } else if (this.get('first_name') && this.get('last_name')) {
-          return `${this.get('first_name')} ${this.get('last_name')}`;
-        }
-        return this.get('first_name');
-      },
-    },
-  },
-  photo: function() {
-    return this.hasOne(Media, 'photo_id');
   },
 });
 
