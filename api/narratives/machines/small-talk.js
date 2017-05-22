@@ -354,7 +354,7 @@ export default {
     }).send(`>*Request Message*: ${this.snapshot.input.payload.text}\n>*Constituent ID*: ${this.snapshot.constituent.id}`);
     // If first failure, ask for a repeat of question
     if (this.snapshot.state_machine_previous_state !== 'failedRequest') {
-      return this.messagingClient.send('I\'m doing my best but I couldn\'t find an answer or might be misunderstanding. Can you try saying that another way?')
+      return this.messagingClient.send('I couldn\'t find an answer or might be misunderstanding. Can you say that another way?')
         .then(() => 'start');
     }
     // If second failure, fetch resources to assist
@@ -366,29 +366,29 @@ export default {
         return getCategoryEntities('general', this.snapshot.organization_id).then((generalData) => {
           // If we have fallbacks
           if (generalData.contacts.length === 0) {
-            this.messagingClient.addToQuene('I don\'t have an answer to this, but I\'ve gathered potentially helpful employees for you. Give them a shot:');
+            this.messagingClient.addToQuene('Darn :( I don\'t have an answer to this, but I\'ve gathered potentially helpful employees for you. Give them a shot:');
             this.messagingClient.addToQuene({
               type: 'template',
               templateType: 'generic',
               elements: generalData.contacts.map(contact => elementTemplates.genericContact(contact)),
             });
-            this.messagingClient.addToQuene('Or if you prefer you can also "Make a Request"!', replyTemplates.makeRequest);
+            this.messagingClient.addToQuene('If you want, you can "Make a Request" and I\'ll get you a response for the local government!', replyTemplates.makeRequest);
           // If we don't have fallbacks
           } else {
             this.messagingClient.addToQuene('I\'m don\'t think I can help with this :(');
-            this.messagingClient.addToQuene('I recommend you "Make a Request", so I can forward it to the local government for you! I can let you know when they respond with an answer.', replyTemplates.makeRequest);
+            this.messagingClient.addToQuene('You should "Make a Request" so I can forward it to the local government for you! I can let you know when they respond with an answer.', replyTemplates.makeRequest);
           }
           return this.messagingClient.runQuene().then(() => 'start');
         });
       }
       // Run Category Specific Response
-      this.messagingClient.addToQuene('I don\'t have an answer to this, but I\'ve gathered potentially helpful employees for you. Give them a shot:');
+      this.messagingClient.addToQuene('Darn :( I don\'t have an answer to this, but I\'ve gathered potentially helpful employees for you. Give them a shot:');
       this.messagingClient.addToQuene({
         type: 'template',
         templateType: 'generic',
         elements: labelData.contacts.map(contact => elementTemplates.genericContact(contact)),
       });
-      this.messagingClient.addToQuene('If you prefer, you can also "Make a Request"!', replyTemplates.makeRequest);
+      this.messagingClient.addToQuene('Or if you want, you can "Make a Request" and I\'ll get you a response for the local government!', replyTemplates.makeRequest);
       return this.messagingClient.runQuene().then(() => 'start');
     }).catch(() => 'start');
   },
