@@ -1,4 +1,3 @@
-import lodash from 'lodash';
 import { bookshelf } from '../orm';
 import { Organization } from '../accounts/models';
 import { Media } from '../media/models';
