@@ -30,3 +30,7 @@ export const sureNoThanksMix = () => sureNoThanksTemplates[Math.floor(Math.rando
 export const location = {
   content_type: 'location',
 };
+
+export const makeRequest = [{
+  content_type: 'text', title: 'Make a Request', payload: 'MAKE_REQUEST',
+}];

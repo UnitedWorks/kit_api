@@ -1,4 +1,3 @@
-import lodash from 'lodash';
 import { bookshelf } from '../orm';
 import * as AccountModels from '../accounts/models';
 import * as KnowledgeBaseModels from '../knowledge-base/models';

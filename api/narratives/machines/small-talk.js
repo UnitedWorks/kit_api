@@ -4,6 +4,7 @@ import * as CASE_CONSTANTS from '../../constants/cases';
 import { getConstituentCases, createConstituentCase } from '../../cases/helpers';
 import SlackService from '../../services/slack';
 import { fetchAnswers } from '../helpers';
+import { getCategoryFallback } from '../../knowledge-base/helpers';
 import * as elementTemplates from '../templates/elements';
 import * as replyTemplates from '../templates/quick-replies';
 import * as ATTRIBUTES from '../../constants/attributes';
@@ -279,7 +280,7 @@ export default {
 
           employment_job_training: 'employment.waiting_job_training',
 
-          general_complaint: 'survey.loading_survey', // TODO(nicksahler): transaction -> getCases,
+          general_complaint: 'survey.loading_survey',
           cases_list: 'getCases',
 
           settings_city: 'setup.reset_organization',
@@ -351,16 +352,30 @@ export default {
       username: 'Misunderstood Request',
       icon: 'question',
     }).send(`>*Request Message*: ${this.snapshot.input.payload.text}\n>*Constituent ID*: ${this.snapshot.constituent.id}`);
-    const message = 'Ah shoot, I\'m still learning so I don\'t understand that request yet. Can you give more description? <3';
-    createConstituentCase({
-      title: this.snapshot.input.payload.text,
-      type: CASE_CONSTANTS.STATEMENT,
-    },
-      this.snapshot.constituent,
-      this.get('organization') || { id: this.snapshot.organization_id,
-    });
-    this.messagingClient.send(message);
-    return 'start';
+    // If first failure, ask for a repeat of question
+    if (this.snapshot.state_machine_previous_state !== 'failedRequest') {
+      return this.messagingClient.send('I couldn\'t find an answer or might be misunderstanding. Can you say that another way?')
+        .then(() => 'start');
+    }
+    // If second failure, fetch resources to assist
+    const label = this.snapshot.nlp.entities.category[0].value || 'general';
+    return getCategoryFallback(label, this.snapshot.organization_id).then((fallbackData) => {
+      // See if we have fallback contacts
+      if (fallbackData.contacts.length === 0) {
+        this.messagingClient.addToQuene('I\'m don\'t think I can help with this :(');
+        this.messagingClient.addToQuene('You should "Make a Request" so I can forward it to the local government for you! I can let you know when they respond with an answer.', replyTemplates.makeRequest);
+        return this.messagingClient.runQuene().then(() => 'start');
+      }
+      // If we do, templates!
+      this.messagingClient.addToQuene('Darn :( I don\'t have an answer to this. Try reaching out to:');
+      this.messagingClient.addToQuene({
+        type: 'template',
+        templateType: 'generic',
+        elements: fallbackData.contacts.map(contact => elementTemplates.genericContact(contact)),
+      });
+      this.messagingClient.addToQuene('If you want, "Make a Request" and I will get you a response from a government employee ASAP!', replyTemplates.makeRequest);
+      return this.messagingClient.runQuene().then(() => 'start');
+    }).catch(() => 'start');
   },
 
   handle_greeting() {

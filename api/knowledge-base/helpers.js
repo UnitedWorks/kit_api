@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { knex } from '../orm';
-import { EventRule, KnowledgeAnswer, KnowledgeCategory, KnowledgeFacility, KnowledgeService, KnowledgeQuestion, KnowledgeContact, Location } from './models';
+import { EventRule, KnowledgeAnswer, KnowledgeCategory, KnowledgeFacility, KnowledgeService,
+  KnowledgeQuestion, KnowledgeContact, Location } from './models';
 import { CaseLocations, CaseMedia } from '../cases/models';
 import geocoder from '../services/geocoder';
 
@@ -80,6 +81,7 @@ export const getCategories = (params = {}) => {
   if (params.organization_id) {
     return KnowledgeCategory.fetchAll({
       withRelated: {
+        contacts: q => q.where('organization_id', params.organization_id),
         questions: q => q,
         'questions.answers': q => q.where('organization_id', params.organization_id),
       },
@@ -102,6 +104,27 @@ export const getCategories = (params = {}) => {
   return KnowledgeCategory.fetchAll().then((data) => {
     return data.toJSON();
   }).catch(error => error);
+};
+
+export const setCategoryFallback = ({ organization, category, contacts = [] }) => {
+  if (!organization.id) throw new Error('No Organization ID');
+  if (!category.id) throw new Error('No Category Provided');
+  const relationshipInserts = [];
+  contacts.forEach((contact) => {
+    relationshipInserts.push(knex('knowledge_categorys_knowledge_contacts').insert({
+      knowledge_category_id: category.id,
+      knowledge_contact_id: contact.id,
+    }));
+  });
+  // Delete relationships this org's contacts have with this category
+  return knex('knowledge_categorys_knowledge_contacts')
+    .where('knowledge_category_id', '=', category.id)
+    .join('knowledge_contacts', function() {
+      this.on('knowledge_categorys_knowledge_contacts.knowledge_contacts_id', '=', 'knowledge_contacts.id')
+      .andOn('knowledge_contacts.organization_id', '=', organization.id)
+    })
+    .del()
+    .then(() => Promise.all(relationshipInserts));
 };
 
 export const makeAnswer = (organization, question, answer, options) => {
@@ -416,7 +439,7 @@ export const syncSheetKnowledgeBaseQuestions = () => {
 };
 
 export const getContacts = (params, options = {}) => {
-  return KnowledgeContact.where(params).fetchAll()
+  return KnowledgeContact.where(params).fetchAll({ withRelated: ['knowledgeCategories'] })
     .then((data) => {
       return options.returnJSON ? data.toJSON() : data;
     }).catch(error => error);
@@ -429,26 +452,29 @@ export const createContact = (data, options = {}) => {
   };
   return KnowledgeContact.forge(contact)
     .save(null, { method: 'insert' })
-    .then((results) => {
-      return options.returnJSON ? results.toJSON() : results;
+    .then((contactModel) => {
+      return options.returnJSON ? contactModel.toJSON() : contactModel;
     }).catch(error => error);
 };
 
 export const updateContact = (contact, options = {}) => {
   return KnowledgeContact.where({ id: contact.id })
     .save(contact, { method: 'update' })
-    .then((data) => {
-      return options.returnJSON ? data.toJSON() : data;
+    .then((contactModel) => {
+      return options.returnJSON ? contactModel.toJSON() : contactModel;
     }).catch(error => error);
 };
 
 export const deleteContact = (contact) => {
-  return KnowledgeContact.where({ id: contact.id }).destroy()
-    .then(() => {
-      return {
-        id: contact.id,
-      };
-    }).catch(error => error);
+  return knex('knowledge_categorys_knowledge_contacts')
+    .where('knowledge_contact_id', '=', contact.id)
+    .del().then(() => {
+      return KnowledgeContact.where({ id: contact.id }).destroy().then(() => {
+        return {
+          id: contact.id,
+        };
+      }).catch(error => error);
+    });
 };
 
 export function getQuestionsAsTable(params = {}) {
@@ -530,4 +556,32 @@ export function createAnswersFromRows({ answers, organization }, options = { ret
   return Promise.all(filteredRows)
     .then(data => data)
     .catch(error => error);
+}
+
+export function getCategoryFallback(label, orgId) {
+  return KnowledgeCategory.where({ label })
+    .fetch({ withRelated: [{
+      contacts: q => q.where('organization_id', '=', orgId),
+    }] }).then((labelData) => {
+      // If no contacts, look farther up
+      if (labelData.toJSON().contacts.length === 0) {
+        return KnowledgeCategory.where({ label: 'general' })
+          .fetch({ withRelated: [{
+            contacts: q => q.where('organization_id', '=', orgId),
+          }] }).then((generalData) => {
+            return {
+              label: 'general',
+              fellback: true,
+              organizationId: orgId,
+              contacts: generalData.toJSON().contacts,
+            };
+          });
+      }
+      return {
+        label,
+        fellback: false,
+        organizationId: orgId,
+        contacts: labelData.toJSON().contacts,
+      };
+    });
 }

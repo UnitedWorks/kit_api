@@ -4,7 +4,8 @@ import { KnowledgeEvent, KnowledgeFacility, KnowledgeFacilityType, KnowledgeServ
 import { getAnswers, getCategories, getContacts, createContact, updateContact, deleteContact,
   getQuestions, makeAnswer, updateAnswer, deleteAnswer, deleteService, createFacility,
   updateFacility, deleteFacility, createService, updateService,
-  syncSheetKnowledgeBaseQuestions, getQuestionsAsTable, createAnswersFromRows } from './helpers';
+  syncSheetKnowledgeBaseQuestions, getQuestionsAsTable, createAnswersFromRows,
+  setCategoryFallback } from './helpers';
 import { requireAuth } from '../services/passport';
 
 const router = new Router();
@@ -18,6 +19,16 @@ router.get('/categories', requireAuth, (req, res) => {
   getCategories(req.query)
     .then(categories => res.status(200).send({ categories }))
     .catch(error => res.status(400).send({ error }))
+});
+
+router.post('/categories/fallback', requireAuth, (req, res, next) => {
+  try {
+    setCategoryFallback(req.body)
+      .then(() => res.status(200).send())
+      .catch(error => next(error));
+  } catch (e) {
+    next(e);
+  }
 });
 
 /**
