@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { knex } from '../orm';
 import { EventRule, KnowledgeAnswer, KnowledgeCategory, KnowledgeFacility, KnowledgeService,
-  KnowledgeQuestion, KnowledgeContact, KnowledgeDepartment, Location } from './models';
+  KnowledgeQuestion, KnowledgeContact, Location } from './models';
 import { CaseLocations, CaseMedia } from '../cases/models';
 import geocoder from '../services/geocoder';
 
