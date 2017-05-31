@@ -100,16 +100,16 @@ export default {
             title: m.ButtonText,
             url: m.Url,
             webview_height_ratio: 'tall'
-          }]
+          }],
         });
 
       });
 
-      return self.messagingClient.runQuene().then(()=>'smallTalk.start');
+      return self.messagingClient.runQuene().then(() => this.getBaseState());
     }).catch((e)=> {
       this.messagingClient.send("There was a problem calculating your benefits!");
       logger.error(e);
-      return 'smallTalk.start';
+      return this.getBaseState();
     });
   }
 };

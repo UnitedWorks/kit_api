@@ -40,7 +40,7 @@ export default {
       return new KitClient({ organization: this.get('organization') })
         .getAnswer('health_clinic').then((answers) => {
           this.messagingClient.addAll(KitClient.staticAnswer(answers));
-          return this.messagingClient.runQuene().then(() => 'smallTalk.start');
+          return this.messagingClient.runQuene().then(() => this.getBaseState());
         });
     },
   },

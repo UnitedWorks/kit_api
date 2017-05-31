@@ -31,7 +31,7 @@ export default {
           }
           if (entities.intent.filter(i => i.value === 'speech_deny').length > 0) {
             this.delete('survey');
-            return this.messagingClient.send('Ok! No problem.').then(() => 'smallTalk.start');
+            return this.messagingClient.send('Ok! No problem.').then(() => this.getBaseState());
           }
         }
         return this.messagingClient.send('Sorry, didn\'t catch that. Want to do the survey?', replyTemplates.sureNoThanks);
@@ -41,11 +41,11 @@ export default {
 
   waiting_for_answer: {
     enter() {
-      if (!this.snapshot.data_store.survey) return 'smallTalk.start';
+      if (!this.snapshot.data_store.survey) return this.getBaseState();
       const questions = this.snapshot.data_store.survey.questions;
       if (!questions) {
         this.delete('survey');
-        return 'smallTalk.start';
+        return this.getBaseState();
       }
       for (let i = 0; i < questions.length; i += 1) {
         if (questions[i].answer === undefined) {
@@ -60,11 +60,11 @@ export default {
       return 'concluding_survey';
     },
     message() {
-      if (!this.snapshot.data_store.survey) return 'smallTalk.start';
+      if (!this.snapshot.data_store.survey) return this.getBaseState();
       const questions = this.snapshot.data_store.survey.questions;
       if (!questions) {
         this.delete('survey');
-        return 'smallTalk.start';
+        return this.getBaseState();
       }
       for (let i = 0; i < questions.length; i += 1) {
         if (questions[i].answer === undefined) {
