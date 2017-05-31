@@ -1,7 +1,6 @@
 import { logger } from '../../logger';
 import { nlp } from '../../services/nlp';
-import * as CASE_CONSTANTS from '../../constants/cases';
-import { getConstituentCases, createConstituentCase } from '../../cases/helpers';
+import { getConstituentCases } from '../../cases/helpers';
 import SlackService from '../../services/slack';
 import { fetchAnswers } from '../helpers';
 import { getCategoryFallback } from '../../knowledge-base/helpers';

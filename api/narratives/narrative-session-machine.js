@@ -14,6 +14,7 @@ import VotingMachine from './machines/voting';
 
 // Service Provider Machines
 import AskDarcelMachine from './machines/small-talk-ask-darcel';
+import USVoteFoundationMachine from './machines/small-talk-us-vote-foundation';
 
 
 export const stateMachines = {
@@ -26,6 +27,7 @@ export const stateMachines = {
   socialServices: SocialServicesMachine,
   'benefits-internet': BenefitsInternetMachine,
   askDarcel: AskDarcelMachine,
+  usVoteFoundation: USVoteFoundationMachine,
 };
 
 const RESPONSE_TIMEOUT_MS = 8.64e+7;
@@ -84,8 +86,12 @@ export class NarrativeSessionMachine extends StateMachine {
     return fallbackState;
   }
 
-  getBaseState() {
-    return getBaseState(getOrgNameFromConstituentEntry(this.snapshot.constituent));
+  getBaseState(returnState) {
+    const nextState = getBaseState(getOrgNameFromConstituentEntry(this.snapshot.constituent));
+    if (returnState) {
+      return `${nextState.split('.')[0]}.${returnState}`;
+    }
+    return nextState;
   }
 
   setState(state) {

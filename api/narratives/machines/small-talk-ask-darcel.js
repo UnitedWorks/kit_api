@@ -35,17 +35,17 @@ export default {
         logger.info(nlpData);
 
         const entities = nlpData.entities;
-        const intent_map = {
-          'greeting': 'handle_greeting',
-          'social_services_shelters': 'socialServices.waiting_shelter_search',
-          'social_services_food_assistance': 'socialServices.waiting_food_search',
-          'social_services_hygiene': 'socialServices.waiting_hygiene_search',
-          'health_clinics': 'health.waiting_clinic_search',
-          'employment_job_training': 'employment.waiting_job_training',
+        const intentMap = {
+          greeting: 'handle_greeting',
+          social_services_shelters: 'socialServices.waiting_shelter_search',
+          social_services_food_assistance: 'socialServices.waiting_food_search',
+          social_services_hygiene: 'socialServices.waiting_hygiene_search',
+          health_clinics: 'health.waiting_clinic_search',
+          employment_job_training: 'employment.waiting_job_training',
         };
 
         if (entities.intent && entities.intent[0]) {
-          return Promise.resolve(intent_map[entities.intent[0].value]);
+          return Promise.resolve(intentMap[entities.intent[0].value]);
         } else {
           return 'failedRequest';
         }
