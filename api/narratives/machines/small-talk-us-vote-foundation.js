@@ -11,7 +11,7 @@ const baseQuickReplies = [
 
 const i18n = (key, inserts = {}) => {
   const translations = {
-    intro_hello: `Hey there! :D I'm ${inserts.name ? `${inserts.name}, ` : ''}a chatbot connecting you to your local government!`,
+    intro_hello: `Hey there! :D I'm ${inserts.name ? `${inserts.name}, ` : ''}!`,
   };
   return translations[key];
 };

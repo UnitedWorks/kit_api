@@ -99,11 +99,11 @@ export default {
             case 'speech_confirm':
               if (!this.get('organization')) {
                 new SlackService({
-                  username: 'Unregistered Town/City Requested!',
+                  username: 'New Town/City Set!',
                   icon: 'round_pushpin',
                 }).send(`>*Location*: ${this.get('location').display_name}`);
               }
-              return 'smallTalk.what_can_i_do';
+              return this.getBaseState('what_can_i_do');
             case 'speech_deny':
               this.messagingClient.send('Oh! Can you tell me your CITY and STATE again?');
               return 'waiting_organization';
