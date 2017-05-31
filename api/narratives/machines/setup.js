@@ -45,7 +45,7 @@ export default {
         // If more than one location is matched with our geolocation look up, ask for detail
         if (valid_results.length > 1) {
           const quickReplies = valid_results.map((location) => {
-            const text = `${location.address.city || location.address.town || location.address.hamlet}, ${location.address.state}`;
+            const text = `${location.address.city || location.address.town || location.address.hamlet}, ${location.address.county.replace(/([A-Z])/g, ' $1').trim()}, ${location.address.state} ${location.address.postcode}`;
             return {
               content_type: 'text',
               title: text,
