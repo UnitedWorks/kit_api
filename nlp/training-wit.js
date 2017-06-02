@@ -13,7 +13,7 @@ function getArg(flag) {
 
 
 // Update the Wit App
-const trainingData = require(`./common-entries/${getArg('-filename')}`);
+const trainingData = require(`./data/${getArg('-filename')}`);
 const commonExamples = trainingData.rasa_nlu_data ?
   trainingData.rasa_nlu_data.common_examples : trainingData;
 

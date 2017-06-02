@@ -4,4 +4,4 @@ node_modules
 .env.test
 logs
 .DS_Store
-nlu/common-entries
+nlp/data/*
