@@ -392,52 +392,6 @@ export const deleteQuestion = (label) => {
   }).catch(error => error);
 };
 
-export const syncSheetKnowledgeBaseQuestions = () => {
-  const upsertRequest = axios.get(`https://sheets.googleapis.com/v4/spreadsheets/${process.env.GOOGLE_SHEET_KNOWLEDGE_BASE_ID}/values/LIVE`, {
-    params: {
-      key: process.env.GOOGLE_SHEET_API_KEY,
-    },
-  }).then((sheetData) => {
-    const categoryHash = {};
-    return KnowledgeCategory.fetchAll().then((categories) => {
-      categories.toJSON().forEach((category) => {
-        categoryHash[category.label] = category.id;
-      });
-      const sheetValues = sheetData.data.values.slice(1);
-      return Promise.all(sheetValues.map((row) => {
-        return makeQuestion(row[1], row[2], categoryHash[row[0]], { returnMethod: true });
-      })).then((data) => {
-        return {
-          inserted: data.filter(result => result === 'INSERTED').length,
-          updated: data.filter(result => result === 'UPDATED').length,
-        };
-      });
-    });
-  });
-  const deletionRequest = axios.get(`https://sheets.googleapis.com/v4/spreadsheets/${process.env.GOOGLE_SHEET_KNOWLEDGE_BASE_ID}/values/DELETED`, {
-    params: {
-      key: process.env.GOOGLE_SHEET_API_KEY,
-    },
-  }).then((sheetData) => {
-    const sheetValues = sheetData.data.values.slice(1);
-    return Promise.all(sheetValues.map((row) => {
-      return deleteQuestion(row[1]);
-    })).then((data) => {
-      return {
-        deleted: data.filter(result => result === 'DELETED').length,
-      };
-    });
-  });
-  return Promise.all([upsertRequest, deletionRequest])
-    .then((data) => {
-      return {
-        deleted: data[1].deleted,
-        inserted: data[0].inserted,
-        updated: data[0].updated,
-      };
-    }).catch(error => error);
-};
-
 export const getContacts = (params, options = {}) => {
   return KnowledgeContact.where(params).fetchAll({ withRelated: ['knowledgeCategories'] })
     .then((data) => {

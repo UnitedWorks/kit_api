@@ -4,7 +4,7 @@ import { KnowledgeEvent, KnowledgeFacility, KnowledgeFacilityType, KnowledgeServ
 import { getAnswers, getCategories, getContacts, createContact, updateContact, deleteContact,
   getQuestions, makeAnswer, updateAnswer, deleteAnswer, deleteService, createFacility,
   updateFacility, deleteFacility, createService, updateService,
-  syncSheetKnowledgeBaseQuestions, getQuestionsAsTable, createAnswersFromRows,
+  getQuestionsAsTable, createAnswersFromRows,
   setCategoryFallback } from './helpers';
 import { requireAuth } from '../services/passport';
 
@@ -239,12 +239,6 @@ router.route('/contacts')
 router.get('/questions', requireAuth, (req, res, next) => {
   getQuestions(req.query)
     .then(questions => res.status(200).send({ questions }))
-    .catch(error => next(error));
-});
-
-router.get('/questions/sync', requireAuth, (req, res, next) => {
-  syncSheetKnowledgeBaseQuestions()
-    .then(results => res.status(200).send({ data: results }))
     .catch(error => next(error));
 });
 
