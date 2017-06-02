@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { knex } from '../orm';
 import { EventRule, KnowledgeAnswer, KnowledgeCategory, KnowledgeFacility, KnowledgeService,
   KnowledgeQuestion, KnowledgeContact, Location } from './models';

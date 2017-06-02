@@ -107,14 +107,14 @@ export default {
         .then((nlpData) => {
           this.snapshot.nlp = nlpData;
           const entities = nlpData.entities;
-          if (entities.attribute && entities.attribute[0]) {
-            if (entities.attribute[0].value === 'housing_tenant') {
+          if (entities.attribute && entities.constituent_attributes[0]) {
+            if (entities.constituent_attributes[0].value === 'housing_tenant') {
               this.set('attributes', { ...this.get('attributes'), housing: 'tenant' });
               return 'waiting_for_attribute_new_resident';
-            } else if (entities.attribute[0].value === 'housing_owner') {
+            } else if (entities.constituent_attributes[0].value === 'housing_owner') {
               this.set('attributes', { ...this.get('attributes'), housing: 'owner' });
               return 'waiting_for_attribute_new_resident';
-            } else if (entities.attribute[0].value === 'housing_homeless') {
+            } else if (entities.constituent_attributes[0].value === 'housing_homeless') {
               this.set('attributes', { ...this.get('attributes'), housing: 'homeless' });
               return 'waiting_for_attribute_new_resident';
             }
@@ -189,10 +189,10 @@ export default {
         .then((nlpData) => {
           this.snapshot.nlp = nlpData;
           const entities = nlpData.entities;
-          if (entities.attribute && entities.attribute[0]) {
-            if (entities.attribute[0].value === 'pet_cat') {
+          if (entities.attribute && entities.constituent_attributes[0]) {
+            if (entities.constituent_attributes[0].value === 'pet_cat') {
               this.set('attributes', { ...this.get('attributes'), pet: 'cat' });
-            } else if (entities.attribute[0].value === 'pet_dog') {
+            } else if (entities.constituent_attributes[0].value === 'pet_dog') {
               this.set('attributes', { ...this.get('attributes'), pet: 'dog' });
             }
           }
