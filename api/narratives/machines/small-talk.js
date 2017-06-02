@@ -86,9 +86,9 @@ export default {
           this.snapshot.nlp = nlpData;
           const entities = nlpData.entities;
           if (entities.intent && entities.intent[0]) {
-            if (entities.intent[0].value === 'speech_confirm') {
+            if (entities.intent[0].value === 'speech.confirm') {
               return this.messagingClient.send('Great! :)').then(() => 'waiting_for_attribute_housing');
-            } else if (entities.intent[0].value === 'speech_deny') {
+            } else if (entities.intent[0].value === 'speech.deny') {
               this.set('attributes', {});
               return 'what_can_i_do';
             }
@@ -138,10 +138,10 @@ export default {
           this.snapshot.nlp = nlpData;
           const entities = nlpData.entities;
           if (entities.intent && entities.intent[0]) {
-            if (entities.intent[0].value === 'speech_confirm') {
+            if (entities.intent[0].value === 'speech.confirm') {
               this.set('attributes', { ...this.get('attributes'), new_resident: true });
               return 'waiting_for_attribute_business_owner';
-            } else if (entities.intent[0].value === 'speech_deny') {
+            } else if (entities.intent[0].value === 'speech.deny') {
               this.set('attributes', { ...this.get('attributes'), new_resident: false });
               return 'waiting_for_attribute_business_owner';
             }
@@ -165,10 +165,10 @@ export default {
           this.snapshot.nlp = nlpData;
           const entities = nlpData.entities;
           if (entities.intent && entities.intent[0]) {
-            if (entities.intent[0].value === 'speech_confirm') {
+            if (entities.intent[0].value === 'speech.confirm') {
               this.set('attributes', { ...this.get('attributes'), business_owner: true });
               return 'waiting_for_attribute_dog_or_cats';
-            } else if (entities.intent[0].value === 'speech_deny') {
+            } else if (entities.intent[0].value === 'speech.deny') {
               this.set('attributes', { ...this.get('attributes'), business_owner: false });
               return 'waiting_for_attribute_dog_or_cats';
             }
@@ -252,37 +252,37 @@ export default {
 
         const entities = nlpData.entities;
         const intentMap = {
-          help: 'what_can_i_do',
-          greeting: 'handle_greeting',
-          thanks: 'handle_thank_you',
-          praise: 'handle_praise',
-          benefits_internet: 'benefits-internet.init',
+          'speech.help': 'what_can_i_do',
+          'speech.greeting': 'handle_greeting',
+          'speech.thanks': 'handle_thank_you',
+          'speech.praise': 'handle_praise',
+          // benefits_internet: 'benefits-internet.init',
 
-          voting_deadlines: 'voting.votingDeadlines', // TODO(nicksahler): not trained
-          voting_list_elections: 'voting.electionSchedule',
-          voting_registration: 'voting.voterRegistrationGet',
-          voting_registration_check: 'voting.voterRegistrationCheck',
-          voting_poll_info: 'voting.pollInfo',
-          voting_id: 'voting.voterIdRequirements',
-          voting_eligibility: 'voting.stateVotingRules',
-          voting_sample_ballot: 'voting.sampleBallot',
-          voting_absentee: 'voting.absenteeVote',
-          voting_early: 'voting.earlyVoting',
-          voting_problem: 'voting.voterProblem',
-          voting_assistance: 'voting.voterAssistance',
+          'voting.deadlines': 'voting.votingDeadlines',
+          'voting.elections': 'voting.electionSchedule',
+          'voting.registration.get': 'voting.voterRegistrationGet',
+          'voting.registration.check': 'voting.voterRegistrationCheck',
+          'voting.poll_info': 'voting.pollInfo',
+          'voting.id': 'voting.voterIdRequirements',
+          'voting.eligibility': 'voting.stateVotingRules',
+          'voting.sample_ballot': 'voting.sampleBallot',
+          'voting.absentee_ballot': 'voting.absenteeVote',
+          'voting.early': 'voting.earlyVoting',
+          'voting.problem': 'voting.voterProblem',
+          'voting.assistance': 'voting.voterAssistance',
 
-          social_services_shelters: 'socialServices.waiting_shelter_search',
-          social_services_food_assistance: 'socialServices.waiting_food_search',
-          social_services_hygiene: 'socialServices.waiting_hygiene_search',
+          'social_services.shelters': 'socialServices.waiting_shelter_search',
+          'social_services.food_assistance': 'socialServices.waiting_food_search',
+          'social_services.hygiene': 'socialServices.waiting_hygiene_search',
 
-          health_clinics: 'health.waiting_clinic_search',
+          'health_medicine.clinics': 'health.waiting_clinic_search',
 
-          employment_job_training: 'employment.waiting_job_training',
+          'education_employment.employment_job_training': 'employment.waiting_job_training',
 
-          general_complaint: 'survey.loading_survey',
-          cases_list: 'getCases',
+          'interaction.cases.create': 'survey.loading_survey',
+          'interaction.cases.get': 'getCases',
 
-          settings_city: 'setup.reset_organization',
+          'settings.locality.change': 'setup.reset_organization',
         };
 
         if (entities.intent && entities.intent[0]) {

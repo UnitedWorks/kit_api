@@ -9,7 +9,7 @@ export default {
   loading_survey: {
     enter() {
       const label = this.snapshot.nlp.entities ?
-        this.snapshot.nlp.entities.intent[0].value : 'general_complaint';
+        this.snapshot.nlp.entities.intent[0].value : 'interaction.cases.create';
       return getSurvey({ label }).then((survey) => {
         this.set('survey', survey);
         return 'waiting_for_answer';
@@ -26,10 +26,10 @@ export default {
         this.snapshot.nlp = nlpData;
         const entities = nlpData.entities;
         if (entities.intent && entities.intent[0]) {
-          if (entities.intent.filter(i => i.value === 'speech_confirm').length > 0) {
+          if (entities.intent.filter(i => i.value === 'speech.confirm').length > 0) {
             return this.messagingClient.send('Great! :)').then(() => 'waiting_for_answer');
           }
-          if (entities.intent.filter(i => i.value === 'speech_deny').length > 0) {
+          if (entities.intent.filter(i => i.value === 'speech.deny').length > 0) {
             this.delete('survey');
             return this.messagingClient.send('Ok! No problem.').then(() => this.getBaseState());
           }

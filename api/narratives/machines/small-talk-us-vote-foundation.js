@@ -40,25 +40,25 @@ export default {
 
         const entities = nlpData.entities;
         const intentMap = {
-          help: 'what_can_i_do',
-          greeting: 'handle_greeting',
-          thanks: 'handle_thank_you',
-          praise: 'handle_praise',
+          'speech.help': 'what_can_i_do',
+          'speech.greeting': 'handle_greeting',
+          'speech.thanks': 'handle_thank_you',
+          'speech.praise': 'handle_praise',
 
-          voting_deadlines: 'voting.votingDeadlines',
-          voting_list_elections: 'voting.electionSchedule',
-          voting_registration: 'voting.voterRegistrationGet',
-          voting_registration_check: 'voting.voterRegistrationCheck',
-          voting_poll_info: 'voting.pollInfo',
-          voting_id: 'voting.voterIdRequirements',
-          voting_eligibility: 'voting.stateVotingRules',
-          voting_sample_ballot: 'voting.sampleBallot',
-          voting_absentee: 'voting.absenteeVote',
-          voting_early: 'voting.earlyVoting',
-          voting_problem: 'voting.voterProblem',
-          voting_assistance: 'voting.voterAssistance',
+          'voting.deadlines': 'voting.votingDeadlines',
+          'voting.elections': 'voting.electionSchedule',
+          'voting.registration.get': 'voting.voterRegistrationGet',
+          'voting.registration.check': 'voting.voterRegistrationCheck',
+          'voting.poll_info': 'voting.pollInfo',
+          'voting.id': 'voting.voterIdRequirements',
+          'voting.eligibility': 'voting.stateVotingRules',
+          'voting.sample_ballot': 'voting.sampleBallot',
+          'voting.absentee_ballot': 'voting.absenteeVote',
+          'voting.early': 'voting.earlyVoting',
+          'voting.problem': 'voting.voterProblem',
+          'voting.assistance': 'voting.voterAssistance',
 
-          settings_city: 'setup.reset_organization',
+          'settings.locality.change': 'setup.reset_organization',
         };
 
         if (entities.intent && entities.intent[0]) {
