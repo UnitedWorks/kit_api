@@ -512,30 +512,38 @@ export function createAnswersFromRows({ answers, organization }, options = { ret
     .catch(error => error);
 }
 
-export function getCategoryFallback(label, orgId) {
-  return KnowledgeCategory.where({ label })
-    .fetch({ withRelated: [{
-      contacts: q => q.where('organization_id', '=', orgId),
-    }] }).then((labelData) => {
-      // If no contacts, look farther up
-      if (labelData.toJSON().contacts.length === 0) {
-        return KnowledgeCategory.where({ label: 'general' })
-          .fetch({ withRelated: [{
-            contacts: q => q.where('organization_id', '=', orgId),
-          }] }).then((generalData) => {
-            return {
-              label: 'general',
-              fellback: true,
-              organizationId: orgId,
-              contacts: generalData.toJSON().contacts,
-            };
-          });
-      }
-      return {
-        label,
-        fellback: false,
-        organizationId: orgId,
-        contacts: labelData.toJSON().contacts,
-      };
-    });
+export function getCategoryFallback(labels, orgId) {
+  const categoryFetches = [];
+  labels.forEach((label) => {
+    categoryFetches.push(KnowledgeCategory.where({ label })
+      .fetch({
+        withRelated: [{
+          contacts: q => q.where('organization_id', '=', orgId),
+        }],
+      }).then(labelData => labelData.toJSON().contacts)
+    );
+  })
+  return Promise.all(categoryFetches).then((labelData) => {
+    const mergedContacts = labelData.reduce((a, b) => a.concat(b));
+    // If no contacts, look farther up
+    if (mergedContacts.length === 0) {
+      return KnowledgeCategory.where({ label: 'general' })
+        .fetch({ withRelated: [{
+          contacts: q => q.where('organization_id', '=', orgId),
+        }] }).then((generalData) => {
+          return {
+            labels: ['general'],
+            fellback: true,
+            organizationId: orgId,
+            contacts: generalData.toJSON().contacts,
+          };
+        });
+    }
+    return {
+      labels,
+      fellback: false,
+      organizationId: orgId,
+      contacts: mergedContacts,
+    };
+  });
 }

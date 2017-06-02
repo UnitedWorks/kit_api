@@ -1,4 +1,4 @@
-// To run: NODE_ENV=local node nlu/uploading -filename v2.json
+// To run: NODE_ENV=local node nlp/training-wit -filename v2.json
 // Setup
 require('babel-core/register');
 require('../api/env').setup();
@@ -17,16 +17,19 @@ const trainingData = require(`./data/${getArg('-filename')}`);
 const commonExamples = trainingData.rasa_nlu_data ?
   trainingData.rasa_nlu_data.common_examples : trainingData;
 
-const witFormatedExamples = commonExamples.map(example => ({
-  text: example.text,
-  entities: [
-    ...example.entities,
-    {
+const witFormatedExamples = commonExamples.map((example) => {
+  const entities = [...example.entities];
+  if (example.intent) {
+    entities.push({
       entity: 'intent',
       value: example.intent,
-    },
-  ],
-}));
+    });
+  }
+  return {
+    text: example.text,
+    entities,
+  };
+});
 
 axios.request({
   method: 'post',

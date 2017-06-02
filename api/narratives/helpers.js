@@ -1,7 +1,9 @@
 import * as PROVIDERS from '../constants/providers';
-import { logger } from '../logger';
 import KitClient from './clients/kit-client';
 import * as TAGS from '../constants/nlp-tagging';
+import * as elementTemplates from './templates/elements';
+import * as replyTemplates from './templates/quick-replies';
+import { getCategoryFallback } from '../knowledge-base/helpers';
 
 /* TODO(nicksahler): Declare in machine, automatically route */
 export function getBaseState(providerName, section) {
@@ -25,17 +27,36 @@ export function getBaseState(providerName, section) {
 
 /* TODO(nicksahler) Move this all to higher order answering */
 export const fetchAnswers = (intent, session) => {
-  let entities = session.snapshot.nlp.entities;
+  const entities = session.snapshot.nlp.entities;
   /*TODO(nicksahler) Move this higher up (into the filter argument) to clean + validate [wit makes this prone to crashing] */
-  let schedule = (entities.schedule && entities.schedule[0]) ? entities.schedule[0].value : null;
+  const schedule = (entities.schedule && entities.schedule[0]) ? entities.schedule[0].value : null;
 
-  if (!session.get('organization')) {
-    return session.messagingClient
-      .send('Your local government hasn\'t registered yet, so I unfortunately can\'t answer this :(')
-      .then(() => 'smallTalk.start');
-  }
   return new KitClient({ organization: session.get('organization') })
     .getAnswer(intent).then(({ question, answers }) => {
+      // If no answers, run fallback
+      if (!answers.text && !answers.survey && !answers.facilities.length &&
+        !answers.services.length && !answers.contacts.length) {
+        return getCategoryFallback([answers.category.label], session.get('organization').id)
+          .then((fallbackData) => {
+            // See if we have fallback contacts
+            if (fallbackData.contacts.length === 0) {
+              session.messagingClient.addToQuene('I wish I had an answer :(');
+              session.messagingClient.addToQuene('You should "Make a Request" so I can forward it to the local government for you! I can let you know when they respond with an answer.', replyTemplates.makeRequest);
+              return session.messagingClient.runQuene().then(() => session.getBaseState());
+            }
+            // If we do, templates!
+            session.messagingClient.addToQuene('Darn :( I don\'t have an answer, but try reaching out to these folks!');
+            session.messagingClient.addToQuene({
+              type: 'template',
+              templateType: 'generic',
+              elements: fallbackData.contacts.map(
+                contact => elementTemplates.genericContact(contact)),
+            });
+            session.messagingClient.addToQuene('If you want, "Make a Request" and I will get you a response from a government employee ASAP!', replyTemplates.makeRequest);
+            return session.messagingClient.runQuene().then(() => session.getBaseState())
+          });
+      }
+      // Otherwise, proceed with answers
       if (entities[TAGS.DATETIME]) {
         session.messagingClient.addAll(KitClient.dynamicAnswer(answers, entities[TAGS.DATETIME]));
       } else if (schedule === 'day') {
@@ -55,7 +76,7 @@ export const fetchAnswers = (intent, session) => {
           return 'survey.waiting_for_answer';
         }
         // Otherwise end user back at start
-        return 'smallTalk.start';
+        return session.getBaseState();
       });
     });
 };

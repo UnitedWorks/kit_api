@@ -357,16 +357,21 @@ export default {
         .then(() => 'start');
     }
     // If second failure, fetch resources to assist
-    const label = this.snapshot.nlp.entities.category[0].value || 'general';
-    return getCategoryFallback(label, this.snapshot.organization_id).then((fallbackData) => {
+    const labels = [];
+    if (!this.snapshot.nlp.entities.category_keywords || this.snapshot.nlp.entities.category_keywords.length === 0) {
+      labels.push('general');
+    } else {
+      this.snapshot.nlp.entities.category_keywords.forEach(entity => labels.push(entity.value));
+    }
+    return getCategoryFallback(labels, this.snapshot.organization_id).then((fallbackData) => {
       // See if we have fallback contacts
       if (fallbackData.contacts.length === 0) {
-        this.messagingClient.addToQuene('I\'m don\'t think I can help with this :(');
+        this.messagingClient.addToQuene('My circuits are doing their best. I wish I could be of more help :(');
         this.messagingClient.addToQuene('You should "Make a Request" so I can forward it to the local government for you! I can let you know when they respond with an answer.', replyTemplates.makeRequest);
         return this.messagingClient.runQuene().then(() => 'start');
       }
       // If we do, templates!
-      this.messagingClient.addToQuene('Darn :( I don\'t have an answer to this. Try reaching out to:');
+      this.messagingClient.addToQuene('Darn :( I don\'t have an answer, but try reaching out to these folks!');
       this.messagingClient.addToQuene({
         type: 'template',
         templateType: 'generic',

@@ -1,4 +1,4 @@
-// To run: NODE_ENV=local node nlu/uploading -filename v2.json
+// To run: NODE_ENV=local node nlp/uploading-questions -filename v2.json
 // Setup
 require('babel-core/register');
 require('../api/env').setup();
