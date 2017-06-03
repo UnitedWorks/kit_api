@@ -338,7 +338,7 @@ export function genericContact(contact) {
     buttons.push({
       type: 'web_url',
       title: contact.website,
-      payload: contact.website,
+      url: contact.website,
     });
   }
   if (buttons.length > 0) element.buttons = buttons;
