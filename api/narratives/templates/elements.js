@@ -376,8 +376,8 @@ export function genericWelcome(url) {
       payload: 'Government Chatbot?',
     }, {
       type: 'postback',
-      title: 'Ask a Question',
-      payload: 'Ask A Question',
+      title: 'Ask Question',
+      payload: 'Ask Question',
     }, {
       type: 'postback',
       title: 'Mention Problem',

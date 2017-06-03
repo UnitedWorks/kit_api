@@ -7,4 +7,8 @@ export default {
     return this.messagingClient.send('I know... it\'s tough to belive. Natural language processing and bleeding edge communication technology in local government. Whoda thunk. Gotta give props to your local government for giving this a shot.')
       .then(() => 'smallTalk.start');
   },
+  have_question() {
+    return this.messagingClient.send('I\'m sure! What\'s your question?')
+      .then(() => 'smallTalk.start');
+  },
 };

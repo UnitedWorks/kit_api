@@ -44,8 +44,8 @@ const petQuickReplies = [
 ];
 
 const introQuickReplies = [
-  { content_type: 'text', title: 'Have Question', payload: 'Have Question' },
-  { content_type: 'text', title: 'Have Issue', payload: 'Have Issue' },
+  { content_type: 'text', title: 'Ask Question', payload: 'Ask Question' },
+  { content_type: 'text', title: 'Raise Issue', payload: 'Raise Issue' },
   { content_type: 'text', title: 'Hmm...', payload: 'Hmm...' },
 ];
 
