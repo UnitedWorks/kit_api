@@ -70,7 +70,7 @@ export default {
       }
       return nlp.message(this.snapshot.input.payload.text).then((nlpData) => {
         if (nlpData.entities.intent && nlpData.entities.intent[0].value === 'speech.escape') {
-          this.messagingClient.send('Ok! Let me know if theres something else I can answer for you or forward to your local gov');
+          this.messagingClient.send('Ok! Let me know if theres something else I can answer for you or forward to your local gov', replyTemplates.whatCanIAsk);
           this.delete('survey');
           return this.getBaseState();
         }

@@ -380,7 +380,7 @@ export function genericWelcome(url) {
       payload: 'Ask A Question',
     }, {
       type: 'postback',
-      title: 'Record a Problem',
+      title: 'Mention Problem',
       payload: 'Make Complaint',
     }],
   };

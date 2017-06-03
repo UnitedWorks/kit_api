@@ -34,8 +34,8 @@ export const fetchAnswers = (intent, session) => {
   return new KitClient({ organization: session.get('organization') })
     .getAnswer(intent).then(({ question, answers }) => {
       // If no answers, run fallback
-      if (!answers.text && !answers.survey && !answers.facilities.length &&
-        !answers.services.length && !answers.contacts.length) {
+      if (!answers || (!answers.text && !answers.survey && !answers.facilities.length &&
+        !answers.services.length && !answers.contacts.length)) {
         return getCategoryFallback([answers.category.label], session.get('organization').id)
           .then((fallbackData) => {
             // See if we have fallback contacts

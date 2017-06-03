@@ -1,6 +1,6 @@
 import { NarrativeSession } from './models';
 import { getBaseState, getOrgNameFromConstituentEntry } from './helpers';
-import StateMachine from './state-machine'
+import StateMachine from './state-machine';
 
 // Base Machines
 import SmallTalkMachine from './machines/small-talk';
@@ -11,6 +11,7 @@ import HealthMachine from './machines/health';
 import SocialServicesMachine from './machines/social-services';
 import BenefitsInternetMachine from './machines/benefits-internet';
 import VotingMachine from './machines/voting';
+import PersonalityMachine from './machines/personality';
 
 // Service Provider Machines
 import AskDarcelMachine from './machines/small-talk-ask-darcel';
@@ -28,6 +29,7 @@ export const stateMachines = {
   'benefits-internet': BenefitsInternetMachine,
   askDarcel: AskDarcelMachine,
   usVoteFoundation: USVoteFoundationMachine,
+  personality: PersonalityMachine,
 };
 
 const RESPONSE_TIMEOUT_MS = 8.64e+7;

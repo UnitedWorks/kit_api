@@ -271,6 +271,10 @@ export default {
           'speech.greeting': 'handle_greeting',
           'speech.thanks': 'handle_thank_you',
           'speech.praise': 'handle_praise',
+
+          'personality.what_am_i': 'personality.what_am_i',
+          'personality.chatbot_curiosity': 'personality.chatbot_curiosity',
+
           // benefits_internet: 'benefits-internet.init',
 
           'voting.deadlines': 'voting.votingDeadlines',
@@ -368,7 +372,7 @@ export default {
     }).send(`>*Request Message*: ${this.snapshot.input.payload.text}\n>*Constituent ID*: ${this.snapshot.constituent.id}`);
     // If first failure, ask for a repeat of question
     if (this.snapshot.state_machine_previous_state !== 'failedRequest') {
-      return this.messagingClient.send('I couldn\'t find an answer or might be misunderstanding. Maybe you say that another way?')
+      return this.messagingClient.send('Oops! Think my circuits went haywire for a second. Can you say that a different way?')
         .then(() => 'start');
     }
     // If second failure, fetch resources to assist
