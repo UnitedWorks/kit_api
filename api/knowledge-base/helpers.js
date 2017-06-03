@@ -411,8 +411,10 @@ export const createContact = (data, options = {}) => {
 };
 
 export const updateContact = (contact, options = {}) => {
+  const cleanedContact = contact;
+  delete cleanedContact.knowledgeCategories;
   return KnowledgeContact.where({ id: contact.id })
-    .save(contact, { method: 'update' })
+    .save(cleanedContact, { method: 'update' })
     .then((contactModel) => {
       return options.returnJSON ? contactModel.toJSON() : contactModel;
     }).catch(error => error);
