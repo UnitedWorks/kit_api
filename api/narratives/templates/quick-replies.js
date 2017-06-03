@@ -34,3 +34,5 @@ export const location = {
 export const makeRequest = [{
   content_type: 'text', title: 'Make a Request', payload: 'MAKE_REQUEST',
 }];
+
+export const exit = { content_type: 'text', title: 'Nevermind', payload: 'Nevermind' };

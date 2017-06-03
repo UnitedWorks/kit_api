@@ -49,7 +49,9 @@ export default {
       }
       for (let i = 0; i < questions.length; i += 1) {
         if (questions[i].answer === undefined) {
-          const quickReplies = [];
+          const quickReplies = [
+            replyTemplates.exit,
+          ];
           if (questions[i].type === SURVEY_CONSTANTS.LOCATION) {
             quickReplies.push(replyTemplates.location);
           }
@@ -66,31 +68,38 @@ export default {
         this.delete('survey');
         return this.getBaseState();
       }
-      for (let i = 0; i < questions.length; i += 1) {
-        if (questions[i].answer === undefined) {
-          const newQuestions = this.snapshot.data_store.survey.questions;
-          if (questions[i].type === SURVEY_CONSTANTS.TEXT) {
-            newQuestions[i].answer = {
-              text: this.snapshot.input.payload.text,
-            };
-          } else if (questions[i].type === SURVEY_CONSTANTS.PICTURE) {
-            newQuestions[i].answer = {
-              pictures: this.snapshot.input.payload.attachments ?
-                this.snapshot.input.payload.attachments : null,
-            };
-          } else if (questions[i].type === SURVEY_CONSTANTS.LOCATION) {
-            newQuestions[i].answer = {
-              location: this.snapshot.input.payload.attachments ?
-                this.snapshot.input.payload.attachments[0] : null,
-            };
-          }
-          const newSurveyStore = this.get('survey');
-          newSurveyStore.questions = newQuestions;
-          this.set('survey', newSurveyStore);
-          break;
+      return nlp.message(this.snapshot.input.payload.text).then((nlpData) => {
+        if (nlpData.entities.intent && nlpData.entities.intent[0].value === 'speech.escape') {
+          this.messagingClient.send('Ok! Let me know if theres something else I can answer for you or forward to your local gov');
+          this.delete('survey');
+          return this.getBaseState();
         }
-      }
-      this.input('enter');
+        for (let i = 0; i < questions.length; i += 1) {
+          if (questions[i].answer === undefined) {
+            const newQuestions = this.snapshot.data_store.survey.questions;
+            if (questions[i].type === SURVEY_CONSTANTS.TEXT) {
+              newQuestions[i].answer = {
+                text: this.snapshot.input.payload.text,
+              };
+            } else if (questions[i].type === SURVEY_CONSTANTS.PICTURE) {
+              newQuestions[i].answer = {
+                pictures: this.snapshot.input.payload.attachments ?
+                  this.snapshot.input.payload.attachments : null,
+              };
+            } else if (questions[i].type === SURVEY_CONSTANTS.LOCATION) {
+              newQuestions[i].answer = {
+                location: this.snapshot.input.payload.attachments ?
+                  this.snapshot.input.payload.attachments[0] : null,
+              };
+            }
+            const newSurveyStore = this.get('survey');
+            newSurveyStore.questions = newQuestions;
+            this.set('survey', newSurveyStore);
+            break;
+          }
+        }
+        this.input('enter');
+      });
     },
   },
 
