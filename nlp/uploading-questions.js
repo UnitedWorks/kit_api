@@ -3,19 +3,12 @@
 require('babel-core/register');
 require('../api/env').setup();
 
-function getArg(flag) {
-  if (process.argv.indexOf(flag) > -1) {
-    return process.argv[process.argv.indexOf(flag) + 1];
-  }
-  return undefined;
-}
-
-const trainingData = require(`./data/${getArg('-filename')}`);
-const commonExamples = trainingData.rasa_nlu_data ?
-  trainingData.rasa_nlu_data.common_examples : trainingData;
+const knex = require('../api/orm').knex;
+const trainingData = require('./data/v2.json');
 
 // Update the DB
-const knex = require('../api/orm').knex;
+const commonExamples = trainingData.rasa_nlu_data ?
+  trainingData.rasa_nlu_data.common_examples : trainingData;
 const questionOperations = [];
 
 knex.select().from('knowledge_categorys').then((catRows) => {

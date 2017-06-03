@@ -4,16 +4,9 @@ require('babel-core/register');
 require('../api/env').setup();
 
 const axios = require('axios');
-function getArg(flag) {
-  if (process.argv.indexOf(flag) > -1) {
-    return process.argv[process.argv.indexOf(flag) + 1];
-  }
-  return undefined;
-}
-
 
 // Update the Wit App
-const trainingData = require(`./data/${getArg('-filename')}`);
+const trainingData = require('./data/v2.json');
 const commonExamples = trainingData.rasa_nlu_data ?
   trainingData.rasa_nlu_data.common_examples : trainingData;
 
