@@ -353,7 +353,7 @@ export default {
     }).send(`>*Request Message*: ${this.snapshot.input.payload.text}\n>*Constituent ID*: ${this.snapshot.constituent.id}`);
     // If first failure, ask for a repeat of question
     if (this.snapshot.state_machine_previous_state !== 'failedRequest') {
-      return this.messagingClient.send('I couldn\'t find an answer or might be misunderstanding. Can you say that another way?')
+      return this.messagingClient.send('I couldn\'t find an answer or might be misunderstanding. Maybe you say that another way?')
         .then(() => 'start');
     }
     // If second failure, fetch resources to assist
@@ -367,16 +367,15 @@ export default {
       // See if we have fallback contacts
       if (fallbackData.contacts.length === 0) {
         this.messagingClient.addToQuene('My circuits are doing their best. I wish I could be of more help :(');
-        this.messagingClient.addToQuene('You should "Make a Request" so I can forward it to the local government for you! I can let you know when they respond with an answer.', replyTemplates.makeRequest);
-        return this.messagingClient.runQuene().then(() => 'start');
+      } else {
+        // If we do, templates!
+        this.messagingClient.addToQuene('Darn :( I don\'t have an answer, but try reaching out to these folks!');
+        this.messagingClient.addToQuene({
+          type: 'template',
+          templateType: 'generic',
+          elements: fallbackData.contacts.map(contact => elementTemplates.genericContact(contact)),
+        });
       }
-      // If we do, templates!
-      this.messagingClient.addToQuene('Darn :( I don\'t have an answer, but try reaching out to these folks!');
-      this.messagingClient.addToQuene({
-        type: 'template',
-        templateType: 'generic',
-        elements: fallbackData.contacts.map(contact => elementTemplates.genericContact(contact)),
-      });
       this.messagingClient.addToQuene('If you want, "Make a Request" and I will get you a response from a government employee ASAP!', replyTemplates.makeRequest);
       return this.messagingClient.runQuene().then(() => 'start');
     }).catch(() => 'start');

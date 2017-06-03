@@ -41,19 +41,18 @@ export const fetchAnswers = (intent, session) => {
             // See if we have fallback contacts
             if (fallbackData.contacts.length === 0) {
               session.messagingClient.addToQuene('I wish I had an answer :(');
-              session.messagingClient.addToQuene('You should "Make a Request" so I can forward it to the local government for you! I can let you know when they respond with an answer.', replyTemplates.makeRequest);
-              return session.messagingClient.runQuene().then(() => session.getBaseState());
+            } else {
+              // If we do, templates!
+              session.messagingClient.addToQuene('Darn :( I don\'t have an answer, but try reaching out to these folks!');
+              session.messagingClient.addToQuene({
+                type: 'template',
+                templateType: 'generic',
+                elements: fallbackData.contacts.map(
+                  contact => elementTemplates.genericContact(contact)),
+              });
             }
-            // If we do, templates!
-            session.messagingClient.addToQuene('Darn :( I don\'t have an answer, but try reaching out to these folks!');
-            session.messagingClient.addToQuene({
-              type: 'template',
-              templateType: 'generic',
-              elements: fallbackData.contacts.map(
-                contact => elementTemplates.genericContact(contact)),
-            });
             session.messagingClient.addToQuene('If you want, "Make a Request" and I will get you a response from a government employee ASAP!', replyTemplates.makeRequest);
-            return session.messagingClient.runQuene().then(() => session.getBaseState())
+            return session.messagingClient.runQuene().then(() => session.getBaseState());
           });
       }
       // Otherwise, proceed with answers

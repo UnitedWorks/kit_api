@@ -323,8 +323,8 @@ export const genericBusinessRequirements = [{
 
 export function genericContact(contact) {
   const element = {
-    title: contact.name,
-    subtitle: contact.responsibilities,
+    title: `${contact.name}${contact.title ? ` - ${contact.title}` : ''}`,
+    subtitle: `${contact.email ? `${contact.email} - ` : ''}${contact.responsibilities}`,
   };
   const buttons = [];
   if (contact.phone_number) {
@@ -334,11 +334,11 @@ export function genericContact(contact) {
       payload: contact.phone_number,
     });
   }
-  if (contact.email) {
+  if (contact.website) {
     buttons.push({
-      type: 'postback',
-      title: contact.email,
-      payload: contact.email,
+      type: 'web_url',
+      title: contact.website,
+      payload: contact.website,
     });
   }
   if (buttons.length > 0) element.buttons = buttons;
