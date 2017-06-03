@@ -36,7 +36,7 @@ export const fetchAnswers = (intent, session) => {
       // If no answers, run fallback
       if (!answers || (!answers.text && !answers.survey && !answers.facilities.length &&
         !answers.services.length && !answers.contacts.length)) {
-        return getCategoryFallback([answers.category.label], session.get('organization').id)
+        return getCategoryFallback([intent.split('.')[0]], session.get('organization').id)
           .then((fallbackData) => {
             // See if we have fallback contacts
             if (fallbackData.contacts.length === 0) {
