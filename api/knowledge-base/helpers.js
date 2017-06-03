@@ -521,9 +521,9 @@ export function getCategoryFallback(labels, orgId) {
         withRelated: [{
           contacts: q => q.where('organization_id', '=', orgId),
         }],
-      }).then(labelData => labelData.toJSON().contacts)
+      }).then(labelData => (labelData ? labelData.toJSON().contacts : [])),
     );
-  })
+  });
   return Promise.all(categoryFetches).then((labelData) => {
     const mergedContacts = labelData.reduce((a, b) => a.concat(b));
     // If no contacts, look farther up
