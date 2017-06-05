@@ -71,7 +71,7 @@ export default {
       const goTo = {
         GET_STARTED: 'init',
         CHANGE_CITY: 'setup.reset_organization',
-        ASK_OPTIONS: 'what_can_i_do',
+        WHAT_CAN_I_DO: 'what_can_i_do',
       }[this.snapshot.input.payload.payload];
       if (!goTo) return this.input('message');
       return goTo;
@@ -133,3 +133,20 @@ export default {
       .then(() => 'voting.voterAssistance');
   },
 };
+
+export const persistentMenu = [{
+  locale: 'default',
+  call_to_actions: [{
+    type: 'postback',
+    title: '📅 Upcoming Elections',
+    payload: '📅 Upcoming Elections',
+  }, {
+    type: 'postback',
+    title: '📨 Register to Vote',
+    payload: '📨 Register to Vote',
+  }, {
+    type: 'postback',
+    title: '❓ What can I ask?',
+    payload: 'WHAT_CAN_I_DO',
+  }],
+}];
