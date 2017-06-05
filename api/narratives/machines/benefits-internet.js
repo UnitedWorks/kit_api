@@ -61,7 +61,7 @@ export default {
 
     message() {
       return nlp.message(this.snapshot.input.payload).then((nlpData) => {
-        this.get('benefits')['school_lunch'] = (nlpData.entities.intent && nlpData.entities.intent[0].value === 'speech_confirm') ? 'yes' : 'no ';
+        this.get('benefits')['school_lunch'] = (nlpData.entities.intent && nlpData.entities.intent[0].value === 'speech.confirm') ? 'yes' : 'no ';
         return 'calculate';
       });
     }

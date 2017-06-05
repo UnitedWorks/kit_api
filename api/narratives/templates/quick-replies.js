@@ -34,3 +34,7 @@ export const location = {
 export const makeRequest = [{
   content_type: 'text', title: 'Make a Request', payload: 'MAKE_REQUEST',
 }];
+
+export const exit = { content_type: 'text', title: 'Nevermind', payload: 'Nevermind' };
+
+export const whatCanIAsk = { content_type: 'text', title: 'F.A.Q. List', payload: 'What can I Ask?' };

@@ -96,7 +96,7 @@ export default {
 
         if (entities.intent && entities.intent[0]) {
           switch(entities.intent[0].value) {
-            case 'speech_confirm':
+            case 'speech.confirm':
               if (!this.get('organization')) {
                 new SlackService({
                   username: 'New Town/City Set!',
@@ -104,7 +104,7 @@ export default {
                 }).send(`>*Location*: ${this.get('location').display_name}`);
               }
               return this.getBaseState('what_can_i_do');
-            case 'speech_deny':
+            case 'speech.deny':
               this.messagingClient.send('Oh! Can you tell me your CITY and STATE again?');
               return 'waiting_organization';
           }

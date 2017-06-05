@@ -11,10 +11,10 @@ import * as ATTRIBUTES from '../../constants/attributes';
 /* TODO(nicksahler) until I build the full i18n class */
 const i18n = (key, inserts = {}) => {
   const translations = {
-    intro_hello: `Hey there! :D I'm ${inserts.name ? `${inserts.name}, ` : ''}a chatbot connecting you to your local government!`,
-    intro_information: 'I can answers your questions, record suggestions/complaints, find you government contracts, and more!',
+    intro_hello: `Hey! :D I'm ${inserts.name ? `${inserts.name}, ` : ''}a chatbot giving you control over local government!`,
+    intro_information: 'I do my best to turn your questions and rants into government action :P Have a question or problem at the moment?',
     intro_survey_ask: 'We should get to know each other a little bit so I can be more helpful. Can I ask you some quick questions?',
-    intro_survey_attribute_housing: 'Are you currently renting, an owner, or homeless?',
+    intro_survey_attribute_housing: 'Are you currently renting, an owner, or without a home?',
     intro_survey_attribute_new_resident: `Are you a new resident${inserts.organizationName ? ` to ${inserts.organizationName}` : ''}?`,
     intro_survey_attribute_business_owner: `Do you have a business${inserts.organizationName ? ` in ${inserts.organizationName}` : ''}?`,
     intro_survey_attribute_children: 'Do you have any young children in the schools here?',
@@ -43,6 +43,12 @@ const petQuickReplies = [
   { content_type: 'text', title: 'Dogs🐶', payload: 'Dogs' },
 ];
 
+const introQuickReplies = [
+  { content_type: 'text', title: 'Ask Question', payload: 'Ask Question' },
+  { content_type: 'text', title: 'Raise Issue', payload: 'Raise Issue' },
+  { content_type: 'text', title: 'Hmm...', payload: 'Hmm...' },
+];
+
 export default {
   init: {
     enter() {
@@ -61,145 +67,154 @@ export default {
           pictureUrl = this.snapshot.constituent.smsEntry.intro_picture_url;
         }
       }
-      this.messagingClient.addAll([
-        i18n('intro_hello', { name }),
-        {
-          type: 'image',
-          url: pictureUrl,
-        },
-        i18n('intro_information'),
-      ]);
+      const templates = {
+        type: 'template',
+        templateType: 'generic',
+        elements: [
+          elementTemplates.genericWelcome(pictureUrl),
+          elementTemplates.genericCommuter,
+          elementTemplates.genericBusiness,
+          elementTemplates.genericVotingAndElections,
+          elementTemplates.genericRenter,
+          elementTemplates.genericDocumentation,
+          elementTemplates.genericBenefits,
+          elementTemplates.genericAssistance,
+        ],
+      };
+      this.messagingClient.addToQuene(i18n('intro_hello', { name }));
+      this.messagingClient.addToQuene(templates);
+      this.messagingClient.addToQuene(i18n('intro_information'), introQuickReplies);
       return this.messagingClient.runQuene().then(() => {
-        if (!this.get('organization')) return this.stateRedirect('location', 'smallTalk.what_can_i_do');
-        return 'waiting_for_intro_survey_confirmation';
+        if (!this.get('organization')) return this.stateRedirect('location', 'smallTalk.start');
+        return 'start';
       });
     },
   },
 
-  waiting_for_intro_survey_confirmation: {
-    enter() {
-      this.messagingClient.send(i18n('intro_survey_ask'), replyTemplates.sureNoThanks);
-    },
-    message() {
-      return nlp.message(this.snapshot.input.payload.text)
-        .then((nlpData) => {
-          this.snapshot.nlp = nlpData;
-          const entities = nlpData.entities;
-          if (entities.intent && entities.intent[0]) {
-            if (entities.intent[0].value === 'speech_confirm') {
-              return this.messagingClient.send('Great! :)').then(() => 'waiting_for_attribute_housing');
-            } else if (entities.intent[0].value === 'speech_deny') {
-              this.set('attributes', {});
-              return 'what_can_i_do';
-            }
-          }
-          this.messagingClient.send(i18n('bot_apology', { appendQuestion: i18n('intro_survey_ask') }), replyTemplates.sureNoThanks);
-        });
-    },
-  },
-
-  waiting_for_attribute_housing: {
-    enter() {
-      this.messagingClient.send(i18n('intro_survey_attribute_housing'), housingRequestQuickReplies);
-    },
-    message() {
-      return nlp.message(this.snapshot.input.payload.text)
-        .then((nlpData) => {
-          this.snapshot.nlp = nlpData;
-          const entities = nlpData.entities;
-          if (entities.attribute && entities.attribute[0]) {
-            if (entities.attribute[0].value === 'housing_tenant') {
-              this.set('attributes', { ...this.get('attributes'), housing: 'tenant' });
-              return 'waiting_for_attribute_new_resident';
-            } else if (entities.attribute[0].value === 'housing_owner') {
-              this.set('attributes', { ...this.get('attributes'), housing: 'owner' });
-              return 'waiting_for_attribute_new_resident';
-            } else if (entities.attribute[0].value === 'housing_homeless') {
-              this.set('attributes', { ...this.get('attributes'), housing: 'homeless' });
-              return 'waiting_for_attribute_new_resident';
-            }
-          }
-          return this.messagingClient.send(i18n('bot_apology', {
-            appendQuestion: i18n('intro_survey_attribute_housing'),
-          }), housingRequestQuickReplies);
-        });
-    },
-  },
-
-  waiting_for_attribute_new_resident: {
-    enter() {
-      this.messagingClient.send(i18n('intro_survey_attribute_new_resident', {
-        organizationName: this.get('organization').name,
-      }), replyTemplates.yesNoMix());
-    },
-    message() {
-      return nlp.message(this.snapshot.input.payload.text)
-        .then((nlpData) => {
-          this.snapshot.nlp = nlpData;
-          const entities = nlpData.entities;
-          if (entities.intent && entities.intent[0]) {
-            if (entities.intent[0].value === 'speech_confirm') {
-              this.set('attributes', { ...this.get('attributes'), new_resident: true });
-              return 'waiting_for_attribute_business_owner';
-            } else if (entities.intent[0].value === 'speech_deny') {
-              this.set('attributes', { ...this.get('attributes'), new_resident: false });
-              return 'waiting_for_attribute_business_owner';
-            }
-          }
-          this.messagingClient.send(i18n('bot_apology', { appendQuestion: i18n('intro_survey_attribute_new_resident', {
-            organizationName: this.get('organization').name,
-          }) }), replyTemplates.yesNoMix());
-        });
-    },
-  },
-
-  waiting_for_attribute_business_owner: {
-    enter() {
-      this.messagingClient.send(i18n('intro_survey_attribute_business_owner', {
-        organizationName: this.get('organization').name,
-      }), replyTemplates.yesNoMix());
-    },
-    message() {
-      return nlp.message(this.snapshot.input.payload.text)
-        .then((nlpData) => {
-          this.snapshot.nlp = nlpData;
-          const entities = nlpData.entities;
-          if (entities.intent && entities.intent[0]) {
-            if (entities.intent[0].value === 'speech_confirm') {
-              this.set('attributes', { ...this.get('attributes'), business_owner: true });
-              return 'waiting_for_attribute_dog_or_cats';
-            } else if (entities.intent[0].value === 'speech_deny') {
-              this.set('attributes', { ...this.get('attributes'), business_owner: false });
-              return 'waiting_for_attribute_dog_or_cats';
-            }
-          }
-          this.messagingClient.send(i18n('bot_apology', { appendQuestion: i18n('intro_survey_attribute_business_owner', {
-            organizationName: this.get('organization').name,
-          }) }), replyTemplates.yesNoMix());
-        });
-    },
-  },
-
-  waiting_for_attribute_dog_or_cats: {
-    enter() {
-      this.messagingClient.send(i18n('intro_survey_attribute_dogs_or_cats'), petQuickReplies);
-    },
-    message() {
-      return nlp.message(this.snapshot.input.payload.text)
-        .then((nlpData) => {
-          this.snapshot.nlp = nlpData;
-          const entities = nlpData.entities;
-          if (entities.attribute && entities.attribute[0]) {
-            if (entities.attribute[0].value === 'pet_cat') {
-              this.set('attributes', { ...this.get('attributes'), pet: 'cat' });
-            } else if (entities.attribute[0].value === 'pet_dog') {
-              this.set('attributes', { ...this.get('attributes'), pet: 'dog' });
-            }
-          }
-          return this.messagingClient.send(':D Great that was a big help!').then(() => 'what_can_i_do');
-        });
-    },
-  },
+  // waiting_for_intro_survey_confirmation: {
+  //   enter() {
+  //     this.messagingClient.send(i18n('intro_survey_ask'), replyTemplates.sureNoThanks);
+  //   },
+  //   message() {
+  //     return nlp.message(this.snapshot.input.payload.text)
+  //       .then((nlpData) => {
+  //         this.snapshot.nlp = nlpData;
+  //         const entities = nlpData.entities;
+  //         if (entities.intent && entities.intent[0]) {
+  //           if (entities.intent[0].value === 'speech.confirm') {
+  //             return this.messagingClient.send('Great! :)').then(() => 'waiting_for_attribute_housing');
+  //           } else if (entities.intent[0].value === 'speech.deny') {
+  //             this.set('attributes', {});
+  //             return 'what_can_i_do';
+  //           }
+  //         }
+  //         this.messagingClient.send(i18n('bot_apology', { appendQuestion: i18n('intro_survey_ask') }), replyTemplates.sureNoThanks);
+  //       });
+  //   },
+  // },
+  //
+  // waiting_for_attribute_housing: {
+  //   enter() {
+  //     this.messagingClient.send(i18n('intro_survey_attribute_housing'), housingRequestQuickReplies);
+  //   },
+  //   message() {
+  //     return nlp.message(this.snapshot.input.payload.text)
+  //       .then((nlpData) => {
+  //         this.snapshot.nlp = nlpData;
+  //         const entities = nlpData.entities;
+  //         if (entities.attribute && entities.constituent_attributes[0]) {
+  //           if (entities.constituent_attributes[0].value === 'housing_tenant') {
+  //             this.set('attributes', { ...this.get('attributes'), housing: 'tenant' });
+  //             return 'waiting_for_attribute_new_resident';
+  //           } else if (entities.constituent_attributes[0].value === 'housing_owner') {
+  //             this.set('attributes', { ...this.get('attributes'), housing: 'owner' });
+  //             return 'waiting_for_attribute_new_resident';
+  //           } else if (entities.constituent_attributes[0].value === 'housing_homeless') {
+  //             this.set('attributes', { ...this.get('attributes'), housing: 'homeless' });
+  //             return 'waiting_for_attribute_new_resident';
+  //           }
+  //         }
+  //         return this.messagingClient.send(i18n('bot_apology', {
+  //           appendQuestion: i18n('intro_survey_attribute_housing'),
+  //         }), housingRequestQuickReplies);
+  //       });
+  //   },
+  // },
+  //
+  // waiting_for_attribute_new_resident: {
+  //   enter() {
+  //     this.messagingClient.send(i18n('intro_survey_attribute_new_resident', {
+  //       organizationName: this.get('organization').name,
+  //     }), replyTemplates.yesNoMix());
+  //   },
+  //   message() {
+  //     return nlp.message(this.snapshot.input.payload.text)
+  //       .then((nlpData) => {
+  //         this.snapshot.nlp = nlpData;
+  //         const entities = nlpData.entities;
+  //         if (entities.intent && entities.intent[0]) {
+  //           if (entities.intent[0].value === 'speech.confirm') {
+  //             this.set('attributes', { ...this.get('attributes'), new_resident: true });
+  //             return 'waiting_for_attribute_business_owner';
+  //           } else if (entities.intent[0].value === 'speech.deny') {
+  //             this.set('attributes', { ...this.get('attributes'), new_resident: false });
+  //             return 'waiting_for_attribute_business_owner';
+  //           }
+  //         }
+  //         this.messagingClient.send(i18n('bot_apology', { appendQuestion: i18n('intro_survey_attribute_new_resident', {
+  //           organizationName: this.get('organization').name,
+  //         }) }), replyTemplates.yesNoMix());
+  //       });
+  //   },
+  // },
+  //
+  // waiting_for_attribute_business_owner: {
+  //   enter() {
+  //     this.messagingClient.send(i18n('intro_survey_attribute_business_owner', {
+  //       organizationName: this.get('organization').name,
+  //     }), replyTemplates.yesNoMix());
+  //   },
+  //   message() {
+  //     return nlp.message(this.snapshot.input.payload.text)
+  //       .then((nlpData) => {
+  //         this.snapshot.nlp = nlpData;
+  //         const entities = nlpData.entities;
+  //         if (entities.intent && entities.intent[0]) {
+  //           if (entities.intent[0].value === 'speech.confirm') {
+  //             this.set('attributes', { ...this.get('attributes'), business_owner: true });
+  //             return 'waiting_for_attribute_dog_or_cats';
+  //           } else if (entities.intent[0].value === 'speech.deny') {
+  //             this.set('attributes', { ...this.get('attributes'), business_owner: false });
+  //             return 'waiting_for_attribute_dog_or_cats';
+  //           }
+  //         }
+  //         this.messagingClient.send(i18n('bot_apology', { appendQuestion: i18n('intro_survey_attribute_business_owner', {
+  //           organizationName: this.get('organization').name,
+  //         }) }), replyTemplates.yesNoMix());
+  //       });
+  //   },
+  // },
+  //
+  // waiting_for_attribute_dog_or_cats: {
+  //   enter() {
+  //     this.messagingClient.send(i18n('intro_survey_attribute_dogs_or_cats'), petQuickReplies);
+  //   },
+  //   message() {
+  //     return nlp.message(this.snapshot.input.payload.text)
+  //       .then((nlpData) => {
+  //         this.snapshot.nlp = nlpData;
+  //         const entities = nlpData.entities;
+  //         if (entities.attribute && entities.constituent_attributes[0]) {
+  //           if (entities.constituent_attributes[0].value === 'pet_cat') {
+  //             this.set('attributes', { ...this.get('attributes'), pet: 'cat' });
+  //           } else if (entities.constituent_attributes[0].value === 'pet_dog') {
+  //             this.set('attributes', { ...this.get('attributes'), pet: 'dog' });
+  //           }
+  //         }
+  //         return this.messagingClient.send(':D Great that was a big help!').then(() => 'what_can_i_do');
+  //       });
+  //   },
+  // },
 
   what_can_i_do: {
     enter() {
@@ -252,37 +267,41 @@ export default {
 
         const entities = nlpData.entities;
         const intentMap = {
-          help: 'what_can_i_do',
-          greeting: 'handle_greeting',
-          thanks: 'handle_thank_you',
-          praise: 'handle_praise',
-          benefits_internet: 'benefits-internet.init',
+          'speech.help': 'what_can_i_do',
+          'speech.greeting': 'handle_greeting',
+          'speech.thanks': 'handle_thank_you',
+          'speech.praise': 'handle_praise',
 
-          voting_deadlines: 'voting.votingDeadlines', // TODO(nicksahler): not trained
-          voting_list_elections: 'voting.electionSchedule',
-          voting_registration: 'voting.voterRegistrationGet',
-          voting_registration_check: 'voting.voterRegistrationCheck',
-          voting_poll_info: 'voting.pollInfo',
-          voting_id: 'voting.voterIdRequirements',
-          voting_eligibility: 'voting.stateVotingRules',
-          voting_sample_ballot: 'voting.sampleBallot',
-          voting_absentee: 'voting.absenteeVote',
-          voting_early: 'voting.earlyVoting',
-          voting_problem: 'voting.voterProblem',
-          voting_assistance: 'voting.voterAssistance',
+          'personality.what_am_i': 'personality.what_am_i',
+          'personality.chatbot_curiosity': 'personality.chatbot_curiosity',
 
-          social_services_shelters: 'socialServices.waiting_shelter_search',
-          social_services_food_assistance: 'socialServices.waiting_food_search',
-          social_services_hygiene: 'socialServices.waiting_hygiene_search',
+          // benefits_internet: 'benefits-internet.init',
 
-          health_clinics: 'health.waiting_clinic_search',
+          'voting.deadlines': 'voting.votingDeadlines',
+          'voting.elections': 'voting.electionSchedule',
+          'voting.registration.get': 'voting.voterRegistrationGet',
+          'voting.registration.check': 'voting.voterRegistrationCheck',
+          'voting.poll_info': 'voting.pollInfo',
+          'voting.id': 'voting.voterIdRequirements',
+          'voting.eligibility': 'voting.stateVotingRules',
+          'voting.sample_ballot': 'voting.sampleBallot',
+          'voting.absentee_ballot': 'voting.absenteeVote',
+          'voting.early': 'voting.earlyVoting',
+          'voting.problem': 'voting.voterProblem',
+          'voting.assistance': 'voting.voterAssistance',
 
-          employment_job_training: 'employment.waiting_job_training',
+          'social_services.shelters': 'socialServices.waiting_shelter_search',
+          'social_services.food_assistance': 'socialServices.waiting_food_search',
+          'social_services.hygiene': 'socialServices.waiting_hygiene_search',
 
-          general_complaint: 'survey.loading_survey',
-          cases_list: 'getCases',
+          'health_medicine.clinics': 'health.waiting_clinic_search',
 
-          settings_city: 'setup.reset_organization',
+          'education_employment.employment_job_training': 'employment.waiting_job_training',
+
+          'interaction.cases.create': 'survey.loading_survey',
+          'interaction.cases.get': 'getCases',
+
+          'settings.locality.change': 'setup.reset_organization',
         };
 
         if (entities.intent && entities.intent[0]) {
@@ -353,25 +372,29 @@ export default {
     }).send(`>*Request Message*: ${this.snapshot.input.payload.text}\n>*Constituent ID*: ${this.snapshot.constituent.id}`);
     // If first failure, ask for a repeat of question
     if (this.snapshot.state_machine_previous_state !== 'failedRequest') {
-      return this.messagingClient.send('I couldn\'t find an answer or might be misunderstanding. Can you say that another way?')
+      return this.messagingClient.send('Oops! Think my circuits went haywire for a second. Can you say that a different way?')
         .then(() => 'start');
     }
     // If second failure, fetch resources to assist
-    const label = this.snapshot.nlp.entities.category[0].value || 'general';
-    return getCategoryFallback(label, this.snapshot.organization_id).then((fallbackData) => {
+    const labels = [];
+    if (!this.snapshot.nlp.entities.category_keywords || this.snapshot.nlp.entities.category_keywords.length === 0) {
+      labels.push('general');
+    } else {
+      this.snapshot.nlp.entities.category_keywords.forEach(entity => labels.push(entity.value));
+    }
+    return getCategoryFallback(labels, this.snapshot.organization_id).then((fallbackData) => {
       // See if we have fallback contacts
       if (fallbackData.contacts.length === 0) {
-        this.messagingClient.addToQuene('I\'m don\'t think I can help with this :(');
-        this.messagingClient.addToQuene('You should "Make a Request" so I can forward it to the local government for you! I can let you know when they respond with an answer.', replyTemplates.makeRequest);
-        return this.messagingClient.runQuene().then(() => 'start');
+        this.messagingClient.addToQuene('My circuits are doing their best. I wish I could be of more help :(');
+      } else {
+        // If we do, templates!
+        this.messagingClient.addToQuene('Darn :( I don\'t have an answer, but try reaching out to these folks!');
+        this.messagingClient.addToQuene({
+          type: 'template',
+          templateType: 'generic',
+          elements: fallbackData.contacts.map(contact => elementTemplates.genericContact(contact)),
+        });
       }
-      // If we do, templates!
-      this.messagingClient.addToQuene('Darn :( I don\'t have an answer to this. Try reaching out to:');
-      this.messagingClient.addToQuene({
-        type: 'template',
-        templateType: 'generic',
-        elements: fallbackData.contacts.map(contact => elementTemplates.genericContact(contact)),
-      });
       this.messagingClient.addToQuene('If you want, "Make a Request" and I will get you a response from a government employee ASAP!', replyTemplates.makeRequest);
       return this.messagingClient.runQuene().then(() => 'start');
     }).catch(() => 'start');

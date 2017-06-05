@@ -170,6 +170,26 @@ export const genericNewResident = {
   }],
 };
 
+// Biker
+export const genericCommuter = {
+  title: 'Commuter & Biker Feedback',
+  subtitle: 'Push for better biking biking conditions and commute alerts',
+  image_url: 'https://scontent.fewr1-3.fna.fbcdn.net/v/t31.0-8/18814995_251679365313821_3512955472682371977_o.png?oh=972a17ce194fe9a53a82058aa2da2f72&oe=59A622A2',
+  buttons: [{
+    type: 'postback',
+    title: 'Get Commute Alerts',
+    payload: 'Get Commute Alerts',
+  }, {
+    type: 'postback',
+    title: 'Request A Bike Lane',
+    payload: 'Request A Bike Lane',
+  }, {
+    type: 'postback',
+    title: 'Report a Road Issue',
+    payload: 'Report a Road Issue',
+  }],
+};
+
 // Maybe getting to know the town can be more than an answer. Could be events, tourism, local town meetings, etc.
 // export const genericNewResidentGetAquaintedList = [];
 
@@ -323,8 +343,8 @@ export const genericBusinessRequirements = [{
 
 export function genericContact(contact) {
   const element = {
-    title: contact.name,
-    subtitle: contact.responsibilities,
+    title: `${contact.name}${contact.title ? ` - ${contact.title}` : ''}`,
+    subtitle: `${contact.email ? `${contact.email} - ` : ''}${contact.responsibilities}`,
   };
   const buttons = [];
   if (contact.phone_number) {
@@ -334,13 +354,34 @@ export function genericContact(contact) {
       payload: contact.phone_number,
     });
   }
-  if (contact.email) {
+  if (contact.website) {
     buttons.push({
-      type: 'postback',
-      title: contact.email,
-      payload: contact.email,
+      type: 'web_url',
+      title: contact.website,
+      url: contact.website,
     });
   }
   if (buttons.length > 0) element.buttons = buttons;
   return element;
+}
+
+export function genericWelcome(url) {
+  return {
+    title: 'What is this thing?!',
+    subtitle: 'Rain or shine, I\'ll get government working! Swipe/scroll for more →→→',
+    image_url: url,
+    buttons: [{
+      type: 'postback',
+      title: 'Gov chatbots?!?',
+      payload: 'Government Chatbot?',
+    }, {
+      type: 'postback',
+      title: 'Ask Question',
+      payload: 'Ask Question',
+    }, {
+      type: 'postback',
+      title: 'Mention Problem',
+      payload: 'Make Complaint',
+    }],
+  };
 }

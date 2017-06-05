@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { knex } from '../orm';
 import { EventRule, KnowledgeAnswer, KnowledgeCategory, KnowledgeFacility, KnowledgeService,
   KnowledgeQuestion, KnowledgeContact, Location } from './models';
@@ -392,52 +391,6 @@ export const deleteQuestion = (label) => {
   }).catch(error => error);
 };
 
-export const syncSheetKnowledgeBaseQuestions = () => {
-  const upsertRequest = axios.get(`https://sheets.googleapis.com/v4/spreadsheets/${process.env.GOOGLE_SHEET_KNOWLEDGE_BASE_ID}/values/LIVE`, {
-    params: {
-      key: process.env.GOOGLE_SHEET_API_KEY,
-    },
-  }).then((sheetData) => {
-    const categoryHash = {};
-    return KnowledgeCategory.fetchAll().then((categories) => {
-      categories.toJSON().forEach((category) => {
-        categoryHash[category.label] = category.id;
-      });
-      const sheetValues = sheetData.data.values.slice(1);
-      return Promise.all(sheetValues.map((row) => {
-        return makeQuestion(row[1], row[2], categoryHash[row[0]], { returnMethod: true });
-      })).then((data) => {
-        return {
-          inserted: data.filter(result => result === 'INSERTED').length,
-          updated: data.filter(result => result === 'UPDATED').length,
-        };
-      });
-    });
-  });
-  const deletionRequest = axios.get(`https://sheets.googleapis.com/v4/spreadsheets/${process.env.GOOGLE_SHEET_KNOWLEDGE_BASE_ID}/values/DELETED`, {
-    params: {
-      key: process.env.GOOGLE_SHEET_API_KEY,
-    },
-  }).then((sheetData) => {
-    const sheetValues = sheetData.data.values.slice(1);
-    return Promise.all(sheetValues.map((row) => {
-      return deleteQuestion(row[1]);
-    })).then((data) => {
-      return {
-        deleted: data.filter(result => result === 'DELETED').length,
-      };
-    });
-  });
-  return Promise.all([upsertRequest, deletionRequest])
-    .then((data) => {
-      return {
-        deleted: data[1].deleted,
-        inserted: data[0].inserted,
-        updated: data[0].updated,
-      };
-    }).catch(error => error);
-};
-
 export const getContacts = (params, options = {}) => {
   return KnowledgeContact.where(params).fetchAll({ withRelated: ['knowledgeCategories'] })
     .then((data) => {
@@ -458,8 +411,10 @@ export const createContact = (data, options = {}) => {
 };
 
 export const updateContact = (contact, options = {}) => {
+  const cleanedContact = contact;
+  delete cleanedContact.knowledgeCategories;
   return KnowledgeContact.where({ id: contact.id })
-    .save(contact, { method: 'update' })
+    .save(cleanedContact, { method: 'update' })
     .then((contactModel) => {
       return options.returnJSON ? contactModel.toJSON() : contactModel;
     }).catch(error => error);
@@ -558,30 +513,38 @@ export function createAnswersFromRows({ answers, organization }, options = { ret
     .catch(error => error);
 }
 
-export function getCategoryFallback(label, orgId) {
-  return KnowledgeCategory.where({ label })
-    .fetch({ withRelated: [{
-      contacts: q => q.where('organization_id', '=', orgId),
-    }] }).then((labelData) => {
-      // If no contacts, look farther up
-      if (labelData.toJSON().contacts.length === 0) {
-        return KnowledgeCategory.where({ label: 'general' })
-          .fetch({ withRelated: [{
-            contacts: q => q.where('organization_id', '=', orgId),
-          }] }).then((generalData) => {
-            return {
-              label: 'general',
-              fellback: true,
-              organizationId: orgId,
-              contacts: generalData.toJSON().contacts,
-            };
-          });
-      }
-      return {
-        label,
-        fellback: false,
-        organizationId: orgId,
-        contacts: labelData.toJSON().contacts,
-      };
-    });
+export function getCategoryFallback(labels, orgId) {
+  const categoryFetches = [];
+  labels.forEach((label) => {
+    categoryFetches.push(KnowledgeCategory.where({ label })
+      .fetch({
+        withRelated: [{
+          contacts: q => q.where('organization_id', '=', orgId),
+        }],
+      }).then(labelData => (labelData ? labelData.toJSON().contacts : [])),
+    );
+  });
+  return Promise.all(categoryFetches).then((labelData) => {
+    const mergedContacts = labelData.reduce((a, b) => a.concat(b));
+    // If no contacts, look farther up
+    if (mergedContacts.length === 0) {
+      return KnowledgeCategory.where({ label: 'general' })
+        .fetch({ withRelated: [{
+          contacts: q => q.where('organization_id', '=', orgId),
+        }] }).then((generalData) => {
+          return {
+            labels: ['general'],
+            fellback: true,
+            organizationId: orgId,
+            contacts: generalData.toJSON().contacts,
+          };
+        });
+    }
+    return {
+      labels,
+      fellback: false,
+      organizationId: orgId,
+      contacts: mergedContacts,
+    };
+  });
 }

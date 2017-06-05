@@ -36,19 +36,18 @@ export default {
 
         const entities = nlpData.entities;
         const intentMap = {
-          greeting: 'handle_greeting',
-          social_services_shelters: 'socialServices.waiting_shelter_search',
-          social_services_food_assistance: 'socialServices.waiting_food_search',
-          social_services_hygiene: 'socialServices.waiting_hygiene_search',
-          health_clinics: 'health.waiting_clinic_search',
-          employment_job_training: 'employment.waiting_job_training',
+          'speech.greeting': 'handle_greeting',
+          'social_services.shelters': 'socialServices.waiting_shelter_search',
+          'social_services.food_assistance': 'socialServices.waiting_food_search',
+          'social_services.hygiene': 'socialServices.waiting_hygiene_search',
+          'health_medicine.clinics': 'health.waiting_clinic_search',
+          'education_employment.employment_job_training': 'employment.waiting_job_training',
         };
 
         if (entities.intent && entities.intent[0]) {
           return Promise.resolve(intentMap[entities.intent[0].value]);
-        } else {
-          return 'failedRequest';
         }
+        return 'failedRequest';
       });
     },
   },
