@@ -6,6 +6,7 @@ import * as elementTemplates from '../templates/elements';
 const baseQuickReplies = [
   { content_type: 'text', title: '📅 Upcoming Elections', payload: 'Upcoming Elections' },
   { content_type: 'text', title: '📨 Register to Vote', payload: 'Register to Vote' },
+  { content_type: 'text', title: 'What can I ask?', payload: 'What Can I Ask?' },
 ];
 
 const i18n = (key, inserts = {}) => {
