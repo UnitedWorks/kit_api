@@ -4,14 +4,13 @@ import SlackService from '../../services/slack';
 import * as elementTemplates from '../templates/elements';
 
 const baseQuickReplies = [
-  { content_type: 'text', title: 'Upcoming Elections', payload: 'Upcoming Elections' },
-  { content_type: 'text', title: 'Registered to Vote', payload: 'Registered to Vote' },
-  { content_type: 'text', title: 'Voter ID Rules', payload: 'Voter ID Rules' },
+  { content_type: 'text', title: '📅 Upcoming Elections', payload: 'Upcoming Elections' },
+  { content_type: 'text', title: '📨 Register to Vote', payload: 'Register to Vote' },
 ];
 
 const i18n = (key, inserts = {}) => {
   const translations = {
-    intro_hello: `Hey there! :D${inserts.name ? ` I'm ${inserts.name}!` : ''}`,
+    intro_hello: `Hey there! ${inserts.name ? ` I'm ${inserts.name}!` : ''} 🇺🇸`,
   };
   return translations[key];
 };
@@ -79,6 +78,24 @@ export default {
   },
   what_can_i_do() {
     const elements = [
+      {
+        title: 'U.S. Vote Foundation',
+        subtitle: 'Ask about elections, voter ID laws, registration deadlines, and anything else to help you elect representatives!',
+        image_url: 'https://s3.amazonaws.com/kit.community/public/images/logos/USVF_logo_H.jpg',
+        buttons: [{
+          type: 'web_url',
+          title: 'Website',
+          url: 'https://usvotefoundation.org',
+        }, {
+          type: 'web_url',
+          title: 'Our Mission',
+          url: 'https://www.usvotefoundation.org/vision-and-mission',
+        }, {
+          type: 'web_url',
+          title: 'Create Account',
+          url: 'https://www.usvotefoundation.org/vote/CreateAccount.htm',
+        }],
+      },
       elementTemplates.genericVotingAndElections,
     ];
     this.messagingClient.addToQuene({
@@ -86,7 +103,7 @@ export default {
       templateType: 'generic',
       elements,
     });
-    this.messagingClient.addToQuene('I can help with a variety of topics! For example, ask me about voter ID requirements, registration deadlines, and a list of upcoming elections!', baseQuickReplies);
+    this.messagingClient.addToQuene('I can help you navigate voting ID requirements, registration deadlines, and give you info about upcoming elections! Just ask away!', baseQuickReplies);
     return this.messagingClient.runQuene().then(() => 'start');
   },
   handle_greeting() {
@@ -111,7 +128,7 @@ export default {
       return this.messagingClient.send('I think I\'m misunderstanding. Can you say that another way?')
         .then(() => 'start');
     }
-    return this.messagingClient.send('Unfortunately, I\'m still not understanding. Here are some ways I can help.')
+    return this.messagingClient.send('Unforunately, I think your request is beyond my abilities!')
       .then(() => 'voting.voterAssistance');
   },
 };

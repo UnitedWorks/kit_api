@@ -279,7 +279,7 @@ export default {
   voterProblem() {
     if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting.voterProblem');
     return new VotingClient({ location: this.get('location') }).getLocalElectionOffice().then((info) => {
-      if (info.office) {
+      if (info && info.office) {
         const officeElements = [{
           title: info.office.express_address.address_to || 'Elections Office',
           buttons: [],
@@ -317,10 +317,6 @@ export default {
         type: 'phone_number',
         title: 'Call Spanish Hotline',
         payload: '+18888398682',
-      }, {
-        type: 'phone_number',
-        title: 'Call for Other',
-        payload: '+18882748683',
       }];
       this.messagingClient.addToQuene({
         type: 'template',

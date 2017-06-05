@@ -150,7 +150,7 @@ export default class VotingClient {
       data.objects.filter(object => object.region_name.includes(this.locations.original.city))
         .forEach(region => pushRegion(region));
       return regionIds;
-    });
+    }).catch(() => regionIds);
   }
 
   getLocalElectionOffice() {
