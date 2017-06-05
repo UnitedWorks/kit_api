@@ -112,11 +112,11 @@ export default {
     return 'start';
   },
   handle_praise() {
-    this.messagingClient.send('Thanks!! :)');
+    this.messagingClient.send('Thanks!! :)', baseQuickReplies);
     return 'start';
   },
   handle_thank_you() {
-    this.messagingClient.send('No problem!');
+    this.messagingClient.send('No problem!', baseQuickReplies);
     return 'start';
   },
   failedRequest() {
