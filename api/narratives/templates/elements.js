@@ -365,23 +365,23 @@ export function genericContact(contact) {
   return element;
 }
 
-export function genericWelcome(url) {
+export function genericWelcome(bannerUrl, orgName) {
   return {
-    title: 'What is this thing?!',
-    subtitle: 'Rain or shine, I\'ll get government working! Swipe/scroll for more →→→',
-    image_url: url,
+    title: `${orgName ? `Your ${orgName} Assistant` : 'Welcome!'}`,
+    subtitle: 'I can do a lot of things! Email mark@mayor.chat if you have issues.',
+    image_url: bannerUrl,
     buttons: [{
       type: 'postback',
-      title: 'Gov chatbots?!?',
-      payload: 'Government Chatbot?',
+      title: 'What\'s a chatbot?',
+      payload: 'What\'s a chatbot?',
     }, {
       type: 'postback',
-      title: 'Ask Question',
-      payload: 'Ask Question',
+      title: 'Who made this?',
+      payload: 'Who made this?',
     }, {
       type: 'postback',
-      title: 'Mention Problem',
-      payload: 'Make Complaint',
+      title: 'What can I ask?',
+      payload: 'What can I ask?',
     }],
   };
 }

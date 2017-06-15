@@ -13,7 +13,7 @@ import * as ATTRIBUTES from '../../constants/attributes';
 const i18n = (key, inserts = {}) => {
   const translations = {
     intro_hello: `Hey${inserts.firstName ? ` ${inserts.firstName}` : ''}! I'm ${inserts.botName ? `${inserts.botName} -- ` : ''}your local government assistant.`,
-    intro_information: 'I can take questions, find contacts, and track issues you\'ve reported to me. How can I help out today? :)',
+    intro_information: 'I take questions, find contacts, and report and track problems you tell me about. How can I help out today? :)',
     intro_survey_ask: 'We should get to know each other a little bit so I can be more helpful. Can I ask you some quick questions?',
     intro_survey_attribute_housing: 'Are you currently renting, an owner, or without a home?',
     intro_survey_attribute_new_resident: `Are you a new resident${inserts.organizationName ? ` to ${inserts.organizationName}` : ''}?`,
@@ -25,13 +25,6 @@ const i18n = (key, inserts = {}) => {
   };
   return translations[key];
 };
-
-const basicRequestQuickReplies = [
-  { content_type: 'text', title: 'What can I ask?', payload: 'What can I ask?' },
-  { content_type: 'text', title: 'Upcoming Elections', payload: 'Upcoming Elections' },
-  { content_type: 'text', title: 'Available Benefits', payload: 'Available Benefits' },
-  { content_type: 'text', title: 'Raise an Issue', payload: 'MAKE_REQUEST' },
-];
 
 const housingRequestQuickReplies = [
   { content_type: 'text', title: 'Renting', payload: 'Renting' },
@@ -78,7 +71,7 @@ export default {
         type: 'template',
         templateType: 'generic',
         elements: [
-          elementTemplates.genericWelcome(pictureUrl),
+          elementTemplates.genericWelcome(pictureUrl, this.get('organization').name),
           elementTemplates.genericCommuter,
           elementTemplates.genericBusiness,
           elementTemplates.genericVotingAndElections,
@@ -274,13 +267,15 @@ export default {
 
         const entities = nlpData.entities;
         const intentMap = {
-          'speech.help': 'what_can_i_do',
-          'speech.greeting': 'handle_greeting',
-          'speech.thanks': 'handle_thank_you',
-          'speech.praise': 'handle_praise',
+          'speech.help': 'personality.what_can_i_do',
+          'speech.greeting': 'personality.handle_greeting',
+          'speech.thanks': 'personality.handle_thank_you',
+          'speech.praise': 'personality.handle_praise',
 
           'personality.what_am_i': 'personality.what_am_i',
           'personality.chatbot_curiosity': 'personality.chatbot_curiosity',
+          'personality.has_question': 'personality.has_question',
+          'personality.makers': 'personality.makers',
 
           // benefits_internet: 'benefits-internet.init',
 
@@ -395,7 +390,7 @@ export default {
         this.messagingClient.addToQuene('My circuits are doing their best. I wish I could be of more help :(');
       } else {
         // If we do, templates!
-        this.messagingClient.addToQuene('Darn :( I don\'t have an answer, but try reaching out to these folks!');
+        this.messagingClient.addToQuene(':( I don\'t have an answer, but try reaching out to these folks:');
         this.messagingClient.addToQuene({
           type: 'template',
           templateType: 'generic',
@@ -405,41 +400,6 @@ export default {
       this.messagingClient.addToQuene('If you want, "Make a Request" and I will get you a response from a government employee ASAP!', replyTemplates.makeRequest);
       return this.messagingClient.runQuene().then(() => 'start');
     }).catch(() => 'start');
-  },
-
-  handle_greeting() {
-    const greetings = [
-      'Hey there! :) What can I help you with?',
-      'Hey there! :) What can I help you with?',
-      'Hey there! :) What can I help you with?',
-      'Hey there! :) What can I help you with?',
-      'Yo yooooo',
-      'yo yo yo',
-    ];
-    const greeting = greetings[Math.floor(Math.random() * greetings.length)];
-    this.messagingClient.send(greeting, basicRequestQuickReplies);
-    return 'start';
-  },
-
-  handle_praise() {
-    const thanks = [
-      'Thanks!!! :D',
-      '<3',
-    ];
-    const thank = thanks[Math.floor(Math.random() * thanks.length)];
-    this.messagingClient.send(thank);
-    return 'start';
-  },
-
-  handle_thank_you() {
-    const youreWelcomes = [
-      'Anytime :)',
-      'You are very welcome! :)',
-      'No problem! :)',
-    ];
-    const youreWelcome = youreWelcomes[Math.floor(Math.random() * youreWelcomes.length)];
-    this.messagingClient.send(youreWelcome);
-    return 'start';
   },
 };
 
