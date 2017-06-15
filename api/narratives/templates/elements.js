@@ -368,7 +368,7 @@ export function genericContact(contact) {
 export function genericWelcome(bannerUrl, orgName) {
   return {
     title: `${orgName ? `Your ${orgName} Assistant` : 'Welcome!'}`,
-    subtitle: 'I can do a lot of things! Email mark@mayor.chat if you have issues.',
+    subtitle: 'Have a question? Reporting a problem? Let\'s chat!',
     image_url: bannerUrl,
     buttons: [{
       type: 'postback',
@@ -376,12 +376,10 @@ export function genericWelcome(bannerUrl, orgName) {
       payload: 'What\'s a chatbot?',
     }, {
       type: 'postback',
-      title: 'Who made this?',
-      payload: 'Who made this?',
-    }, {
-      type: 'postback',
       title: 'What can I ask?',
-      payload: 'What can I ask?',
+      payload: 'What Can I Ask?',
+    }, {
+      type: 'element_share',
     }],
   };
 }

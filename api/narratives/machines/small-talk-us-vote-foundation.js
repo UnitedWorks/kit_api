@@ -51,7 +51,7 @@ export default {
           'voting.elections': 'voting.electionSchedule',
           'voting.registration.get': 'voting.voterRegistrationGet',
           'voting.registration.check': 'voting.voterRegistrationCheck',
-          'voting.poll_info': 'voting.pollInfo',
+          'voting.polls.find': 'voting.pollInfo',
           'voting.id': 'voting.voterIdRequirements',
           'voting.eligibility': 'voting.stateVotingRules',
           'voting.sample_ballot': 'voting.sampleBallot',

@@ -3,7 +3,7 @@ import { logger } from '../../logger';
 import { nlp } from '../../services/nlp';
 import { getConstituentCases } from '../../cases/helpers';
 import SlackService from '../../services/slack';
-import { fetchAnswers } from '../helpers';
+import { fetchAnswers, randomPick } from '../helpers';
 import { getCategoryFallback } from '../../knowledge-base/helpers';
 import * as elementTemplates from '../templates/elements';
 import * as replyTemplates from '../templates/quick-replies';
@@ -13,7 +13,7 @@ import * as ATTRIBUTES from '../../constants/attributes';
 const i18n = (key, inserts = {}) => {
   const translations = {
     intro_hello: `Hey${inserts.firstName ? ` ${inserts.firstName}` : ''}! I'm ${inserts.botName ? `${inserts.botName} -- ` : ''}your local government assistant.`,
-    intro_information: 'I take questions, find contacts, and report and track problems you tell me about. How can I help out today? :)',
+    intro_information: 'How can I help you with gov today? :)',
     intro_survey_ask: 'We should get to know each other a little bit so I can be more helpful. Can I ask you some quick questions?',
     intro_survey_attribute_housing: 'Are you currently renting, an owner, or without a home?',
     intro_survey_attribute_new_resident: `Are you a new resident${inserts.organizationName ? ` to ${inserts.organizationName}` : ''}?`,
@@ -243,6 +243,7 @@ export default {
       if (this.get('attributes').business_owner || this.get('attributes').business_owner == null) {
         elements.unshift(elementTemplates.genericBusiness);
       }
+      elements.unshift(elementTemplates.genericCommuter);
       this.messagingClient.addToQuene({
         type: 'template',
         templateType: 'generic',
@@ -282,7 +283,7 @@ export default {
           'voting.elections': 'voting.electionSchedule',
           'voting.registration.get': 'voting.voterRegistrationGet',
           'voting.registration.check': 'voting.voterRegistrationCheck',
-          'voting.poll_info': 'voting.pollInfo',
+          'voting.polls.find': 'voting.pollInfo',
           'voting.id': 'voting.voterIdRequirements',
           'voting.eligibility': 'voting.stateVotingRules',
           'voting.sample_ballot': 'voting.sampleBallot',
@@ -367,13 +368,17 @@ export default {
   },
 
   failedRequest() {
+    const firstFailMessage = randomPick([
+      'Oops! My circuits went haywire. Can you say that a different way?',
+      'Hmm, I\'m not following. Can you rephrase that?',
+    ]);
     new SlackService({
       username: 'Misunderstood Request',
       icon: 'question',
     }).send(`>*Request Message*: ${this.snapshot.input.payload.text}\n>*Constituent ID*: ${this.snapshot.constituent.id}`);
     // If first failure, ask for a repeat of question
     if (this.snapshot.state_machine_previous_state !== 'failedRequest') {
-      return this.messagingClient.send('Oops! Think my circuits went haywire for a second. Can you say that a different way?')
+      return this.messagingClient.send(firstFailMessage)
         .then(() => 'start');
     }
     // If second failure, fetch resources to assist
@@ -386,7 +391,7 @@ export default {
     return getCategoryFallback(labels, this.snapshot.organization_id).then((fallbackData) => {
       // See if we have fallback contacts
       if (fallbackData.contacts.length === 0) {
-        this.messagingClient.addToQuene('My circuits are doing their best. I wish I could be of more help :(');
+        this.messagingClient.addToQuene('Unfortunately, I don\'t have an answer :(');
       } else {
         // If we do, templates!
         this.messagingClient.addToQuene(':( I don\'t have an answer, but try reaching out to these folks:');

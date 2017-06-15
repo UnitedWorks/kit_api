@@ -1,3 +1,5 @@
+import { randomPick } from '../helpers';
+
 const basicRequestQuickReplies = [
   { content_type: 'text', title: 'What can I ask?', payload: 'What can I ask?' },
   { content_type: 'text', title: 'Upcoming Elections', payload: 'Upcoming Elections' },
@@ -7,29 +9,24 @@ const basicRequestQuickReplies = [
 
 export default {
   what_am_i() {
-    const messages = [
-      'I\'m a chatbot!',
-      'I\'m not a gov employee (so cut me some slack :P)',
-    ];
-    const message = messages[Math.floor(Math.random() * messages.length)];
+    const message = randomPick([
+      '🤖 I\'m a chatbot!',
+      '🤖 I\'m a chatbot trying to get you in touch with the right folks in gov!',
+    ]);
     return this.messagingClient.send(message).then(() => 'smallTalk.start');
   },
   chatbot_curiosity() {
-    const messages = [
-      'Chatbots are automated assistants. They have been around for a long time in theory, but were perfected by role-playing game makers. Chatbots are very new to government though! I\'m one of the only in the world.',
-    ];
-    const message = messages[Math.floor(Math.random() * messages.length)];
+    const message = 'Chatbots are automated assistants 🤖. They\'ve been around for decades, but they\'re very new to government! I\'m one of the only in the world :)';
     return this.messagingClient.send(message).then(() => 'smallTalk.start');
   },
   has_question() {
     return this.messagingClient.send('What\'s your question?').then(() => 'smallTalk.start');
   },
   makers() {
-    const messages = [
+    const message = randomPick([
+      `${this.get('organization').name} working with Hey Mayor! (https://mayor.chat)`,
       'Mark and Nick! 📷 → instagram.com/heymayor',
-      // `${this.get('organization').name}`,
-    ];
-    const message = messages[Math.floor(Math.random() * messages.length)];
+    ]);
     return this.messagingClient.send(message).then(() => 'smallTalk.start');
   },
   handle_greeting() {
