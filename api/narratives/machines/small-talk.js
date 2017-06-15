@@ -222,6 +222,7 @@ export default {
         elementTemplates.genericVotingAndElections,
       ];
       // Add elements depending on constituent attributes
+      if (!this.get('attributes')) this.set('attributes', {});
       // Housing
       if (this.get('attributes').housing === ATTRIBUTES.HOUSING_OWNER) {
         elements.unshift(elementTemplates.genericDocumentation);
@@ -242,8 +243,6 @@ export default {
       if (this.get('attributes').business_owner || this.get('attributes').business_owner == null) {
         elements.unshift(elementTemplates.genericBusiness);
       }
-      // New Resident
-      elements.unshift(elementTemplates.genericNewResident);
       this.messagingClient.addToQuene({
         type: 'template',
         templateType: 'generic',
@@ -267,7 +266,7 @@ export default {
 
         const entities = nlpData.entities;
         const intentMap = {
-          'speech.help': 'personality.what_can_i_do',
+          'speech.help': 'what_can_i_do',
           'speech.greeting': 'personality.handle_greeting',
           'speech.thanks': 'personality.handle_thank_you',
           'speech.praise': 'personality.handle_praise',
