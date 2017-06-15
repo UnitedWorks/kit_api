@@ -1,5 +1,6 @@
 // Init Babel
 require('babel-core/register');
+require('babel-polyfill');
 
 // Setup Logs
 require('../tools/setup-logs');

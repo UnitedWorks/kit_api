@@ -1,6 +1,7 @@
 // To run: NODE_ENV=local node nlp/uploading-questions -filename v2.json
 // Setup
 require('babel-core/register');
+require('babel-polyfill');
 require('../api/env').setup();
 
 const knex = require('../api/orm').knex;

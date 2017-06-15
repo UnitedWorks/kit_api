@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { logger } from '../../logger';
 import { nlp } from '../../services/nlp';
 import { getConstituentCases } from '../../cases/helpers';
@@ -11,8 +12,8 @@ import * as ATTRIBUTES from '../../constants/attributes';
 /* TODO(nicksahler) until I build the full i18n class */
 const i18n = (key, inserts = {}) => {
   const translations = {
-    intro_hello: `Hey! :D I'm ${inserts.name ? `${inserts.name}, ` : ''}a chatbot giving you control over local government!`,
-    intro_information: 'I do my best to turn your questions and rants into government action :P Have a question or problem at the moment?',
+    intro_hello: `Hey${inserts.firstName ? ` ${inserts.firstName}` : ''}! I'm ${inserts.botName ? `${inserts.botName} -- ` : ''}your local government assistant.`,
+    intro_information: 'I can take questions, find contacts, and track issues you\'ve reported to me. How can I help out today? :)',
     intro_survey_ask: 'We should get to know each other a little bit so I can be more helpful. Can I ask you some quick questions?',
     intro_survey_attribute_housing: 'Are you currently renting, an owner, or without a home?',
     intro_survey_attribute_new_resident: `Are you a new resident${inserts.organizationName ? ` to ${inserts.organizationName}` : ''}?`,
@@ -46,22 +47,28 @@ const petQuickReplies = [
 const introQuickReplies = [
   { content_type: 'text', title: 'Ask Question', payload: 'Ask Question' },
   { content_type: 'text', title: 'Raise Issue', payload: 'Raise Issue' },
-  { content_type: 'text', title: 'Hmm...', payload: 'Hmm...' },
 ];
 
 export default {
   init: {
-    enter() {
-      let name;
+    async enter() {
+      let botName;
+      let firstName;
       let pictureUrl = 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/16422989_187757401706018_5896478987148979475_o.png?oh=e1edeead1710b85f3d42e669685f3d59&oe=590603C2';
       if (this.snapshot.constituent.facebookEntry) {
-        name = this.snapshot.constituent.facebookEntry.intro_name ||
+        botName = this.snapshot.constituent.facebookEntry.intro_name ||
           this.snapshot.constituent.facebookEntry.name;
         if (this.snapshot.constituent.facebookEntry.intro_picture_url) {
           pictureUrl = this.snapshot.constituent.facebookEntry.intro_picture_url;
         }
+        firstName = await axios.get(`https://graph.facebook.com/v2.6/${this.snapshot.constituent.facebook_id}`, {
+          params: {
+            fields: 'first_name',
+            access_token: this.snapshot.constituent.facebookEntry.access_token,
+          },
+        }).then(res => res.data.first_name);
       } else if (this.snapshot.constituent.smsEntry) {
-        name = this.snapshot.constituent.smsEntry.intro_name ||
+        botName = this.snapshot.constituent.smsEntry.intro_name ||
           this.snapshot.constituent.smsEntry.name;
         if (this.snapshot.constituent.smsEntry.intro_picture_url) {
           pictureUrl = this.snapshot.constituent.smsEntry.intro_picture_url;
@@ -81,7 +88,7 @@ export default {
           elementTemplates.genericAssistance,
         ],
       };
-      this.messagingClient.addToQuene(i18n('intro_hello', { name }));
+      this.messagingClient.addToQuene(i18n('intro_hello', { firstName, botName }));
       this.messagingClient.addToQuene(templates);
       this.messagingClient.addToQuene(i18n('intro_information'), introQuickReplies);
       return this.messagingClient.runQuene().then(() => {
