@@ -120,13 +120,10 @@ export class FacebookMessengerClient extends BaseClient {
           },
         };
         if (content.templateType === 'generic') {
-          sendData.message.attachment.payload.elements = content.elements.map((element) => {
-            return {
-              title: element.title,
-              subtitle: element.subtitle,
-              buttons: buttonTransforming(element.buttons),
-            };
-          });
+          sendData.message.attachment.payload.elements = content.elements.map(element => ({
+            ...element,
+            buttons: buttonTransforming(element.buttons),
+          }));
         } else if (content.templateType === 'list' && content.buttons) {
           sendData.message.attachment.payload.buttons = buttonTransforming(content.buttons);
         }
@@ -140,7 +137,6 @@ export class FacebookMessengerClient extends BaseClient {
       };
     }
     if (quickActions && quickActions.length > 0) sendData.message.quick_replies = quickActions;
-    console.log(sendData)
     return new Promise((resolve) => {
       this.isTyping(false);
       this.callAPI(sendData).then(() => resolve());
