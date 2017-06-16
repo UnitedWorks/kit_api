@@ -343,8 +343,8 @@ export const genericBusinessRequirements = [{
 
 export function genericContact(contact) {
   const element = {
-    title: `${contact.name}${contact.title ? ` - ${contact.title}` : ''}`,
-    subtitle: `${contact.email ? `${contact.email} - ` : ''}${contact.responsibilities}`,
+    title: contact.name,
+    subtitle: `${contact.title ? `${contact.title} - ` : ''}${contact.responsibilities}`,
   };
   const buttons = [];
   if (contact.phone_number) {
@@ -354,6 +354,13 @@ export function genericContact(contact) {
       payload: contact.phone_number,
     });
   }
+  if (contact.email) {
+    buttons.push({
+      type: 'email',
+      title: contact.email,
+      email: contact.email,
+    });
+  }
   if (contact.website) {
     buttons.push({
       type: 'web_url',
@@ -361,6 +368,7 @@ export function genericContact(contact) {
       url: contact.website,
     });
   }
+  if (buttons.length < 3) buttons.push({ type: 'element_share' });
   if (buttons.length > 0) element.buttons = buttons;
   return element;
 }

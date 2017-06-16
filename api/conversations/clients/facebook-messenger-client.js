@@ -7,6 +7,20 @@ const gettingStarted = {
   payload: 'GET_STARTED',
 };
 
+function buttonTransforming(buttons) {
+  return buttons.map((button) => {
+    if (button.type === 'email') {
+      return {
+        type: 'web_url',
+        title: button.title,
+        url: `https://unitedworks.github.io/HeyEmail/?email=${button.email}`,
+        webview_height_ratio: 'compact',
+      };
+    }
+    return button;
+  });
+}
+
 export class FacebookMessengerClient extends BaseClient {
   constructor(config) {
     super();
@@ -84,6 +98,7 @@ export class FacebookMessengerClient extends BaseClient {
       },
       message: {},
     };
+    // Structure Message Data
     if (typeof content === 'string') {
       if (content) sendData.message.text = content;
     } else if (typeof content === 'object' && content.type === 'template') {
@@ -93,7 +108,7 @@ export class FacebookMessengerClient extends BaseClient {
           payload: {
             template_type: content.templateType,
             text: content.text,
-            buttons: content.buttons,
+            buttons: buttonTransforming(content.buttons),
           },
         };
       } else if (content.templateType === 'generic' || content.templateType === 'list') {
@@ -104,8 +119,16 @@ export class FacebookMessengerClient extends BaseClient {
             elements: content.elements,
           },
         };
-        if (content.templateType === 'list' && content.buttons) {
-          sendData.message.attachment.payload.buttons = content.buttons;
+        if (content.templateType === 'generic') {
+          sendData.message.attachment.payload.elements = content.elements.map((element) => {
+            return {
+              title: element.title,
+              subtitle: element.subtitle,
+              buttons: buttonTransforming(element.buttons),
+            };
+          });
+        } else if (content.templateType === 'list' && content.buttons) {
+          sendData.message.attachment.payload.buttons = buttonTransforming(content.buttons);
         }
       }
     } else {
@@ -117,6 +140,7 @@ export class FacebookMessengerClient extends BaseClient {
       };
     }
     if (quickActions && quickActions.length > 0) sendData.message.quick_replies = quickActions;
+    console.log(sendData)
     return new Promise((resolve) => {
       this.isTyping(false);
       this.callAPI(sendData).then(() => resolve());
