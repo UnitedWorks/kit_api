@@ -4,6 +4,7 @@ import * as TAGS from '../constants/nlp-tagging';
 import * as elementTemplates from './templates/elements';
 import * as replyTemplates from './templates/quick-replies';
 import { getCategoryFallback } from '../knowledge-base/helpers';
+import EmailService from '../services/email';
 
 /* TODO(nicksahler): Declare in machine, automatically route */
 export function getBaseState(providerName, section) {
@@ -51,7 +52,16 @@ export const fetchAnswers = (intent, session) => {
                   contact => elementTemplates.genericContact(contact)),
               });
             }
-            session.messagingClient.addToQuene('If you want, "Make a Request" and I will get you a response from a government employee ASAP!', replyTemplates.makeRequest);
+            // See if have a representative we can send this to
+            if (fallbackData.representatives.length > 0) {
+              session.messagingClient.addToQuene('I\'ve passed your message along to an employee. I send you an answer when I have one.');
+              fallbackData.representatives.forEach((rep) => {
+                EmailService.send()
+              })
+            } else {
+              // If not, suggest making a request
+              session.messagingClient.addToQuene('If you want, "Make a Request" and I will get you a response from a government employee ASAP!', replyTemplates.makeRequest);
+            }
             return session.messagingClient.runQuene().then(() => session.getBaseState());
           });
       }

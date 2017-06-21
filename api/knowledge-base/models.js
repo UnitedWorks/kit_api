@@ -1,5 +1,5 @@
 import { bookshelf } from '../orm';
-import { Organization } from '../accounts/models';
+import { Organization, Representative } from '../accounts/models';
 import { Media } from '../media/models';
 import { Survey } from '../surveys/models';
 
@@ -31,6 +31,9 @@ export const KnowledgeCategory = bookshelf.Model.extend({
   },
   contacts() {
     return this.belongsToMany(KnowledgeContact, 'knowledge_categorys_knowledge_contacts', 'knowledge_category_id');
+  },
+  representatives() {
+    return this.belongsToMany(Representative, 'knowledge_categorys_representatives', 'knowledge_category_id');
   },
 });
 

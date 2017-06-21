@@ -30,7 +30,7 @@ export default class EmailService {
       emailRequestObj.custom_args[key] = String(customAttributes[key]);
     });
 
-    logger.info(`Sending Case Email: '${JSON.stringify(emailRequestObj)}'`);
+    logger.info(`Sending Email: '${JSON.stringify(emailRequestObj)}'`);
 
     axios.post('https://api.sendgrid.com/v3/mail/send', emailRequestObj, {
       headers: {

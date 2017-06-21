@@ -3,6 +3,7 @@ import { logger } from '../../logger';
 import { nlp } from '../../services/nlp';
 import { getConstituentCases } from '../../cases/helpers';
 import SlackService from '../../services/slack';
+import EmailService from '../../services/email';
 import { fetchAnswers, randomPick } from '../helpers';
 import { getCategoryFallback } from '../../knowledge-base/helpers';
 import * as elementTemplates from '../templates/elements';
@@ -378,8 +379,7 @@ export default {
     }).send(`>*Request Message*: ${this.snapshot.input.payload.text}\n>*Constituent ID*: ${this.snapshot.constituent.id}`);
     // If first failure, ask for a repeat of question
     if (this.snapshot.state_machine_previous_state !== 'failedRequest') {
-      return this.messagingClient.send(firstFailMessage)
-        .then(() => 'start');
+      return this.messagingClient.send(firstFailMessage).then(() => 'start');
     }
     // If second failure, fetch resources to assist
     const labels = [];
@@ -403,7 +403,10 @@ export default {
       }
       this.messagingClient.addToQuene('If you want, "Make a Request" and I will get you a response from a government employee ASAP!', replyTemplates.makeRequest);
       return this.messagingClient.runQuene().then(() => 'start');
-    }).catch(() => 'start');
+    }).catch((err) => {
+      logger.error(err);
+      return 'start';
+    });
   },
 };
 

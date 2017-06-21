@@ -513,38 +513,46 @@ export function createAnswersFromRows({ answers, organization }, options = { ret
     .catch(error => error);
 }
 
-export function getCategoryFallback(labels, orgId) {
+export async function getCategoryFallback(labels, orgId) {
+  const fallbackObj = {
+    labels,
+    organizationId: orgId,
+  };
   const categoryFetches = [];
   labels.forEach((label) => {
     categoryFetches.push(KnowledgeCategory.where({ label })
       .fetch({
         withRelated: [{
           contacts: q => q.where('organization_id', '=', orgId),
+          representatives: q => q.where('organization_id', '=', orgId),
         }],
-      }).then(labelData => (labelData ? labelData.toJSON().contacts : [])),
+      }).then(labelData => (labelData ? labelData.toJSON() : [])),
     );
   });
-  return Promise.all(categoryFetches).then((labelData) => {
-    const mergedContacts = labelData.reduce((a, b) => a.concat(b));
-    // If no contacts, look farther up
-    if (mergedContacts.length === 0) {
-      return KnowledgeCategory.where({ label: 'general' })
-        .fetch({ withRelated: [{
-          contacts: q => q.where('organization_id', '=', orgId),
-        }] }).then((generalData) => {
-          return {
-            labels: ['general'],
-            fellback: true,
-            organizationId: orgId,
-            contacts: generalData.toJSON().contacts,
-          };
-        });
-    }
-    return {
-      labels,
-      fellback: false,
-      organizationId: orgId,
-      contacts: mergedContacts,
-    };
+  const mergedContacts = [];
+  const mergedRepresentatives = [];
+  await Promise.all(categoryFetches).then((labelData) => {
+    labelData.forEach((label) => {
+      label.contacts.forEach(contact => mergedContacts.push(contact));
+      label.representatives.forEach(rep => mergedRepresentatives.push(rep));
+    });
   });
+  // If no contacts, look farther up
+  if (mergedContacts.length === 0) {
+    await KnowledgeCategory.where({ label: 'general' }).fetch({
+      withRelated: [{
+        contacts: q => q.where('organization_id', '=', orgId),
+      }],
+    }).then((generalData) => {
+      fallbackObj.labels = ['general'];
+      fallbackObj.fellback = true;
+      fallbackObj.contacts = generalData.toJSON().contacts;
+    });
+  } else {
+    fallbackObj.fellback = false;
+    fallbackObj.contacts = mergedContacts;
+  }
+  // If representatives were assigned, send them an email so we can get an answer
+  fallbackObj.representatives = mergedRepresentatives;
+  return fallbackObj;
 }
