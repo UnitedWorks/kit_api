@@ -171,8 +171,8 @@ export const genericCommuter = {
     payload: 'Request A Bike Lane',
   }, {
     type: 'postback',
-    title: 'Report a Road Issue',
-    payload: 'Report a Road Issue',
+    title: 'Report a Pothole',
+    payload: 'Report a Pothole',
   }, {
     type: 'element_share',
   }],
