@@ -23,16 +23,14 @@ export const genericDocumentation = {
   image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/16463485_187743068374118_731666577286732253_o.png?oh=34db605884afb6fa415694f76f7b8214&oe=59816331',
   buttons: [{
     type: 'postback',
-    title: 'Get Marriage Certificate Copy',
-    payload: 'Get Marriage Certificate Copy',
+    title: 'Get Birth Certificate',
+    payload: 'Get Birth Certificate',
   }, {
     type: 'postback',
     title: 'Get Pet License',
     payload: 'Get Pet License',
   }, {
-    type: 'postback',
-    title: 'Get Copy of a Deed',
-    payload: 'Get Copy of a Deed',
+    type: 'element_share',
   }],
 };
 
@@ -68,9 +66,7 @@ export const genericVotingAndElections = {
     title: 'Register To Vote',
     payload: 'Register To Vote',
   }, {
-    type: 'postback',
-    title: 'Problem At Polls',
-    payload: 'Problem At Polls',
+    type: 'element_share',
   }],
 };
 
@@ -80,16 +76,14 @@ export const genericBenefits = {
   image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/18056257_232842120530879_6922898701508692950_o.png?oh=1c387a889c56b387e8ca55b5c4b756af&oe=5994A489',
   buttons: [{
     type: 'postback',
-    title: 'Report Unfair Wages',
-    payload: 'Report Unfair Wages',
+    title: 'Report Wage Theft',
+    payload: 'Report Wage Theft',
   }, {
     type: 'postback',
     title: 'Benefits Screener',
     payload: 'Benefits Screener',
   }, {
-    type: 'postback',
-    title: 'Find Job Training',
-    payload: 'Find Job Training',
+    type: 'element_share',
   }],
 };
 
@@ -99,16 +93,14 @@ export const genericAssistance = {
   image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/18076480_232825243865900_3433821028911633831_o.png?oh=fcc2d52c34dfb837272ccda9b928de22&oe=59766CF9',
   buttons: [{
     type: 'postback',
-    title: 'Find Nearby Shelter',
-    payload: 'Find Nearby Shelter',
+    title: 'Find Shelter',
+    payload: 'Find Shelter',
   }, {
     type: 'postback',
-    title: 'Find Nearby Clinic',
-    payload: 'Find Nearby Clinic',
+    title: 'Get Food Assistance',
+    payload: 'Get Food Assistance',
   }, {
-    type: 'postback',
-    title: 'Find Nearby Washroom',
-    payload: 'Find Nearby Washroom',
+    type: 'element_share',
   }],
 };
 
@@ -118,16 +110,14 @@ export const genericRenter = {
   image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/18595483_245617925919965_1771925793445361205_o.png?oh=c41f5dc53c6f8aae50ff6d932f2d3c2f&oe=59743919',
   buttons: [{
     type: 'postback',
-    title: 'Check stabilized rent',
-    payload: 'Check Stabilized Rent',
+    title: 'Rental Assistance',
+    payload: 'Rental Assistance',
   }, {
     type: 'postback',
-    title: 'Find affordable housing',
-    payload: 'Find Affordable Housing',
+    title: 'Landlord Histories',
+    payload: 'Landlord Histories',
   }, {
-    type: 'postback',
-    title: 'Report a landlord',
-    payload: 'Report A Landlord',
+    type: 'element_share',
   }],
 };
 
@@ -177,16 +167,14 @@ export const genericCommuter = {
   image_url: 'https://scontent.fewr1-3.fna.fbcdn.net/v/t31.0-8/18814995_251679365313821_3512955472682371977_o.png?oh=972a17ce194fe9a53a82058aa2da2f72&oe=59A622A2',
   buttons: [{
     type: 'postback',
-    title: 'Get Commute Alerts',
-    payload: 'Get Commute Alerts',
-  }, {
-    type: 'postback',
     title: 'Request A Bike Lane',
     payload: 'Request A Bike Lane',
   }, {
     type: 'postback',
     title: 'Report a Road Issue',
     payload: 'Report a Road Issue',
+  }, {
+    type: 'element_share',
   }],
 };
 
@@ -264,16 +252,14 @@ export const genericBusiness = {
   image_url: 'https://scontent.xx.fbcdn.net/v/t31.0-8/18556650_245320545949703_5356655391224303171_o.png?oh=673830163e7d76ae394741b1b4abf040&oe=59B2618D',
   buttons: [{
     type: 'postback',
-    title: 'Government Contracts',
-    payload: 'Government Contracts',
+    title: 'Get a Business License',
+    payload: 'How do I get a business or merchants license?',
   }, {
     type: 'postback',
-    title: 'Business Checklist',
-    payload: 'FREQ_BUSINESS_QUESTIONS_LIST',
+    title: 'Starting a Business',
+    payload: 'How do I get help starting or expanding my small business?',
   }, {
-    type: 'postback',
-    title: 'Permits, Licenses, ...',
-    payload: 'FREQ_BUSINESS_REQUIREMENTS_LIST',
+    type: 'element_share',
   }],
 };
 
@@ -377,7 +363,7 @@ export function genericWelcome(bannerUrl, orgName) {
   return {
     title: `${orgName ? `Your ${orgName} Assistant` : 'Welcome!'}`,
     subtitle: 'Have a question? Reporting a problem? Let\'s chat!',
-    image_url: bannerUrl,
+    image_url: bannerUrl || 'https://scontent.xx.fbcdn.net/v/t31.0-8/18589000_245329029282188_201697997574538644_o.png?oh=3c0896d62bc013dc7a520cd8aef2ec7d&oe=59B0D211',
     buttons: [{
       type: 'postback',
       title: 'What\'s a chatbot?',

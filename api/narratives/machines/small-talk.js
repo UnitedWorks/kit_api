@@ -83,7 +83,7 @@ export default {
       };
       this.messagingClient.addToQuene(i18n('intro_hello', { firstName, botName }));
       this.messagingClient.addToQuene(templates);
-      this.messagingClient.addToQuene(i18n('intro_information'), introQuickReplies);
+      this.messagingClient.addToQuene(i18n('intro_information'));
       return this.messagingClient.runQuene().then(() => {
         if (!this.get('organization')) return this.stateRedirect('location', 'smallTalk.start');
         return 'start';
