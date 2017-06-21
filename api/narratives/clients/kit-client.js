@@ -2,6 +2,7 @@ import { RRule, RRuleSet } from 'rrule';
 import moment from 'moment';
 import { getAnswers as getAnswersHelper } from '../../knowledge-base/helpers';
 import { getPlacesUrl } from '../../utils';
+import * as elementTemplates from '../templates/elements';
 
 export default class KitClient {
   constructor(config = {}) {
@@ -40,16 +41,7 @@ export default class KitClient {
         const elementButtons = [];
         let subtitleString = '';
         if (entityType === 'contact') {
-          if (object.hasOwnProperty('phone_number')) {
-            elementButtons.push({
-              type: 'phone_number',
-              title: object.phone_number,
-              payload: object.phone_number,
-            });
-          }
-          if (object.title) subtitleString += `${object.title}`;
-          if (object.organization) subtitleString += `\n${object.organization}`;
-          if (object.email) subtitleString += `\n${object.email}`;
+          template.elements.push(elementTemplates.genericContact(object));
         } else {
           if (object.hasOwnProperty('location') && object.location.display_name != null) {
             elementButtons.push({
@@ -87,12 +79,12 @@ export default class KitClient {
           } else {
             subtitleString = object.brief_description || object.description;
           }
+          template.elements.push({
+            title: object.name,
+            subtitle: subtitleString,
+            buttons: elementButtons,
+          });
         }
-        template.elements.push({
-          title: object.name || object.full_name,
-          subtitle: subtitleString,
-          buttons: elementButtons,
-        });
       });
       return [template];
     }
@@ -178,8 +170,8 @@ export default class KitClient {
     };
 
     // If we're not provided datetime specifics, list generic schedule
+    responses.push(KitClient.answerText(answer));
     if (!datetimeEntity) {
-      responses.push(KitClient.answerText(answer));
       answer.facilities.forEach((facility) => {
         responses.push(simpleScheduleDescriber(facility));
       });
@@ -192,6 +184,19 @@ export default class KitClient {
       });
       answer.services.forEach((service) => {
         responses.push(...complexScheduleDescriber(service));
+      });
+    }
+    // Make sure we're not leaving out non-schedule answers
+    if (answer.contacts && answer.contacts.length > 0) {
+      const contactElements = [];
+      answer.contacts.forEach((contact) => {
+        contactElements.push(elementTemplates.genericContact(contact));
+      });
+      responses.push({
+        type: 'template',
+        templateType: 'generic',
+        image_aspect_ratio: 'horizontal',
+        elements: contactElements,
       });
     }
 

@@ -56,12 +56,16 @@ export const fetchAnswers = (intent, session) => {
           });
       }
       // Otherwise, proceed with answers
-      if (entities[TAGS.DATETIME]) {
+      if (entities && entities[TAGS.DATETIME]) {
         session.messagingClient.addAll(KitClient.dynamicAnswer(answers, entities[TAGS.DATETIME]));
-      } else if (schedule === 'day') {
+      } else if (schedule && schedule === 'day') {
+        // THIS TOTALLY BREAKS the ELSE statement
+        // If we have a static answer for something that can be dynamic, we never hit the else
         session.messagingClient.addAll(KitClient.dynamicAnswer(answers));
       } else {
-        session.messagingClient.addAll(KitClient.staticAnswer(answers));
+        KitClient.staticAnswer(answers).forEach((answer) => {
+          session.messagingClient.addToQuene(answer);
+        });
       }
       return session.messagingClient.runQuene().then(() => {
         // If we have a survey, prompt user about it
