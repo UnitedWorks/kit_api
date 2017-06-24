@@ -78,6 +78,12 @@ export default class KitClient {
           } else {
             subtitleString = object.brief_description || object.description;
           }
+          // If we have a spare button slot, push in share
+          if (elementButtons.length < 3) {
+            elementButtons.push({
+              type: 'element_share',
+            });
+          }
           template.elements.push({
             title: object.name,
             subtitle: subtitleString,
