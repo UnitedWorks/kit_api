@@ -26,7 +26,6 @@ export default class KitClient {
     if (Object.hasOwnProperty.call(answerObj, 'text')) {
       return answerObj.url ? `${answerObj.text} (${answerObj.url})` : `${answerObj.text}`;
     }
-    return 'Sorry, I can\'t find an answer for you. :( I\'ll try to get one for you soon';
   }
 
   static knowledgeEntityToTemplate(entityType, objects = []) {
@@ -170,7 +169,8 @@ export default class KitClient {
     };
 
     // If we're not provided datetime specifics, list generic schedule
-    responses.push(KitClient.answerText(answer));
+    const answerText = KitClient.answerText(answer);
+    if (answerText) responses.push(answerText);
     if (!datetimeEntity) {
       answer.facilities.forEach((facility) => {
         responses.push(simpleScheduleDescriber(facility));

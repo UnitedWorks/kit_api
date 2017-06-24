@@ -34,7 +34,7 @@ export default class BaseClient {
       return;
     }
     // Make sure message is shorter than API's max length if it exists
-    if (Object.prototype.hasOwnProperty.call(this.config, 'maxCharacters') && (text.length > this.config.maxCharacters)) {
+    if (text && Object.prototype.hasOwnProperty.call(this.config, 'maxCharacters') && (text.length > this.config.maxCharacters)) {
       const sentences = text.split('.');
       let rebuiltSentence = '';
       sentences.forEach((sentence) => {
@@ -59,7 +59,7 @@ export default class BaseClient {
 
   addAll(arr) {
     const self = this;
-    arr.forEach((e)=> self.addToQuene(e));
+    arr.forEach(e => self.addToQuene(e));
   }
 
   runQuene() {

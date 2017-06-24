@@ -132,9 +132,6 @@ export const makeAnswer = (organization, question, answer, options) => {
     question_id: question.id,
     organization_id: organization.id,
   };
-  if (typeof answer.text === 'string' && answer.text.length === 0) {
-    throw new Error('Empty text field given to answer');
-  }
   return KnowledgeAnswer.forge(newAnswerModel).save(null, { method: 'insert' })
     .then(data => options.returnJSON ? data.toJSON() : data)
     .catch(error => error);

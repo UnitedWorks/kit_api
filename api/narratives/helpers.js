@@ -34,8 +34,8 @@ export const fetchAnswers = (intent, session) => {
   return new KitClient({ organization: session.get('organization') })
     .getAnswer(intent).then(({ question, answers }) => {
       // If no answers, run fallback
-      if (!answers || (!answers.text && !answers.survey && !answers.facilities.length &&
-        !answers.services.length && !answers.contacts.length)) {
+      if (!answers || (!answers.text && !answers.survey && answers.facilities.length === 0 &&
+        answers.services.length === 0 && answers.contacts.length === 0)) {
         return getCategoryFallback([intent.split('.')[0]], session.get('organization').id)
           .then((fallbackData) => {
             // See if we have fallback contacts
@@ -63,9 +63,7 @@ export const fetchAnswers = (intent, session) => {
         // If we have a static answer for something that can be dynamic, we never hit the else
         session.messagingClient.addAll(KitClient.dynamicAnswer(answers));
       } else {
-        KitClient.staticAnswer(answers).forEach((answer) => {
-          session.messagingClient.addToQuene(answer);
-        });
+        session.messagingClient.addAll(KitClient.staticAnswer(answers));
       }
       return session.messagingClient.runQuene().then(() => {
         // If we have a survey, prompt user about it
