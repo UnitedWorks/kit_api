@@ -41,7 +41,7 @@ export function webhookEmail(req) {
         });
       } else if (typeof questionId === 'number' && typeof orgId === 'number') {
         logger.info(`Email Action: Fulfill Answer - Question: ${questionId} / Org: ${orgId}`);
-        makeAnswer({ id: orgId }, { id: questionId }, { text: emailData.html.trim() })
+        makeAnswer({ id: orgId }, { id: questionId }, { text: emailData.text.substr(0, emailData.text.indexOf('\\t') - 1).trim() })
           .then((answer) => {
             logger.info(`Created Answer: ${answer}`);
           });
