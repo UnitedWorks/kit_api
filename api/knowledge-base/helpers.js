@@ -81,6 +81,7 @@ export const getCategories = (params = {}) => {
     return KnowledgeCategory.fetchAll({
       withRelated: {
         contacts: q => q.where('organization_id', params.organization_id),
+        representatives: q => q.where('organization_id', params.organization_id),
         questions: q => q,
         'questions.answers': q => q.where('organization_id', params.organization_id),
       },
@@ -120,10 +121,31 @@ export const setCategoryFallback = ({ organization, category, contacts = [] }) =
     .where('knowledge_category_id', '=', category.id)
     .join('knowledge_contacts', function() {
       this.on('knowledge_categorys_knowledge_contacts.knowledge_contacts_id', '=', 'knowledge_contacts.id')
-      .andOn('knowledge_contacts.organization_id', '=', organization.id)
+        .andOn('knowledge_contacts.organization_id', '=', organization.id);
     })
     .del()
     .then(() => Promise.all(relationshipInserts));
+};
+
+export const setCategoryRepresentatives = ({ organization, category, representatives = [] }) => {
+  if (!organization.id) throw new Error('No Organization ID');
+  if (!category.id) throw new Error('No Category Provided');
+  const repInserts = [];
+  representatives.forEach((representative) => {
+    repInserts.push(knex('knowledge_categorys_representatives').insert({
+      knowledge_category_id: category.id,
+      representative_id: representative.id,
+    }));
+  });
+  // Delete relationships this org's representatives have with this category
+  return knex('knowledge_categorys_representatives')
+    .where('knowledge_category_id', '=', category.id)
+    .join('representatives', function() {
+      this.on('knowledge_categorys_representatives.representative_id', '=', 'representatives.id')
+        .andOn('representatives.organization_id', '=', organization.id);
+    })
+    .del()
+    .then(() => Promise.all(repInserts));
 };
 
 export const makeAnswer = (organization, question, answer, options) => {

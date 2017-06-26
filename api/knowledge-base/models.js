@@ -13,17 +13,6 @@ export const EventRule = bookshelf.Model.extend({
 });
 
 // Knowledge Base Entities
-export const KnowledgeContact = bookshelf.Model.extend({
-  tableName: 'knowledge_contacts',
-  hasTimestamps: true,
-  photo() {
-    return this.hasOne(Media, 'photo_id');
-  },
-  knowledgeCategories() {
-    return this.belongsToMany(KnowledgeCategory, 'knowledge_categorys_knowledge_contacts', 'knowledge_contact_id');
-  },
-});
-
 export const KnowledgeCategory = bookshelf.Model.extend({
   tableName: 'knowledge_categorys',
   questions() {
@@ -34,6 +23,17 @@ export const KnowledgeCategory = bookshelf.Model.extend({
   },
   representatives() {
     return this.belongsToMany(Representative, 'knowledge_categorys_representatives', 'knowledge_category_id');
+  },
+});
+
+export const KnowledgeContact = bookshelf.Model.extend({
+  tableName: 'knowledge_contacts',
+  hasTimestamps: true,
+  photo() {
+    return this.hasOne(Media, 'photo_id');
+  },
+  knowledgeCategories() {
+    return this.belongsToMany(KnowledgeCategory, 'knowledge_categorys_knowledge_contacts', 'knowledge_contact_id');
   },
 });
 
