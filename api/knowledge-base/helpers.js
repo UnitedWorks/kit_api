@@ -148,7 +148,7 @@ export const setCategoryRepresentatives = ({ organization, category, representat
     .then(() => Promise.all(repInserts));
 };
 
-export const makeAnswer = (organization, question, answer, options) => {
+export const makeAnswer = (organization, question, answer, options = { returnJSON: true }) => {
   const newAnswerModel = {
     ...answer,
     question_id: question.id,

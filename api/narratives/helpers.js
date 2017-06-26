@@ -56,8 +56,12 @@ export const fetchAnswers = (intent, session) => {
             if (fallbackData.representatives.length > 0) {
               session.messagingClient.addToQuene('I\'ve passed your message along to an employee. I send you an answer when I have one.');
               fallbackData.representatives.forEach((rep) => {
-                EmailService.send()
-              })
+                const emailMessage = `Hello ${rep.name}! We're missing an answer to:<br><br>"${question.question}"<br/><br/>Type an answer and we will save it for future requests.`;
+                new EmailService().send(`Missing Answer QID:${question.id} OID:${session.get('organization').id}`, emailMessage, rep.email, 'reply@kit.community', {
+                  organization_id: session.get('organization').id,
+                  question_id: question.id,
+                });
+              });
             } else {
               // If not, suggest making a request
               session.messagingClient.addToQuene('If you want, "Make a Request" and I will get you a response from a government employee ASAP!', replyTemplates.makeRequest);
