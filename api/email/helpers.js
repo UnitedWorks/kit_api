@@ -14,20 +14,22 @@ export function webhookEmail(req) {
     Object.keys(fields).forEach((key) => {
       emailData[key] = fields[key];
     });
+    if (err) logger.error(err);
     logger.info(`Email Data: ${JSON.stringify(emailData)}`);
     // Handle Email Actions by Parsing Subject
     if (emailData.subject) {
       // If Complaint Response
-      const complaintRegex = /Constituent Complaint #(\d+):/i;
-      const complaintResult = complaintRegex.exec(emailData.subject);
-      const caseId = Number(complaintResult[1]);
+      const complaintResult = /Constituent Complaint #(\d+):/i.exec(emailData.subject);
+      let caseId;
+      if (complaintResult != null) caseId = Number(complaintResult[1]);
       // If Unanswered Question Response
-      const questionRegex = /Missing Answer QID:(\d+) OID:(\d+)/i;
-      const questionResult = questionRegex.exec(emailData.subject);
-      const questionId = Number(questionResult[0]);
-      const orgId = Number(questionResult[1]);
-      logger.info(`${questionResult}`);
-      logger.info(`${questionId}, ${orgId}`);
+      const questionResult = /Missing Answer QID:(\d+) OID:(\d+)/i.exec(emailData.subject);
+      let questionId;
+      let orgId;
+      if (questionResult != null) {
+        questionId = Number(questionResult[1]);
+        orgId = Number(questionResult[2]);
+      }
       if (caseId) {
         logger.info(`Email Action: Close Case #${caseId}`);
         new Case({ id: caseId }).save({ status: 'closed', closedAt: knex.raw('now()') }, { method: 'update', patch: true }).then((updatedCaseModel) => {
@@ -37,7 +39,7 @@ export function webhookEmail(req) {
             caseStatusUpdateNotification(caseJSON, 'closed', { constituent: caseJSON.constituent });
           });
         });
-      } else if (questionId && orgId) {
+      } else if (typeof questionId === 'number' && typeof orgId === 'number') {
         logger.info(`Email Action: Fulfill Answer - Question: ${questionId} / Org: ${orgId}`);
         makeAnswer({ id: orgId }, { id: questionId }, { text: emailData.html.trim() })
           .then((answer) => {
