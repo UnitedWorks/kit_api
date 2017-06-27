@@ -11,9 +11,7 @@ export const genericSanitation = {
     title: 'Recycling Schedule',
     payload: 'Recycling Schedule',
   }, {
-    type: 'postback',
-    title: 'Bulk Pickup Request',
-    payload: 'Bulk Pickup Request',
+    type: 'element_share',
   }],
 };
 
@@ -23,35 +21,14 @@ export const genericDocumentation = {
   image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/16463485_187743068374118_731666577286732253_o.png?oh=34db605884afb6fa415694f76f7b8214&oe=59816331',
   buttons: [{
     type: 'postback',
-    title: 'Get Marriage Certificate Copy',
-    payload: 'Get Marriage Certificate Copy',
-  }, {
-    type: 'postback',
     title: 'Get Pet License',
     payload: 'Get Pet License',
   }, {
     type: 'postback',
-    title: 'Get Copy of a Deed',
-    payload: 'Get Copy of a Deed',
-  }],
-};
-
-export const genericRequests = {
-  title: 'Reporting Issues and Concerns',
-  subtitle: 'Record a problem you are facing, and a repersentative will get back to you with a response or resolution',
-  image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/18077241_232809757200782_8664249297555360938_o.png?oh=ff0af5e7afe55f651fd7d367dfa11574&oe=598B1E56',
-  buttons: [{
-    type: 'postback',
-    title: 'Request a Service',
-    payload: 'Request A Service',
+    title: 'Get Copy of Deed',
+    payload: 'Get Copy of Deed',
   }, {
-    type: 'postback',
-    title: 'Make a Complaint',
-    payload: 'MAKE_REQUEST',
-  }, {
-    type: 'postback',
-    title: 'See My Requests',
-    payload: 'GET_REQUESTS',
+    type: 'element_share',
   }],
 };
 
@@ -68,9 +45,7 @@ export const genericVotingAndElections = {
     title: 'Register To Vote',
     payload: 'Register To Vote',
   }, {
-    type: 'postback',
-    title: 'Problem At Polls',
-    payload: 'Problem At Polls',
+    type: 'element_share',
   }],
 };
 
@@ -80,16 +55,14 @@ export const genericBenefits = {
   image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/18056257_232842120530879_6922898701508692950_o.png?oh=1c387a889c56b387e8ca55b5c4b756af&oe=5994A489',
   buttons: [{
     type: 'postback',
-    title: 'Report Unfair Wages',
-    payload: 'Report Unfair Wages',
+    title: 'Report Wage Theft',
+    payload: 'Report Wage Theft',
   }, {
     type: 'postback',
     title: 'Benefits Screener',
     payload: 'Benefits Screener',
   }, {
-    type: 'postback',
-    title: 'Find Job Training',
-    payload: 'Find Job Training',
+    type: 'element_share',
   }],
 };
 
@@ -99,16 +72,14 @@ export const genericAssistance = {
   image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/18076480_232825243865900_3433821028911633831_o.png?oh=fcc2d52c34dfb837272ccda9b928de22&oe=59766CF9',
   buttons: [{
     type: 'postback',
-    title: 'Find Nearby Shelter',
-    payload: 'Find Nearby Shelter',
+    title: 'Find Shelter',
+    payload: 'Find Shelter',
   }, {
     type: 'postback',
-    title: 'Find Nearby Clinic',
-    payload: 'Find Nearby Clinic',
+    title: 'Find Clinic',
+    payload: 'Find Clinic',
   }, {
-    type: 'postback',
-    title: 'Find Nearby Washroom',
-    payload: 'Find Nearby Washroom',
+    type: 'element_share',
   }],
 };
 
@@ -125,28 +96,7 @@ export const genericRenter = {
     title: 'Find affordable housing',
     payload: 'Find Affordable Housing',
   }, {
-    type: 'postback',
-    title: 'Report a landlord',
-    payload: 'Report A Landlord',
-  }],
-};
-
-export const genericAbout = {
-  title: 'About',
-  subtitle: 'Learn more about this bot and what it does!',
-  image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/18056595_232810460534045_3606142951231659741_o.png?oh=9c2656704b2d8a0793f54a16e89234e1&oe=598D0793',
-  buttons: [{
-    type: 'postback',
-    title: 'How Does This Work?',
-    payload: 'How Does This Work?',
-  }, {
-    type: 'postback',
-    title: 'Leave Feedback',
-    payload: 'Leave Feedback',
-  }, {
-    type: 'postback',
-    title: 'Change Language',
-    payload: 'Change Language',
+    type: 'element_share',
   }],
 };
 
@@ -157,16 +107,14 @@ export const genericNewResident = {
   image_url: 'https://scontent.xx.fbcdn.net/v/t31.0-8/18589000_245329029282188_201697997574538644_o.png?oh=3c0896d62bc013dc7a520cd8aef2ec7d&oe=59B0D211',
   buttons: [{
     type: 'postback',
-    title: 'What\'s going on?!',
-    payload: 'What Events Are Happening?',
-  }, {
-    type: 'postback',
     title: 'Common Questions',
     payload: 'FREQ_QUESTION_LIST',
   }, {
     type: 'postback',
     title: 'Common Services',
     payload: 'FREQ_SERVICE_LIST',
+  }, {
+    type: 'element_share',
   }],
 };
 
@@ -177,16 +125,14 @@ export const genericCommuter = {
   image_url: 'https://scontent.fewr1-3.fna.fbcdn.net/v/t31.0-8/18814995_251679365313821_3512955472682371977_o.png?oh=972a17ce194fe9a53a82058aa2da2f72&oe=59A622A2',
   buttons: [{
     type: 'postback',
-    title: 'Get Commute Alerts',
-    payload: 'Get Commute Alerts',
-  }, {
-    type: 'postback',
     title: 'Request A Bike Lane',
     payload: 'Request A Bike Lane',
   }, {
     type: 'postback',
-    title: 'Report a Road Issue',
-    payload: 'Report a Road Issue',
+    title: 'Report a Pothole',
+    payload: 'Report a Pothole',
+  }, {
+    type: 'element_share',
   }],
 };
 
@@ -250,10 +196,6 @@ export const genericNewResidentServicesList = [{
     type: 'postback',
     title: 'Make a Complaint',
     payload: 'MAKE_REQUEST',
-  }, {
-    type: 'postback',
-    title: 'See My Requests',
-    payload: 'GET_REQUESTS',
   }],
 }];
 
@@ -268,12 +210,10 @@ export const genericBusiness = {
     payload: 'Government Contracts',
   }, {
     type: 'postback',
-    title: 'Business Checklist',
-    payload: 'FREQ_BUSINESS_QUESTIONS_LIST',
-  }, {
-    type: 'postback',
     title: 'Permits, Licenses, ...',
     payload: 'FREQ_BUSINESS_REQUIREMENTS_LIST',
+  }, {
+    type: 'element_share',
   }],
 };
 

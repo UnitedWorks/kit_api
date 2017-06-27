@@ -3,7 +3,6 @@ import { logger } from '../../logger';
 import { nlp } from '../../services/nlp';
 import { getConstituentCases } from '../../cases/helpers';
 import SlackService from '../../services/slack';
-import EmailService from '../../services/email';
 import { fetchAnswers, randomPick } from '../helpers';
 import { getCategoryFallback } from '../../knowledge-base/helpers';
 import * as elementTemplates from '../templates/elements';
@@ -15,28 +14,11 @@ const i18n = (key, inserts = {}) => {
   const translations = {
     intro_hello: `Hey${inserts.firstName ? ` ${inserts.firstName}` : ''}! I'm ${inserts.botName ? `${inserts.botName} -- ` : ''}your local government assistant.`,
     intro_information: 'How can I help you with gov today? :)',
-    intro_survey_ask: 'We should get to know each other a little bit so I can be more helpful. Can I ask you some quick questions?',
-    intro_survey_attribute_housing: 'Are you currently renting, an owner, or without a home?',
-    intro_survey_attribute_new_resident: `Are you a new resident${inserts.organizationName ? ` to ${inserts.organizationName}` : ''}?`,
-    intro_survey_attribute_business_owner: `Do you have a business${inserts.organizationName ? ` in ${inserts.organizationName}` : ''}?`,
-    intro_survey_attribute_children: 'Do you have any young children in the schools here?',
-    intro_survey_attribute_dogs_or_cats: 'Whats better... 🐱Cats or 🐶Dogs?',
     organization_confirmation: `You're interested in ${inserts.organizationName}, right?`,
     bot_apology: `Sorry, I wasn't expeting that answer or may have misunderstood. ${inserts.appendQuestion ? inserts.appendQuestion : ''}`,
   };
   return translations[key];
 };
-
-const housingRequestQuickReplies = [
-  { content_type: 'text', title: 'Renting', payload: 'Renting' },
-  { content_type: 'text', title: 'Own a Home', payload: 'Own A Home' },
-  { content_type: 'text', title: 'Homeless', payload: 'Homeless' },
-];
-
-const petQuickReplies = [
-  { content_type: 'text', title: 'Cats🐱', payload: 'Cats' },
-  { content_type: 'text', title: 'Dogs🐶', payload: 'Dogs' },
-];
 
 const introQuickReplies = [
   { content_type: 'text', title: 'Ask Question', payload: 'Ask Question' },
@@ -73,13 +55,12 @@ export default {
         templateType: 'generic',
         elements: [
           elementTemplates.genericWelcome(pictureUrl, this.get('organization').name),
+          elementTemplates.genericVotingAndElections,
+          elementTemplates.genericSanitation,
           elementTemplates.genericCommuter,
           elementTemplates.genericBusiness,
-          elementTemplates.genericVotingAndElections,
           elementTemplates.genericRenter,
-          elementTemplates.genericDocumentation,
-          elementTemplates.genericBenefits,
-          elementTemplates.genericAssistance,
+          elementTemplates.genericNewResident,
         ],
       };
       this.messagingClient.addToQuene(i18n('intro_hello', { firstName, botName }));
@@ -120,6 +101,7 @@ export default {
         elements.unshift(elementTemplates.genericBusiness);
       }
       elements.unshift(elementTemplates.genericCommuter);
+      elements.unshift(elementTemplates.genericNewResident);
       this.messagingClient.addToQuene({
         type: 'template',
         templateType: 'generic',
