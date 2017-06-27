@@ -15,10 +15,18 @@ function normalizeInput(conversationClient, input) {
     // Input: interface, message, state
     if (conversationClient === interfaces.FACEBOOK) {
       if (Object.prototype.hasOwnProperty.call(input, 'message')) {
-        newMessageObject = {
-          type: 'message',
-          payload: input.message,
-        };
+        // Check for action sent via Quick Reply
+        if (input.message.quick_reply && input.message.quick_reply.payload.includes('_')) {
+          newMessageObject = {
+            type: 'action',
+            payload: input.message.quick_reply,
+          };
+        } else {
+          newMessageObject = {
+            type: 'message',
+            payload: input.message,
+          };
+        }
       } else if (Object.prototype.hasOwnProperty.call(input, 'postback')) {
         newMessageObject = {
           type: 'action',
