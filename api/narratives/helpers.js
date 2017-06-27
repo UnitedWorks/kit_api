@@ -41,20 +41,20 @@ export const fetchAnswers = (intent, session) => {
           .then((fallbackData) => {
             // See if we have fallback contacts
             if (fallbackData.contacts.length === 0) {
-              session.messagingClient.addToQuene('I wish I had an answer :(');
+              session.messagingClient.addToQuene('Unfortunately, I don\'t have an answer :(');
             } else {
               // If we do, templates!
-              session.messagingClient.addToQuene('Darn :( I don\'t have an answer, but try reaching out to these folks!');
+              session.messagingClient.addToQuene('I don\'t have an answer, but try reaching out to these folks!');
               session.messagingClient.addToQuene({
                 type: 'template',
                 templateType: 'generic',
                 elements: fallbackData.contacts.map(
                   contact => elementTemplates.genericContact(contact)),
-              });
+              }, replyTemplates.evalHelpfulAnswer);
             }
             // EMAIL: See if have a representative we can send this to
             if (fallbackData.representatives.length > 0) {
-              session.messagingClient.addToQuene('I\'ve passed your message along to an employee. I send you an answer when I have one.');
+              session.messagingClient.addToQuene('I\'ve passed your message along to an employee. I will send you an answer when I hear back.', replyTemplates.evalHelpfulAnswer);
               const repEmails = [];
               fallbackData.representatives.forEach((rep) => {
                 repEmails.push({ name: rep.name, email: rep.email });
@@ -66,7 +66,7 @@ export const fetchAnswers = (intent, session) => {
               });
             } else {
               // If not, suggest making a request
-              session.messagingClient.addToQuene('If you want, "Make a Request" and I will get you a response from a government employee ASAP!', replyTemplates.makeRequest);
+              session.messagingClient.addToQuene('If you want, "Make a Request" and I will get you a response from a government employee ASAP!', [...replyTemplates.makeRequest, ...replyTemplates.evalHelpfulAnswer]);
             }
             // Run Message
             return session.messagingClient.runQuene().then(() => session.getBaseState());
@@ -74,13 +74,16 @@ export const fetchAnswers = (intent, session) => {
       }
       // Otherwise, proceed with answers
       if (entities && entities[TAGS.DATETIME]) {
-        session.messagingClient.addAll(KitClient.dynamicAnswer(answers, entities[TAGS.DATETIME]));
+        session.messagingClient.addAll(KitClient.dynamicAnswer(answers, entities[TAGS.DATETIME]),
+          replyTemplates.evalHelpfulAnswer);
       } else if (schedule && schedule === 'day') {
         // THIS TOTALLY BREAKS the ELSE statement
         // If we have a static answer for something that can be dynamic, we never hit the else
-        session.messagingClient.addAll(KitClient.dynamicAnswer(answers));
+        session.messagingClient.addAll(KitClient.dynamicAnswer(answers),
+          replyTemplates.evalHelpfulAnswer);
       } else {
-        session.messagingClient.addAll(KitClient.staticAnswer(answers));
+        session.messagingClient.addAll(KitClient.staticAnswer(answers),
+          replyTemplates.evalHelpfulAnswer);
       }
       return session.messagingClient.runQuene().then(() => {
         // If we have a survey, prompt user about it

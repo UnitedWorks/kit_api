@@ -178,6 +178,8 @@ export default {
         FREQ_SERVICE_LIST: 'resident_service_list',
         FREQ_BUSINESS_QUESTIONS_LIST: 'business_questions_list',
         FREQ_BUSINESS_REQUIREMENTS_LIST: 'business_requirements_list',
+        ANSWER_HELPFUL: 'eval.answer_helpful',
+        ANSWER_NOT_HELPFUL: 'eval.answer_not_helpful',
       }[this.snapshot.input.payload.payload];
       if (!goTo) return this.input('message');
       return goTo;

@@ -57,9 +57,15 @@ export default class BaseClient {
     }
   }
 
-  addAll(arr) {
+  addAll(arr, quickReplies) {
     const self = this;
-    arr.forEach(e => self.addToQuene(e));
+    arr.forEach((message, index, array) => {
+      if (quickReplies && index + 1 === array.length) {
+        self.addToQuene(message, quickReplies);
+      } else {
+        self.addToQuene(message);
+      }
+    });
   }
 
   runQuene() {

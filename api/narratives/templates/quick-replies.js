@@ -38,3 +38,15 @@ export const makeRequest = [{
 export const exit = { content_type: 'text', title: 'Nevermind', payload: 'Nevermind' };
 
 export const whatCanIAsk = { content_type: 'text', title: 'F.A.Q. List', payload: 'What can I Ask?' };
+
+export const evalHelpfulAnswer = [
+  { content_type: 'text', title: 'Thanks!', payload: 'ANSWER_HELPFUL' },
+  { content_type: 'text', title: 'Not Helpful', payload: 'ANSWER_NOT_HELPFUL' },
+];
+
+const basicRequestQuickReplies = [
+  { content_type: 'text', title: 'What can I ask?', payload: 'What can I ask?' },
+  { content_type: 'text', title: 'Upcoming Elections', payload: 'Upcoming Elections' },
+  { content_type: 'text', title: 'Available Benefits', payload: 'Available Benefits' },
+  { content_type: 'text', title: 'Raise an Issue', payload: 'MAKE_REQUEST' },
+];

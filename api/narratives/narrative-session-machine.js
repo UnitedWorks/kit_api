@@ -3,33 +3,35 @@ import { getBaseState, getOrgNameFromConstituentEntry } from './helpers';
 import StateMachine from './state-machine';
 
 // Base Machines
-import SmallTalkMachine from './machines/small-talk';
-import SetupMachine from './machines/setup';
-import SurveyMachine from './machines/survey';
-import EmploymentMachine from './machines/employment';
-import HealthMachine from './machines/health';
-import SocialServicesMachine from './machines/social-services';
 import BenefitsInternetMachine from './machines/benefits-internet';
-import VotingMachine from './machines/voting';
+import EmploymentMachine from './machines/employment';
+import EvaluationMachine from './machines/eval';
+import HealthMachine from './machines/health';
 import PersonalityMachine from './machines/personality';
+import SetupMachine from './machines/setup';
+import SocialServicesMachine from './machines/social-services';
+import SurveyMachine from './machines/survey';
+import VotingMachine from './machines/voting';
 
-// Service Provider Machines
+// Small Talk Machines
+import SmallTalkMachine from './machines/small-talk';
 import AskDarcelMachine from './machines/small-talk-ask-darcel';
 import USVoteFoundationMachine from './machines/small-talk-us-vote-foundation';
 
 
 export const stateMachines = {
-  smallTalk: SmallTalkMachine,
-  survey: SurveyMachine,
-  setup: SetupMachine,
-  voting: VotingMachine,
-  employment: EmploymentMachine,
-  health: HealthMachine,
-  socialServices: SocialServicesMachine,
   'benefits-internet': BenefitsInternetMachine,
+  employment: EmploymentMachine,
+  eval: EvaluationMachine,
+  health: HealthMachine,
+  personality: PersonalityMachine,
+  setup: SetupMachine,
   askDarcel: AskDarcelMachine,
   usVoteFoundation: USVoteFoundationMachine,
-  personality: PersonalityMachine,
+  smallTalk: SmallTalkMachine,
+  socialServices: SocialServicesMachine,
+  survey: SurveyMachine,
+  voting: VotingMachine,
 };
 
 const RESPONSE_TIMEOUT_MS = 8.64e+7;
