@@ -20,11 +20,6 @@ const i18n = (key, inserts = {}) => {
   return translations[key];
 };
 
-const introQuickReplies = [
-  { content_type: 'text', title: 'Ask Question', payload: 'Ask Question' },
-  { content_type: 'text', title: 'Raise Issue', payload: 'Raise Issue' },
-];
-
 export default {
   init: {
     async enter() {

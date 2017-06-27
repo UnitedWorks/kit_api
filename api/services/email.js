@@ -7,9 +7,7 @@ export default class EmailService {
 
     const emailRequestObj = {
       personalizations: [{
-        to: [{
-          email: toEmail,
-        }],
+        to: [],
         subject,
       }],
       from: {
@@ -23,6 +21,15 @@ export default class EmailService {
       ],
       custom_args: {},
     };
+
+    // Setup TOs incase there are multiple
+    if (typeof toEmail === 'string') {
+      emailRequestObj.personalizations[0].to.push({
+        email: toEmail,
+      });
+    } else if (typeof toEmail[0] === 'object') {
+      emailRequestObj.personalizations[0].to = toEmail;
+    }
 
     Object.keys(customAttributes).forEach((key) => {
       // ATM, numbers passed into unique args breaks the API. ARGGGGGGG

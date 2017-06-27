@@ -52,20 +52,23 @@ export const fetchAnswers = (intent, session) => {
                   contact => elementTemplates.genericContact(contact)),
               });
             }
-            // See if have a representative we can send this to
+            // EMAIL: See if have a representative we can send this to
             if (fallbackData.representatives.length > 0) {
               session.messagingClient.addToQuene('I\'ve passed your message along to an employee. I send you an answer when I have one.');
+              const repEmails = [];
               fallbackData.representatives.forEach((rep) => {
-                const emailMessage = `Hello ${rep.name}! We're missing an answer to:<br><br>"${question.question}"<br/><br/>Type an answer and we will save it for future requests.`;
-                new EmailService().send(`Missing Answer QID:${question.id} OID:${session.get('organization').id}`, emailMessage, rep.email, 'reply@email.kit.community', {
-                  organization_id: session.get('organization').id,
-                  question_id: question.id,
-                });
+                repEmails.push({ name: rep.name, email: rep.email });
+              });
+              const emailMessage = `"${question.question}"<br/><br/>... was asked by a constituent but we don't seem to have an answer! Type an answer and we will save it for future requests.<br><br> If you have any questions, send a separate email to mark@mayor.chat`;
+              new EmailService().send(`Missing Answer QID:${question.id} OID:${session.get('organization').id}`, emailMessage, repEmails, 'reply@email.kit.community', {
+                organization_id: session.get('organization').id,
+                question_id: question.id,
               });
             } else {
               // If not, suggest making a request
               session.messagingClient.addToQuene('If you want, "Make a Request" and I will get you a response from a government employee ASAP!', replyTemplates.makeRequest);
             }
+            // Run Message
             return session.messagingClient.runQuene().then(() => session.getBaseState());
           });
       }
