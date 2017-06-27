@@ -2,6 +2,7 @@ import { RRule, RRuleSet } from 'rrule';
 import moment from 'moment';
 import { getAnswers as getAnswersHelper } from '../../knowledge-base/helpers';
 import { getPlacesUrl } from '../../utils';
+import * as elementTemplates from '../templates/elements';
 
 export default class KitClient {
   constructor(config = {}) {
@@ -25,7 +26,6 @@ export default class KitClient {
     if (Object.hasOwnProperty.call(answerObj, 'text')) {
       return answerObj.url ? `${answerObj.text} (${answerObj.url})` : `${answerObj.text}`;
     }
-    return 'Sorry, I can\'t find an answer for you. :( I\'ll try to get one for you soon';
   }
 
   static knowledgeEntityToTemplate(entityType, objects = []) {
@@ -37,20 +37,11 @@ export default class KitClient {
     };
     if (objects.length > 0) {
       objects.forEach((object) => {
-        const elementButtons = [];
-        let subtitleString = '';
         if (entityType === 'contact') {
-          if (object.hasOwnProperty('phone_number')) {
-            elementButtons.push({
-              type: 'phone_number',
-              title: object.phone_number,
-              payload: object.phone_number,
-            });
-          }
-          if (object.title) subtitleString += `${object.title}`;
-          if (object.organization) subtitleString += `\n${object.organization}`;
-          if (object.email) subtitleString += `\n${object.email}`;
+          template.elements.push(elementTemplates.genericContact(object));
         } else {
+          const elementButtons = [];
+          let subtitleString = '';
           if (object.hasOwnProperty('location') && object.location.display_name != null) {
             elementButtons.push({
               type: 'web_url',
@@ -87,12 +78,13 @@ export default class KitClient {
           } else {
             subtitleString = object.brief_description || object.description;
           }
+          if (elementButtons.length < 3) elementButtons.push({ type: 'element_share' });
+          template.elements.push({
+            title: object.name || object.full_name,
+            subtitle: subtitleString,
+            buttons: elementButtons,
+          });
         }
-        template.elements.push({
-          title: object.name || object.full_name,
-          subtitle: subtitleString,
-          buttons: elementButtons,
-        });
       });
       return [template];
     }
@@ -100,12 +92,14 @@ export default class KitClient {
   }
 
   static staticAnswer(answers) {
-    return [
-      KitClient.answerText(answers),
+    const answerArray = [
       ...KitClient.knowledgeEntityToTemplate('facility', answers.facilities),
       ...KitClient.knowledgeEntityToTemplate('service', answers.services),
       ...KitClient.knowledgeEntityToTemplate('contact', answers.contacts),
     ];
+    const textAnswer = KitClient.answerText(answers);
+    if (textAnswer) answers.unshift(textAnswer);
+    return answerArray;
   }
 
   static dynamicAnswer(answer, datetimeEntity) {
