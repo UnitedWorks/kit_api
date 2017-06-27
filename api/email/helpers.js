@@ -5,6 +5,7 @@ import { Case } from '../cases/models';
 import { caseStatusUpdateNotification } from '../cases/helpers';
 import { SEND_GRID_EVENT_OPEN } from '../constants/sendgrid';
 import { makeAnswer } from '../knowledge-base/helpers';
+import { KnowledgeAnswer } from '../knowledge-base/models';
 
 export function webhookEmail(req) {
   const form = new formidable.IncomingForm();
@@ -40,11 +41,14 @@ export function webhookEmail(req) {
           });
         });
       } else if (typeof questionId === 'number' && typeof orgId === 'number') {
-        const textExtract = emailData.text.substr(0, emailData.text.indexOf('\n'));
+        const textExtract = emailData.text.substr(0, emailData.text.indexOf('\n')).trim();
         logger.info(`Email Action: Fulfill Answer - Question: ${questionId} / Org: ${orgId} / Text: ${textExtract}`);
-        makeAnswer({ id: orgId }, { id: questionId }, { text: textExtract }).then((answer) => {
-          logger.info(`Created Answer: ${answer}`);
-        });
+        KnowledgeAnswer.where({ question_id: questionId, organization_id: orgId }).destroy()
+          .then(() => {
+            makeAnswer({ id: orgId }, { id: questionId }, { text: textExtract }).then((answer) => {
+              logger.info(`Created Answer: ${answer}`);
+            });
+          });
       }
     }
   });
