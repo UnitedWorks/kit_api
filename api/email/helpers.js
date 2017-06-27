@@ -40,7 +40,8 @@ export function webhookEmail(req) {
           });
         });
       } else if (typeof questionId === 'number' && typeof orgId === 'number') {
-        const textExtract = emailData.text.substr(0, emailData.text.indexOf('\\')).trim();
+        // const textExtract = emailData.text.substr(0, emailData.text.indexOf('\\')).trim();
+        const textExtract = emailData.text;
         logger.info(`Email Action: Fulfill Answer - Question: ${questionId} / Org: ${orgId} / Text: ${textExtract}`);
         makeAnswer({ id: orgId }, { id: questionId }, { text: textExtract }).then((answer) => {
           logger.info(`Created Answer: ${answer}`);
