@@ -101,7 +101,7 @@ export default class KitClient {
       ...KitClient.knowledgeEntityToTemplate('contact', answers.contacts),
     ];
     const textAnswer = KitClient.answerText(answers);
-    if (textAnswer) answers.unshift(textAnswer);
+    if (textAnswer) answerArray.unshift(textAnswer);
     return answerArray;
   }
 
