@@ -1,3 +1,5 @@
-import mixpanel from 'mixpanel';
+import Mixpanel from 'mixpanel';
 
-export default mixpanel.init(process.env.MIXPANEL_ID);
+export default Mixpanel.init(process.env.MIXPANEL_ID, {
+  protocol: 'https',
+});
