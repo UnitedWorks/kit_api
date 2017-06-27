@@ -25,7 +25,7 @@ export default {
   },
   handle_greeting() {
     const greetings = [
-      'Heyyy',
+      'Hello neighbor!',
       '👋 Howdy!',
       'Hey there! :) What can I help you with?',
     ];

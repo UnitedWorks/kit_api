@@ -44,7 +44,7 @@ export const evalHelpfulAnswer = [
   { content_type: 'text', title: 'Not Helpful', payload: 'ANSWER_NOT_HELPFUL' },
 ];
 
-const basicRequestQuickReplies = [
+export const basicRequestQuickReplies = [
   { content_type: 'text', title: 'What can I ask?', payload: 'What can I ask?' },
   { content_type: 'text', title: 'Upcoming Elections', payload: 'Upcoming Elections' },
   { content_type: 'text', title: 'Available Benefits', payload: 'Available Benefits' },
