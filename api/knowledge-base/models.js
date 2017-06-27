@@ -1,5 +1,5 @@
 import { bookshelf } from '../orm';
-import { Organization } from '../accounts/models';
+import { Organization, Representative } from '../accounts/models';
 import { Media } from '../media/models';
 import { Survey } from '../surveys/models';
 
@@ -13,6 +13,19 @@ export const EventRule = bookshelf.Model.extend({
 });
 
 // Knowledge Base Entities
+export const KnowledgeCategory = bookshelf.Model.extend({
+  tableName: 'knowledge_categorys',
+  questions() {
+    return this.hasMany(KnowledgeQuestion, 'knowledge_category_id');
+  },
+  contacts() {
+    return this.belongsToMany(KnowledgeContact, 'knowledge_categorys_knowledge_contacts', 'knowledge_category_id');
+  },
+  representatives() {
+    return this.belongsToMany(Representative, 'knowledge_categorys_representatives', 'knowledge_category_id');
+  },
+});
+
 export const KnowledgeContact = bookshelf.Model.extend({
   tableName: 'knowledge_contacts',
   hasTimestamps: true,
@@ -21,16 +34,6 @@ export const KnowledgeContact = bookshelf.Model.extend({
   },
   knowledgeCategories() {
     return this.belongsToMany(KnowledgeCategory, 'knowledge_categorys_knowledge_contacts', 'knowledge_contact_id');
-  },
-});
-
-export const KnowledgeCategory = bookshelf.Model.extend({
-  tableName: 'knowledge_categorys',
-  questions() {
-    return this.hasMany(KnowledgeQuestion, 'knowledge_category_id');
-  },
-  contacts() {
-    return this.belongsToMany(KnowledgeContact, 'knowledge_categorys_knowledge_contacts', 'knowledge_category_id');
   },
 });
 

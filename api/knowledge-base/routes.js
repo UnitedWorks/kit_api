@@ -5,7 +5,7 @@ import { getAnswers, getCategories, getContacts, createContact, updateContact, d
   getQuestions, makeAnswer, updateAnswer, deleteAnswer, deleteService, createFacility,
   updateFacility, deleteFacility, createService, updateService,
   getQuestionsAsTable, createAnswersFromRows,
-  setCategoryFallback } from './helpers';
+  setCategoryFallback, setCategoryRepresentatives } from './helpers';
 import { requireAuth } from '../services/passport';
 
 const router = new Router();
@@ -24,6 +24,16 @@ router.get('/categories', requireAuth, (req, res) => {
 router.post('/categories/fallback', requireAuth, (req, res, next) => {
   try {
     setCategoryFallback(req.body)
+      .then(() => res.status(200).send())
+      .catch(error => next(error));
+  } catch (e) {
+    next(e);
+  }
+});
+
+router.post('/categories/representatives', requireAuth, (req, res, next) => {
+  try {
+    setCategoryRepresentatives(req.body)
       .then(() => res.status(200).send())
       .catch(error => next(error));
   } catch (e) {

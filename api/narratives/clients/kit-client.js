@@ -37,11 +37,11 @@ export default class KitClient {
     };
     if (objects.length > 0) {
       objects.forEach((object) => {
-        const elementButtons = [];
-        let subtitleString = '';
         if (entityType === 'contact') {
           template.elements.push(elementTemplates.genericContact(object));
         } else {
+          const elementButtons = [];
+          let subtitleString = '';
           if (object.hasOwnProperty('location') && object.location.display_name != null) {
             elementButtons.push({
               type: 'web_url',
@@ -80,9 +80,7 @@ export default class KitClient {
           }
           // If we have a spare button slot, push in share
           if (elementButtons.length < 3) {
-            elementButtons.push({
-              type: 'element_share',
-            });
+            elementButtons.push({ type: 'element_share' });
           }
           template.elements.push({
             title: object.name,
@@ -97,12 +95,14 @@ export default class KitClient {
   }
 
   static staticAnswer(answers) {
-    return [
-      KitClient.answerText(answers),
+    const answerArray = [
       ...KitClient.knowledgeEntityToTemplate('facility', answers.facilities),
       ...KitClient.knowledgeEntityToTemplate('service', answers.services),
       ...KitClient.knowledgeEntityToTemplate('contact', answers.contacts),
     ];
+    const textAnswer = KitClient.answerText(answers);
+    if (textAnswer) answers.unshift(textAnswer);
+    return answerArray;
   }
 
   static dynamicAnswer(answer, datetimeEntity) {

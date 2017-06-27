@@ -1,5 +1,3 @@
-import formidable from 'formidable';
-import { knex } from '../orm';
 import { logger } from '../logger';
 import * as AccountModels from '../accounts/models';
 import { NarrativeSession } from '../narratives/models';
@@ -10,13 +8,11 @@ import { createLocation, associateCaseLocation, associateCaseMedia } from '../kn
 import { getSurvey } from '../surveys/helpers';
 import { saveMedia } from '../media/helpers';
 import SlackService from '../services/slack';
-import EmailService from '../services/email';
-import { SEND_GRID_EVENT_OPEN } from '../constants/sendgrid';
 import { hasIntegration } from '../integrations/helpers';
 import * as INTEGRATIONS from '../constants/integrations';
 import SeeClickFixClient from './clients/see-click-fix-client';
 
-export const notifyConstituentOfCaseStatusUpdate = (caseObj, status, { constituent, response }) => {
+export const caseStatusUpdateNotification = (caseObj, status, { constituent, response }) => {
   let message;
   if (status === 'closed') {
     if (response) {
@@ -65,7 +61,7 @@ export const newCaseNotification = (caseObj, organization) => {
         });
       }
       returnedOrg.toJSON().representatives.forEach((rep) => {
-        new EmailService().send(`Constituent Complaint #${caseObj.id}: ${caseObj.title}`, emailMessage, rep.email, 'cases@kit.community', {
+        new EmailService().send(`Constituent Complaint #${caseObj.id}: ${caseObj.title}`, emailMessage, rep.email, 'reply@email.kit.community', {
           case_id: caseObj.id,
         });
       });
@@ -186,78 +182,6 @@ export const getConstituentCases = (constituent) => {
   });
 };
 
-
-export function webhookHitWithEmail(req) {
-  const form = new formidable.IncomingForm();
-  form.parse(req, (err, fields) => {
-    // Pull Data off Fields
-    const emailData = {};
-    Object.keys(fields).forEach((key) => {
-      emailData[key] = fields[key];
-    });
-    logger.info(`Email Data: ${JSON.stringify(emailData)}`);
-    // Handle Email Actions by Parsing Subject
-    if (emailData.subject) {
-      const regex = /Constituent Complaint #(\d+):/i;
-      const result = regex.exec(emailData.subject);
-      const caseId = Number(result[1]);
-      if (caseId) {
-        logger.info(`Email Action: Close Case #${caseId}`);
-        new Case({ id: caseId }).save({ status: 'closed', closedAt: knex.raw('now()') }, { method: 'update', patch: true }).then((updatedCaseModel) => {
-          updatedCaseModel.refresh({ withRelated: ['constituent', 'constituent.facebookEntry'] }).then((refreshedCaseModel) => {
-            logger.info(`Case Resolved for Constituent #${refreshedCaseModel.get('constituentId')}`);
-            const caseJSON = refreshedCaseModel.toJSON();
-            notifyConstituentOfCaseStatusUpdate(caseJSON, 'closed', { constituent: caseJSON.constituent });
-          });
-        });
-      }
-    }
-  });
-}
-
-
-export function webhookEmailEvent(req) {
-  logger.info(`Email Events: ${JSON.stringify(req.body)}`);
-
-  // Deduplicate open events
-  const messageEventIds = {};
-  const events = req.body.filter((event) => {
-    // Create array for IDs if it doesnt exist
-    if (!messageEventIds[event.event]) {
-      messageEventIds[event.event] = [];
-    }
-    // Check for id
-    if (messageEventIds[event.event].includes(event.sg_message_id)) {
-      return false;
-    }
-    // If none found, say this event is ok and include id for future checks
-    messageEventIds[event.event].push(event.sg_message_id);
-    return true;
-  });
-
-  // Run methods on events
-  events.forEach((event) => {
-    if (event.event === SEND_GRID_EVENT_OPEN) {
-      if (event.case_id) {
-        logger.info(`Email Event: Case ${event.case_id} read by ${event.email}`);
-        Case.where({ id: event.case_id }).fetch({ withRelated: ['constituent', 'constituent.facebookEntry'] }).then((fetchedCase) => {
-          const constituent = fetchedCase.toJSON().constituent;
-          if (!fetchedCase.toJSON().lastViewed) {
-            notifyConstituentOfCaseStatusUpdate(fetchedCase.toJSON(), 'viewed', { constituent });
-          }
-          fetchedCase.save({
-            last_viewed: knex.raw('now()'),
-          }, {
-            method: 'update',
-            patch: true,
-          });
-        });
-      }
-    }
-  });
-}
-
-
 export const getCases = (orgId, options = {}) => {
   let baseQuery = Case.query((qb) => {
     qb.select('*')
@@ -306,7 +230,7 @@ export const updateCaseStatus = (caseId, { response, status, silent = false }, o
     return Case.where({ id: caseId }).fetch({ withRelated: ['constituent', 'constituent.facebookEntry', 'constituent.smsEntry'] }).then((refreshedModel) => {
       const caseJSON = refreshedModel.toJSON();
       if (!silent) {
-        notifyConstituentOfCaseStatusUpdate(caseJSON, status, {
+        caseStatusUpdateNotification(caseJSON, status, {
           constituent: caseJSON.constituent,
           response,
         });

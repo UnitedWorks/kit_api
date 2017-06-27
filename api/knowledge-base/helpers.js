@@ -81,6 +81,7 @@ export const getCategories = (params = {}) => {
     return KnowledgeCategory.fetchAll({
       withRelated: {
         contacts: q => q.where('organization_id', params.organization_id),
+        representatives: q => q.where('organization_id', params.organization_id),
         questions: q => q,
         'questions.answers': q => q.where('organization_id', params.organization_id),
       },
@@ -120,13 +121,34 @@ export const setCategoryFallback = ({ organization, category, contacts = [] }) =
     .where('knowledge_category_id', '=', category.id)
     .join('knowledge_contacts', function() {
       this.on('knowledge_categorys_knowledge_contacts.knowledge_contacts_id', '=', 'knowledge_contacts.id')
-      .andOn('knowledge_contacts.organization_id', '=', organization.id)
+        .andOn('knowledge_contacts.organization_id', '=', organization.id);
     })
     .del()
     .then(() => Promise.all(relationshipInserts));
 };
 
-export const makeAnswer = (organization, question, answer, options) => {
+export const setCategoryRepresentatives = ({ organization, category, representatives = [] }) => {
+  if (!organization.id) throw new Error('No Organization ID');
+  if (!category.id) throw new Error('No Category Provided');
+  const repInserts = [];
+  representatives.forEach((representative) => {
+    repInserts.push(knex('knowledge_categorys_representatives').insert({
+      knowledge_category_id: category.id,
+      representative_id: representative.id,
+    }));
+  });
+  // Delete relationships this org's representatives have with this category
+  return knex('knowledge_categorys_representatives')
+    .where('knowledge_category_id', '=', category.id)
+    .join('representatives', function() {
+      this.on('knowledge_categorys_representatives.representative_id', '=', 'representatives.id')
+        .andOn('representatives.organization_id', '=', organization.id);
+    })
+    .del()
+    .then(() => Promise.all(repInserts));
+};
+
+export const makeAnswer = (organization, question, answer, options = { returnJSON: true }) => {
   const newAnswerModel = {
     ...answer,
     question_id: question.id,
@@ -510,38 +532,46 @@ export function createAnswersFromRows({ answers, organization }, options = { ret
     .catch(error => error);
 }
 
-export function getCategoryFallback(labels, orgId) {
+export async function getCategoryFallback(labels, orgId) {
+  const fallbackObj = {
+    labels,
+    organizationId: orgId,
+  };
   const categoryFetches = [];
   labels.forEach((label) => {
     categoryFetches.push(KnowledgeCategory.where({ label })
       .fetch({
         withRelated: [{
           contacts: q => q.where('organization_id', '=', orgId),
+          representatives: q => q.where('organization_id', '=', orgId),
         }],
-      }).then(labelData => (labelData ? labelData.toJSON().contacts : [])),
+      }).then(labelData => (labelData ? labelData.toJSON() : [])),
     );
   });
-  return Promise.all(categoryFetches).then((labelData) => {
-    const mergedContacts = labelData.reduce((a, b) => a.concat(b));
-    // If no contacts, look farther up
-    if (mergedContacts.length === 0) {
-      return KnowledgeCategory.where({ label: 'general' })
-        .fetch({ withRelated: [{
-          contacts: q => q.where('organization_id', '=', orgId),
-        }] }).then((generalData) => {
-          return {
-            labels: ['general'],
-            fellback: true,
-            organizationId: orgId,
-            contacts: generalData.toJSON().contacts,
-          };
-        });
-    }
-    return {
-      labels,
-      fellback: false,
-      organizationId: orgId,
-      contacts: mergedContacts,
-    };
+  const mergedContacts = [];
+  const mergedRepresentatives = [];
+  await Promise.all(categoryFetches).then((labelData) => {
+    labelData.forEach((label) => {
+      label.contacts.forEach(contact => mergedContacts.push(contact));
+      label.representatives.forEach(rep => mergedRepresentatives.push(rep));
+    });
   });
+  // If no contacts, look farther up
+  if (mergedContacts.length === 0) {
+    await KnowledgeCategory.where({ label: 'general' }).fetch({
+      withRelated: [{
+        contacts: q => q.where('organization_id', '=', orgId),
+      }],
+    }).then((generalData) => {
+      fallbackObj.labels = ['general'];
+      fallbackObj.fellback = true;
+      fallbackObj.contacts = generalData.toJSON().contacts;
+    });
+  } else {
+    fallbackObj.fellback = false;
+    fallbackObj.contacts = mergedContacts;
+  }
+  // If representatives were assigned, send them an email so we can get an answer
+  fallbackObj.representatives = mergedRepresentatives;
+  return fallbackObj;
 }

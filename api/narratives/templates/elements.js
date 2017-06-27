@@ -11,9 +11,7 @@ export const genericSanitation = {
     title: 'Recycling Schedule',
     payload: 'Recycling Schedule',
   }, {
-    type: 'postback',
-    title: 'Bulk Pickup Request',
-    payload: 'Bulk Pickup Request',
+    type: 'element_share',
   }],
 };
 
@@ -47,9 +45,7 @@ export const genericRequests = {
     title: 'Make a Complaint',
     payload: 'MAKE_REQUEST',
   }, {
-    type: 'postback',
-    title: 'See My Requests',
-    payload: 'GET_REQUESTS',
+    type: 'element_share',
   }],
 };
 
@@ -97,8 +93,8 @@ export const genericAssistance = {
     payload: 'Find Shelter',
   }, {
     type: 'postback',
-    title: 'Get Food Assistance',
-    payload: 'Get Food Assistance',
+    title: 'Food Assistance',
+    payload: 'Food Assistance',
   }, {
     type: 'element_share',
   }],
@@ -121,25 +117,6 @@ export const genericRenter = {
   }],
 };
 
-export const genericAbout = {
-  title: 'About',
-  subtitle: 'Learn more about this bot and what it does!',
-  image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/18056595_232810460534045_3606142951231659741_o.png?oh=9c2656704b2d8a0793f54a16e89234e1&oe=598D0793',
-  buttons: [{
-    type: 'postback',
-    title: 'How Does This Work?',
-    payload: 'How Does This Work?',
-  }, {
-    type: 'postback',
-    title: 'Leave Feedback',
-    payload: 'Leave Feedback',
-  }, {
-    type: 'postback',
-    title: 'Change Language',
-    payload: 'Change Language',
-  }],
-};
-
 // Big New Residents List
 export const genericNewResident = {
   title: 'Know Your Community!',
@@ -147,16 +124,14 @@ export const genericNewResident = {
   image_url: 'https://scontent.xx.fbcdn.net/v/t31.0-8/18589000_245329029282188_201697997574538644_o.png?oh=3c0896d62bc013dc7a520cd8aef2ec7d&oe=59B0D211',
   buttons: [{
     type: 'postback',
-    title: 'What\'s going on?!',
-    payload: 'What Events Are Happening?',
-  }, {
-    type: 'postback',
     title: 'Common Questions',
     payload: 'FREQ_QUESTION_LIST',
   }, {
     type: 'postback',
     title: 'Common Services',
     payload: 'FREQ_SERVICE_LIST',
+  }, {
+    type: 'element_share',
   }],
 };
 
@@ -238,10 +213,6 @@ export const genericNewResidentServicesList = [{
     type: 'postback',
     title: 'Make a Complaint',
     payload: 'MAKE_REQUEST',
-  }, {
-    type: 'postback',
-    title: 'See My Requests',
-    payload: 'GET_REQUESTS',
   }],
 }];
 
@@ -256,8 +227,8 @@ export const genericBusiness = {
     payload: 'How do I get a business or merchants license?',
   }, {
     type: 'postback',
-    title: 'Starting a Business',
-    payload: 'How do I get help starting or expanding my small business?',
+    title: 'Permits, Licenses, ...',
+    payload: 'FREQ_BUSINESS_REQUIREMENTS_LIST',
   }, {
     type: 'element_share',
   }],

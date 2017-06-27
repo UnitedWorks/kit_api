@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { logger } from '../logger';
 import * as helpers from './helpers';
 import { getOrInsertConstituent } from '../accounts/helpers';
 import geocoder from '../services/geocoder';
@@ -82,18 +81,6 @@ router.post('/message_constituent', requireAuth, (req, res, next) => {
   } catch (e) {
     next(e);
   }
-});
-
-router.post('/webhook/email', (req, res) => {
-  logger.info('Case Email Webhook Pinged');
-  helpers.webhookHitWithEmail(req);
-  res.status(200).send();
-});
-
-router.post('/webhook/event', (req, res) => {
-  logger.info('Case Event Webhook Pinged');
-  helpers.webhookEmailEvent(req);
-  res.status(200).send();
 });
 
 module.exports = router;

@@ -14,28 +14,11 @@ const i18n = (key, inserts = {}) => {
   const translations = {
     intro_hello: `Hey${inserts.firstName ? ` ${inserts.firstName}` : ''}! I'm ${inserts.botName ? `${inserts.botName} -- ` : ''}your local government assistant.`,
     intro_information: 'How can I help you with gov today? :)',
-    intro_survey_ask: 'We should get to know each other a little bit so I can be more helpful. Can I ask you some quick questions?',
-    intro_survey_attribute_housing: 'Are you currently renting, an owner, or without a home?',
-    intro_survey_attribute_new_resident: `Are you a new resident${inserts.organizationName ? ` to ${inserts.organizationName}` : ''}?`,
-    intro_survey_attribute_business_owner: `Do you have a business${inserts.organizationName ? ` in ${inserts.organizationName}` : ''}?`,
-    intro_survey_attribute_children: 'Do you have any young children in the schools here?',
-    intro_survey_attribute_dogs_or_cats: 'Whats better... 🐱Cats or 🐶Dogs?',
     organization_confirmation: `You're interested in ${inserts.organizationName}, right?`,
     bot_apology: `Sorry, I wasn't expeting that answer or may have misunderstood. ${inserts.appendQuestion ? inserts.appendQuestion : ''}`,
   };
   return translations[key];
 };
-
-const housingRequestQuickReplies = [
-  { content_type: 'text', title: 'Renting', payload: 'Renting' },
-  { content_type: 'text', title: 'Own a Home', payload: 'Own A Home' },
-  { content_type: 'text', title: 'Homeless', payload: 'Homeless' },
-];
-
-const petQuickReplies = [
-  { content_type: 'text', title: 'Cats🐱', payload: 'Cats' },
-  { content_type: 'text', title: 'Dogs🐶', payload: 'Dogs' },
-];
 
 const introQuickReplies = [
   { content_type: 'text', title: 'Ask Question', payload: 'Ask Question' },
@@ -72,13 +55,12 @@ export default {
         templateType: 'generic',
         elements: [
           elementTemplates.genericWelcome(pictureUrl, this.get('organization').name),
+          elementTemplates.genericVotingAndElections,
+          elementTemplates.genericSanitation,
           elementTemplates.genericCommuter,
           elementTemplates.genericBusiness,
-          elementTemplates.genericVotingAndElections,
           elementTemplates.genericRenter,
-          elementTemplates.genericDocumentation,
-          elementTemplates.genericBenefits,
-          elementTemplates.genericAssistance,
+          elementTemplates.genericNewResident,
         ],
       };
       this.messagingClient.addToQuene(i18n('intro_hello', { firstName, botName }));
@@ -90,131 +72,6 @@ export default {
       });
     },
   },
-
-  // waiting_for_intro_survey_confirmation: {
-  //   enter() {
-  //     this.messagingClient.send(i18n('intro_survey_ask'), replyTemplates.sureNoThanks);
-  //   },
-  //   message() {
-  //     return nlp.message(this.snapshot.input.payload.text)
-  //       .then((nlpData) => {
-  //         this.snapshot.nlp = nlpData;
-  //         const entities = nlpData.entities;
-  //         if (entities.intent && entities.intent[0]) {
-  //           if (entities.intent[0].value === 'speech.confirm') {
-  //             return this.messagingClient.send('Great! :)').then(() => 'waiting_for_attribute_housing');
-  //           } else if (entities.intent[0].value === 'speech.deny') {
-  //             this.set('attributes', {});
-  //             return 'what_can_i_do';
-  //           }
-  //         }
-  //         this.messagingClient.send(i18n('bot_apology', { appendQuestion: i18n('intro_survey_ask') }), replyTemplates.sureNoThanks);
-  //       });
-  //   },
-  // },
-  //
-  // waiting_for_attribute_housing: {
-  //   enter() {
-  //     this.messagingClient.send(i18n('intro_survey_attribute_housing'), housingRequestQuickReplies);
-  //   },
-  //   message() {
-  //     return nlp.message(this.snapshot.input.payload.text)
-  //       .then((nlpData) => {
-  //         this.snapshot.nlp = nlpData;
-  //         const entities = nlpData.entities;
-  //         if (entities.attribute && entities.constituent_attributes[0]) {
-  //           if (entities.constituent_attributes[0].value === 'housing_tenant') {
-  //             this.set('attributes', { ...this.get('attributes'), housing: 'tenant' });
-  //             return 'waiting_for_attribute_new_resident';
-  //           } else if (entities.constituent_attributes[0].value === 'housing_owner') {
-  //             this.set('attributes', { ...this.get('attributes'), housing: 'owner' });
-  //             return 'waiting_for_attribute_new_resident';
-  //           } else if (entities.constituent_attributes[0].value === 'housing_homeless') {
-  //             this.set('attributes', { ...this.get('attributes'), housing: 'homeless' });
-  //             return 'waiting_for_attribute_new_resident';
-  //           }
-  //         }
-  //         return this.messagingClient.send(i18n('bot_apology', {
-  //           appendQuestion: i18n('intro_survey_attribute_housing'),
-  //         }), housingRequestQuickReplies);
-  //       });
-  //   },
-  // },
-  //
-  // waiting_for_attribute_new_resident: {
-  //   enter() {
-  //     this.messagingClient.send(i18n('intro_survey_attribute_new_resident', {
-  //       organizationName: this.get('organization').name,
-  //     }), replyTemplates.yesNoMix());
-  //   },
-  //   message() {
-  //     return nlp.message(this.snapshot.input.payload.text)
-  //       .then((nlpData) => {
-  //         this.snapshot.nlp = nlpData;
-  //         const entities = nlpData.entities;
-  //         if (entities.intent && entities.intent[0]) {
-  //           if (entities.intent[0].value === 'speech.confirm') {
-  //             this.set('attributes', { ...this.get('attributes'), new_resident: true });
-  //             return 'waiting_for_attribute_business_owner';
-  //           } else if (entities.intent[0].value === 'speech.deny') {
-  //             this.set('attributes', { ...this.get('attributes'), new_resident: false });
-  //             return 'waiting_for_attribute_business_owner';
-  //           }
-  //         }
-  //         this.messagingClient.send(i18n('bot_apology', { appendQuestion: i18n('intro_survey_attribute_new_resident', {
-  //           organizationName: this.get('organization').name,
-  //         }) }), replyTemplates.yesNoMix());
-  //       });
-  //   },
-  // },
-  //
-  // waiting_for_attribute_business_owner: {
-  //   enter() {
-  //     this.messagingClient.send(i18n('intro_survey_attribute_business_owner', {
-  //       organizationName: this.get('organization').name,
-  //     }), replyTemplates.yesNoMix());
-  //   },
-  //   message() {
-  //     return nlp.message(this.snapshot.input.payload.text)
-  //       .then((nlpData) => {
-  //         this.snapshot.nlp = nlpData;
-  //         const entities = nlpData.entities;
-  //         if (entities.intent && entities.intent[0]) {
-  //           if (entities.intent[0].value === 'speech.confirm') {
-  //             this.set('attributes', { ...this.get('attributes'), business_owner: true });
-  //             return 'waiting_for_attribute_dog_or_cats';
-  //           } else if (entities.intent[0].value === 'speech.deny') {
-  //             this.set('attributes', { ...this.get('attributes'), business_owner: false });
-  //             return 'waiting_for_attribute_dog_or_cats';
-  //           }
-  //         }
-  //         this.messagingClient.send(i18n('bot_apology', { appendQuestion: i18n('intro_survey_attribute_business_owner', {
-  //           organizationName: this.get('organization').name,
-  //         }) }), replyTemplates.yesNoMix());
-  //       });
-  //   },
-  // },
-  //
-  // waiting_for_attribute_dog_or_cats: {
-  //   enter() {
-  //     this.messagingClient.send(i18n('intro_survey_attribute_dogs_or_cats'), petQuickReplies);
-  //   },
-  //   message() {
-  //     return nlp.message(this.snapshot.input.payload.text)
-  //       .then((nlpData) => {
-  //         this.snapshot.nlp = nlpData;
-  //         const entities = nlpData.entities;
-  //         if (entities.attribute && entities.constituent_attributes[0]) {
-  //           if (entities.constituent_attributes[0].value === 'pet_cat') {
-  //             this.set('attributes', { ...this.get('attributes'), pet: 'cat' });
-  //           } else if (entities.constituent_attributes[0].value === 'pet_dog') {
-  //             this.set('attributes', { ...this.get('attributes'), pet: 'dog' });
-  //           }
-  //         }
-  //         return this.messagingClient.send(':D Great that was a big help!').then(() => 'what_can_i_do');
-  //       });
-  //   },
-  // },
 
   what_can_i_do: {
     enter() {
@@ -244,6 +101,7 @@ export default {
         elements.unshift(elementTemplates.genericBusiness);
       }
       elements.unshift(elementTemplates.genericCommuter);
+      elements.unshift(elementTemplates.genericNewResident);
       this.messagingClient.addToQuene({
         type: 'template',
         templateType: 'generic',
@@ -378,8 +236,7 @@ export default {
     }).send(`>*Request Message*: ${this.snapshot.input.payload.text}\n>*Constituent ID*: ${this.snapshot.constituent.id}`);
     // If first failure, ask for a repeat of question
     if (this.snapshot.state_machine_previous_state !== 'failedRequest') {
-      return this.messagingClient.send(firstFailMessage)
-        .then(() => 'start');
+      return this.messagingClient.send(firstFailMessage).then(() => 'start');
     }
     // If second failure, fetch resources to assist
     const labels = [];
@@ -403,7 +260,10 @@ export default {
       }
       this.messagingClient.addToQuene('If you want, "Make a Request" and I will get you a response from a government employee ASAP!', replyTemplates.makeRequest);
       return this.messagingClient.runQuene().then(() => 'start');
-    }).catch(() => 'start');
+    }).catch((err) => {
+      logger.error(err);
+      return 'start';
+    });
   },
 };
 
