@@ -56,6 +56,7 @@ export class NarrativeSessionMachine extends StateMachine {
     this.snapshot = snapshot;
     this.messagingClient = messagingClient;
     Mixpanel.track('constituent_input', {
+      distinct_id: this.snapshot.constituent.id,
       constituent_id: this.snapshot.constituent.id,
       organization_id: this.get('organization').id,
       interface: this.messagingClient.provider,

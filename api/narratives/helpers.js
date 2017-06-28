@@ -44,6 +44,7 @@ export const fetchAnswers = (intent, session) => {
             if (fallbackData.contacts.length === 0) {
               session.messagingClient.addToQuene('Unfortunately, I don\'t have an answer :(');
               Mixpanel.track('answer_sent', {
+                distinct_id: session.snapshot.constituent.id,
                 constituent_id: session.snapshot.constituent.id,
                 organization_id: session.get('organization').id,
                 knowledge_category_id: question.knowledge_category_id,
@@ -61,6 +62,7 @@ export const fetchAnswers = (intent, session) => {
                   contact => elementTemplates.genericContact(contact)),
               }, replyTemplates.evalHelpfulAnswer);
               Mixpanel.track('answer_sent', {
+                distinct_id: session.snapshot.constituent.id,
                 constituent_id: session.snapshot.constituent.id,
                 organization_id: session.get('organization').id,
                 knowledge_category_id: question.knowledge_category_id,
@@ -91,6 +93,7 @@ export const fetchAnswers = (intent, session) => {
       }
       // Otherwise, proceed with answers
       Mixpanel.track('answer_sent', {
+        distinct_id: session.snapshot.constituent.id,
         constituent_id: session.snapshot.constituent.id,
         organization_id: session.get('organization').id,
         knowledge_category_id: question.knowledge_category_id,

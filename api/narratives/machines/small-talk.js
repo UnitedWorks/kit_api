@@ -230,6 +230,7 @@ export default {
       icon: 'question',
     }).send(`>*Request Message*: ${this.snapshot.input.payload.text}\n>*Constituent ID*: ${this.snapshot.constituent.id}`);
     Mixpanel.track('constituent_input_failure', {
+      distinct_id: this.snapshot.constituent.id,
       constituent_id: this.snapshot.constituent.id,
       organization_id: this.get('organization').id,
       interface: this.messagingClient.provider,
