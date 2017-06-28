@@ -3,6 +3,7 @@ import { logger } from '../../logger';
 import { nlp } from '../../services/nlp';
 import { getConstituentCases } from '../../cases/helpers';
 import SlackService from '../../services/slack';
+import Mixpanel from '../../services/event-tracking';
 import { fetchAnswers, randomPick } from '../helpers';
 import { getCategoryFallback } from '../../knowledge-base/helpers';
 import * as elementTemplates from '../templates/elements';
@@ -223,14 +224,21 @@ export default {
   },
 
   failedRequest() {
-    const firstFailMessage = randomPick([
-      'Oops! My circuits went haywire. Can you say that a different way?',
-      'Hmm, I\'m not following. Can you rephrase that?',
-    ]);
+    // Analytics & Notifications
     new SlackService({
       username: 'Misunderstood Request',
       icon: 'question',
     }).send(`>*Request Message*: ${this.snapshot.input.payload.text}\n>*Constituent ID*: ${this.snapshot.constituent.id}`);
+    Mixpanel.track('constituent_input_failure', {
+      constituent_id: this.snapshot.constituent.id,
+      organization_id: this.get('organization').id,
+      interface: this.messagingClient.provider,
+    });
+    // Handle Failure
+    const firstFailMessage = randomPick([
+      'Oops! My circuits went haywire. Can you say that a different way?',
+      'Hmm, I\'m not following. Can you rephrase that?',
+    ]);
     // If first failure, ask for a repeat of question
     if (this.snapshot.state_machine_previous_state !== 'failedRequest') {
       return this.messagingClient.send(firstFailMessage).then(() => 'start');

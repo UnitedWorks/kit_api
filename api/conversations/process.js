@@ -10,7 +10,7 @@ import * as clients from '../conversations/clients';
 import { NarrativeSessionMachine } from '../narratives/narrative-session-machine';
 
 function normalizeInput(conversationClient, input) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     let newMessageObject;
     // Input: interface, message, state
     if (conversationClient === interfaces.FACEBOOK) {
@@ -174,10 +174,10 @@ function normalizeSessionsFromRequest(req, conversationClient) {
 }
 
 /* TODO(nicksahler) Work this into another, lower level structure */
-const client_lookup = {};
-client_lookup[interfaces.FACEBOOK] = 'FacebookMessengerClient';
-client_lookup[interfaces.TWILIO] = 'TwilioSMSClient';
-client_lookup[interfaces.HTTP] = 'HTTPClient';
+const clientLookup = {};
+clientLookup[interfaces.FACEBOOK] = 'FacebookMessengerClient';
+clientLookup[interfaces.TWILIO] = 'TwilioSMSClient';
+clientLookup[interfaces.HTTP] = 'HTTPClient';
 
 export function webhookHitWithMessage(req, res, conversationClient) {
   // Input: Request Object
@@ -189,8 +189,8 @@ export function webhookHitWithMessage(req, res, conversationClient) {
       if (!snapshot.over_ride_on) {
         logger.info(`Running Machine: ${snapshot.state_machine_name}`);
         logger.info({ c: snapshot.constituent });
-        const clientConfig = { constituent: snapshot.constituent, req, res};
-        const messagingClient = new (clients[client_lookup[conversationClient]] || clients.BaseClient) (clientConfig);
+        const clientConfig = { constituent: snapshot.constituent, req, res };
+        const messagingClient = new (clients[clientLookup[conversationClient]] || clients.BaseClient)(clientConfig);
 
         const instance = new NarrativeSessionMachine(snapshot, messagingClient);
         let action;
@@ -201,7 +201,7 @@ export function webhookHitWithMessage(req, res, conversationClient) {
           instance.messagingClient.isTyping(true);
           action = instance.input(snapshot.input.type, { input: snapshot.input });
         } else {
-          action = instance.fire('smallTalk.start', snapshot.input.type, { input: snapshot.input } );
+          action = instance.fire('smallTalk.start', snapshot.input.type, { input: snapshot.input });
         }
 
         action.then(() => instance.save())

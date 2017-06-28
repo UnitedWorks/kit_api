@@ -2,6 +2,7 @@ import axios from 'axios';
 import { logger } from '../../logger';
 import BaseClient from './base-client';
 import { persistentMenu } from '../../narratives/machines/small-talk';
+import * as interfaces from '../../constants/interfaces';
 
 const gettingStarted = {
   payload: 'GET_STARTED',
@@ -31,6 +32,7 @@ export class FacebookMessengerClient extends BaseClient {
       graphURI: 'https://graph.facebook.com',
       maxCharacters: 640,
     };
+    this.provider = interfaces.FACEBOOK;
     this.config = Object.assign({}, defaults, config, this.config);
   }
 

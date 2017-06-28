@@ -1,6 +1,7 @@
 import twilio from 'twilio';
 import { logger } from '../../logger';
 import BaseClient from './base-client';
+import * as interfaces from '../../constants/interfaces';
 
 export class TwilioSMSClient extends BaseClient {
   constructor(config) {
@@ -11,6 +12,7 @@ export class TwilioSMSClient extends BaseClient {
       fromNumber: process.env.TWILIO_FROM_NUMBER,
     };
     this.client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_ACCOUNT_AUTH_TOKEN);
+    this.provider = interfaces.TWILIO;
     this.config = Object.assign({}, defaults, config, this.config);
   }
 

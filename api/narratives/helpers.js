@@ -5,6 +5,7 @@ import * as elementTemplates from './templates/elements';
 import * as replyTemplates from './templates/quick-replies';
 import { getCategoryFallback } from '../knowledge-base/helpers';
 import EmailService from '../services/email';
+import Mixpanel from '../services/event-tracking';
 
 /* TODO(nicksahler): Declare in machine, automatically route */
 export function getBaseState(providerName, section) {
@@ -42,6 +43,14 @@ export const fetchAnswers = (intent, session) => {
             // See if we have fallback contacts
             if (fallbackData.contacts.length === 0) {
               session.messagingClient.addToQuene('Unfortunately, I don\'t have an answer :(');
+              Mixpanel.track('answer_sent', {
+                constituent_id: session.snapshot.constituent.id,
+                organization_id: session.get('organization').id,
+                knowledge_category_id: question.knowledge_category_id,
+                question_id: question.id,
+                status: 'failed',
+                interface: session.messagingClient.provider,
+              });
             } else {
               // If we do, templates!
               session.messagingClient.addToQuene('I don\'t have an answer, but try reaching out to these folks!');
@@ -51,6 +60,14 @@ export const fetchAnswers = (intent, session) => {
                 elements: fallbackData.contacts.map(
                   contact => elementTemplates.genericContact(contact)),
               }, replyTemplates.evalHelpfulAnswer);
+              Mixpanel.track('answer_sent', {
+                constituent_id: session.snapshot.constituent.id,
+                organization_id: session.get('organization').id,
+                knowledge_category_id: question.knowledge_category_id,
+                question_id: question.id,
+                status: 'fallback',
+                interface: session.messagingClient.provider,
+              });
             }
             // EMAIL: See if have a representative we can send this to
             if (fallbackData.representatives.length > 0) {
@@ -73,6 +90,14 @@ export const fetchAnswers = (intent, session) => {
           });
       }
       // Otherwise, proceed with answers
+      Mixpanel.track('answer_sent', {
+        constituent_id: session.snapshot.constituent.id,
+        organization_id: session.get('organization').id,
+        knowledge_category_id: question.knowledge_category_id,
+        question_id: question.id,
+        status: 'available',
+        interface: session.messagingClient.provider,
+      });
       if (entities && entities[TAGS.DATETIME]) {
         session.messagingClient.addAll(KitClient.dynamicAnswer(answers, entities[TAGS.DATETIME]),
           replyTemplates.evalHelpfulAnswer);

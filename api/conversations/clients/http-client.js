@@ -1,11 +1,13 @@
 import { logger } from '../../logger';
 import BaseClient from './base-client';
+import * as interfaces from '../../constants/interfaces';
 
 /* TODO(nicksahler): Long polling */
 export class HTTPClient extends BaseClient {
   constructor(config) {
     super();
     this.config = Object.assign({}, config);
+    this.provider = interfaces.HTTP;
     this.messages = [];
   }
 
