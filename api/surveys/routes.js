@@ -6,7 +6,7 @@ import { getSurveys, createSurvey, updateSurvey, deleteSurvey, broadcastSurvey, 
 const router = new Router();
 
 router.route('/')
-  .get(requireAuth, (req, res) => {
+  .get((req, res) => {
     getSurveys(req.query).then((data) => {
       res.status(200).send({
         surveys: data,
