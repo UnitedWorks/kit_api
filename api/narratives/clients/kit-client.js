@@ -24,7 +24,7 @@ export default class KitClient {
 
   static answerText(answerObj) {
     if (Object.hasOwnProperty.call(answerObj, 'text')) {
-      return answerObj.url ? `${answerObj.text} (${answerObj.url})` : `${answerObj.text}`;
+      return answerObj.text;
     }
   }
 

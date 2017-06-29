@@ -212,7 +212,9 @@ export const deleteAnswer = (answerId) => {
 };
 
 export const updateAnswer = (answer, options) => {
-  if (typeof answer.text === 'string' && answer.text.length === 0) {
+  if (((typeof answer.text === 'string' && answer.text.length === 0) || !answer.text)
+    && !answer.knowledge_contact_id && !answer.knowledge_event_id && !answer.knowledge_facility_id
+    && !answer.knowledge_service_id && !answer.survey) {
     return deleteAnswer(answer.id);
   }
   return KnowledgeAnswer.forge(answer).save(null, { method: 'update' })

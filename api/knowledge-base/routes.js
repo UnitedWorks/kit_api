@@ -270,7 +270,7 @@ router.route('/answers')
    * Get answers
    * @return {Array}
    */
-  .get(requireAuth, (req, res) => {
+  .get((req, res) => {
     const params = req.query;
     getAnswers(params, {}).then(({ answers }) => {
       res.status(200).send({
@@ -282,7 +282,7 @@ router.route('/answers')
    * Create Answer
    * @return {Object}
    */
-  .post(requireAuth, (req, res, next) => {
+  .post((req, res, next) => {
     try {
       makeAnswer(req.body.organization, req.body.question, req.body.answer, { returnJSON: true })
         .then(answerModel => res.status(200).send({ answer: answerModel }))
@@ -295,7 +295,7 @@ router.route('/answers')
    * Update Answer
    * @return {Object}
    */
-  .put(requireAuth, (req, res, next) => {
+  .put((req, res, next) => {
     updateAnswer(req.body.answer, { returnJSON: true })
       .then(answerModel => res.status(200).send({ answer: answerModel }))
       .catch(err => next(err));
@@ -305,7 +305,7 @@ router.route('/answers')
    * @param {Number} id - Id of the answer to be deleted
    * @return {Object}
    */
-  .delete(requireAuth, (req, res, next) => {
+  .delete((req, res, next) => {
     deleteAnswer(req.query.answer_id)
       .then(answer => res.status(200).send({ answer }))
       .catch(err => next(err));
