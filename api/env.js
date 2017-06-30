@@ -56,8 +56,8 @@ export function getDashboardRoot() {
   if (!process.env.NODE_ENVIRONMENT) {
     setup();
   }
-  if (process.env.NODE_ENVIRONMENT === ENVIRONMENTS.PRODUCTION) {
-    return 'https://dashboard.kit.community';
+  if (process.env.NODE_ENVIRONMENT !== ENVIRONMENTS.PRODUCTION) {
+    return 'localhost:8000';
   }
-  return 'localhost:8000';
+  return 'https://dashboard.kit.community';
 }
