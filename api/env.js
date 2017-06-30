@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { ENVIRONMENTS } from './constants/environments';
+import * as ENV_CONSTANTS from './constants/environments';
 
 let environment;
 
@@ -20,10 +20,10 @@ function getEnv() {
     env = getArg('-env');
   }
   // Pass Back
-  if (ENVIRONMENTS.includes(env)) {
+  if (ENV_CONSTANTS.ENVIRONMENTS.includes(env)) {
     return env;
   } else if (!env) {
-    return ENVIRONMENTS.LOCAL;
+    return ENV_CONSTANTS.LOCAL;
   }
   throw new Error('Unacceptable Environment Variable');
 }
@@ -56,7 +56,7 @@ export function getDashboardRoot() {
   if (!process.env.NODE_ENVIRONMENT) {
     setup();
   }
-  if (process.env.NODE_ENVIRONMENT !== ENVIRONMENTS.PRODUCTION) {
+  if (process.env.NODE_ENVIRONMENT !== ENV_CONSTANTS.PRODUCTION) {
     return 'localhost:8000';
   }
   return 'https://dashboard.kit.community';
