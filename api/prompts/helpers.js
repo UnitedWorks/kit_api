@@ -25,8 +25,8 @@ export function createPrompt({ prompt, steps = [], organization }, options = { r
     .save(null, { method: 'insert' })
     .then((newPromptModel) => {
       if (steps.length > 0) {
-        const modifiedSteps = steps.map((question, index) => {
-          return PromptModels.PromptStep.forge(Object.assign(question, {
+        const modifiedSteps = steps.map((step, index) => {
+          return PromptModels.PromptStep.forge(Object.assign(step, {
             position: index,
             prompt_id: newPromptModel.get('id'),
           })).save(null, { method: 'insert' });
