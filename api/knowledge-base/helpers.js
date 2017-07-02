@@ -27,7 +27,7 @@ export const getAnswers = (params = {}, options = {}) => {
       answers: q => q.where('organization_id', params.organization_id),
     }, 'category', 'answers.facility', 'answers.facility.location', 'answers.facility.eventRules',
       'answers.service', 'answers.service.location', 'answers.service.eventRules',
-      'answers.contact', 'answers.survey', 'answers.survey.questions'],
+      'answers.contact', 'answers.prompt', 'answers.prompt.steps'],
   }).then((data) => {
     if (!options.returnJSON) return data.get('answers');
     if (data == null) return {};
@@ -43,7 +43,7 @@ export const getAnswers = (params = {}, options = {}) => {
         facilities: answerJSON.filter(a => a.knowledge_facility_id).map(a => a.facility),
         services: answerJSON.filter(a => a.knowledge_service_id).map(a => a.service),
         contacts: answerJSON.filter(a => a.knowledge_contact_id).map(a => a.contact),
-        survey: answerJSON.filter(a => a.survey_id).map(a => a.survey)[0],
+        prompt: answerJSON.filter(a => a.prompt_id).map(a => a.prompt)[0],
         category: questionJSON.category,
       };
       const baseTextAnswer = answerJSON.filter(a => a.text != null);
@@ -214,7 +214,7 @@ export const deleteAnswer = (answerId) => {
 export const updateAnswer = (answer, options) => {
   if (((typeof answer.text === 'string' && answer.text.length === 0) || !answer.text)
     && !answer.knowledge_contact_id && !answer.knowledge_event_id && !answer.knowledge_facility_id
-    && !answer.knowledge_service_id && !answer.survey) {
+    && !answer.knowledge_service_id && !answer.prompt) {
     return deleteAnswer(answer.id);
   }
   return KnowledgeAnswer.forge(answer).save(null, { method: 'update' })

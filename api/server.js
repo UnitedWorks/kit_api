@@ -47,7 +47,7 @@ app.use('/email', require('./email/routes'));
 app.use('/integrations', require('./integrations/routes'));
 app.use('/knowledge', require('./knowledge-base/routes'));
 app.use('/media', require('./media/routes'));
-app.use('/surveys', require('./surveys/routes'));
+app.use('/prompts', require('./prompts/routes'));
 
 // Log Viewing
 app.get('/logs/info', (req, res) => {

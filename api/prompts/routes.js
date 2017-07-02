@@ -1,39 +1,38 @@
 import { Router } from 'express';
 import { requireAuth } from '../services/passport';
-
-import { getSurveys, createSurvey, updateSurvey, deleteSurvey, broadcastSurvey, getSurveyAnswersAsTable } from './helpers';
+import { getPrompts, createPrompt, updatePrompt, deletePrompt, getPromptResponsesAsTable } from './helpers';
 
 const router = new Router();
 
 router.route('/')
   .get((req, res) => {
-    getSurveys(req.query).then((data) => {
+    getPrompts(req.query).then((data) => {
       res.status(200).send({
-        surveys: data,
+        prompts: data,
       });
     }).catch(error => res.status(400).send({ error }));
   })
   .post(requireAuth, (req, res) => {
-    const questions = req.body.survey.questions || req.body.questions || [];
-    const survey = req.body.survey;
+    const steps = req.body.prompt.steps || req.body.steps || [];
+    const prompt = req.body.prompt;
     const organization = req.body.organization;
-    delete survey.questions;
-    createSurvey({
-      survey,
-      questions,
+    delete prompt.steps;
+    createPrompt({
+      prompt,
+      steps,
       organization,
     }).then((data) => {
       res.status(200).send({
-        survey: data,
+        prompt: data,
       });
     }).catch(error => res.status(400).send({ error }));
   })
   .put(requireAuth, (req, res, next) => {
     try {
-      updateSurvey(req.body.survey)
+      updatePrompt(req.body.prompt)
         .then((data) => {
           res.status(200).send({
-            survey: data,
+            prompt: data,
           });
         }).catch(error => next(error));
     } catch (e) {
@@ -41,19 +40,19 @@ router.route('/')
     }
   })
   .delete(requireAuth, (req, res) => {
-    deleteSurvey(req.query)
+    deletePrompt(req.query)
       .then((data) => {
         res.status(200).send({
-          survey: data,
+          prompt: data,
         });
       }).catch(error => res.status(400).send({ error }));
   });
 
 router.route('/download')
   .get(requireAuth, (req, res) => {
-    getSurveyAnswersAsTable(req.query)
+    getPromptResponsesAsTable(req.query)
       .then((data) => {
-        res.status(200).send({ survey: data });
+        res.status(200).send({ prompt: data });
       }).catch(error => res.status(400).send({ error }));
   });
 

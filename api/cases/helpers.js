@@ -5,7 +5,7 @@ import { Case, CaseCategory, OrganizationsCases } from './models';
 import * as CASE_CONSTANTS from '../constants/cases';
 import { FacebookMessengerClient, TwilioSMSClient } from '../conversations/clients';
 import { createLocation, associateCaseLocation, associateCaseMedia } from '../knowledge-base/helpers';
-import { getSurvey } from '../surveys/helpers';
+import { getPrompt } from '../prompts/helpers';
 import { saveMedia } from '../media/helpers';
 import SlackService from '../services/slack';
 import { hasIntegration } from '../integrations/helpers';
@@ -273,15 +273,15 @@ export const messageConstituent = (constituentId, message, caseId) => {
       // If a case was passed in, update Narrative Session to capture response
       if (caseId) {
         const dataStore = foundSession.get('data_store');
-        return getSurvey({ label: 'text_response' }).then((survey) => {
-          dataStore.survey = {
-            ...survey,
+        return getPrompt({ label: 'text_response' }).then((prompt) => {
+          dataStore.prompt = {
+            ...prompt,
             name: message,
             case_id: caseId,
           };
           return foundSession.save({
             data_store: dataStore,
-            state_machine_name: 'survey',
+            state_machine_name: 'prompt',
             state_machine_current_state: 'waiting_for_answer',
           }, { method: 'update' });
         }).catch(error => error);

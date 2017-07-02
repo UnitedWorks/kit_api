@@ -1,17 +1,17 @@
 import { nlp } from '../../services/nlp';
 import { createConstituentCase, addCaseNote } from '../../cases/helpers';
-import { getSurvey, saveSurveyAnswers } from '../../surveys/helpers';
+import { getPrompt, savePromptResponses } from '../../prompts/helpers';
 import * as CASE_CONSTANTS from '../../constants/cases';
-import * as SURVEY_CONSTANTS from '../../constants/surveys';
+import * as PROMPT_CONSTANTS from '../../constants/prompts';
 import * as replyTemplates from '../templates/quick-replies';
 
 export default {
-  loading_survey: {
+  loading_prompt: {
     enter() {
       const label = this.snapshot.nlp.entities ?
         this.snapshot.nlp.entities.intent[0].value : 'interaction.cases.create';
-      return getSurvey({ label }).then((survey) => {
-        this.set('survey', survey);
+      return getPrompt({ label }).then((prompt) => {
+        this.set('prompt', prompt);
         return 'waiting_for_answer';
       });
     },
@@ -19,7 +19,7 @@ export default {
 
   waiting_for_acceptance: {
     enter(aux = {}) {
-      return this.messagingClient.send(aux.message || `I can help you with ${`"${this.get('survey').name}"` || 'this'}, but I need to ask a few questions. Want to continue?`, replyTemplates.sureNoThanks);
+      return this.messagingClient.send(aux.message || `I can help you with ${`"${this.get('prompt').name}"` || 'this'}, but I need to ask a few questions. Want to continue?`, replyTemplates.sureNoThanks);
     },
     message() {
       return nlp.message(this.snapshot.input.payload.text).then((nlpData) => {
@@ -30,21 +30,21 @@ export default {
             return this.messagingClient.send('Great! :)').then(() => 'waiting_for_answer');
           }
           if (entities.intent.filter(i => i.value === 'speech.deny').length > 0) {
-            this.delete('survey');
+            this.delete('prompt');
             return this.messagingClient.send('Ok! No problem.').then(() => this.getBaseState());
           }
         }
-        return this.messagingClient.send('Sorry, didn\'t catch that. Want to do the survey?', replyTemplates.sureNoThanks);
+        return this.messagingClient.send('Sorry, didn\'t catch that. Want to do the prompt?', replyTemplates.sureNoThanks);
       });
     },
   },
 
   waiting_for_answer: {
     enter() {
-      if (!this.snapshot.data_store.survey) return this.getBaseState();
-      const questions = this.snapshot.data_store.survey.questions;
+      if (!this.snapshot.data_store.prompt) return this.getBaseState();
+      const questions = this.snapshot.data_store.prompt.steps;
       if (!questions) {
-        this.delete('survey');
+        this.delete('prompt');
         return this.getBaseState();
       }
       for (let i = 0; i < questions.length; i += 1) {
@@ -52,49 +52,49 @@ export default {
           const quickReplies = [
             replyTemplates.exit,
           ];
-          if (questions[i].type === SURVEY_CONSTANTS.LOCATION) {
+          if (questions[i].type === PROMPT_CONSTANTS.LOCATION) {
             quickReplies.push(replyTemplates.location);
           }
           return this.messagingClient.send(
-            this.snapshot.data_store.survey.questions[i].prompt, quickReplies);
+            this.snapshot.data_store.prompt.steps[i].instruction, quickReplies);
         }
       }
-      return 'concluding_survey';
+      return 'concluding_prompt';
     },
     message() {
-      if (!this.snapshot.data_store.survey) return this.getBaseState();
-      const questions = this.snapshot.data_store.survey.questions;
+      if (!this.snapshot.data_store.prompt) return this.getBaseState();
+      const questions = this.snapshot.data_store.prompt.steps;
       if (!questions) {
-        this.delete('survey');
+        this.delete('prompt');
         return this.getBaseState();
       }
       return nlp.message(this.snapshot.input.payload.text).then((nlpData) => {
         if (nlpData.entities.intent && nlpData.entities.intent[0].value === 'speech.escape') {
           this.messagingClient.send('Ok! Let me know if theres something else I can answer for you or forward to your local gov', replyTemplates.whatCanIAsk);
-          this.delete('survey');
+          this.delete('prompt');
           return this.getBaseState();
         }
         for (let i = 0; i < questions.length; i += 1) {
           if (questions[i].answer === undefined) {
-            const newQuestions = this.snapshot.data_store.survey.questions;
-            if (questions[i].type === SURVEY_CONSTANTS.TEXT) {
+            const newQuestions = this.snapshot.data_store.prompt.steps;
+            if (questions[i].type === PROMPT_CONSTANTS.TEXT) {
               newQuestions[i].answer = {
                 text: this.snapshot.input.payload.text,
               };
-            } else if (questions[i].type === SURVEY_CONSTANTS.PICTURE) {
+            } else if (questions[i].type === PROMPT_CONSTANTS.PICTURE) {
               newQuestions[i].answer = {
                 pictures: this.snapshot.input.payload.attachments ?
                   this.snapshot.input.payload.attachments : null,
               };
-            } else if (questions[i].type === SURVEY_CONSTANTS.LOCATION) {
+            } else if (questions[i].type === PROMPT_CONSTANTS.LOCATION) {
               newQuestions[i].answer = {
                 location: this.snapshot.input.payload.attachments ?
                   this.snapshot.input.payload.attachments[0] : null,
               };
             }
-            const newSurveyStore = this.get('survey');
-            newSurveyStore.questions = newQuestions;
-            this.set('survey', newSurveyStore);
+            const newPromptStore = this.get('prompt');
+            newPromptStore.questions = newQuestions;
+            this.set('prompt', newPromptStore);
             break;
           }
         }
@@ -103,19 +103,19 @@ export default {
     },
   },
 
-  concluding_survey: {
+  concluding_prompt: {
     enter() {
-      this.input(this.get('survey').concluding_action || 'default');
+      this.input(this.get('prompt').concluding_action || 'default');
     },
     message() {
       // Backup incase an error was thrown and state didnt resolve from enter()
-      this.input(this.get('survey').concluding_action || 'default');
+      this.input(this.get('prompt').concluding_action || 'default');
     },
     default() {
       this.messagingClient.send('Great, those were all my questions. Thank you so much!');
-      return saveSurveyAnswers(this.snapshot.data_store.survey.questions, this.snapshot.constituent)
+      return savePromptResponses(this.snapshot.data_store.prompt.steps, this.snapshot.constituent)
         .then(() => {
-          this.delete('survey');
+          this.delete('prompt');
           // Not sure why, but when I was doing a fire, it wasn't saving the new state and machine.
           this.snapshot.state_machine_name = 'smallTalk';
           this.current = 'start';
@@ -123,16 +123,16 @@ export default {
         });
     },
     create_case() {
-      const questions = this.get('survey').questions;
-      const title = this.get('survey').name;
-      const caseId = this.get('survey').case_id;
-      const description = questions.filter(q => q.type === SURVEY_CONSTANTS.TEXT)[0].answer.text;
-      const pictureQuestions = questions.filter(q => q.type === SURVEY_CONSTANTS.PICTURE);
+      const questions = this.get('prompt').questions;
+      const title = this.get('prompt').name;
+      const caseId = this.get('prompt').case_id;
+      const description = questions.filter(q => q.type === PROMPT_CONSTANTS.TEXT)[0].answer.text;
+      const pictureQuestions = questions.filter(q => q.type === PROMPT_CONSTANTS.PICTURE);
       let pictures;
       if (pictureQuestions.length > 0) {
         pictures = pictureQuestions[0].answer.pictures;
       }
-      const locationQuestions = questions.filter(q => q.type === SURVEY_CONSTANTS.LOCATION);
+      const locationQuestions = questions.filter(q => q.type === PROMPT_CONSTANTS.LOCATION);
       let location;
       if (locationQuestions.length > 0) {
         location = locationQuestions[0].answer.location;
@@ -156,7 +156,7 @@ export default {
       }
       return query.then(() => {
         this.messagingClient.send('I\'ve sent your message along and will keep you updated!');
-        this.delete('survey');
+        this.delete('prompt');
         this.snapshot.state_machine_name = 'smallTalk';
         this.current = 'start';
         this.save();

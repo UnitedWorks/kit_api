@@ -37,7 +37,7 @@ export const fetchAnswers = (intent, session) => {
   return new KitClient({ organization: session.get('organization') })
     .getAnswer(intent).then(({ question, answers }) => {
       // If no answers, run fallback
-      if (!answers || (!answers.text && !answers.survey && answers.facilities.length === 0 &&
+      if (!answers || (!answers.text && !answers.prompt && answers.facilities.length === 0 &&
         answers.services.length === 0 && answers.contacts.length === 0)) {
         return getCategoryFallback([intent.split('.')[0]], session.get('organization').id)
           .then((fallbackData) => {
@@ -115,15 +115,15 @@ export const fetchAnswers = (intent, session) => {
           replyTemplates.evalHelpfulAnswer);
       }
       return session.messagingClient.runQuene().then(() => {
-        // If we have a survey, prompt user about it
-        if (answers.survey && answers.survey.questions.length > 0) {
-          const surveyObj = {
-            ...answers.survey,
-            name: answers.survey.name || question.question,
+        // If we have a prompt, prompt user about it
+        if (answers.prompt && answers.prompt.steps.length > 0) {
+          const promptObj = {
+            ...answers.prompt,
+            name: answers.prompt.name || question.question,
           };
-          if (answers.category) surveyObj.category = answers.category;
-          session.set('survey', surveyObj);
-          return 'survey.waiting_for_answer';
+          if (answers.category) promptObj.category = answers.category;
+          session.set('prompt', promptObj);
+          return 'prompt.waiting_for_answer';
         }
         // Otherwise end user back at start
         return session.getBaseState();
