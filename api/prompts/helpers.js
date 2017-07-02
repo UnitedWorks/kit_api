@@ -124,7 +124,7 @@ export function savePromptResponses(steps, constituent) {
 export function getPromptResponsesAsTable(params) {
   if (!params.id) throw new Error('No prompt id');
   return knex.raw(`SELECT replace(lower(prompt_steps.instruction), ' ', '_') AS prompt, prompt_responses.constituent_id AS constituent_id, prompt_responses.response->>'text' AS response, date_trunc('hour', prompt_responses.created_at) AS answered_on
-    FROM prompt_answers
+    FROM prompt_responses
     LEFT JOIN prompt_steps ON prompt_responses.prompt_step_id = prompt_steps.id
     WHERE prompt_steps.prompt_id = ${params.id} ${params.fromNow ? `AND EXTRACT(EPOCH FROM (now() - prompt_responses.created_at)) < ${params.fromNow}` : ''}
   `).then((data) => {
