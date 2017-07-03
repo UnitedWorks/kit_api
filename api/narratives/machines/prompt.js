@@ -9,8 +9,10 @@ export default {
   loading_prompt: {
     enter() {
       const label = this.snapshot.nlp.entities ?
-        this.snapshot.nlp.entities.intent[0].value : 'interaction.cases.create';
+        this.snapshot.nlp.entities.intent[0].value : 'create_case';
+      if (!label) return this.getBaseState();
       return getPrompt({ label }).then((prompt) => {
+        if (!prompt) return this.getBaseState();
         this.set('prompt', prompt);
         return 'waiting_for_answer';
       });
@@ -19,7 +21,7 @@ export default {
 
   waiting_for_acceptance: {
     enter(aux = {}) {
-      return this.messagingClient.send(aux.message || `I can help you with ${`"${this.get('prompt').name}"` || 'this'}, but I need to ask a few questions. Want to continue?`, replyTemplates.sureNoThanks);
+      return this.messagingClient.send(aux.message || `I can help you with ${`"${this.get('prompt').name}"` || 'this'}, but I need to ask a few questions. Is that ok?`, replyTemplates.sureNoThanks);
     },
     message() {
       return nlp.message(this.snapshot.input.payload.text).then((nlpData) => {
@@ -34,7 +36,7 @@ export default {
             return this.messagingClient.send('Ok! No problem.').then(() => this.getBaseState());
           }
         }
-        return this.messagingClient.send('Sorry, didn\'t catch that. Want to do the prompt?', replyTemplates.sureNoThanks);
+        return this.messagingClient.send('Sorry, didn\'t catch that. Can I ask you a few quick questions?', replyTemplates.sureNoThanks);
       });
     },
   },
@@ -70,7 +72,7 @@ export default {
       }
       return nlp.message(this.snapshot.input.payload.text).then((nlpData) => {
         if (nlpData.entities.intent && nlpData.entities.intent[0].value === 'speech.escape') {
-          this.messagingClient.send('Ok! Let me know if theres something else I can answer for you or forward to your local gov', replyTemplates.whatCanIAsk);
+          this.messagingClient.send('Ok! Let me know if theres something I can answer for you or forward to your local gov', replyTemplates.whatCanIAsk);
           this.delete('prompt');
           return this.getBaseState();
         }

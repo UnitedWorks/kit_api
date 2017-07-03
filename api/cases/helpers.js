@@ -221,7 +221,6 @@ export const getCases = (orgId, options = {}) => {
     }).catch(err => err);
 };
 
-
 export const updateCaseStatus = (caseId, { response, status, silent = false }, options = {}) => {
   if (!CASE_CONSTANTS.CASE_STATUSES.includes(status)) throw new Error(`Unacceptable Status: ${status}`);
   const updates = { status, response: null };
@@ -240,13 +239,11 @@ export const updateCaseStatus = (caseId, { response, status, silent = false }, o
   }).catch(error => error);
 };
 
-
 export const getCaseCategories = (params, options) => {
   return CaseCategory.fetchAll()
     .then(categories => options.returnJSON ? categories.toJSON() : categories)
     .catch(error => error);
 };
-
 
 export const addCaseNote = (caseId, message) => {
   // For now, I'm just appending a message to the description.
@@ -256,35 +253,5 @@ export const addCaseNote = (caseId, message) => {
     .then((foundCase) => {
       const newDescription = foundCase.get('description') || '';
       return foundCase.save({ description: newDescription.concat(message) }, { method: 'update' });
-    }).catch(error => error);
-};
-
-
-export const messageConstituent = (constituentId, message, caseId) => {
-  return NarrativeSession.where({ constituent_id: constituentId }).fetch({ withRelated: ['constituent', 'constituent.facebookEntry', 'constituent.smsEntry'] })
-    .then((foundSession) => {
-      // Message Constituent
-      const constituent = foundSession.toJSON().constituent;
-      if (constituent.facebook_id) {
-        new FacebookMessengerClient({ constituent }).send(message);
-      } else if (constituent.phone) {
-        new TwilioSMSClient({ constituent }).send(message);
-      }
-      // If a case was passed in, update Narrative Session to capture response
-      if (caseId) {
-        const dataStore = foundSession.get('data_store');
-        return getPrompt({ label: 'text_response' }).then((prompt) => {
-          dataStore.prompt = {
-            ...prompt,
-            name: message,
-            case_id: caseId,
-          };
-          return foundSession.save({
-            data_store: dataStore,
-            state_machine_name: 'prompt',
-            state_machine_current_state: 'waiting_for_answer',
-          }, { method: 'update' });
-        }).catch(error => error);
-      }
     }).catch(error => error);
 };

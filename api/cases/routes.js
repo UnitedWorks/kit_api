@@ -69,18 +69,4 @@ router.put('/update_status', requireAuth, (req, res, next) => {
   }
 });
 
-router.post('/message_constituent', requireAuth, (req, res, next) => {
-  try {
-    const constituentId = req.body.constituent.id;
-    const message = req.body.message;
-    let caseId = null;
-    if (req.body.case) caseId = req.body.case.id;
-    helpers.messageConstituent(constituentId, message, caseId)
-      .then(() => res.status(200).send())
-      .catch(error => next(error));
-  } catch (e) {
-    next(e);
-  }
-});
-
 module.exports = router;
