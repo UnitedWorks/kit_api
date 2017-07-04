@@ -584,15 +584,27 @@ export function answerQuestion(organization, question, answers) {
     .where({ organization_id: organization.id, question_id: question.id })
     .del().then(() => {
       const answerInserts = [];
+      const idHash = {};
       answers.forEach((answer) => {
         // If non-prompt answer
         if (!Object.keys(answer).includes('prompt')) {
-          if ((answer.text && answer.text.length > 0) || !Object.keys(answer).includes('text')) {
-            answerInserts.push(knex('knowledge_answers').insert({
-              ...answer,
-              organization_id: organization.id,
-              question_id: question.id,
-            }));
+          if (Object.values(answer).length > 0 && ((answer.text && answer.text.length > 0) || !Object.keys(answer).includes('text'))) {
+            // Check each insert for duplicate
+            let answerDuplicate = false;
+            if (!idHash[Object.keys(answer)[0]]) {
+              idHash[Object.keys(answer)[0]] = [answer[Object.keys(answer)[0]]];
+            } else if (idHash[Object.keys(answer)[0]].includes(answer[Object.keys(answer)[0]])) {
+              answerDuplicate = true;
+            } else {
+              idHash[Object.keys(answer)[0]].push(answer[Object.keys(answer)[0]]);
+            }
+            if (!answerDuplicate) {
+              answerInserts.push(knex('knowledge_answers').insert({
+                ...answer,
+                organization_id: organization.id,
+                question_id: question.id,
+              }));
+            }
           }
         // If prompt answer
         } else {
@@ -607,6 +619,6 @@ export function answerQuestion(organization, question, answers) {
           })));
         }
       });
-      return Promise.all(answerInserts).then(results => results);
+      return Promise.all(answerInserts).then(() => ({ question }));
     });
 }

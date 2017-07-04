@@ -249,7 +249,7 @@ router.route('/contacts')
 router.post('/question/answer', (req, res, next) => {
   logger.info('Pinged: Answering Question');
   answerQuestion(req.body.organization, req.body.question, req.body.answers)
-    .then(() => res.status(200).send())
+    .then(data => res.status(200).send(data))
     .catch(error => next(error));
 });
 

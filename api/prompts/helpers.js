@@ -14,14 +14,14 @@ export function getPrompt(params, options = { returnJSON: true }) {
 
 export function getPrompts(params = {}, options = { returnJSON: true }) {
   return PromptModels.Prompt.query((qb) => {
-    qb.where('organization_id', '=', params.organization_id).orWhere('template', '=', true);
+    qb.where('organization_id', '=', params.organization_id);
   }).fetchAll({ withRelated: ['steps', 'actions'] })
     .then(promptModels => options.returnJSON ? promptModels.toJSON() : promptModels)
     .catch(err => err);
 }
 
 export async function createPrompt({ prompt, steps = [], actions = [] }, options = { returnJSON: true }) {
-  const newPrompt = await PromptModels.Prompt.forge({ ...prompt }).save(null, { method: 'insert' }).then(p => p.toJSON());
+  const newPrompt = await PromptModels.Prompt.forge(prompt).save(null, { method: 'insert' }).then(p => p.toJSON());
   if (steps.length > 0) {
     const newStepModels = await Promise.all(steps.map((step, index) => (
       PromptModels.PromptStep.forge(Object.assign(step, {
@@ -33,8 +33,8 @@ export async function createPrompt({ prompt, steps = [], actions = [] }, options
         prompt_id: newPrompt.id,
         type: action.type,
       };
-      if (actionObj.type === 'email_responses' && action.contact.id) {
-        actionObj.config = { contact: { id: Number(action.contact.id) } };
+      if (actionObj.type === 'email_responses' && action.config.contact.id) {
+        actionObj.config = { contact: { id: Number(action.config.contact.id) } };
         return PromptModels.PromptAction.forge(actionObj)
           .save(null, { method: 'insert' }).then(a => a.toJSON());
       }
@@ -57,8 +57,10 @@ export async function updatePrompt(prompt, options = { returnJSON: true }) {
   delete prompt.steps;
   delete prompt.actions;
   const updatedPrompt = await PromptModels.Prompt.where({ id: prompt.id }).save(prompt, { method: 'update' }).then(p => p.toJSON());
-  const updatedSteps = await Promise.all(steps.map(step => PromptModels.PromptStep.where({ id: step.id }).save(step, { method: 'update' }))).then(s => s.toJSON());
-  const updatedActions = await Promise.all(actions.map(action => PromptModels.PromptAction.where({ id: action.id }).save(action, { method: 'update' }))).then(a => a.toJSON());
+  const updatedSteps = await Promise.all(steps.map(step => PromptModels.PromptStep.forge(step).save(null, { method: 'update' }).then(s => s.toJSON())));
+  const updatedActions = await Promise.all(actions.map((action) => {
+    return PromptModels.PromptAction.forge(action).save(null, { method: 'update' }).then(a => a.toJSON());
+  }));
   return {
     ...updatedPrompt,
     steps: updatedSteps,
@@ -71,7 +73,7 @@ export function upsertPrompt(prompt, options = { returnJSON: true }) {
   // If prompt has id, update
   if (prompt.id) {
     // As long as all the steps have ids, we can update. Otherwise create.
-    if (prompt.steps.filter(s => !s.id).length > 0) {
+    if (prompt.steps.filter(s => s.id).length > 0) {
       return updatePrompt(prompt, options);
     }
   }
