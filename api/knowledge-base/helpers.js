@@ -28,7 +28,7 @@ export const incrementTimesAsked = (questionId, orgId) => {
 export const getAnswers = (params = {}, options = {}) => {
   return KnowledgeQuestion.where({ label: params.label }).fetch({
     withRelated: [{
-      answers: q => q.where('organization_id', params.organization_id),
+      answers: q => q.where('organization_id', params.organization_id).whereNotNull('approved_at'),
     }, 'category', 'answers.facility', 'answers.facility.location', 'answers.facility.eventRules',
       'answers.service', 'answers.service.location', 'answers.service.eventRules',
       'answers.contact', 'answers.prompt', 'answers.prompt.steps', 'answers.prompt.actions'],
