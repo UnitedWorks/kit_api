@@ -2,6 +2,7 @@ import { knex } from '../orm';
 import { EventRule, KnowledgeAnswer, KnowledgeCategory, KnowledgeFacility, KnowledgeService,
   KnowledgeQuestion, KnowledgeContact, Location } from './models';
 import { CaseLocations, CaseMedia } from '../cases/models';
+import { upsertPrompt } from '../prompts/helpers';
 import geocoder from '../services/geocoder';
 
 export const incrementTimesAsked = (questionId, orgId) => {
@@ -576,4 +577,36 @@ export async function getCategoryFallback(labels, orgId) {
   // If representatives were assigned, send them an email so we can get an answer
   fallbackObj.representatives = mergedRepresentatives;
   return fallbackObj;
+}
+
+export function answerQuestion(organization, question, answers) {
+  return knex('knowledge_answers')
+    .where({ organization_id: organization.id, question_id: question.id })
+    .del().then(() => {
+      const answerInserts = [];
+      answers.forEach((answer) => {
+        // If non-prompt answer
+        if (!Object.keys(answer).includes('prompt')) {
+          if ((answer.text && answer.text.length > 0) || !Object.keys(answer).includes('text')) {
+            answerInserts.push(knex('knowledge_answers').insert({
+              ...answer,
+              organization_id: organization.id,
+              question_id: question.id,
+            }));
+          }
+        // If prompt answer
+        } else {
+          answerInserts.push(upsertPrompt({
+            ...answer.prompt,
+            name: answer.prompt.name || `${question.question} - ${Date.now()}`,
+            organization_id: organization.id,
+          }).then(prompt => knex('knowledge_answers').insert({
+            prompt_id: prompt.id,
+            organization_id: organization.id,
+            question_id: question.id,
+          })));
+        }
+      });
+      return Promise.all(answerInserts).then(results => results);
+    });
 }

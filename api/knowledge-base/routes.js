@@ -4,8 +4,8 @@ import { KnowledgeEvent, KnowledgeFacility, KnowledgeFacilityType, KnowledgeServ
 import { getAnswers, getCategories, getContacts, createContact, updateContact, deleteContact,
   getQuestions, makeAnswer, updateAnswer, deleteAnswer, deleteService, createFacility,
   updateFacility, deleteFacility, createService, updateService,
-  getQuestionsAsTable, createAnswersFromRows,
-  setCategoryFallback, setCategoryRepresentatives } from './helpers';
+  getQuestionsAsTable, createAnswersFromRows, setCategoryFallback,
+  setCategoryRepresentatives, answerQuestion } from './helpers';
 import { requireAuth } from '../services/passport';
 
 const router = new Router();
@@ -246,6 +246,13 @@ router.route('/contacts')
 /**
  * Questions Endpoint
  */
+router.post('/question/answer', (req, res, next) => {
+  logger.info('Pinged: Answering Question');
+  answerQuestion(req.body.organization, req.body.question, req.body.answers)
+    .then(() => res.status(200).send())
+    .catch(error => next(error));
+});
+
 router.get('/questions', (req, res, next) => {
   getQuestions(req.query)
     .then(questions => res.status(200).send({ questions }))
