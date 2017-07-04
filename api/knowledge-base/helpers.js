@@ -28,7 +28,7 @@ export const getAnswers = (params = {}, options = {}) => {
       answers: q => q.where('organization_id', params.organization_id),
     }, 'category', 'answers.facility', 'answers.facility.location', 'answers.facility.eventRules',
       'answers.service', 'answers.service.location', 'answers.service.eventRules',
-      'answers.contact', 'answers.prompt', 'answers.prompt.steps'],
+      'answers.contact', 'answers.prompt', 'answers.prompt.steps', 'answers.prompt.actions'],
   }).then((data) => {
     if (!options.returnJSON) return data.get('answers');
     if (data == null) return {};
@@ -610,7 +610,7 @@ export function answerQuestion(organization, question, answers) {
         } else {
           answerInserts.push(upsertPrompt({
             ...answer.prompt,
-            name: answer.prompt.name || `${question.question} - ${Date.now()}`,
+            name: answer.prompt.name || `${question.question} - ${Date(Date.now()).toString()}`,
             organization_id: organization.id,
           }).then(prompt => knex('knowledge_answers').insert({
             prompt_id: prompt.id,
