@@ -1,9 +1,12 @@
 import { knex } from '../orm';
+import * as env from '../env';
+import { Representative } from '../accounts/models';
 import { EventRule, KnowledgeAnswer, KnowledgeCategory, KnowledgeFacility, KnowledgeService,
   KnowledgeQuestion, KnowledgeContact, Location } from './models';
 import { CaseLocations, CaseMedia } from '../cases/models';
 import { upsertPrompt } from '../prompts/helpers';
 import geocoder from '../services/geocoder';
+import EmailService from '../services/email';
 
 export const incrementTimesAsked = (questionId, orgId) => {
   if (!questionId || !orgId) return;
@@ -579,46 +582,61 @@ export async function getCategoryFallback(labels, orgId) {
   return fallbackObj;
 }
 
-export function answerQuestion(organization, question, answers) {
-  return knex('knowledge_answers')
-    .where({ organization_id: organization.id, question_id: question.id })
-    .del().then(() => {
-      const answerInserts = [];
-      const idHash = {};
-      answers.forEach((answer) => {
-        // If non-prompt answer
-        if (!Object.keys(answer).includes('prompt')) {
-          if (Object.values(answer).length > 0 && ((answer.text && answer.text.length > 0) || !Object.keys(answer).includes('text'))) {
-            // Check each insert for duplicate
-            let answerDuplicate = false;
-            if (!idHash[Object.keys(answer)[0]]) {
-              idHash[Object.keys(answer)[0]] = [answer[Object.keys(answer)[0]]];
-            } else if (idHash[Object.keys(answer)[0]].includes(answer[Object.keys(answer)[0]])) {
-              answerDuplicate = true;
-            } else {
-              idHash[Object.keys(answer)[0]].push(answer[Object.keys(answer)[0]]);
-            }
-            if (!answerDuplicate) {
-              answerInserts.push(knex('knowledge_answers').insert({
-                ...answer,
-                organization_id: organization.id,
-                question_id: question.id,
-              }));
-            }
-          }
-        // If prompt answer
+export async function answerQuestion(organization, question, answers) {
+  await knex('knowledge_answers').where({ organization_id: organization.id, question_id: question.id }).del();
+  const answerInserts = [];
+  const idHash = {};
+  answers.forEach((answer) => {
+    // If non-prompt answer
+    if (!Object.keys(answer).includes('prompt')) {
+      if (Object.values(answer).length > 0 && ((answer.text && answer.text.length > 0) || !Object.keys(answer).includes('text'))) {
+        // Check each insert for duplicate
+        let answerDuplicate = false;
+        if (!idHash[Object.keys(answer)[0]]) {
+          idHash[Object.keys(answer)[0]] = [answer[Object.keys(answer)[0]]];
+        } else if (idHash[Object.keys(answer)[0]].includes(answer[Object.keys(answer)[0]])) {
+          answerDuplicate = true;
         } else {
-          answerInserts.push(upsertPrompt({
-            ...answer.prompt,
-            name: answer.prompt.name || `${question.question} - ${Date(Date.now()).toString()}`,
-            organization_id: organization.id,
-          }).then(prompt => knex('knowledge_answers').insert({
-            prompt_id: prompt.id,
+          idHash[Object.keys(answer)[0]].push(answer[Object.keys(answer)[0]]);
+        }
+        if (!answerDuplicate) {
+          answerInserts.push(knex('knowledge_answers').insert({
+            ...answer,
             organization_id: organization.id,
             question_id: question.id,
-          })));
+            approved_at: null,
+          }));
         }
-      });
-      return Promise.all(answerInserts).then(() => ({ question }));
-    });
+      }
+    // If prompt answer
+    } else {
+      answerInserts.push(upsertPrompt({
+        ...answer.prompt,
+        name: answer.prompt.name || `${question.question} - ${Date(Date.now()).toString()}`,
+        organization_id: organization.id,
+      }).then(prompt => knex('knowledge_answers').insert({
+        prompt_id: prompt.id,
+        organization_id: organization.id,
+        question_id: question.id,
+        approved_at: null,
+      })));
+    }
+  });
+  // Send emails about new answers to admins
+  const approvalReps = await Representative.where({ organization_id: organization.id, admin: true }).fetchAll()
+    .then(r => r.toJSON()).filter(r => r.email)
+    .map(r => ({ email: r.email, name: r.name }));
+  new EmailService().send(`Answer Needs Approval: ${question.question}`,
+    `An employee has saved an answer! Please <a href="${env.getDashboardRoot()}/interfaces/answer?organization_id=${organization.id}&question_id=${question.id}" target="_blank">go approve it</a> so we can send it to constituents.<br/><br/>If you have questions, send <a href="mailto:mark@mayor.chat">us</a> an email!`,
+    approvalReps,
+    'alert@email.kit.community',
+  );
+  // Conclude
+  return Promise.all(answerInserts).then(() => ({ question }));
+}
+
+export function approveAnswers(answers = []) {
+  return Promise.all(answers.map((answer) => {
+    return knex('knowledge_answers').where({ id: answer.id }).update({ approved_at: knex.raw('now()') }).returning('id');
+  })).then(results => ({ answers: results }));
 }

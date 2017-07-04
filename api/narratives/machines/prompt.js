@@ -118,7 +118,7 @@ export default {
     // // Send Email
     if (contactEmails.length > 0) {
       let emailMessage = `Constituent response for "${this.get('prompt').name}":<br/><br/>`;
-      emailMessage = emailMessage.concat('--------------------<br/>')
+      emailMessage = emailMessage.concat('--------------------<br/><br/>')
       this.get('prompt').steps.forEach((step) => {
         if (step.type === PROMPT_CONSTANTS.TEXT) emailMessage = emailMessage.concat(`"<b>${step.instruction}</b>" : ${step.response.text}<br/>`);
       });
