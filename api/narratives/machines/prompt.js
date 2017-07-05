@@ -60,7 +60,7 @@ export default {
             quickReplies.push(replyTemplates.location);
           }
           return this.messagingClient.send(
-            this.snapshot.data_store.prompt.steps[i].instruction, quickReplies);
+            `${i + 1}/${steps.length}) ${this.snapshot.data_store.prompt.steps[i].instruction}`, quickReplies);
         }
       }
       return 'concluding_prompt';
@@ -161,7 +161,7 @@ export default {
       // }
     }
 
-    this.messagingClient.send('Great, those were all my questions. Thank you so much!');
+    this.messagingClient.send('Thanks, I\'ll do my best to let you know of any updates.');
     return savePromptResponses(this.snapshot.data_store.prompt.steps, this.snapshot.constituent)
       .then(() => {
         this.delete('prompt');
