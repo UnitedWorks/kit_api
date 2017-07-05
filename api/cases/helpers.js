@@ -61,7 +61,7 @@ export const newCaseNotification = (caseObj, organization) => {
         });
       }
       returnedOrg.toJSON().representatives.forEach((rep) => {
-        new EmailService().send(`Constituent Complaint #${caseObj.id}: ${caseObj.title}`, emailMessage, rep.email, 'reply@email.kit.community', {
+        new EmailService().send(`🤖 Complaint #${caseObj.id}: ${caseObj.title}`, emailMessage, rep.email, 'reply@email.kit.community', {
           case_id: caseObj.id,
         });
       });

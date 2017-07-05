@@ -124,7 +124,7 @@ export default {
       });
       emailMessage = emailMessage.concat('<br/>--------------------')
       emailMessage = emailMessage.concat('<br/>If you have questions, send <a href="mailto:mark@mayor.chat">us</a> an email!');
-      new EmailService().send(`Constituent: ${this.get('prompt').name}`, emailMessage, contactEmails, 'alert@email.kit.community');
+      new EmailService().send('🤖 Constituent Response', emailMessage, contactEmails, 'alert@email.kit.community');
     }
     // // Create Case
     if (hasCaseCreation) {

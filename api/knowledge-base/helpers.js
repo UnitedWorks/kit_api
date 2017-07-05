@@ -589,6 +589,7 @@ export async function answerQuestion(organization, question, answers) {
   answers.forEach((answer) => {
     // If non-prompt answer
     if (!Object.keys(answer).includes('prompt')) {
+      // Make sure answer has valid values
       if (Object.values(answer).length > 0 && ((answer.text && answer.text.length > 0) || !Object.keys(answer).includes('text'))) {
         // Check each insert for duplicate
         let answerDuplicate = false;
@@ -626,7 +627,7 @@ export async function answerQuestion(organization, question, answers) {
   const approvalReps = await Representative.where({ organization_id: organization.id, admin: true }).fetchAll()
     .then(r => r.toJSON()).filter(r => r.email)
     .map(r => ({ email: r.email, name: r.name }));
-  new EmailService().send(`Answer Needs Approval: ${question.question}`,
+  new EmailService().send('🤖 Answer Needs Approval',
     `An employee has saved an answer! Please <a href="${env.getDashboardRoot()}/interfaces/answer?organization_id=${organization.id}&question_id=${question.id}" target="_blank">go approve it</a> so we can send it to constituents.<br/><br/>If you have questions, send <a href="mailto:mark@mayor.chat">us</a> an email!`,
     approvalReps,
     'alert@email.kit.community',
