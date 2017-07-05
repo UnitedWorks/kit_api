@@ -11,7 +11,7 @@ import HealthMachine from './machines/health';
 import PersonalityMachine from './machines/personality';
 import SetupMachine from './machines/setup';
 import SocialServicesMachine from './machines/social-services';
-import SurveyMachine from './machines/survey';
+import PromptMachine from './machines/prompt';
 import VotingMachine from './machines/voting';
 
 // Small Talk Machines
@@ -31,7 +31,7 @@ export const stateMachines = {
   usVoteFoundation: USVoteFoundationMachine,
   smallTalk: SmallTalkMachine,
   socialServices: SocialServicesMachine,
-  survey: SurveyMachine,
+  prompt: PromptMachine,
   voting: VotingMachine,
 };
 

@@ -6,6 +6,7 @@ import * as replyTemplates from './templates/quick-replies';
 import { getCategoryFallback } from '../knowledge-base/helpers';
 import EmailService from '../services/email';
 import Mixpanel from '../services/event-tracking';
+import * as env from '../env';
 
 /* TODO(nicksahler): Declare in machine, automatically route */
 export function getBaseState(providerName, section) {
@@ -36,7 +37,7 @@ export const fetchAnswers = (intent, session) => {
   return new KitClient({ organization: session.get('organization') })
     .getAnswer(intent).then(({ question, answers }) => {
       // If no answers, run fallback
-      if (!answers || (!answers.text && !answers.survey && answers.facilities.length === 0 &&
+      if (!answers || (!answers.text && !answers.prompt && answers.facilities.length === 0 &&
         answers.services.length === 0 && answers.contacts.length === 0)) {
         return getCategoryFallback([intent.split('.')[0]], session.get('organization').id)
           .then((fallbackData) => {
@@ -78,8 +79,8 @@ export const fetchAnswers = (intent, session) => {
               fallbackData.representatives.forEach((rep) => {
                 repEmails.push({ name: rep.name, email: rep.email });
               });
-              const emailMessage = `"${question.question}"<br/><br/>... was asked by a constituent but we don't seem to have an answer! Type an answer and we will save it for future requests.<br><br> If you have any questions, send a separate email to mark@mayor.chat`;
-              new EmailService().send(`Missing Answer QID:${question.id} OID:${session.get('organization').id}`, emailMessage, repEmails, 'reply@email.kit.community', {
+              const emailMessage = `<b>"${question.question}"</b> ... was asked by a constituent but we don't seem to have an answer!<br/><br/><a href="${env.getDashboardRoot()}/interfaces/answer?organization_id=${session.get('organization').id}&question_id=${question.id}" target="_blank">Create an Answer!</a><br><br> If you have questions, send <a href="mailto:mark@mayor.chat">us</a> an email!`;
+              new EmailService().send(`🤖 Missing Answer QID:${question.id} OID:${session.get('organization').id}`, emailMessage, repEmails, 'alert@email.kit.community', {
                 organization_id: session.get('organization').id,
                 question_id: question.id,
               });
@@ -114,15 +115,15 @@ export const fetchAnswers = (intent, session) => {
           replyTemplates.evalHelpfulAnswer);
       }
       return session.messagingClient.runQuene().then(() => {
-        // If we have a survey, prompt user about it
-        if (answers.survey && answers.survey.questions.length > 0) {
-          const surveyObj = {
-            ...answers.survey,
-            name: answers.survey.name || question.question,
+        // If we have a prompt, prompt user about it
+        if (answers.prompt && answers.prompt.steps.length > 0) {
+          const promptObj = {
+            ...answers.prompt,
+            name: answers.prompt.name || question.question,
           };
-          if (answers.category) surveyObj.category = answers.category;
-          session.set('survey', surveyObj);
-          return 'survey.waiting_for_answer';
+          if (answers.category) promptObj.category = answers.category;
+          session.set('prompt', promptObj);
+          return 'prompt.waiting_for_answer';
         }
         // Otherwise end user back at start
         return session.getBaseState();

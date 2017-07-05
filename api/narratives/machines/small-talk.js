@@ -154,7 +154,7 @@ export default {
 
           'education_employment.employment_job_training': 'employment.waiting_job_training',
 
-          'interaction.cases.create': 'survey.loading_survey',
+          'interaction.cases.create': 'prompt.loading_prompt',
           'interaction.cases.get': 'getCases',
 
           'settings.locality.change': 'setup.reset_organization',
@@ -170,7 +170,7 @@ export default {
 
     action() {
       const goTo = {
-        MAKE_REQUEST: 'survey.loading_survey', // Dont think this will work cause we dont have intent to pull off of
+        MAKE_REQUEST: 'prompt.loading_prompt', // Dont think this will work cause we dont have intent to pull off of
         GET_REQUESTS: 'getCases',
         GET_STARTED: 'init',
         CHANGE_CITY: 'setup.reset_organization',

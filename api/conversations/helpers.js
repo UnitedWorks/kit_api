@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { NarrativeSession } from '../narratives/models';
 import { MessageEntry } from './models';
-import { broadcastSurvey } from '../surveys/helpers';
+import { broadcastPrompt } from '../prompts/helpers';
 import Clients from './clients';
 
 export function broadcastMessage(broadcast, organization) {
@@ -22,8 +22,8 @@ export function broadcastMessage(broadcast, organization) {
 }
 
 export function broadcastHelper(broadcast, organization) {
-  if (broadcast.survey) {
-    return broadcastSurvey(broadcast.survey);
+  if (broadcast.prompt) {
+    return broadcastPrompt(broadcast.prompt);
   } else if (broadcast.message) {
     return broadcastMessage(broadcast, organization);
   }

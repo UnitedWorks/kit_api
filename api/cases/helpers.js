@@ -5,7 +5,7 @@ import { Case, CaseCategory, OrganizationsCases } from './models';
 import * as CASE_CONSTANTS from '../constants/cases';
 import { FacebookMessengerClient, TwilioSMSClient } from '../conversations/clients';
 import { createLocation, associateCaseLocation, associateCaseMedia } from '../knowledge-base/helpers';
-import { getSurvey } from '../surveys/helpers';
+import { getPrompt } from '../prompts/helpers';
 import { saveMedia } from '../media/helpers';
 import SlackService from '../services/slack';
 import { hasIntegration } from '../integrations/helpers';
@@ -61,7 +61,7 @@ export const newCaseNotification = (caseObj, organization) => {
         });
       }
       returnedOrg.toJSON().representatives.forEach((rep) => {
-        new EmailService().send(`Constituent Complaint #${caseObj.id}: ${caseObj.title}`, emailMessage, rep.email, 'reply@email.kit.community', {
+        new EmailService().send(`🤖 Complaint #${caseObj.id}: ${caseObj.title}`, emailMessage, rep.email, 'reply@email.kit.community', {
           case_id: caseObj.id,
         });
       });
@@ -221,7 +221,6 @@ export const getCases = (orgId, options = {}) => {
     }).catch(err => err);
 };
 
-
 export const updateCaseStatus = (caseId, { response, status, silent = false }, options = {}) => {
   if (!CASE_CONSTANTS.CASE_STATUSES.includes(status)) throw new Error(`Unacceptable Status: ${status}`);
   const updates = { status, response: null };
@@ -240,13 +239,11 @@ export const updateCaseStatus = (caseId, { response, status, silent = false }, o
   }).catch(error => error);
 };
 
-
 export const getCaseCategories = (params, options) => {
   return CaseCategory.fetchAll()
     .then(categories => options.returnJSON ? categories.toJSON() : categories)
     .catch(error => error);
 };
-
 
 export const addCaseNote = (caseId, message) => {
   // For now, I'm just appending a message to the description.
@@ -256,35 +253,5 @@ export const addCaseNote = (caseId, message) => {
     .then((foundCase) => {
       const newDescription = foundCase.get('description') || '';
       return foundCase.save({ description: newDescription.concat(message) }, { method: 'update' });
-    }).catch(error => error);
-};
-
-
-export const messageConstituent = (constituentId, message, caseId) => {
-  return NarrativeSession.where({ constituent_id: constituentId }).fetch({ withRelated: ['constituent', 'constituent.facebookEntry', 'constituent.smsEntry'] })
-    .then((foundSession) => {
-      // Message Constituent
-      const constituent = foundSession.toJSON().constituent;
-      if (constituent.facebook_id) {
-        new FacebookMessengerClient({ constituent }).send(message);
-      } else if (constituent.phone) {
-        new TwilioSMSClient({ constituent }).send(message);
-      }
-      // If a case was passed in, update Narrative Session to capture response
-      if (caseId) {
-        const dataStore = foundSession.get('data_store');
-        return getSurvey({ label: 'text_response' }).then((survey) => {
-          dataStore.survey = {
-            ...survey,
-            name: message,
-            case_id: caseId,
-          };
-          return foundSession.save({
-            data_store: dataStore,
-            state_machine_name: 'survey',
-            state_machine_current_state: 'waiting_for_answer',
-          }, { method: 'update' });
-        }).catch(error => error);
-      }
     }).catch(error => error);
 };

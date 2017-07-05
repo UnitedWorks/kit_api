@@ -4,8 +4,8 @@ import { KnowledgeEvent, KnowledgeFacility, KnowledgeFacilityType, KnowledgeServ
 import { getAnswers, getCategories, getContacts, createContact, updateContact, deleteContact,
   getQuestions, makeAnswer, updateAnswer, deleteAnswer, deleteService, createFacility,
   updateFacility, deleteFacility, createService, updateService,
-  getQuestionsAsTable, createAnswersFromRows,
-  setCategoryFallback, setCategoryRepresentatives } from './helpers';
+  getQuestionsAsTable, createAnswersFromRows, setCategoryFallback,
+  setCategoryRepresentatives, answerQuestion, approveAnswers } from './helpers';
 import { requireAuth } from '../services/passport';
 
 const router = new Router();
@@ -14,7 +14,7 @@ const router = new Router();
  * Get knowledge base categories
  * @return {Array}
  */
-router.get('/categories', requireAuth, (req, res) => {
+router.get('/categories', (req, res) => {
   logger.info('Pinged: knowledge-base/categories');
   getCategories(req.query)
     .then(categories => res.status(200).send({ categories }))
@@ -45,7 +45,7 @@ router.post('/categories/representatives', requireAuth, (req, res, next) => {
  * Get facility types
  * @return {Array}
  */
-router.get('/facility-types', requireAuth, (req, res) => {
+router.get('/facility-types', (req, res) => {
   logger.info('Pinged: knowledge-base/facility-types');
   KnowledgeFacilityType.fetchAll().then((typesArray) => {
     res.status(200).send({ types: typesArray });
@@ -60,7 +60,7 @@ router.route('/facilities')
    * Get Facilities
    * @return {Array}
    */
-  .get(requireAuth, (req, res) => {
+  .get((req, res) => {
     const whereFilters = {};
     if (req.query.organization_id) whereFilters.organization_id = req.query.organization_id;
     KnowledgeFacility.where(whereFilters).fetchAll({ withRelated: ['category', 'location', 'eventRules', 'services', 'type'] })
@@ -110,7 +110,7 @@ router.route('/events')
    * Get events
    * @return {Array}
    */
-  .get(requireAuth, (req, res) => {
+  .get((req, res) => {
     KnowledgeEvent.fetchAll({ withRelated: ['category', 'facility', 'location', 'service', 'eventRules'] })
       .then((eventsArray) => {
         res.status(200).send({ events: eventsArray });
@@ -162,7 +162,7 @@ router.route('/services')
    * Get services
    * @return {Array}
    */
-  .get(requireAuth, (req, res, next) => {
+  .get((req, res, next) => {
     const whereFilters = {};
     if (req.query.organization_id) whereFilters.organization_id = req.query.organization_id;
     KnowledgeService.where(whereFilters).fetchAll({ withRelated: ['category', 'facility', 'location', 'eventRules'] })
@@ -246,7 +246,14 @@ router.route('/contacts')
 /**
  * Questions Endpoint
  */
-router.get('/questions', requireAuth, (req, res, next) => {
+router.post('/question/answer', (req, res, next) => {
+  logger.info('Pinged: Answering Question');
+  answerQuestion(req.body.organization, req.body.question, req.body.answers)
+    .then(data => res.status(200).send(data))
+    .catch(error => next(error));
+});
+
+router.get('/questions', (req, res, next) => {
   getQuestions(req.query)
     .then(questions => res.status(200).send({ questions }))
     .catch(error => next(error));
@@ -270,7 +277,7 @@ router.route('/answers')
    * Get answers
    * @return {Array}
    */
-  .get(requireAuth, (req, res) => {
+  .get((req, res) => {
     const params = req.query;
     getAnswers(params, {}).then(({ answers }) => {
       res.status(200).send({
@@ -282,7 +289,7 @@ router.route('/answers')
    * Create Answer
    * @return {Object}
    */
-  .post(requireAuth, (req, res, next) => {
+  .post((req, res, next) => {
     try {
       makeAnswer(req.body.organization, req.body.question, req.body.answer, { returnJSON: true })
         .then(answerModel => res.status(200).send({ answer: answerModel }))
@@ -295,7 +302,7 @@ router.route('/answers')
    * Update Answer
    * @return {Object}
    */
-  .put(requireAuth, (req, res, next) => {
+  .put((req, res, next) => {
     updateAnswer(req.body.answer, { returnJSON: true })
       .then(answerModel => res.status(200).send({ answer: answerModel }))
       .catch(err => next(err));
@@ -305,7 +312,7 @@ router.route('/answers')
    * @param {Number} id - Id of the answer to be deleted
    * @return {Object}
    */
-  .delete(requireAuth, (req, res, next) => {
+  .delete((req, res, next) => {
     deleteAnswer(req.query.answer_id)
       .then(answer => res.status(200).send({ answer }))
       .catch(err => next(err));
@@ -314,6 +321,16 @@ router.route('/answers')
 router.post('/answers/batch', requireAuth, (req, res, next) => {
   try {
     createAnswersFromRows(req.body)
+      .then(() => res.status(200).send())
+      .catch(error => next(error));
+  } catch (e) {
+    next(e);
+  }
+});
+
+router.post('/answers/approve', (req, res, next) => {
+  try {
+    approveAnswers(req.body.answers)
       .then(() => res.status(200).send())
       .catch(error => next(error));
   } catch (e) {
