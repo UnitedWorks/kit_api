@@ -6,20 +6,13 @@ import EmailService from '../../services/email';
 import * as CASE_CONSTANTS from '../../constants/cases';
 import * as PROMPT_CONSTANTS from '../../constants/prompts';
 import * as replyTemplates from '../templates/quick-replies';
-import { createCasePrompt } from '../templates/prompts';
 
 export default {
   loading_prompt: {
     enter() {
       const label = this.snapshot.nlp.entities ?
         this.snapshot.nlp.entities.intent[0].value : null;
-      if (!label) {
-        return this.getBaseState();
-      } else if (label === 'interaction.cases.create') {
-        // Hard coding this for now... not sure if this is a good idea
-        this.set('prompt', createCasePrompt);
-        return 'waiting_for_answer';
-      }
+      if (!label) return this.getBaseState();
       return getPrompt({ label }).then((prompt) => {
         if (!prompt) return this.getBaseState();
         this.set('prompt', prompt);
