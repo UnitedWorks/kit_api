@@ -3,6 +3,7 @@ import * as PromptModels from './models';
 import Clients from '../conversations/clients';
 import { NarrativeSession } from '../narratives/models';
 import { sureNoThanksTemplates } from '../narratives/templates/quick-replies';
+import * as PROMPT_CONST from '../constants/prompts';
 
 export function getPrompt(params, options = { returnJSON: true }) {
   return PromptModels.Prompt.where(params)
@@ -23,20 +24,24 @@ export function getPrompts(params = {}, options = { returnJSON: true }) {
 export async function createPrompt({ prompt, steps = [], actions = [] }, options = { returnJSON: true }) {
   const newPrompt = await PromptModels.Prompt.forge(prompt).save(null, { method: 'insert' }).then(p => p.toJSON());
   if (steps.length > 0) {
-    const newStepModels = await Promise.all(steps.map((step, index) => (
-      PromptModels.PromptStep.forge({ ...step, prompt_id: newPrompt.id }).save(null, { method: 'insert' }).then(s => s.toJSON()))));
-    const actionMappings = actions.map((action) => {
+    const newStepModels = await Promise.all(steps.map((step) => {
+      return PromptModels.PromptStep.forge({
+        ...step,
+        prompt_id: newPrompt.id,
+        type: step.type || PROMPT_CONST.TEXT,
+      }).save(null, { method: 'insert' }).then(s => s.toJSON());
+    }));
+    const newActionModels = await Promise.all(actions.map((action) => {
       const actionObj = {
         prompt_id: newPrompt.id,
         type: action.type,
       };
-      if (actionObj.type === 'email_responses' && action.config.contact.id) {
+      if (actionObj.type === PROMPT_CONST.EMAIL_RESPONSES && action.config.contact.id) {
         actionObj.config = { contact: { id: Number(action.config.contact.id) } };
         return PromptModels.PromptAction.forge(actionObj)
           .save(null, { method: 'insert' }).then(a => a.toJSON());
       }
-    });
-    const newActionModels = await Promise.all(actionMappings);
+    }));
     // Compile and Return!
     return {
       ...newPrompt,
