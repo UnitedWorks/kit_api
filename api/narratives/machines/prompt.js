@@ -117,13 +117,11 @@ export default {
     }));
     // // Send Email
     if (contactEmails.length > 0) {
-      let emailMessage = `Constituent response for "${this.get('prompt').name}":<br/><br/>`;
-      emailMessage = emailMessage.concat('--------------------<br/><br/>')
-      this.get('prompt').steps.forEach((step) => {
-        if (step.type === PROMPT_CONSTANTS.TEXT) emailMessage = emailMessage.concat(`"<b>${step.instruction}</b>" : ${step.response.text}<br/>`);
+      let emailMessage = `A constituent responded to "${this.get('prompt').name}":<br/><br/>`;
+      this.get('prompt').steps.forEach((step, index) => {
+        if (step.type === PROMPT_CONSTANTS.TEXT) emailMessage = emailMessage.concat(`<b>${index + 1}) ${step.instruction}</b><br/>${step.response.text}<br/><br/>`);
       });
-      emailMessage = emailMessage.concat('<br/>--------------------')
-      emailMessage = emailMessage.concat('<br/>If you have questions, send <a href="mailto:mark@mayor.chat">us</a> an email!');
+      emailMessage = emailMessage.concat('If you have questions, send <a href="mailto:mark@mayor.chat">us</a> an email!');
       new EmailService().send('🤖 Constituent Response', emailMessage, contactEmails, 'alert@email.kit.community');
     }
     // // Create Case
