@@ -6,13 +6,20 @@ import EmailService from '../../services/email';
 import * as CASE_CONSTANTS from '../../constants/cases';
 import * as PROMPT_CONSTANTS from '../../constants/prompts';
 import * as replyTemplates from '../templates/quick-replies';
+import { createCasePrompt } from '../templates/prompts';
 
 export default {
   loading_prompt: {
     enter() {
       const label = this.snapshot.nlp.entities ?
-        this.snapshot.nlp.entities.intent[0].value : 'create_case';
-      if (!label) return this.getBaseState();
+        this.snapshot.nlp.entities.intent[0].value : null;
+      if (!label) {
+        return this.getBaseState();
+      } else if (label === 'interaction.cases.create') {
+        // Hard coding this for now... not sure if this is a good idea
+        this.set('prompt', createCasePrompt);
+        return 'waiting_for_answer';
+      }
       return getPrompt({ label }).then((prompt) => {
         if (!prompt) return this.getBaseState();
         this.set('prompt', prompt);
@@ -128,37 +135,35 @@ export default {
     }
     // // Create Case
     if (hasCaseCreation) {
-      // const steps = this.get('prompt').steps;
-      // const title = this.get('prompt').name;
-      // const caseId = this.get('prompt').case_id;
-      // const description = steps.filter(q => q.type === PROMPT_CONSTANTS.TEXT)[0].answer.text;
-      // const pictureQuestions = steps.filter(q => q.type === PROMPT_CONSTANTS.PICTURE);
-      // let pictures;
-      // if (pictureQuestions.length > 0) {
-      //   pictures = pictureQuestions[0].answer.pictures;
-      // }
-      // const locationQuestions = steps.filter(q => q.type === PROMPT_CONSTANTS.LOCATION);
-      // let location;
-      // if (locationQuestions.length > 0) {
-      //   location = locationQuestions[0].answer.location;
-      // }
-      // let query;
-      // // If ID exists, update case rather than create new
-      // if (caseId) {
-      //   query = addCaseNote(caseId, `Q: ${title} -- A: ${description} `);
-      // } else {
-      //   // Create New
-      //   query = createConstituentCase({
-      //     title,
-      //     description,
-      //     type: CASE_CONSTANTS.REQUEST,
-      //     location,
-      //     attachments: pictures,
-      //   },
-      //   this.snapshot.constituent,
-      //   this.get('organization') || { id: this.snapshot.organization_id,
-      //   });
-      // }
+      const steps = this.get('prompt').steps;
+      const title = this.get('prompt').name;
+      const caseId = this.get('prompt').case_id;
+      const description = steps.filter(q => q.type === PROMPT_CONSTANTS.TEXT)[0].response.text;
+      const pictureQuestions = steps.filter(q => q.type === PROMPT_CONSTANTS.PICTURE);
+      let pictures;
+      if (pictureQuestions.length > 0) {
+        pictures = pictureQuestions[0].response.pictures;
+      }
+      const locationQuestions = steps.filter(q => q.type === PROMPT_CONSTANTS.LOCATION);
+      let location;
+      if (locationQuestions.length > 0) {
+        location = locationQuestions[0].response.location;
+      }
+      // If ID exists, update case rather than create new
+      if (caseId) {
+        addCaseNote(caseId, `Q: ${title} -- A: ${description} `);
+      } else {
+        // Create New
+        createConstituentCase({
+          title,
+          description,
+          type: CASE_CONSTANTS.REQUEST,
+          location,
+          attachments: pictures,
+        },
+        this.snapshot.constituent,
+        this.get('organization') || { id: this.snapshot.organization_id });
+      }
     }
 
     this.messagingClient.send('Thanks, I\'ll do my best to let you know of any updates.');

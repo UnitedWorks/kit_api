@@ -24,10 +24,7 @@ export async function createPrompt({ prompt, steps = [], actions = [] }, options
   const newPrompt = await PromptModels.Prompt.forge(prompt).save(null, { method: 'insert' }).then(p => p.toJSON());
   if (steps.length > 0) {
     const newStepModels = await Promise.all(steps.map((step, index) => (
-      PromptModels.PromptStep.forge(Object.assign(step, {
-        position: index,
-        prompt_id: newPrompt.id,
-      })).save(null, { method: 'insert' }).then(s => s.toJSON()))));
+      PromptModels.PromptStep.forge({ ...step, prompt_id: newPrompt.id }).save(null, { method: 'insert' }).then(s => s.toJSON()))));
     const actionMappings = actions.map((action) => {
       const actionObj = {
         prompt_id: newPrompt.id,
