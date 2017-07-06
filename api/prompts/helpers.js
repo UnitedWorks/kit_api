@@ -50,17 +50,48 @@ export async function createPrompt({ prompt, steps = [], actions = [] }, options
   return options.returnJSON ? newPrompt.toJSON() : newPrompt;
 }
 
-export async function updatePrompt(prompt, options = { returnJSON: true }) {
+export async function updatePrompt(prompt) {
   if (!prompt.id) throw new Error('No Prompt ID provided');
   const steps = prompt.steps;
   const actions = prompt.actions;
   delete prompt.steps;
   delete prompt.actions;
   const updatedPrompt = await PromptModels.Prompt.where({ id: prompt.id }).save(prompt, { method: 'update' }).then(p => p.toJSON());
-  const updatedSteps = await Promise.all(steps.map(step => PromptModels.PromptStep.forge(step).save(null, { method: 'update' }).then(s => s.toJSON())));
-  const updatedActions = await Promise.all(actions.map((action) => {
-    return PromptModels.PromptAction.forge(action).save(null, { method: 'update' }).then(a => a.toJSON());
-  }));
+  const updatedSteps = await PromptModels.PromptStep.where({ prompt_id: prompt.id }).fetchAll()
+    .then((fetchedStepModels) => {
+      const stepCrudOperations = [];
+      // Compile Create/Updates
+      steps.forEach((step, index) => {
+        if (step.id) {
+          stepCrudOperations.push(PromptModels.PromptStep.forge({ ...step }).save(null, { method: 'update' }).then(s => s.toJSON()));
+        } else {
+          stepCrudOperations.push(PromptModels.PromptStep.forge({ ...step, prompt_id: prompt.id }).save(null, { method: 'insert' }).then(s => s.toJSON()));
+        }
+      });
+      // Compile Deletes
+      fetchedStepModels.toJSON()
+        .filter(fetched => steps.filter(s => s.id == fetched.id).length === 0)
+        .forEach(f => PromptModels.PromptResponse.where({ prompt_step_id: f.id }).destroy().then(
+            () => PromptModels.PromptStep.where({ id: f.id }).destroy({ require: true })));
+      return Promise.all(stepCrudOperations);
+    });
+  const updatedActions = await PromptModels.PromptAction.where({ prompt_id: prompt.id }).fetchAll()
+    .then((fetchedActionModels) => {
+      const actionCrudOperations = [];
+      // Compile Create/Updates
+      actions.forEach((action) => {
+        if (action.id) {
+          actionCrudOperations.push(PromptModels.PromptAction.forge(action).save(null, { method: 'update' }).then(s => s.toJSON()));
+        } else {
+          actionCrudOperations.push(PromptModels.PromptAction.forge({ ...action, prompt_id: prompt.id }).save(null, { method: 'insert' }).then(s => s.toJSON()));
+        }
+      });
+      // Compile Deletes
+      fetchedActionModels.toJSON()
+        .filter(fetched => actions.filter(a => a.id == fetched.id).length === 0)
+        .forEach(f => PromptModels.PromptAction.where({ id: f.id }).destroy({ require: true }));
+      return Promise.all(actionCrudOperations);
+    });
   return {
     ...updatedPrompt,
     steps: updatedSteps,
@@ -72,10 +103,7 @@ export function upsertPrompt(prompt, options = { returnJSON: true }) {
   if (!prompt.steps || prompt.steps.length === 0) throw new Error('No steps for prompt');
   // If prompt has id, update
   if (prompt.id) {
-    // As long as all the steps have ids, we can update. Otherwise create.
-    if (prompt.steps.filter(s => s.id).length > 0) {
-      return updatePrompt(prompt, options);
-    }
+    return updatePrompt(prompt, options);
   }
   // Otherwise create prompt
   const steps = prompt.steps;
