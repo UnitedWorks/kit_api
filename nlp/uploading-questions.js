@@ -21,7 +21,7 @@ knex.select().from('knowledge_categorys').then((catRows) => {
   });
   // Put together operations
   commonExamples.filter((value, index, array) => {
-    if (array[index - 1] && value.intent !== array[index - 1].intent && !nonCategories.includes(value.intent.split('.')[0])) {
+    if (value.intent && array[index - 1] && value.intent !== array[index - 1].intent && !nonCategories.includes(value.intent.split('.')[0])) {
       return value;
     }
     return null;

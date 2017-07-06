@@ -558,8 +558,8 @@ export async function getCategoryFallback(labels, orgId) {
   const mergedRepresentatives = [];
   await Promise.all(categoryFetches).then((labelData) => {
     labelData.forEach((label) => {
-      label.contacts.forEach(contact => mergedContacts.push(contact));
-      label.representatives.forEach(rep => mergedRepresentatives.push(rep));
+      mergedContacts.concat(label.contacts || []);
+      mergedRepresentatives.concat(label.representatives || []);
     });
   });
   // If no contacts, look farther up
@@ -571,7 +571,7 @@ export async function getCategoryFallback(labels, orgId) {
     }).then((generalData) => {
       fallbackObj.labels = ['general'];
       fallbackObj.fellback = true;
-      fallbackObj.contacts = generalData.toJSON().contacts;
+      fallbackObj.contacts = (generalData) ? generalData.toJSON().contacts : [];
     });
   } else {
     fallbackObj.fellback = false;

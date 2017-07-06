@@ -2,7 +2,7 @@ import uuid from 'uuid/v4';
 import { logger } from '../logger';
 import * as interfaces from '../constants/interfaces';
 import { NarrativeSession } from '../narratives/models';
-import { Constituent } from '../accounts/models';
+import { Constituent, Organization } from '../accounts/models';
 import AWSClient from '../services/aws';
 import { getBaseState, getOrgNameFromConstituentEntry } from '../narratives/helpers';
 
@@ -58,11 +58,10 @@ function normalizeInput(conversationClient, input) {
         }
       }
     } else if (conversationClient === interfaces.HTTP) {
-      newMessageObject = {
-        type: 'message',
-        payload: input
-      }
+      newMessageObject = input;
     }
+
+    logger.info(input);
 
     // Output reformatted message after transfering external media to our S3
     if (newMessageObject.payload.attachments) {
@@ -93,6 +92,7 @@ function setupConstituentState(constituent, organization, location) {
     if (model !== null && model.toJSON()) {
       return (Object.assign({}, model.toJSON(), { constituent }));
     }
+
     const newConstituentState = {
       session_id: uuid(),
       state_machine_name: getBaseState(getOrgNameFromConstituentEntry(constituent), 'machine'),
@@ -161,10 +161,20 @@ function normalizeSessionsFromRequest(req, conversationClient) {
     Maybe allow a "callback" argument on this end
   */
   } else if (conversationClient === interfaces.HTTP ) {
-    return Constituent.where({ id: req.query.constituent_id }).fetch().then((model)=>{
-      return model; // TODO(nicksahler): Handle anonymous constituent creation (possibility for spam)
-    }).then((state)=>{
-      return setupConstituentState(state.toJSON());
+    return Constituent.where({ id: req.query.constituent_id  }).fetch().then((model)=>{
+      return model || new Constituent().save();
+    }).then((c) => {
+      return {
+        constituent: c.toJSON(), // TODO(nicksahler): Handle anonymous constituent creation (possibility for spam)
+      };
+    }).then((data)=>{
+      return Organization.where({ id: req.query.organization_id }).fetch().then((org) => {
+        return Object.assign(data, {
+          organization: org.toJSON(),
+        });
+      })
+    }).then((data)=>{
+      return setupConstituentState(data.constituent, data.organization);
     }).then((state)=>{
       return normalizeInput(conversationClient, input).then((normalizedInput) => {
         return [].concat(Object.assign(state, { input: normalizedInput }));

@@ -13,15 +13,10 @@ exports.seed = function(knex, Promise) {
     });
     return Promise.all(categoryInserts).then((data) => {
       obj['categoryIds'] = [].concat(...data);
-      return questionSeed(obj);
+      return finishSeed(obj);
     });
   };
 
-  const questionSeed = (obj) => {
-    return syncSheetKnowledgeBaseQuestions().then((data) => {
-      return finishSeed(obj);
-    });
-  }
   const finishSeed = (obj) => {
     return logger.info(obj);
   };
