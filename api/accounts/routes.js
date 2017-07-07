@@ -126,6 +126,11 @@ router.route('/representative')
     helpers.updateRepresentative(req.body.representative, { returnJSON: true })
       .then(updatedRep => res.status(200).send({ representative: updatedRep }))
       .catch(error => res.status(400).send({ error }));
+  })
+  .delete(requireAuth, (req, res) => {
+    helpers.deleteRepresentative(req.query.representative_id)
+      .then(representative => res.status(200).send({ representative }))
+      .catch(error => res.status(400).send({ error }));
   });
 
 router.put('/representative/change-password', requireAuth, (req, res) => {

@@ -94,7 +94,7 @@ export const createRepresentative = (rep, org, options = {}) => {
   });
 };
 
-export const updateRepresentative = (update, options) => {
+export const updateRepresentative = (update, options = { returnJSON: true }) => {
   const filter = {};
   if (update.id) filter.id = update.id;
   if (update.email) filter.email = update.email;
@@ -102,6 +102,14 @@ export const updateRepresentative = (update, options) => {
     .then((updatedRepModel) => {
       return options.returnJSON ? updatedRepModel.toJSON() : updatedRepModel;
     }).catch(err => err);
+};
+
+export const deleteRepresentative = (id) => {
+  return knex.select('*').from('knowledge_categorys_representatives').where('representative_id', '=', id).del().then(() => {
+    return Representative.where({ id }).destroy({ require: true })
+      .then(() => ({ id }))
+      .catch(err => err);
+  });
 };
 
 export const addRepToOrganization = (rep, org, options) => {
