@@ -28,7 +28,7 @@ export default {
   waiting_organization: {
     message() {
       /* Get input, process it, and get a geolocation */
-      const input = this.snapshot.input.payload.text || this.snapshot.payload.payload;
+      const input = this.snapshot.input.payload.text || this.snapshot.input.payload.payload;
       logger.info(`made it this far... ${input}`);
 
       return geocoder(input).then((data) => {
