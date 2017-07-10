@@ -24,7 +24,7 @@ export const Representative = bookshelf.Model.extend({
       }
     });
   },
-  hidden: ['_pivot_knowledge_category_id', '_pivot_representative_id', 'password', 'email_confirmed', 'created_at'],
+  hidden: ['_pivot_knowledge_category_id', '_pivot_representative_id', 'email_confirmed', 'created_at'],
   organization() {
     return this.belongsTo(Organization, 'organization_id');
   },

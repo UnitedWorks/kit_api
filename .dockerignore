@@ -3,3 +3,4 @@ node_modules
 logs/info.log
 logs/error.log
 logs/warning.log
+yarn.lock
