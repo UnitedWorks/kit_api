@@ -161,20 +161,24 @@ function normalizeSessionsFromRequest(req, conversationClient) {
     Maybe allow a "callback" argument on this end
   */
   } else if (conversationClient === interfaces.HTTP ) {
-    return Constituent.where({ id: req.query.constituent_id  }).fetch().then((model)=>{
-      return model || new Constituent().save();
-    }).then((c) => {
-      return {
-        constituent: c.toJSON(), // TODO(nicksahler): Handle anonymous constituent creation (possibility for spam)
-      };
-    }).then((data)=>{
-      return Organization.where({ id: req.query.organization_id }).fetch().then((org) => {
-        return Object.assign(data, {
-          organization: org.toJSON(),
+    return Organization.where({ id: req.query.organization_id }).fetch({ withRelated: ['location']}).then((org) => {
+      let const_promise;
+      if (req.query.constituent_id) {
+        const_promise = Constituent.where({ id: req.query.constituent_id  }).fetch().then((model)=>{
+          return model || new Constituent().save();
         });
-      })
+      } else {
+        const_promise = new Constituent().save();
+      }
+      
+      return const_promise.then((constituent) => {
+        return {
+          constituent: constituent.toJSON(), // TODO(nicksahler): Handle anonymous constituent creation (possibility for spam)
+          organization: org.toJSON()
+        };
+      });
     }).then((data)=>{
-      return setupConstituentState(data.constituent, data.organization);
+      return setupConstituentState(data.constituent, data.organization, data.organization.location);
     }).then((state)=>{
       return normalizeInput(conversationClient, input).then((normalizedInput) => {
         return [].concat(Object.assign(state, { input: normalizedInput }));

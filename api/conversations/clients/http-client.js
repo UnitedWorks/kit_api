@@ -19,6 +19,11 @@ export class HTTPClient extends BaseClient {
   }
 
   end() {
-    this.config.res.send(this.messages);
+    this.config.res.send({ 
+      meta: {
+        constituent_id: this.config.constituent.id
+      }, 
+      messages: this.messages 
+    });
   }
 }
