@@ -12,7 +12,7 @@ const router = new Router();
 
 // Organizations
 router.get('/organization', (req, res) => {
-  Organization.where({ id: req.query.id }).fetch().then((organization) => {
+  Organization.where({ id: req.query.id }).fetch({ withRelated: ['location', 'integrations', 'messageEntries'] }).then((organization) => {
     res.status(200).send({ organization });
   });
 });
