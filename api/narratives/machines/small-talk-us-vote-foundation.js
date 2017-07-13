@@ -81,6 +81,7 @@ export default {
   },
   what_can_i_do() {
     const elements = [
+      elementTemplates.genericVotingAndElections,
       {
         title: 'U.S. Vote Foundation',
         subtitle: 'Ask about elections, voter ID laws, registration deadlines, and anything else to help you elect representatives!',
@@ -94,12 +95,9 @@ export default {
           title: 'Our Mission',
           url: 'https://www.usvotefoundation.org/vision-and-mission',
         }, {
-          type: 'web_url',
-          title: 'Create Account',
-          url: 'https://www.usvotefoundation.org/vote/CreateAccount.htm',
+          type: 'element_share',
         }],
       },
-      elementTemplates.genericVotingAndElections,
     ];
     this.messagingClient.addToQuene({
       type: 'template',
