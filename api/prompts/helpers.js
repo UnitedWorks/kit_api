@@ -1,3 +1,4 @@
+import { logger } from '../logger';
 import { knex } from '../orm';
 import * as PromptModels from './models';
 import Clients from '../conversations/clients';
@@ -36,11 +37,17 @@ export async function createPrompt({ prompt, steps = [], actions = [] }, options
         prompt_id: newPrompt.id,
         type: action.type,
       };
-      if (actionObj.type === PROMPT_CONST.EMAIL_RESPONSES && action.config.contact.id) {
+      if (actionObj.type === PROMPT_CONST.FORWARD_RESPONSES && action.config.contact.id) {
         actionObj.config = { contact: { id: Number(action.config.contact.id) } };
         return PromptModels.PromptAction.forge(actionObj)
           .save(null, { method: 'insert' }).then(a => a.toJSON());
+      } else if (actionObj.type === PROMPT_CONST.TASK) {
+        actionObj.config = action.config;
+      } else {
+        return logger.error('No prompt action type');
       }
+      return PromptModels.PromptAction.forge(actionObj)
+        .save(null, { method: 'insert' }).then(a => a.toJSON());
     }));
     // Compile and Return!
     return {

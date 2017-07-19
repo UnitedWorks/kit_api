@@ -6,6 +6,7 @@ import EmailService from '../../services/email';
 import * as CASE_CONSTANTS from '../../constants/cases';
 import * as PROMPT_CONSTANTS from '../../constants/prompts';
 import * as replyTemplates from '../templates/quick-replies';
+import { createTask } from '../../tasks/helpers';
 
 export default {
   loading_prompt: {
@@ -108,64 +109,37 @@ export default {
   },
 
   async concluding_prompt() {
-    let hasCaseCreation = false;
-    this.get('prompt').actions.forEach((action) => {
-      if (action.type === PROMPT_CONSTANTS.CREATE_CASE) hasCaseCreation = true;
-    });
-    const contactEmails = await Promise.all(this.get('prompt').actions.filter(a => a.type === PROMPT_CONSTANTS.EMAIL_RESPONSES).map(a => {
-      return KnowledgeContact.where({ id: a.config.contact.id }).fetch().then(c => ({ name: c.get('name'), email: c.get('email') }));
-    }));
-    // // Send Email
-    if (contactEmails.length > 0) {
-      let emailMessage = `A constituent responded to "${this.get('prompt').name}":<br/><br/>`;
-      this.get('prompt').steps.forEach((step, index) => {
-        if (step.type === PROMPT_CONSTANTS.TEXT) emailMessage = emailMessage.concat(`<b>${index + 1}) ${step.instruction}</b><br/>${step.response.text}<br/><br/>`);
-      });
-      emailMessage = emailMessage.concat('If you have questions, send <a href="mailto:mark@mayor.chat">us</a> an email!');
-      new EmailService().send('🤖 Constituent Response', emailMessage, contactEmails, 'alert@email.kit.community');
-    }
-    // // Create Case
-    if (hasCaseCreation) {
-      const steps = this.get('prompt').steps;
-      const title = this.get('prompt').name;
-      const caseId = this.get('prompt').case_id;
-      const description = steps.filter(q => q.type === PROMPT_CONSTANTS.TEXT)[0].response.text;
-      const pictureQuestions = steps.filter(q => q.type === PROMPT_CONSTANTS.PICTURE);
-      let pictures;
-      if (pictureQuestions.length > 0) {
-        pictures = pictureQuestions[0].response.pictures;
-      }
-      const locationQuestions = steps.filter(q => q.type === PROMPT_CONSTANTS.LOCATION);
-      let location;
-      if (locationQuestions.length > 0) {
-        location = locationQuestions[0].response.location;
-      }
-      // If ID exists, update case rather than create new
-      if (caseId) {
-        addCaseNote(caseId, `Q: ${title} -- A: ${description} `);
-      } else {
-        // Create New
-        createConstituentCase({
-          title,
-          description,
-          type: CASE_CONSTANTS.REQUEST,
-          location,
-          attachments: pictures,
-        },
-        this.snapshot.constituent,
-        this.get('organization') || { id: this.snapshot.organization_id });
+    const task = this.get('prompt').actions.filter(a => a.type === PROMPT_CONSTANTS.TASK)[0];
+    if (task) {
+      const contacts = await Promise.all(this.get('prompt').actions.filter(a => a.type === PROMPT_CONSTANTS.FORWARD_RESPONSES)
+        .map(a => KnowledgeContact.where({ id: a.config.contact.id }).fetch()
+        .then(c => c.toJSON())));
+      const params = {};
+      this.get('prompt').steps.forEach(s => (params[s.param || s.instruction] = s.response));
+      createTask(task.config.task, params, { contacts, organization_id: this.get('organization').id, constituent_id: this.snapshot.constituent_id });
+    } else {
+      const contactEmails = await Promise.all(this.get('prompt').actions.filter(a => a.type === PROMPT_CONSTANTS.TASK).map(a => {
+        return KnowledgeContact.where({ id: a.config.contact.id }).fetch().then(c => ({ name: c.get('name'), email: c.get('email') }));
+      }));
+      // // Send Email
+      if (contactEmails.length > 0) {
+        let emailMessage = `A constituent responded to "${this.get('prompt').name}":<br/><br/>`;
+        this.get('prompt').steps.forEach((step, index) => {
+          if (step.type === PROMPT_CONSTANTS.TEXT) emailMessage = emailMessage.concat(`<b>${index + 1}) ${step.instruction}</b><br/>${step.response.text}<br/><br/>`);
+        });
+        emailMessage = emailMessage.concat('If you have questions, send <a href="mailto:mark@mayor.chat">us</a> an email!');
+        new EmailService().send('🤖 Constituent Response', emailMessage, contactEmails, 'alert@email.kit.community');
       }
     }
-
-    this.messagingClient.send('Thanks, I\'ll do my best to let you know of any updates.');
-    return savePromptResponses(this.snapshot.data_store.prompt.steps, this.snapshot.constituent)
-      .then(() => {
-        this.delete('prompt');
-        // Not sure why, but when I was doing a fire, it wasn't saving the new state and machine.
-        this.snapshot.state_machine_name = 'smallTalk';
-        this.current = 'start';
-        this.save();
-      });
+    // this.messagingClient.send('Thanks, I\'ll do my best to let you know of any updates.');
+    // return savePromptResponses(this.snapshot.data_store.prompt.steps, this.snapshot.constituent)
+    //   .then(() => {
+    //     this.delete('prompt');
+    //     // Not sure why, but when I was doing a fire, it wasn't saving the new state and machine.
+    //     this.snapshot.state_machine_name = 'smallTalk';
+    //     this.current = 'start';
+    //     this.save();
+    //   });
   },
 
 };
