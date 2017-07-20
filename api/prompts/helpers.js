@@ -8,7 +8,7 @@ import * as PROMPT_CONST from '../constants/prompts';
 
 export function getPrompt(params, options = { returnJSON: true }) {
   return PromptModels.Prompt.where(params)
-    .fetch({ withRelated: ['steps', 'actions'] })
+    .fetch({ withRelated: ['steps'] })
     .then((promptModel) => {
       return options.returnJSON ? promptModel.toJSON() : promptModel;
     }).catch(err => err);
@@ -17,12 +17,12 @@ export function getPrompt(params, options = { returnJSON: true }) {
 export function getPrompts(params = {}, options = { returnJSON: true }) {
   return PromptModels.Prompt.query((qb) => {
     qb.where('organization_id', '=', params.organization_id);
-  }).fetchAll({ withRelated: ['steps', 'actions'] })
+  }).fetchAll({ withRelated: ['steps'] })
     .then(promptModels => options.returnJSON ? promptModels.toJSON() : promptModels)
     .catch(err => err);
 }
 
-export async function createPrompt({ prompt, steps = [], actions = [] }, options = { returnJSON: true }) {
+export async function createPrompt({ prompt, steps = [] }, options = { returnJSON: true }) {
   const newPrompt = await PromptModels.Prompt.forge(prompt).save(null, { method: 'insert' }).then(p => p.toJSON());
   if (steps.length > 0) {
     const newStepModels = await Promise.all(steps.map((step) => {
@@ -32,28 +32,10 @@ export async function createPrompt({ prompt, steps = [], actions = [] }, options
         type: step.type || PROMPT_CONST.TEXT,
       }).save(null, { method: 'insert' }).then(s => s.toJSON());
     }));
-    const newActionModels = await Promise.all(actions.map((action) => {
-      const actionObj = {
-        prompt_id: newPrompt.id,
-        type: action.type,
-      };
-      if (actionObj.type === PROMPT_CONST.FORWARD_RESPONSES && action.config.contact.id) {
-        actionObj.config = { contact: { id: Number(action.config.contact.id) } };
-        return PromptModels.PromptAction.forge(actionObj)
-          .save(null, { method: 'insert' }).then(a => a.toJSON());
-      } else if (actionObj.type === PROMPT_CONST.TASK) {
-        actionObj.config = action.config;
-      } else {
-        return logger.error('No prompt action type');
-      }
-      return PromptModels.PromptAction.forge(actionObj)
-        .save(null, { method: 'insert' }).then(a => a.toJSON());
-    }));
     // Compile and Return!
     return {
       ...newPrompt,
       steps: newStepModels,
-      actions: newActionModels,
     };
   }
   return options.returnJSON ? newPrompt.toJSON() : newPrompt;
@@ -62,49 +44,28 @@ export async function createPrompt({ prompt, steps = [], actions = [] }, options
 export async function updatePrompt(prompt) {
   if (!prompt.id) throw new Error('No Prompt ID provided');
   const steps = prompt.steps;
-  const actions = prompt.actions;
   delete prompt.steps;
-  delete prompt.actions;
   const updatedPrompt = await PromptModels.Prompt.where({ id: prompt.id }).save(prompt, { method: 'update' }).then(p => p.toJSON());
-  const updatedSteps = await PromptModels.PromptStep.where({ prompt_id: prompt.id }).fetchAll()
-    .then((fetchedStepModels) => {
-      const stepCrudOperations = [];
-      // Compile Create/Updates
-      steps.forEach((step, index) => {
-        if (step.id) {
-          stepCrudOperations.push(PromptModels.PromptStep.forge({ ...step }).save(null, { method: 'update' }).then(s => s.toJSON()));
-        } else {
-          stepCrudOperations.push(PromptModels.PromptStep.forge({ ...step, prompt_id: prompt.id }).save(null, { method: 'insert' }).then(s => s.toJSON()));
-        }
-      });
-      // Compile Deletes
-      fetchedStepModels.toJSON()
-        .filter(fetched => steps.filter(s => s.id == fetched.id).length === 0)
-        .forEach(f => PromptModels.PromptResponse.where({ prompt_step_id: f.id }).destroy().then(
-            () => PromptModels.PromptStep.where({ id: f.id }).destroy({ require: true })));
-      return Promise.all(stepCrudOperations);
+  const updatedSteps = await PromptModels.PromptStep.where({ prompt_id: prompt.id }).fetchAll().then((fetchedStepModels) => {
+    const stepCrudOperations = [];
+    // Compile Create/Updates
+    steps.forEach((step) => {
+      if (step.id) {
+        stepCrudOperations.push(PromptModels.PromptStep.forge({ ...step }).save(null, { method: 'update' }).then(s => s.toJSON()));
+      } else {
+        stepCrudOperations.push(PromptModels.PromptStep.forge({ ...step, prompt_id: prompt.id }).save(null, { method: 'insert' }).then(s => s.toJSON()));
+      }
     });
-  const updatedActions = await PromptModels.PromptAction.where({ prompt_id: prompt.id }).fetchAll()
-    .then((fetchedActionModels) => {
-      const actionCrudOperations = [];
-      // Compile Create/Updates
-      actions.forEach((action) => {
-        if (action.id) {
-          actionCrudOperations.push(PromptModels.PromptAction.forge(action).save(null, { method: 'update' }).then(s => s.toJSON()));
-        } else {
-          actionCrudOperations.push(PromptModels.PromptAction.forge({ ...action, prompt_id: prompt.id }).save(null, { method: 'insert' }).then(s => s.toJSON()));
-        }
-      });
-      // Compile Deletes
-      fetchedActionModels.toJSON()
-        .filter(fetched => actions.filter(a => a.id == fetched.id).length === 0)
-        .forEach(f => PromptModels.PromptAction.where({ id: f.id }).destroy({ require: true }));
-      return Promise.all(actionCrudOperations);
-    });
+    // Compile Deletes
+    fetchedStepModels.toJSON()
+      .filter(fetched => steps.filter(s => s.id == fetched.id).length === 0)
+      .forEach(f => PromptModels.PromptResponse.where({ prompt_step_id: f.id }).destroy().then(
+          () => PromptModels.PromptStep.where({ id: f.id }).destroy({ require: true })));
+    return Promise.all(stepCrudOperations);
+  });
   return {
     ...updatedPrompt,
     steps: updatedSteps,
-    actions: updatedActions,
   };
 }
 
@@ -116,10 +77,8 @@ export function upsertPrompt(prompt, options = { returnJSON: true }) {
   }
   // Otherwise create prompt
   const steps = prompt.steps;
-  const actions = prompt.actions;
   delete prompt.steps;
-  delete prompt.actions;
-  return createPrompt({ prompt, steps, actions }, options);
+  return createPrompt({ prompt, steps }, options);
 }
 
 export function deletePrompt({ id }) {
@@ -145,7 +104,7 @@ export function deletePrompt({ id }) {
 
 export function broadcastPrompt(prompt = {}) {
   if (!prompt.id) throw new Error('No Prompt ID provided');
-  return PromptModels.Prompt.where({ id: prompt.id }).fetch({ withRelated: ['steps', 'actions'] })
+  return PromptModels.Prompt.where({ id: prompt.id }).fetch({ withRelated: ['steps'] })
     .then((foundPrompt) => {
       return NarrativeSession.where({ organization_id: foundPrompt.get('organization_id') })
         .fetchAll({ withRelated: ['constituent', 'constituent.facebookEntry', 'constituent.smsEntry'] })

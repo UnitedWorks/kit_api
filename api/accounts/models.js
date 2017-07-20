@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt-nodejs';
 import { bookshelf } from '../orm';
 import * as KnowledgeModels from '../knowledge-base/models';
-import * as CaseModels from '../cases/models';
+import { Task } from '../tasks/models';
 import * as IntegrationModels from '../integrations/models';
 import * as ConversationModels from '../conversations/models';
 
@@ -35,8 +35,8 @@ export const Constituent = bookshelf.Model.extend({
   organizations: function () {
     return this.belongsToMany(Organization, 'organizations_constituents');
   },
-  cases: function() {
-    return this.hasMany(CaseModels.Case, 'constituent_id');
+  tasks: function() {
+    return this.hasMany(Task, 'constituent_id');
   },
   facebookEntry: function() {
     return this.hasOne(ConversationModels.MessageEntry, 'facebook_entry_id', 'facebook_entry_id');
@@ -59,9 +59,6 @@ export const Organization = bookshelf.Model.extend({
   },
   location: function () {
     return this.belongsTo(KnowledgeModels.Location, 'location_id');
-  },
-  cases: function() {
-    return this.belongsToMany(CaseModels.Case, 'organizations_cases');
   },
   messageEntries: function() {
     return this.hasMany(ConversationModels.MessageEntry, 'organization_id');

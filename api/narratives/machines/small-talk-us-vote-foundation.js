@@ -66,7 +66,7 @@ export default {
         if (entities.intent && entities.intent[0]) {
           return Promise.resolve(intentMap[entities.intent[0].value]);
         }
-        return 'failedRequest';
+        return 'failed_request';
       });
     },
     action() {
@@ -119,13 +119,13 @@ export default {
     this.messagingClient.send('No problem!', baseQuickReplies);
     return 'start';
   },
-  failedRequest() {
+  failed_request() {
     new SlackService({
       username: 'Misunderstood Request - US Vote Foundation',
       icon: 'question',
     }).send(`>*Request Message*: ${this.snapshot.input.payload.text}\n>*Constituent ID*: ${this.snapshot.constituent.id}`);
     // If first failure, ask for a repeat of question
-    if (this.snapshot.state_machine_previous_state !== 'failedRequest') {
+    if (this.snapshot.state_machine_previous_state !== 'failed_request') {
       return this.messagingClient.send('I think I\'m misunderstanding. Can you say that another way?')
         .then(() => 'start');
     }

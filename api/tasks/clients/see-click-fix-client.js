@@ -1,17 +1,12 @@
 import axios from 'axios';
 import { knex } from '../../orm';
-import { SEE_CLICK_FIX_CATEGORIES } from '../../constants/cases';
+import { PENDING, COMPLETED } from '../../constants/tasks';
 
 export default class SeeClickFix {
   constructor() {
     this.apiURI = process.env.SEE_CLICK_FIX_API_URI;
     this.username = process.env.SEE_CLICK_FIX_USER;
     this.password = process.env.SEE_CLICK_FIX_PASSWORD;
-    this.acceptedCategories = SEE_CLICK_FIX_CATEGORIES;
-  }
-
-  requestCategoryAllowed(category) {
-    return this.acceptedCategories.includes(category);
   }
 
   report(location, text, images) {
@@ -42,21 +37,21 @@ export default class SeeClickFix {
     });
   }
 
-  syncCase(scfId) {
+  syncTaskStatus(scfId) {
     return new Promise((resolve, reject) => {
-      if (!scfId) throw Error('No ID provided for Case Sync');
+      if (!scfId) throw Error('No ID provided for Task Sync');
       axios.get(`${this.apiURI}/issues/${scfId}`).then(({ data }) => {
         let refreshedStatus;
         // Sync open/closed status
         if (data.status.includes('Open', 'Acknowledged')) {
-          refreshedStatus = 'open';
+          refreshedStatus = PENDING;
         } else {
-          refreshedStatus = 'closed';
+          refreshedStatus = COMPLETED;
         }
-        knex('cases')
-          .where({ see_click_fix_id: scfId })
+        knex('tasks')
+          .whereRaw("meta->>'see_click_fix'=?", scfId)
           .update({ status: refreshedStatus })
-          .returning('*')
+          .returning('status')
           .then(res => resolve(JSON.parse(JSON.stringify(res[0]))))
           .catch(err => reject(err));
       });

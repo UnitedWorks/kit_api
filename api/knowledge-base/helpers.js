@@ -3,7 +3,6 @@ import * as env from '../env';
 import { Representative } from '../accounts/models';
 import { EventRule, KnowledgeAnswer, KnowledgeCategory, KnowledgeFacility, KnowledgeService,
   KnowledgeQuestion, KnowledgeContact, Location } from './models';
-import { CaseLocations, CaseMedia } from '../cases/models';
 import { upsertPrompt } from '../prompts/helpers';
 import geocoder from '../services/geocoder';
 import EmailService from '../services/email';
@@ -31,7 +30,7 @@ export const getAnswers = (params = {}, options = {}) => {
       answers: q => q.where('organization_id', params.organization_id).whereNotNull('approved_at'),
     }, 'category', 'answers.facility', 'answers.facility.location', 'answers.facility.eventRules',
       'answers.service', 'answers.service.location', 'answers.service.eventRules',
-      'answers.contact', 'answers.prompt', 'answers.prompt.steps', 'answers.prompt.actions'],
+      'answers.contact', 'answers.prompt', 'answers.prompt.steps'],
   }).then((data) => {
     if (!options.returnJSON) return data.get('answers');
     if (data == null) return {};
@@ -356,20 +355,6 @@ export const deleteService = (serviceId) => {
       }).catch(err => err);
     }).catch(err => err);
   }).catch(err => err);
-};
-
-export const associateCaseLocation = (caseObj, location) => {
-  return CaseLocations.forge({
-    case_id: caseObj.id,
-    location_id: location.id,
-  }).save();
-};
-
-export const associateCaseMedia = (caseObj, media) => {
-  return CaseMedia.forge({
-    case_id: caseObj.id,
-    media_id: media.id,
-  }).save();
 };
 
 export const makeQuestion = (label, question, categoryId, options = {}) => {
