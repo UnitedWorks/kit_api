@@ -1,11 +1,11 @@
 import { nlp } from '../../services/nlp';
-import { createConstituentCase, addCaseNote } from '../../cases/helpers';
 import { getPrompt, savePromptResponses } from '../../prompts/helpers';
 import { KnowledgeContact } from '../../knowledge-base/models';
 import EmailService from '../../services/email';
-import * as CASE_CONSTANTS from '../../constants/cases';
 import * as PROMPT_CONSTANTS from '../../constants/prompts';
 import * as replyTemplates from '../templates/quick-replies';
+import { createTask } from '../../tasks/helpers';
+import { createLocation } from '../../knowledge-base/helpers';
 
 export default {
   loading_prompt: {
@@ -60,103 +60,88 @@ export default {
             quickReplies.push(replyTemplates.location);
           }
           return this.messagingClient.send(
-            `${i + 1}/${steps.length}) ${this.snapshot.data_store.prompt.steps[i].instruction}`, quickReplies);
+            `${this.snapshot.data_store.prompt.steps[i].instruction} (${i + 1}/${steps.length})`, quickReplies);
         }
       }
       return 'concluding_prompt';
     },
-    message() {
+    async message() {
       if (!this.snapshot.data_store.prompt) return this.getBaseState();
       const steps = this.snapshot.data_store.prompt.steps;
       if (!steps) {
         this.delete('prompt');
         return this.getBaseState();
       }
-      return nlp.message(this.snapshot.input.payload.text).then((nlpData) => {
-        if (nlpData.entities.intent && nlpData.entities.intent[0].value === 'speech.escape') {
-          this.messagingClient.send('Ok! Let me know if theres something I can answer for you or forward to your local gov', replyTemplates.whatCanIAsk);
-          this.delete('prompt');
-          return this.getBaseState();
-        }
-        for (let i = 0; i < steps.length; i += 1) {
-          if (steps[i].response === undefined) {
-            const newSteps = this.snapshot.data_store.prompt.steps;
-            if (steps[i].type === PROMPT_CONSTANTS.TEXT) {
-              newSteps[i].response = {
-                text: this.snapshot.input.payload.text,
-              };
-            } else if (steps[i].type === PROMPT_CONSTANTS.PICTURE) {
-              newSteps[i].response = {
-                pictures: this.snapshot.input.payload.attachments ?
-                  this.snapshot.input.payload.attachments : null,
-              };
-            } else if (steps[i].type === PROMPT_CONSTANTS.LOCATION) {
-              newSteps[i].response = {
-                location: this.snapshot.input.payload.attachments ?
-                  this.snapshot.input.payload.attachments[0] : null,
-              };
+      const nlpData = await nlp.message(this.snapshot.input.payload.text).then(n => n);
+      if (nlpData.entities.intent && nlpData.entities.intent[0].value === 'speech.escape') {
+        this.messagingClient.send('Ok! Let me know if theres something I can answer for you or forward to your local gov', replyTemplates.whatCanIAsk);
+        this.delete('prompt');
+        return this.getBaseState();
+      }
+      for (let i = 0; i < steps.length; i += 1) {
+        if (steps[i].response === undefined) {
+          const newSteps = this.snapshot.data_store.prompt.steps;
+          if (steps[i].type === PROMPT_CONSTANTS.TEXT) {
+            newSteps[i].response = {
+              text: this.snapshot.input.payload.text,
+            };
+          } else if (steps[i].type === PROMPT_CONSTANTS.PICTURE) {
+            newSteps[i].response = {
+              pictures: this.snapshot.input.payload.attachments ?
+                this.snapshot.input.payload.attachments : null,
+            };
+          } else if (steps[i].type === PROMPT_CONSTANTS.LOCATION) {
+            let location = this.snapshot.input.payload.attachments ?
+              this.snapshot.input.payload.attachments[0] : null;
+            if (!location && this.snapshot.input.payload.text) {
+              location = await createLocation(this.snapshot.input.payload.text,
+                { returnJSON: true }).then(json => json);
             }
-            const newPromptStore = this.get('prompt');
-            newPromptStore.steps = newSteps;
-            this.set('prompt', newPromptStore);
-            break;
+            newSteps[i].response = {
+              location,
+            };
           }
+          const newPromptStore = this.get('prompt');
+          newPromptStore.steps = newSteps;
+          this.set('prompt', newPromptStore);
+          break;
         }
-        this.input('enter');
-      });
+      }
+      this.input('enter');
     },
   },
 
   async concluding_prompt() {
-    let hasCaseCreation = false;
-    this.get('prompt').actions.forEach((action) => {
-      if (action.type === PROMPT_CONSTANTS.CREATE_CASE) hasCaseCreation = true;
-    });
-    const contactEmails = await Promise.all(this.get('prompt').actions.filter(a => a.type === PROMPT_CONSTANTS.EMAIL_RESPONSES).map(a => {
-      return KnowledgeContact.where({ id: a.config.contact.id }).fetch().then(c => ({ name: c.get('name'), email: c.get('email') }));
-    }));
-    // // Send Email
-    if (contactEmails.length > 0) {
-      let emailMessage = `A constituent responded to "${this.get('prompt').name}":<br/><br/>`;
-      this.get('prompt').steps.forEach((step, index) => {
-        if (step.type === PROMPT_CONSTANTS.TEXT) emailMessage = emailMessage.concat(`<b>${index + 1}) ${step.instruction}</b><br/>${step.response.text}<br/><br/>`);
-      });
-      emailMessage = emailMessage.concat('If you have questions, send <a href="mailto:mark@mayor.chat">us</a> an email!');
-      new EmailService().send('🤖 Constituent Response', emailMessage, contactEmails, 'alert@email.kit.community');
-    }
-    // // Create Case
-    if (hasCaseCreation) {
-      const steps = this.get('prompt').steps;
-      const title = this.get('prompt').name;
-      const caseId = this.get('prompt').case_id;
-      const description = steps.filter(q => q.type === PROMPT_CONSTANTS.TEXT)[0].response.text;
-      const pictureQuestions = steps.filter(q => q.type === PROMPT_CONSTANTS.PICTURE);
-      let pictures;
-      if (pictureQuestions.length > 0) {
-        pictures = pictureQuestions[0].response.pictures;
-      }
-      const locationQuestions = steps.filter(q => q.type === PROMPT_CONSTANTS.LOCATION);
-      let location;
-      if (locationQuestions.length > 0) {
-        location = locationQuestions[0].response.location;
-      }
-      // If ID exists, update case rather than create new
-      if (caseId) {
-        addCaseNote(caseId, `Q: ${title} -- A: ${description} `);
-      } else {
-        // Create New
-        createConstituentCase({
-          title,
-          description,
-          type: CASE_CONSTANTS.REQUEST,
-          location,
-          attachments: pictures,
+    // Actions
+    if (this.get('prompt').concluding_actions.task) {
+      const contacts = await Promise.all((this.get('prompt').concluding_actions.knowledge_contacts || [])
+        .map(contact => KnowledgeContact.where({ id: contact.id }).fetch().then(c => c.toJSON())));
+      const params = {};
+      this.get('prompt').steps.forEach(s => (params[s.param || s.instruction] = s.response));
+      createTask(
+        this.get('prompt').concluding_actions.task,
+        params,
+        {
+          contacts,
+          organization_id: this.get('organization').id,
+          constituent_id: this.snapshot.constituent_id,
         },
-        this.snapshot.constituent,
-        this.get('organization') || { id: this.snapshot.organization_id });
+        this.get('prompt').concluding_actions,
+      );
+    } else {
+      const contactEmails = await Promise.all((this.get('prompt').concluding_actions.knowledge_contacts || [])
+        .map(contact => KnowledgeContact.where({ id: contact.id }).fetch().then(c => ({ name: c.get('name'), email: c.get('email') }))));
+      // // Send Email
+      if (contactEmails.length > 0) {
+        let emailMessage = `A constituent responded to "${this.get('prompt').name}":<br/><br/>`;
+        this.get('prompt').steps.forEach((step, index) => {
+          if (step.type === PROMPT_CONSTANTS.TEXT) emailMessage = emailMessage.concat(`<b>${index + 1}) ${step.instruction}</b><br/>${step.response.text}<br/><br/>`);
+        });
+        emailMessage = emailMessage.concat('If you have questions, send <a href="mailto:mark@mayor.chat">us</a> an email!');
+        new EmailService().send('🤖 Constituent Response', emailMessage, contactEmails, 'alert@email.kit.community');
       }
     }
-
+    // Conclude
     this.messagingClient.send('Thanks, I\'ll do my best to let you know of any updates.');
     return savePromptResponses(this.snapshot.data_store.prompt.steps, this.snapshot.constituent)
       .then(() => {

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { logger } from '../../logger';
 import { nlp } from '../../services/nlp';
-import { getConstituentCases } from '../../cases/helpers';
+import { getConstituentTasks } from '../../tasks/helpers';
 import SlackService from '../../services/slack';
 import Mixpanel from '../../services/event-tracking';
 import { fetchAnswers, randomPick } from '../helpers';
@@ -9,6 +9,7 @@ import { getCategoryFallback } from '../../knowledge-base/helpers';
 import * as elementTemplates from '../templates/elements';
 import * as replyTemplates from '../templates/quick-replies';
 import * as ATTRIBUTES from '../../constants/attributes';
+import { TYPE_MAP } from '../../constants/tasks';
 
 /* TODO(nicksahler) until I build the full i18n class */
 const i18n = (key, inserts = {}) => {
@@ -154,8 +155,8 @@ export default {
 
           'education_employment.employment_job_training': 'employment.waiting_job_training',
 
-          'interaction.cases.create': 'prompt.loading_prompt',
-          'interaction.cases.get': 'getCases',
+          'interaction.tasks.create': 'prompt.loading_prompt',
+          'interaction.tasks.get': 'get_tasks',
 
           'settings.locality.change': 'setup.reset_organization',
         };
@@ -164,14 +165,14 @@ export default {
           return Promise.resolve(intentMap[entities.intent[0].value] ||
             fetchAnswers(entities.intent[0].value, this));
         }
-        return 'failedRequest';
+        return 'failed_request';
       });
     },
 
     action() {
       const goTo = {
         MAKE_REQUEST: 'prompt.loading_prompt', // Dont think this will work cause we dont have intent to pull off of
-        GET_REQUESTS: 'getCases',
+        GET_TASKS: 'get_tasks',
         GET_STARTED: 'init',
         CHANGE_CITY: 'setup.reset_organization',
         ASK_OPTIONS: 'what_can_i_do',
@@ -207,23 +208,23 @@ export default {
       .then(() => 'start');
   },
 
-  getCases() {
-    return getConstituentCases(this.snapshot.constituent).then(({ cases }) => {
-      if (cases.length > 0) {
-        cases.forEach((thisCase) => {
-          const message = `${thisCase.status.toUpperCase()} (#${thisCase.id})`;
+  get_tasks() {
+    return getConstituentTasks(this.snapshot.constituent.id).then((tasks) => {
+      if (tasks.length > 0) {
+        tasks.forEach((task) => {
+          const message = `#${task.id} - ${TYPE_MAP[task.type]} (${task.status})`;
           this.messagingClient.addToQuene(message);
         });
         return this.messagingClient.runQuene().then(() => 'start');
       }
       this.messagingClient.send('Looks like you haven\'t made any requests yet!', [
-        { content_type: 'text', title: 'Leave a Request', payload: 'MAKE_REQUEST' },
+        { content_type: 'text', title: 'Make a Request', payload: 'MAKE_REQUEST' },
       ]);
       return 'start';
     });
   },
 
-  failedRequest() {
+  failed_request() {
     // Analytics & Notifications
     new SlackService({
       username: 'Misunderstood Request',
@@ -241,7 +242,7 @@ export default {
       'Hmm, I\'m not following. Can you rephrase that?',
     ]);
     // If first failure, ask for a repeat of question
-    if (this.snapshot.state_machine_previous_state !== 'failedRequest') {
+    if (this.snapshot.state_machine_previous_state !== 'failed_request') {
       return this.messagingClient.send(firstFailMessage).then(() => 'start');
     }
     // If second failure, fetch resources to assist
@@ -437,7 +438,7 @@ export const persistentMenu = [{
     }, {
       type: 'postback',
       title: '📥 View My Requests',
-      payload: 'GET_REQUESTS',
+      payload: 'GET_TASKS',
     }],
   }, {
     title: '🔮 Help',

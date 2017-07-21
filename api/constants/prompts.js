@@ -8,7 +8,7 @@ export const FILE = 'file';
 
 export const PROMPT_STEP_TYPES = [TEXT, EMAIL, PHONE, NUMBER, LOCATION, PICTURE, FILE];
 
-export const CREATE_CASE = 'create_case';
-export const EMAIL_RESPONSES = 'email_responses';
+export const FORWARD_RESPONSES = 'forward_responses';
+export const TASK = 'task';
 
-export const PROMPT_ACTIONS = [CREATE_CASE, EMAIL_RESPONSES];
+export const PROMPT_ACTIONS = [TASK, FORWARD_RESPONSES];

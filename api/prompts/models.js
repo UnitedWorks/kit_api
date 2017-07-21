@@ -20,19 +20,11 @@ export const PromptStep = bookshelf.Model.extend({
   },
 });
 
-export const PromptAction = bookshelf.Model.extend({
-  tableName: 'prompt_actions',
-  hasTimeStamps: true,
-});
-
 export const Prompt = bookshelf.Model.extend({
   tableName: 'prompts',
   hasTimeStamps: true,
   steps() {
     return this.hasMany(PromptStep, 'prompt_id');
-  },
-  actions() {
-    return this.hasMany(PromptAction, 'prompt_id');
   },
   organization() {
     return this.hasOne(AccountModels.Organization, 'organization_id');

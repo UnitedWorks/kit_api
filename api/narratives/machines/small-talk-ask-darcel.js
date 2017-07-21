@@ -47,11 +47,11 @@ export default {
         if (entities.intent && entities.intent[0]) {
           return Promise.resolve(intentMap[entities.intent[0].value]);
         }
-        return 'failedRequest';
+        return 'failed_request';
       });
     },
   },
-  failedRequest(aux = {}) {
+  failed_request(aux = {}) {
     new SlackService({
       username: 'Misunderstood Request - AskDarcel',
       icon: 'question',

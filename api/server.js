@@ -44,13 +44,13 @@ app.get('/', (req, res) => {
 // API
 app.use('/auth', require('./auth/routes'));
 app.use('/accounts', require('./accounts/routes'));
-app.use('/cases', require('./cases/routes'));
 app.use('/conversations', require('./conversations/routes'));
 app.use('/email', require('./email/routes'));
 app.use('/integrations', require('./integrations/routes'));
 app.use('/knowledge', require('./knowledge-base/routes'));
 app.use('/media', require('./media/routes'));
 app.use('/prompts', require('./prompts/routes'));
+app.use('/tasks', require('./tasks/routes'));
 
 // Log Viewing
 app.get('/logs/info', (req, res) => {
