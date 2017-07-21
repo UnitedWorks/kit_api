@@ -539,12 +539,12 @@ export async function getCategoryFallback(labels, orgId) {
       }).then(labelData => (labelData ? labelData.toJSON() : [])),
     );
   });
-  const mergedContacts = [];
-  const mergedRepresentatives = [];
+  let mergedContacts = [];
+  let mergedRepresentatives = [];
   await Promise.all(categoryFetches).then((labelData) => {
     labelData.forEach((label) => {
-      mergedContacts.concat(label.contacts || []);
-      mergedRepresentatives.concat(label.representatives || []);
+      mergedContacts = mergedContacts.concat(label.contacts || []);
+      mergedRepresentatives = mergedRepresentatives.concat(label.representatives || []);
     });
   });
   // If no contacts, look farther up
@@ -615,7 +615,6 @@ export async function answerQuestion(organization, question, answers) {
   new EmailService().send('🤖 Answer Needs Approval',
     `An employee has saved an answer! Please <a href="${env.getDashboardRoot()}/interfaces/answer?organization_id=${organization.id}&question_id=${question.id}" target="_blank">go approve it</a> so we can send it to constituents.<br/><br/>If you have questions, send <a href="mailto:mark@mayor.chat">us</a> an email!`,
     approvalReps,
-    'alert@email.kit.community',
   );
   // Conclude
   return Promise.all(answerInserts).then(() => ({ question }));

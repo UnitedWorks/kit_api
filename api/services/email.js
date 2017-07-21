@@ -3,7 +3,7 @@ import { logger } from '../logger';
 
 export default class EmailService {
 
-  send(subject, content, toEmail, fromEmail, customAttributes = {}) {
+  send(subject, content, toEmail, customAttributes = {}, fromEmail = { email: 'alert@email.kit.community', name: 'Hey Mayor!' }) {
 
     const emailRequestObj = {
       personalizations: [{
@@ -28,6 +28,16 @@ export default class EmailService {
       });
     } else if (typeof toEmail[0] === 'object') {
       emailRequestObj.personalizations[0].to = toEmail;
+    }
+
+    // Setup From
+    if (typeof fromEmail === 'string') {
+      emailRequestObj.from.email = fromEmail;
+    } else if (fromEmail.email) {
+      emailRequestObj.from = {
+        email: fromEmail.email,
+        name: fromEmail.name,
+      };
     }
 
     if (Object.keys(customAttributes).length > 0) {

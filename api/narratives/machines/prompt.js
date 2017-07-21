@@ -138,7 +138,7 @@ export default {
           if (step.type === PROMPT_CONSTANTS.TEXT) emailMessage = emailMessage.concat(`<b>${index + 1}) ${step.instruction}</b><br/>${step.response.text}<br/><br/>`);
         });
         emailMessage = emailMessage.concat('If you have questions, send <a href="mailto:mark@mayor.chat">us</a> an email!');
-        new EmailService().send('🤖 Constituent Response', emailMessage, contactEmails, 'alert@email.kit.community');
+        new EmailService().send('🤖 Constituent Response', emailMessage, contactEmails);
       }
     }
     // Conclude

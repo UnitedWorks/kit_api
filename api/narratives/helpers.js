@@ -80,7 +80,7 @@ export const fetchAnswers = (intent, session) => {
                 repEmails.push({ name: rep.name, email: rep.email });
               });
               const emailMessage = `<b>"${question.question}"</b> ... was asked by a constituent but we don't seem to have an answer!<br/><br/><a href="${env.getDashboardRoot()}/interfaces/answer?organization_id=${session.get('organization').id}&question_id=${question.id}" target="_blank">Create an Answer!</a><br><br> If you have questions, send <a href="mailto:mark@mayor.chat">us</a> an email!`;
-              new EmailService().send(`🤖 Missing Answer QID:${question.id} OID:${session.get('organization').id}`, emailMessage, repEmails, 'alert@email.kit.community', {
+              new EmailService().send(`🤖 Missing Answer QID:${question.id} OID:${session.get('organization').id}`, emailMessage, repEmails, {
                 organization_id: session.get('organization').id,
                 question_id: question.id,
               });
