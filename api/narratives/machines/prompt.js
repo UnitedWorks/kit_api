@@ -103,10 +103,10 @@ export default {
               location = await createLocation(this.snapshot.input.payload.text,
                 { returnJSON: true }).then(json => json);
             // Is FB Object Attachment
-            } else if (location.location && location.location.payload) {
+            } else if (location && location.payload) {
               location = await createLocation({
-                lat: location.location.payload.coordinates.lat,
-                lon: location.location.payload.coordinates.long,
+                lat: location.payload.coordinates.lat,
+                lon: location.payload.coordinates.long,
               }, { returnJSON: true }).then(json => json);
             }
             newSteps[i].response = {
