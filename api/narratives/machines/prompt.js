@@ -81,21 +81,33 @@ export default {
       for (let i = 0; i < steps.length; i += 1) {
         if (steps[i].response === undefined) {
           const newSteps = this.snapshot.data_store.prompt.steps;
+          // Handle Text
           if (steps[i].type === PROMPT_CONSTANTS.TEXT) {
             newSteps[i].response = {
               text: this.snapshot.input.payload.text,
             };
-          } else if (steps[i].type === PROMPT_CONSTANTS.PICTURE) {
-            newSteps[i].response = {
-              pictures: this.snapshot.input.payload.attachments ?
-                this.snapshot.input.payload.attachments : null,
-            };
+          // Handle Picture
+          } else if (steps[i].type === PROMPT_CONSTANTS.IMAGE) {
+            if (this.snapshot.input.payload.attachments) {
+              const attached = this.snapshot.input.payload.attachments;
+              newSteps[i].response = {
+                images: attached.filter(a => a.type === 'image').map(p => ({ type: 'image', url: p.payload.url })),
+              };
+            }
+          // Handle Location
           } else if (steps[i].type === PROMPT_CONSTANTS.LOCATION) {
             let location = this.snapshot.input.payload.attachments ?
               this.snapshot.input.payload.attachments[0] : null;
+            // Is text
             if (!location && this.snapshot.input.payload.text) {
               location = await createLocation(this.snapshot.input.payload.text,
                 { returnJSON: true }).then(json => json);
+            // Is FB Object Attachment
+            } else if (location.location && location.location.payload) {
+              location = await createLocation({
+                lat: location.location.payload.coordinates.lat,
+                lon: location.location.payload.coordinates.long,
+              }, { returnJSON: true }).then(json => json);
             }
             newSteps[i].response = {
               location,
@@ -117,7 +129,19 @@ export default {
       const contacts = await Promise.all((this.get('prompt').concluding_actions.knowledge_contacts || [])
         .map(contact => KnowledgeContact.where({ id: contact.id }).fetch().then(c => c.toJSON())));
       const params = {};
-      this.get('prompt').steps.forEach(s => (params[s.param || s.instruction] = s.response));
+      this.get('prompt').steps.forEach((s) => {
+        // Set param key, and append files/media/info if finding similar keys
+        if (!params[s.param || s.instruction]) {
+          params[s.param || s.instruction] = s.response;
+        } else {
+          Object.keys(s.response).forEach((key) => {
+            // If a param is an array, push into it
+            if (s.response[key] && params[s.param || s.instruction][key] && params[s.param || s.instruction][key].length > -1) {
+              params[s.param || s.instruction][key] = params[s.param || s.instruction][key].concat(s.response[key]);
+            }
+          });
+        }
+      });
       createTask(
         this.get('prompt').concluding_actions.task,
         params,
