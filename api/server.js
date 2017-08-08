@@ -5,6 +5,7 @@ import fs from 'fs';
 import path from 'path';
 import { logger } from './logger';
 import { baseErrorHandler } from './utils';
+import queue from './queue';
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -75,3 +76,5 @@ app.use(baseErrorHandler);
 app.listen(port, () => {
   logger.info(`Server listening at port: ${port}`);
 });
+
+queue();
