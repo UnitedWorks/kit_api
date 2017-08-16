@@ -66,8 +66,8 @@ export const fetchAnswers = (intent, session) => {
                 distinct_id: session.snapshot.constituent.id,
                 constituent_id: session.snapshot.constituent.id,
                 organization_id: session.get('organization').id,
-                knowledge_category_id: question.knowledge_category_id,
-                question_id: question.id,
+                knowledge_category_id: question ? question.knowledge_category_id : null,
+                question_id: question ? question.id : null,
                 status: 'fallback',
                 interface: session.messagingClient.provider,
               });

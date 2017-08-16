@@ -10,7 +10,7 @@ import { createLocation } from '../../knowledge-base/helpers';
 export default {
   loading_prompt: {
     enter() {
-      const label = this.snapshot.nlp.entities ?
+      const label = (this.snapshot.nlp && this.snapshot.nlp.entities) ?
         this.snapshot.nlp.entities.intent[0].value : null;
       if (!label) return this.getBaseState();
       return getPrompt({ label }).then((prompt) => {

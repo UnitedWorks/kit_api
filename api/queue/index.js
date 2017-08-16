@@ -1,26 +1,25 @@
 import amqp from 'amqp';
 import { logger } from '../logger';
 
-export default function () {
-  let connection = amqp.createConnection({ host: 'kit-rabbit' });
+export default () => {
+  const connection = amqp.createConnection({ host: 'kit-rabbit' });
 
-  connection.on('ready', function() {
-  	logger.info({ test: 'hello'});
-    connection.queue('messages', function() {
+  connection.on('ready', () => {
+    logger.info({ test: 'hello' });
+    connection.queue('messages', (q) => {
       // Catch all messages
-      q.bind('#	');
-    
+      q.bind('# ');
+
       // Receive messages
-      q.subscribe(function (message) {
+      q.subscribe((message) => {
         // Print messages to stdout
         logger.info({ message });
       });
-
     });
-  	connection.publish('ammessages', { message: 'wow'});
+    connection.publish('ammessages', { message: 'wow' });
   });
 
-  connection.on('error', function(err) {
-  	logger.info(err);
+  connection.on('error', (err) => {
+    logger.info(err);
   });
 }

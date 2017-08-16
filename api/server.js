@@ -78,4 +78,4 @@ app.listen(port, () => {
   logger.info(`Server listening at port: ${port}`);
 });
 
-queue();
+// queue();

@@ -33,15 +33,15 @@ export default {
 
       return geocoder(input).then((data) => {
         logger.info(data);
-        const valid_results = data.filter((result)=>{
+        const validResults = data.filter((result) => {
           return ['administrative', 'city', 'town', 'neighbourhood', 'hamlet', 'village'].includes(result.type) && (result.address.city || result.address.town || result.address.hamlet);
         });
 
-        logger.info(valid_results);
+        logger.info(validResults);
 
         // If more than one location is matched with our geolocation look up, ask for detail
-        if (valid_results.length > 1) {
-          const quickReplies = valid_results.map((location) => {
+        if (validResults.length > 1) {
+          const quickReplies = validResults.map((location) => {
             const text = `${location.address.city || location.address.town || location.address.hamlet}, ${location.address.county.replace(/([A-Z])/g, ' $1').trim()}, ${location.address.state} ${location.address.postcode || ''}`;
             return {
               content_type: 'text',
@@ -52,12 +52,12 @@ export default {
 
           this.messagingClient.send(`Which ${input} are you?`, quickReplies);
           return;
-        } else if (valid_results.length === 0) {
+        } else if (validResults.length === 0) {
           this.messagingClient.send(i18n('setup_invalid_location'));
           return;
         }
 
-        const location = valid_results[0];
+        const location = validResults[0];
 
         this.set('location', location);
 
