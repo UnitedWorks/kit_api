@@ -93,6 +93,8 @@ export default {
               newSteps[i].response = {
                 images: attached.filter(a => a.type === 'image').map(p => ({ type: 'image', url: p.payload.url })),
               };
+            } else {
+              newSteps[i].response = {};
             }
           // Handle Location
           } else if (steps[i].type === PROMPT_CONSTANTS.LOCATION) {
@@ -119,50 +121,53 @@ export default {
           break;
         }
       }
-      this.input('enter');
+      return this.input('enter');
     },
   },
 
   async concluding_prompt() {
     // Actions
-    if (this.get('prompt').concluding_actions.task) {
-      const contacts = await Promise.all((this.get('prompt').concluding_actions.knowledge_contacts || [])
-        .map(contact => KnowledgeContact.where({ id: contact.id }).fetch().then(c => c.toJSON())));
-      const params = {};
-      this.get('prompt').steps.forEach((s) => {
-        // Set param key, and append files/media/info if finding similar keys
-        if (!params[s.param || s.instruction]) {
-          params[s.param || s.instruction] = s.response;
-        } else {
-          Object.keys(s.response).forEach((key) => {
-            // If a param is an array, push into it
-            if (s.response[key] && params[s.param || s.instruction][key] && params[s.param || s.instruction][key].length > -1) {
-              params[s.param || s.instruction][key] = params[s.param || s.instruction][key].concat(s.response[key]);
-            }
-          });
-        }
-      });
-      createTask(
-        this.get('prompt').concluding_actions.task,
-        params,
-        {
-          contacts,
-          organization_id: this.get('organization').id,
-          constituent_id: this.snapshot.constituent_id,
-        },
-        this.get('prompt').concluding_actions,
-      );
-    } else {
-      const contactEmails = await Promise.all((this.get('prompt').concluding_actions.knowledge_contacts || [])
-        .map(contact => KnowledgeContact.where({ id: contact.id }).fetch().then(c => ({ name: c.get('name'), email: c.get('email') }))));
-      // // Send Email
-      if (contactEmails.length > 0) {
-        let emailMessage = `A constituent responded to "${this.get('prompt').name}":<br/><br/>`;
-        this.get('prompt').steps.forEach((step, index) => {
-          if (step.type === PROMPT_CONSTANTS.TEXT) emailMessage = emailMessage.concat(`<b>${index + 1}) ${step.instruction}</b><br/>${step.response.text}<br/><br/>`);
+    if (this.get('prompt').concluding_actions) {
+      if (this.get('prompt').concluding_actions.task) {
+        const contacts = await Promise.all((this.get('prompt').concluding_actions.knowledge_contacts || [])
+          .map(contact => KnowledgeContact.where({ id: contact.id })
+            .fetch().then(c => c.toJSON())));
+        const params = {};
+        this.get('prompt').steps.forEach((s) => {
+          // Set param key, and append files/media/info if finding similar keys
+          if (!params[s.param || s.instruction]) {
+            params[s.param || s.instruction] = s.response;
+          } else {
+            Object.keys(s.response).forEach((key) => {
+              // If a param is an array, push into it
+              if (s.response[key] && params[s.param || s.instruction][key] && params[s.param || s.instruction][key].length > -1) {
+                params[s.param || s.instruction][key] = params[s.param || s.instruction][key].concat(s.response[key]);
+              }
+            });
+          }
         });
-        emailMessage = emailMessage.concat('If you have questions, send <a href="mailto:mark@mayor.chat">us</a> an email!');
-        new EmailService().send('🤖 Constituent Response', emailMessage, contactEmails);
+        createTask(
+          this.get('prompt').concluding_actions.task,
+          params,
+          {
+            contacts,
+            organization_id: this.get('organization').id,
+            constituent_id: this.snapshot.constituent_id,
+          },
+          this.get('prompt').concluding_actions,
+        );
+      } else {
+        const contactEmails = await Promise.all((this.get('prompt').concluding_actions.knowledge_contacts || [])
+          .map(contact => KnowledgeContact.where({ id: contact.id }).fetch().then(c => ({ name: c.get('name'), email: c.get('email') }))));
+        // // Send Email
+        if (contactEmails.length > 0) {
+          let emailMessage = `A constituent responded to "${this.get('prompt').name}":<br/><br/>`;
+          this.get('prompt').steps.forEach((step, index) => {
+            if (step.type === PROMPT_CONSTANTS.TEXT) emailMessage = emailMessage.concat(`<b>${index + 1}) ${step.instruction}</b><br/>${step.response.text}<br/><br/>`);
+          });
+          emailMessage = emailMessage.concat('If you have questions, send <a href="mailto:mark@mayor.chat">us</a> an email!');
+          new EmailService().send('🤖 Constituent Response', emailMessage, contactEmails);
+        }
       }
     }
     // Conclude

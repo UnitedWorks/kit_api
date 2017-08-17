@@ -32,23 +32,6 @@ export const genericDocumentation = {
   }],
 };
 
-export const genericRequests = {
-  title: 'Reporting Issues and Concerns',
-  subtitle: 'Record a problem you are facing, and a repersentative will get back to you with a response or resolution',
-  image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/18077241_232809757200782_8664249297555360938_o.png?oh=ff0af5e7afe55f651fd7d367dfa11574&oe=598B1E56',
-  buttons: [{
-    type: 'postback',
-    title: 'Request a Service',
-    payload: 'Request A Service',
-  }, {
-    type: 'postback',
-    title: 'Make a Complaint',
-    payload: 'MAKE_REQUEST',
-  }, {
-    type: 'element_share',
-  }],
-};
-
 export const genericVotingAndElections = {
   title: 'Voting and Elections',
   subtitle: 'Ask about elections, voter ID laws, registration deadlines, and anything else to help you elect representatives!',
@@ -179,10 +162,6 @@ export const genericNewResidentFAQList = [{
     payload: 'Request A Service',
   }, {
     type: 'postback',
-    title: 'Make a Complaint',
-    payload: 'MAKE_REQUEST',
-  }, {
-    type: 'postback',
     title: 'See My Requests',
     payload: 'GET_REQUESTS',
   }],
@@ -209,10 +188,6 @@ export const genericNewResidentServicesList = [{
     type: 'postback',
     title: 'Request a Service',
     payload: 'Request A Service',
-  }, {
-    type: 'postback',
-    title: 'Make a Complaint',
-    payload: 'MAKE_REQUEST',
   }],
 }];
 

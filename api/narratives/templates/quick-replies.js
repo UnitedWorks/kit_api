@@ -31,10 +31,6 @@ export const location = {
   content_type: 'location',
 };
 
-export const makeRequest = [{
-  content_type: 'text', title: 'Make a Request', payload: 'MAKE_REQUEST',
-}];
-
 export const exit = { content_type: 'text', title: 'Nevermind', payload: 'Nevermind' };
 
 export const whatCanIAsk = { content_type: 'text', title: 'F.A.Q. List', payload: 'What can I Ask?' };
@@ -48,5 +44,4 @@ export const basicRequestQuickReplies = [
   { content_type: 'text', title: 'What can I ask?', payload: 'What can I ask?' },
   { content_type: 'text', title: 'Upcoming Elections', payload: 'Upcoming Elections' },
   { content_type: 'text', title: 'Available Benefits', payload: 'Available Benefits' },
-  { content_type: 'text', title: 'Raise an Issue', payload: 'MAKE_REQUEST' },
 ];

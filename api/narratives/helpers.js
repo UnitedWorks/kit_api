@@ -86,7 +86,7 @@ export const fetchAnswers = (intent, session) => {
               });
             } else {
               // If not, suggest making a request
-              session.messagingClient.addToQuene('If you want, "Make a Request" and I will get you a response from a government employee ASAP!', [...replyTemplates.makeRequest, ...replyTemplates.evalHelpfulAnswer]);
+              session.messagingClient.addToQuene('If you want, "Make a Request" and I will get you a response from a government employee ASAP!', [...replyTemplates.evalHelpfulAnswer]);
             }
             // Run Message
             return session.messagingClient.runQuene().then(() => session.getBaseState());

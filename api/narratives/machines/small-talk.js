@@ -7,16 +7,14 @@ import Mixpanel from '../../services/event-tracking';
 import { fetchAnswers, randomPick } from '../helpers';
 import { getCategoryFallback } from '../../knowledge-base/helpers';
 import * as elementTemplates from '../templates/elements';
-import * as replyTemplates from '../templates/quick-replies';
 import * as ATTRIBUTES from '../../constants/attributes';
 import { TYPE_MAP } from '../../constants/tasks';
 
 /* TODO(nicksahler) until I build the full i18n class */
 const i18n = (key, inserts = {}) => {
   const translations = {
-    intro_hello: `Hey${inserts.firstName ? ` ${inserts.firstName}` : ''}! I'm ${inserts.botName ? `${inserts.botName} -- ` : ''}your local government assistant.`,
-    intro_information: 'How can I help you with gov today? :)',
-    organization_confirmation: `You're interested in ${inserts.organizationName}, right?`,
+    intro_hello: `Hey${inserts.firstName ? ` ${inserts.firstName}` : ''}!`,
+    intro_information: `Can I help you find something? Ask me any questions about ${inserts.organizationName ? `${inserts.organizationName} ` : 'local '}government!`,
     bot_apology: `Sorry, I wasn't expeting that answer or may have misunderstood. ${inserts.appendQuestion ? inserts.appendQuestion : ''}`,
   };
   return translations[key];
@@ -60,9 +58,9 @@ export default {
           elementTemplates.genericNewResident,
         ],
       };
-      this.messagingClient.addToQuene(i18n('intro_hello', { firstName, botName }));
+      this.messagingClient.addToQuene(i18n('intro_hello', { firstName }));
       this.messagingClient.addToQuene(templates);
-      this.messagingClient.addToQuene(i18n('intro_information'));
+      this.messagingClient.addToQuene(i18n('intro_information', { organizationName: this.get('organization').name }));
       return this.messagingClient.runQuene().then(() => {
         if (!this.get('organization')) return this.stateRedirect('location', 'smallTalk.start');
         return 'start';
@@ -171,7 +169,6 @@ export default {
 
     action() {
       const goTo = {
-        MAKE_REQUEST: 'prompt.loading_prompt', // Dont think this will work cause we dont have intent to pull off of
         GET_TASKS: 'get_tasks',
         GET_STARTED: 'init',
         CHANGE_CITY: 'setup.reset_organization',
@@ -217,9 +214,7 @@ export default {
         });
         return this.messagingClient.runQuene().then(() => 'start');
       }
-      this.messagingClient.send('Looks like you haven\'t made any requests yet!', [
-        { content_type: 'text', title: 'Make a Request', payload: 'MAKE_REQUEST' },
-      ]);
+      this.messagingClient.send('Looks like you haven\'t made any requests yet!');
       return 'start';
     });
   },
@@ -265,7 +260,6 @@ export default {
           elements: fallbackData.contacts.map(contact => elementTemplates.genericContact(contact)),
         });
       }
-      this.messagingClient.addToQuene('If you want, "Make a Request" and I will get you a response from a government employee ASAP!', replyTemplates.makeRequest);
       return this.messagingClient.runQuene().then(() => 'start');
     }).catch((err) => {
       logger.error(err);
