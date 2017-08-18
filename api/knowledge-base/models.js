@@ -35,6 +35,9 @@ export const KnowledgeContact = bookshelf.Model.extend({
   knowledgeCategories() {
     return this.belongsToMany(KnowledgeCategory, 'knowledge_categorys_knowledge_contacts', 'knowledge_contact_id');
   },
+  organization() {
+    return this.belongsTo(Organization, 'organization_id');
+  },
 });
 
 export const KnowledgeFacilityType = bookshelf.Model.extend({
@@ -43,60 +46,60 @@ export const KnowledgeFacilityType = bookshelf.Model.extend({
 
 export const KnowledgeFacility = bookshelf.Model.extend({
   tableName: 'knowledge_facilitys',
-  category: function() {
+  category() {
     return this.belongsTo(KnowledgeCategory, 'knowledge_category_id');
   },
-  type: function() {
+  type() {
     return this.belongsTo(KnowledgeFacilityType, 'type_id');
   },
-  location: function() {
+  location() {
     return this.belongsTo(Location, 'location_id');
   },
-  events: function() {
+  events() {
     return this.hasMany(KnowledgeEvent, 'knowledge_facility_id');
   },
-  eventRules: function() {
+  eventRules() {
     return this.hasMany(EventRule, 'knowledge_facility_id');
   },
-  services: function() {
+  services() {
     return this.hasMany(KnowledgeService, 'knowledge_facility_id');
   },
 });
 
 export const KnowledgeService = bookshelf.Model.extend({
   tableName: 'knowledge_services',
-  category: function() {
+  category() {
     return this.belongsTo(KnowledgeCategory, 'knowledge_category_id');
   },
-  events: function() {
+  events() {
     return this.hasMany(KnowledgeEvent, 'knowledge_service_id');
   },
-  facility: function() {
+  facility() {
     return this.belongsTo(KnowledgeFacility, 'knowledge_facility_id');
   },
-  location: function() {
+  location() {
     return this.belongsTo(Location, 'location_id');
   },
-  eventRules: function() {
+  eventRules() {
     return this.hasMany(EventRule, 'knowledge_service_id');
   },
 });
 
 export const KnowledgeEvent = bookshelf.Model.extend({
   tableName: 'knowledge_events',
-  category: function() {
+  category() {
     return this.belongsTo(KnowledgeCategory, 'knowledge_category_id');
   },
-  facility: function() {
+  facility() {
     return this.hasOne(KnowledgeFacility, 'id');
   },
-  location: function() {
+  location() {
     return this.hasOne(Location, 'id');
   },
-  eventRules: function() {
+  eventRules() {
     return this.hasMany(EventRule, 'knowledge_event_id');
   },
-  service: function() {
+  service() {
     return this.belongsTo(KnowledgeService, 'knowledge_service_id');
   },
 });
@@ -109,16 +112,16 @@ export const KnowledgeQuestionStats = bookshelf.Model.extend({
 export const KnowledgeQuestion = bookshelf.Model.extend({
   tableName: 'knowledge_questions',
   hasTimestamps: true,
-  answers: function() {
+  answers() {
     return this.hasMany(KnowledgeAnswer, 'question_id');
   },
-  answer: function() {
+  answer() {
     return this.hasOne(KnowledgeAnswer, 'question_id');
   },
-  category: function() {
+  category() {
     return this.belongsTo(KnowledgeCategory, 'knowledge_category_id');
   },
-  stats: function() {
+  stats() {
     return this.hasOne(KnowledgeQuestionStats, 'question_id');
   },
 });
@@ -126,25 +129,25 @@ export const KnowledgeQuestion = bookshelf.Model.extend({
 export const KnowledgeAnswer = bookshelf.Model.extend({
   tableName: 'knowledge_answers',
   hasTimestamps: true,
-  organization: function() {
+  organization() {
     return this.belongsTo(Organization);
   },
-  question: function() {
+  question() {
     return this.belongsTo(KnowledgeQuestion, 'question_id');
   },
-  events: function() {
+  events() {
     return this.hasOne(KnowledgeEvent, 'id', 'knowledge_event_id');
   },
-  facility: function() {
+  facility() {
     return this.hasOne(KnowledgeFacility, 'id', 'knowledge_facility_id');
   },
-  service: function() {
+  service() {
     return this.hasOne(KnowledgeService, 'id', 'knowledge_service_id');
   },
-  contact: function() {
+  contact() {
     return this.hasOne(KnowledgeContact, 'id', 'knowledge_contact_id');
   },
-  prompt: function() {
+  prompt() {
     return this.hasOne(Prompt, 'id', 'prompt_id');
   }
 });

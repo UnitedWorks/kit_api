@@ -83,10 +83,10 @@ export const getCategories = (params = {}) => {
   if (params.organization_id) {
     return KnowledgeCategory.fetchAll({
       withRelated: {
-        contacts: q => q.where('organization_id', params.organization_id),
-        representatives: q => q.where('organization_id', params.organization_id),
+        contacts: q => q.where('knowledge_contacts.organization_id', params.organization_id),
+        representatives: q => q.where('representatives.organization_id', params.organization_id),
         questions: q => q,
-        'questions.answers': q => q.where('organization_id', params.organization_id),
+        'questions.answers': q => q.where('knowledge_answers.organization_id', params.organization_id),
       },
     }).then((data) => {
       return data.toJSON().map((category) => {
@@ -117,15 +117,13 @@ export const setCategoryFallback = ({ organization, category, contacts = [] }) =
     relationshipInserts.push(knex('knowledge_categorys_knowledge_contacts').insert({
       knowledge_category_id: category.id,
       knowledge_contact_id: contact.id,
+      organization_id: organization.id,
     }));
   });
   // Delete relationships this org's contacts have with this category
-  return knex('knowledge_categorys_knowledge_contacts')
+  return knex.select('*').from('knowledge_categorys_knowledge_contacts')
     .where('knowledge_category_id', '=', category.id)
-    .join('knowledge_contacts', function() {
-      this.on('knowledge_categorys_knowledge_contacts.knowledge_contacts_id', '=', 'knowledge_contacts.id')
-        .andOn('knowledge_contacts.organization_id', '=', organization.id);
-    })
+    .andWhere('organization_id', '=', organization.id)
     .del()
     .then(() => Promise.all(relationshipInserts));
 };
@@ -138,15 +136,13 @@ export const setCategoryRepresentatives = ({ organization, category, representat
     repInserts.push(knex('knowledge_categorys_representatives').insert({
       knowledge_category_id: category.id,
       representative_id: representative.id,
+      organization_id: organization.id,
     }));
   });
   // Delete relationships this org's representatives have with this category
-  return knex('knowledge_categorys_representatives')
+  return knex.select('*').from('knowledge_categorys_representatives')
     .where('knowledge_category_id', '=', category.id)
-    .join('representatives', function() {
-      this.on('knowledge_categorys_representatives.representative_id', '=', 'representatives.id')
-        .andOn('representatives.organization_id', '=', organization.id);
-    })
+    .andWhere('organization_id', '=', organization.id)
     .del()
     .then(() => Promise.all(repInserts));
 };
