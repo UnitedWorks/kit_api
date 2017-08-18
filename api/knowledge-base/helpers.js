@@ -516,8 +516,8 @@ export async function getCategoryFallback(labels, orgId) {
     categoryFetches.push(KnowledgeCategory.where({ label })
       .fetch({
         withRelated: [{
-          contacts: q => q.where('organization_id', '=', orgId),
-          representatives: q => q.where('organization_id', '=', orgId),
+          contacts: q => q.where('knowledge_contacts.organization_id', '=', orgId),
+          representatives: q => q.where('representatives.organization_id', '=', orgId),
         }],
       }).then(labelData => (labelData ? labelData.toJSON() : [])),
     );
@@ -534,7 +534,7 @@ export async function getCategoryFallback(labels, orgId) {
   if (mergedContacts.length === 0) {
     await KnowledgeCategory.where({ label: 'general' }).fetch({
       withRelated: [{
-        contacts: q => q.where('organization_id', '=', orgId),
+        contacts: q => q.where('knowledge_contacts.organization_id', '=', orgId),
       }],
     }).then((generalData) => {
       fallbackObj.labels = ['general'];
