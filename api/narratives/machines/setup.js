@@ -61,15 +61,20 @@ export default {
 
         this.set('location', location);
 
-        return getGovernmentOrganizationAtLocation(location, { returnJSON: true })
-          .then((orgModel) => {
-            if (orgModel) {
-              this.set('organization', orgModel);
-            } else {
-              this.set('organization', null);
-            }
-            return 'waiting_organization_confirm';
-          });
+        // If the session is with a provider org, don't change
+        if (this.get('organization') === 'government') {
+          return getGovernmentOrganizationAtLocation(location, { returnJSON: true })
+            .then((orgModel) => {
+              if (orgModel) {
+                this.set('organization', orgModel);
+              } else {
+                this.set('organization', null);
+              }
+              return 'waiting_organization_confirm';
+            });
+        } else {
+          return 'waiting_organization_confirm';
+        }
       });
     },
   },
