@@ -3,6 +3,7 @@ import KitClient from './clients/kit-client';
 import * as TAGS from '../constants/nlp-tagging';
 import * as elementTemplates from './templates/elements';
 import * as replyTemplates from './templates/quick-replies';
+import * as messageTemplates from './templates/messages';
 import { getCategoryFallback } from '../knowledge-base/helpers';
 import EmailService from '../services/email';
 import Mixpanel from '../services/event-tracking';
@@ -43,7 +44,7 @@ export const fetchAnswers = (intent, session) => {
           .then((fallbackData) => {
             // See if we have fallback contacts
             if (fallbackData.contacts.length === 0) {
-              session.messagingClient.addToQuene('Unfortunately, I don\'t have an answer :(');
+              this.messagingClient.addToQuene(messageTemplates.dontKnow);
               Mixpanel.track('answer_sent', {
                 distinct_id: session.snapshot.constituent.id,
                 constituent_id: session.snapshot.constituent.id,
@@ -55,7 +56,20 @@ export const fetchAnswers = (intent, session) => {
               });
             } else {
               // If we do, templates!
-              session.messagingClient.addToQuene('I don\'t have an answer, but try reaching out to these folks!');
+              this.messagingClient.addToQuene(messageTemplates.dontKnow);
+              // Compile names to look nice
+              let compiledContacts = 'Until then please contact my colleagues for more help: ';
+              fallbackData.contacts.forEach((contact, index, arr) => {
+                if (index === 0) {
+                  compiledContacts = compiledContacts.concat(`${contact.name}${contact.phone_number ? ` (${contact.phone_number})` : ''}`);
+                } else if (index === arr.length - 1) {
+                  compiledContacts = compiledContacts.concat(`, and ${contact.name}${contact.phone_number ? ` (${contact.phone_number})` : ''}`);
+                } else {
+                  compiledContacts = compiledContacts.concat(`, ${contact.name}${contact.phone_number ? ` (${contact.phone_number})` : ''}`);
+                }
+              });
+              this.messagingClient.addToQuene(compiledContacts);
+              // Give templates
               session.messagingClient.addToQuene({
                 type: 'template',
                 templateType: 'generic',

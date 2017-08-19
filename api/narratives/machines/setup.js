@@ -4,11 +4,6 @@ import { nlp } from '../../services/nlp';
 import SlackService from '../../services/slack';
 import { getGovernmentOrganizationAtLocation } from '../../accounts/helpers';
 
-const i18n = key => ({
-  setup_ask_city: 'Ok! What\'s your CITY and STATE?  Ex) "New Brunswick, NJ"',
-  setup_invalid_location: 'Hmm, I wasn\'t able to find anything. Can you try giving me a CITY and STATE again? Ex) "New Brunswick, NJ"',
-}[key]);
-
 const admin_levels = {
   country: 2,
   state: 4,

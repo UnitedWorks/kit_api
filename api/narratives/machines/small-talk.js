@@ -7,18 +7,9 @@ import Mixpanel from '../../services/event-tracking';
 import { fetchAnswers, randomPick } from '../helpers';
 import { getCategoryFallback } from '../../knowledge-base/helpers';
 import * as elementTemplates from '../templates/elements';
+import { i18n } from '../templates/messages';
 import * as ATTRIBUTES from '../../constants/attributes';
 import { TYPE_MAP } from '../../constants/tasks';
-
-/* TODO(nicksahler) until I build the full i18n class */
-const i18n = (key, inserts = {}) => {
-  const translations = {
-    intro_hello: `Hey${inserts.firstName ? ` ${inserts.firstName}` : ''}!`,
-    intro_information: `Can I help you find something? Ask me any questions about ${inserts.organizationName ? `${inserts.organizationName} ` : 'local '}government!`,
-    bot_apology: `Sorry, I wasn't expeting that answer or may have misunderstood. ${inserts.appendQuestion ? inserts.appendQuestion : ''}`,
-  };
-  return translations[key];
-};
 
 export default {
   init: {
@@ -250,10 +241,23 @@ export default {
     return getCategoryFallback(labels, this.snapshot.organization_id).then((fallbackData) => {
       // See if we have fallback contacts
       if (fallbackData.contacts.length === 0) {
-        this.messagingClient.addToQuene('Unfortunately, I don\'t have an answer :(');
+        this.messagingClient.addToQuene(i18n('dont_know'));
       } else {
         // If we do, templates!
-        this.messagingClient.addToQuene(':( I don\'t have an answer, but try reaching out to these folks:');
+        this.messagingClient.addToQuene(i18n('dont_know'));
+        // Compile names to look nice
+        let compiledContacts = 'Until then please contact my colleagues for more help: ';
+        fallbackData.contacts.forEach((contact, index, arr) => {
+          if (index === 0) {
+            compiledContacts = compiledContacts.concat(`${contact.name}${contact.phone_number ? ` (${contact.phone_number})` : ''}`);
+          } else if (index === arr.length - 1) {
+            compiledContacts = compiledContacts.concat(`, and ${contact.name}${contact.phone_number ? ` (${contact.phone_number})` : ''}.`);
+          } else {
+            compiledContacts = compiledContacts.concat(`, ${contact.name}${contact.phone_number ? ` (${contact.phone_number})` : ''}`);
+          }
+        });
+        this.messagingClient.addToQuene(compiledContacts);
+        // Give templates
         this.messagingClient.addToQuene({
           type: 'template',
           templateType: 'generic',

@@ -29,6 +29,7 @@ export const KnowledgeCategory = bookshelf.Model.extend({
 export const KnowledgeContact = bookshelf.Model.extend({
   tableName: 'knowledge_contacts',
   hasTimestamps: true,
+  hidden: ['_pivot_knowledge_category_id', '_pivot_knowledge_contact_id'],
   photo() {
     return this.hasOne(Media, 'photo_id');
   },

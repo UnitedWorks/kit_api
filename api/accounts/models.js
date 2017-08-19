@@ -32,35 +32,35 @@ export const Representative = bookshelf.Model.extend({
 
 export const Constituent = bookshelf.Model.extend({
   tableName: 'constituents',
-  organizations: function () {
+  organizations() {
     return this.belongsToMany(Organization, 'organizations_constituents');
   },
-  tasks: function() {
+  tasks() {
     return this.hasMany(Task, 'constituent_id');
   },
-  facebookEntry: function() {
+  facebookEntry() {
     return this.hasOne(ConversationModels.MessageEntry, 'facebook_entry_id', 'facebook_entry_id');
   },
-  smsEntry: function() {
+  smsEntry() {
     return this.hasOne(ConversationModels.MessageEntry, 'phone_number', 'entry_phone_number');
   },
 });
 
 export const Organization = bookshelf.Model.extend({
   tableName: 'organizations',
-  representatives: function () {
+  representatives() {
     return this.hasMany(Representative, 'organization_id');
   },
-  constituents: function () {
+  constituents() {
     return this.belongsToMany(Constituent, 'organizations_constiuents');
   },
-  integrations: function () {
+  integrations() {
     return this.belongsToMany(IntegrationModels.Integration, 'organizations_integrations');
   },
-  location: function () {
+  location() {
     return this.belongsTo(KnowledgeModels.Location, 'location_id');
   },
-  messageEntries: function() {
+  messageEntries() {
     return this.hasMany(ConversationModels.MessageEntry, 'organization_id');
   },
 });

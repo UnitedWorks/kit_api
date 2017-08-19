@@ -9,21 +9,10 @@ const baseQuickReplies = [
   { content_type: 'text', title: 'What can I ask?', payload: 'What Can I Ask?' },
 ];
 
-const i18n = (key, inserts = {}) => {
-  const translations = {
-    intro_hello: `Hey there! ${inserts.name ? ` I'm ${inserts.name}!` : ''} 🇺🇸`,
-  };
-  return translations[key];
-};
-
 export default {
   init: {
     enter() {
-      const name = this.snapshot.constituent.facebookEntry.intro_name ||
-        this.snapshot.constituent.facebookEntry.name;
-      this.messagingClient.addAll([
-        i18n('intro_hello', { name }),
-      ]);
+      this.messagingClient.addAll('Hey there! 🇺🇸');
       return this.messagingClient.runQuene().then(() => {
         if (!this.get('location')) return this.stateRedirect('location', this.getBaseState('what_can_i_do'));
         return 'what_can_i_do';
