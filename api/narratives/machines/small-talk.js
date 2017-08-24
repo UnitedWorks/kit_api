@@ -264,7 +264,9 @@ export default {
           templateType: 'generic',
           elements: fallbackData.contacts.map(contact => elementTemplates.genericContact(contact)),
         });
-        this.messagingClient.addToQuene('Was that helpful?', [...replyTemplates.evalHelpfulAnswer]);
+        if (fallbackData.contacts.length > 0) {
+          this.messagingClient.addToQuene('Was this helpful?', [...replyTemplates.evalHelpfulAnswer]);
+        }
       }
       return this.messagingClient.runQuene().then(() => 'start');
     }).catch((err) => {

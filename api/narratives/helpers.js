@@ -98,7 +98,10 @@ export const fetchAnswers = (intent, session) => {
                 question_id: question.id,
               });
             }
-            session.messagingClient.addToQuene('Was that helpful?', [...replyTemplates.evalHelpfulAnswer]);
+            // If we didn't provide any info, don't bother asking if it was helpful
+            if (fallbackData.representatives.length > 0 || fallbackData.contacts.length > 0) {
+              session.messagingClient.addToQuene('Was this helpful?', [...replyTemplates.evalHelpfulAnswer]);
+            }
             // Run Message
             return session.messagingClient.runQuene().then(() => session.getBaseState());
           });
