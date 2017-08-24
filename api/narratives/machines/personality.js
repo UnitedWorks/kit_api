@@ -45,7 +45,6 @@ export default {
   },
   handle_thank_you() {
     const youreWelcomes = [
-      'Anytime!',
       'You are very welcome!',
       'No problem!',
       'Np :)',

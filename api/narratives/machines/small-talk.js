@@ -7,6 +7,7 @@ import Mixpanel from '../../services/event-tracking';
 import { fetchAnswers, randomPick } from '../helpers';
 import { getCategoryFallback } from '../../knowledge-base/helpers';
 import * as elementTemplates from '../templates/elements';
+import * as replyTemplates from '../templates/quick-replies';
 import { i18n } from '../templates/messages';
 import * as ATTRIBUTES from '../../constants/attributes';
 import { TYPE_MAP } from '../../constants/tasks';
@@ -263,6 +264,7 @@ export default {
           templateType: 'generic',
           elements: fallbackData.contacts.map(contact => elementTemplates.genericContact(contact)),
         });
+        this.messagingClient.addToQuene('Was that helpful?', [...replyTemplates.evalHelpfulAnswer]);
       }
       return this.messagingClient.runQuene().then(() => 'start');
     }).catch((err) => {

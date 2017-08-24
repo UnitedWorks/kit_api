@@ -3,7 +3,7 @@ import KitClient from './clients/kit-client';
 import * as TAGS from '../constants/nlp-tagging';
 import * as elementTemplates from './templates/elements';
 import * as replyTemplates from './templates/quick-replies';
-import * as messageTemplates from './templates/messages';
+import { i18n } from './templates/messages';
 import { getCategoryFallback } from '../knowledge-base/helpers';
 import EmailService from '../services/email';
 import Mixpanel from '../services/event-tracking';
@@ -44,7 +44,7 @@ export const fetchAnswers = (intent, session) => {
           .then((fallbackData) => {
             // See if we have fallback contacts
             if (fallbackData.contacts.length === 0) {
-              this.messagingClient.addToQuene(messageTemplates.dontKnow);
+              session.messagingClient.addToQuene(i18n('dont_know'));
               Mixpanel.track('answer_sent', {
                 distinct_id: session.snapshot.constituent.id,
                 constituent_id: session.snapshot.constituent.id,
@@ -56,7 +56,7 @@ export const fetchAnswers = (intent, session) => {
               });
             } else {
               // If we do, templates!
-              this.messagingClient.addToQuene(messageTemplates.dontKnow);
+              session.messagingClient.addToQuene(i18n('dont_know'));
               // Compile names to look nice
               let compiledContacts = 'Until then please contact my colleagues for more help: ';
               fallbackData.contacts.forEach((contact, index, arr) => {
@@ -68,7 +68,7 @@ export const fetchAnswers = (intent, session) => {
                   compiledContacts = compiledContacts.concat(`, ${contact.name}${contact.phone_number ? ` (${contact.phone_number})` : ''}`);
                 }
               });
-              this.messagingClient.addToQuene(compiledContacts);
+              session.messagingClient.addToQuene(compiledContacts);
               // Give templates
               session.messagingClient.addToQuene({
                 type: 'template',
@@ -88,7 +88,6 @@ export const fetchAnswers = (intent, session) => {
             }
             // EMAIL: See if have a representative we can send this to
             if (fallbackData.representatives.length > 0) {
-              session.messagingClient.addToQuene('I\'ve passed your message along to an employee. I will send you an answer when I hear back.', replyTemplates.evalHelpfulAnswer);
               const repEmails = [];
               fallbackData.representatives.forEach((rep) => {
                 repEmails.push({ name: rep.name, email: rep.email });
@@ -98,10 +97,8 @@ export const fetchAnswers = (intent, session) => {
                 organization_id: session.get('organization').id,
                 question_id: question.id,
               });
-            } else {
-              // If not, suggest making a request
-              session.messagingClient.addToQuene('Was that helpful?', [...replyTemplates.evalHelpfulAnswer]);
             }
+            session.messagingClient.addToQuene('Was that helpful?', [...replyTemplates.evalHelpfulAnswer]);
             // Run Message
             return session.messagingClient.runQuene().then(() => session.getBaseState());
           });
