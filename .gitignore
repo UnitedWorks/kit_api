@@ -4,4 +4,3 @@ node_modules
 .env.test
 logs
 .DS_Store
-nlp/data/*

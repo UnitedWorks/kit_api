@@ -5,7 +5,7 @@ require('babel-polyfill');
 require('../api/env').setup();
 
 const knex = require('../api/orm').knex;
-const trainingData = require('./data/v2.json');
+const trainingData = require('./data');
 
 // Update the DB
 const commonExamples = trainingData.rasa_nlu_data ?

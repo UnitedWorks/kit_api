@@ -7,11 +7,7 @@ require('../api/env').setup();
 const axios = require('axios');
 
 // Update the Wit App
-const trainingData = require('./data/v2.json');
-const commonExamples = trainingData.rasa_nlu_data ?
-  trainingData.rasa_nlu_data.common_examples : trainingData;
-
-const witFormatedExamples = commonExamples.map((example) => {
+const witFormatedExamples = require('./data').rasa_nlu_data.common_examples.map((example) => {
   const entities = [...example.entities];
   if (example.intent) {
     entities.push({
