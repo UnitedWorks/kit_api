@@ -5,11 +5,9 @@ require('babel-polyfill');
 require('../api/env').setup();
 
 const knex = require('../api/orm').knex;
-const trainingData = require('./data');
 
 // Update the DB
-const commonExamples = trainingData.rasa_nlu_data ?
-  trainingData.rasa_nlu_data.common_examples : trainingData;
+const commonExamples = require('./data').rasa_nlu_data.common_examples;
 const questionOperations = [];
 
 knex.select().from('knowledge_categorys').then((catRows) => {

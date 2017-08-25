@@ -1,15 +1,5 @@
 module.exports = [
   {
-    "text": "What permit do I need to build a billboard?",
-    "intent": "business_finance.advertising_billboard_requirements",
-    "entities": []
-  },
-  {
-    "text": "I want to build a billboard. What do I need to do?",
-    "intent": "business_finance.advertising_billboard_requirements",
-    "entities": []
-  },
-  {
     "text": "Am I allowed to knock on doors and hand out informational brochures?",
     "intent": "business_finance.advertising_door_to_door",
     "entities": []
@@ -39,6 +29,16 @@ module.exports = [
   {
     "text": "Do I need to let the local government know about going door to door?",
     "intent": "business_finance.advertising_door_to_door",
+    "entities": []
+  },
+  {
+    "text": "What permit do I need to build a billboard?",
+    "intent": "business_finance.advertising_billboard_requirements",
+    "entities": []
+  },
+  {
+    "text": "I want to build a billboard. What do I need to do?",
+    "intent": "business_finance.advertising_billboard_requirements",
     "entities": []
   },
   {
@@ -362,7 +362,7 @@ module.exports = [
   },
   {
     "text": "How do I get help starting or expanding my small business?",
-    "intent": "business_finance.business_assistance_small_business.start",
+    "intent": "business_finance.business_assistance_small_business",
     "entities": [
       {
         "start": 43,
@@ -374,12 +374,17 @@ module.exports = [
   },
   {
     "text": "how do i open a business",
-    "intent": "business_finance.business_assistance_small_business.start",
+    "intent": "business_finance.business_assistance_small_business",
     "entities": []
   },
   {
     "text": "How do I open a small business?",
-    "intent": "business_finance.business_assistance_small_business.start",
+    "intent": "business_finance.business_assistance_small_business",
+    "entities": []
+  },
+  {
+    "text": "Small business loans",
+    "intent": "business_finance.business_assistance_small_business",
     "entities": []
   },
   {

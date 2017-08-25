@@ -595,8 +595,8 @@ export async function answerQuestion(organization, question, answers) {
   const approvalReps = await Representative.where({ organization_id: organization.id, admin: true }).fetchAll()
     .then(r => r.toJSON()).filter(r => r.email)
     .map(r => ({ email: r.email, name: r.name }));
-  new EmailService().send('🤖 Answer Needs Approval',
-    `An employee has saved an answer! Please <a href="${env.getDashboardRoot()}/interfaces/answer?organization_id=${organization.id}&question_id=${question.id}" target="_blank">go approve it</a> so we can send it to constituents.<br/><br/>If you have questions, send <a href="mailto:mark@mayor.chat">us</a> an email!`,
+  new EmailService().send(`🤖 Answer Needs Approval - "${question.question}"`,
+    `An employee has saved an answer for "${question.question}"! Please <a href="${env.getDashboardRoot()}/interfaces/answer?organization_id=${organization.id}&question_id=${question.id}" target="_blank">go approve it</a> so we can send it to constituents.<br/><br/>If you have questions, send <a href="mailto:mark@mayor.chat">us</a> an email!`,
     approvalReps,
   );
   // Conclude

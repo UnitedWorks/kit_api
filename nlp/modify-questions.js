@@ -6,8 +6,8 @@ const knex = require('../api/orm').knex;
 
 const updateOperations = [
   {
-    from: '',
-    to: '',
+    from: 'business_finance.business_assistance_small_business.start',
+    to: 'business_finance.business_assistance_small_business',
   },
 ].map((modification) => {
   // Simply update the label
