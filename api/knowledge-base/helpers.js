@@ -24,44 +24,47 @@ export const incrementTimesAsked = (questionId, orgId) => {
     });
 };
 
-export const getAnswers = (params = {}, options = {}) => {
-  return KnowledgeQuestion.where({ label: params.label }).fetch({
+export async function getAnswers(params = {}, options = {}) {
+  const data = await KnowledgeQuestion.where({ label: params.label }).fetch({
     withRelated: [{
       answers: q => q.where('organization_id', params.organization_id).whereNotNull('approved_at'),
     }, 'category', 'answers.facility', 'answers.facility.location', 'answers.facility.eventRules',
       'answers.service', 'answers.service.location', 'answers.service.eventRules',
       'answers.contact', 'answers.prompt', 'answers.prompt.steps'],
-  }).then((data) => {
-    if (!options.returnJSON) return data.get('answers');
-    if (data == null) return {};
-    // If from state machine, we're passing a flag to increment times_asked
-    if (options.incrementTimesAsked) {
-      incrementTimesAsked(data.get('id'), params.organization_id);
-    }
-    const questionJSON = data.toJSON();
-    const answerJSON = questionJSON.answers;
+  }).then(d => d);
+  if (!options.returnJSON) return data.get('answers');
+  if (data == null) return {};
+  // If from state machine, we're passing a flag to increment times_asked
+  if (options.incrementTimesAsked) {
+    incrementTimesAsked(data.get('id'), params.organization_id);
+  }
+  const questionJSON = data.toJSON();
+  const answerJSON = questionJSON.answers;
+  // If a vague intent, get other questions
+  if (questionJSON.vague) {
+    const altQuestions = await KnowledgeQuestion.where('label', '~', `${questionJSON.label}.`).fetchAll().then(results => results.toJSON());
+    return { question: questionJSON, altQuestions };
+  } else if (options.groupKnowledge) {
     // Reformat Answers
-    if (options.groupKnowledge) {
-      const answerGrouped = {
-        facilities: answerJSON.filter(a => a.knowledge_facility_id).map(a => a.facility),
-        services: answerJSON.filter(a => a.knowledge_service_id).map(a => a.service),
-        contacts: answerJSON.filter(a => a.knowledge_contact_id).map(a => a.contact),
-        prompt: answerJSON.filter(a => a.prompt_id).map(a => a.prompt)[0],
-        category: questionJSON.category,
-      };
-      const baseTextAnswer = answerJSON.filter(a => a.text != null);
-      const baseUrlAnswer = answerJSON.filter(a => a.url != null);
-      if (baseTextAnswer.length > 0) {
-        answerGrouped.text = baseTextAnswer[0].text;
-      }
-      if (baseUrlAnswer.length > 0) {
-        answerGrouped.url = baseUrlAnswer[0].url;
-      }
-      return { question: questionJSON, answers: answerGrouped };
+    const answerGrouped = {
+      facilities: answerJSON.filter(a => a.knowledge_facility_id).map(a => a.facility),
+      services: answerJSON.filter(a => a.knowledge_service_id).map(a => a.service),
+      contacts: answerJSON.filter(a => a.knowledge_contact_id).map(a => a.contact),
+      prompt: answerJSON.filter(a => a.prompt_id).map(a => a.prompt)[0],
+      category: questionJSON.category,
+    };
+    const baseTextAnswer = answerJSON.filter(a => a.text != null);
+    const baseUrlAnswer = answerJSON.filter(a => a.url != null);
+    if (baseTextAnswer.length > 0) {
+      answerGrouped.text = baseTextAnswer[0].text;
     }
-    return answerJSON;
-  });
-};
+    if (baseUrlAnswer.length > 0) {
+      answerGrouped.url = baseUrlAnswer[0].url;
+    }
+    return { question: questionJSON, answers: answerGrouped };
+  }
+  return answerJSON;
+}
 
 export const getQuestions = (params = {}) => {
   return KnowledgeQuestion.query((qb) => {

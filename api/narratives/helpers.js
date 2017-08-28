@@ -29,16 +29,27 @@ export function getBaseState(providerName, section) {
   return baseState;
 }
 
+export function randomPick(array = [], num = 1) {
+  if (num !== 1) {
+    return array.sort(() => 0.5 - Math.random()).slice(0, num);
+  }
+  return array[Math.floor(Math.random() * array.length)];
+}
+
 /* TODO(nicksahler) Move this all to higher order answering */
 export const fetchAnswers = (intent, session) => {
   const entities = session.snapshot.nlp.entities;
   /*TODO(nicksahler) Move this higher up (into the filter argument) to clean + validate [wit makes this prone to crashing] */
   const schedule = (entities.schedule && entities.schedule[0]) ? entities.schedule[0].value : null;
-
   return new KitClient({ organization: session.get('organization') })
-    .getAnswer(intent).then(({ question, answers }) => {
+    .getAnswer(intent).then(({ question, answers, altQuestions }) => {
+      // If alternative questions, respond with those
+      if (altQuestions) {
+        session.messagingClient.addToQuene('Can you give me a bit more detail? For example:');
+        session.messagingClient.addToQuene(randomPick(altQuestions, 4).map(a => a.question).join(' '));
+        return session.messagingClient.runQuene().then(() => session.getBaseState());
       // If no answers, run fallback
-      if (!answers || (!answers.text && !answers.prompt && answers.facilities.length === 0 &&
+      } else if (!answers || (!answers.text && !answers.prompt && answers.facilities.length === 0 &&
         answers.services.length === 0 && answers.contacts.length === 0)) {
         return getCategoryFallback([intent.split('.')[0]], session.get('organization').id)
           .then((fallbackData) => {
@@ -153,8 +164,4 @@ export function getOrgNameFromConstituentEntry(constituent) {
     entryOrganizationName = constituent.smsEntry.organization.name;
   }
   return entryOrganizationName;
-}
-
-export function randomPick(array = []) {
-  return array[Math.floor(Math.random() * array.length)];
 }

@@ -2,12 +2,18 @@ module.exports = [
   {
     "text": "Where can I find information on parking?",
     "intent": "transportation_streets_sidewalks.parking",
-    "entities": []
+    "entities": [],
+    "meta": {
+      "vague": true
+    }
   },
   {
     "text": "parking rules",
     "intent": "transportation_streets_sidewalks.parking",
-    "entities": []
+    "entities": [],
+    "meta": {
+      "vague": true
+    }
   },
   {
     "text": "How much money is left on my parking card?",
@@ -19,7 +25,10 @@ module.exports = [
         "value": "transportation_streets_sidewalks",
         "entity": "category_keywords"
       }
-    ]
+    ],
+    "meta": {
+      "vague": true
+    }
   },
   {
     "text": "parking card balance",
