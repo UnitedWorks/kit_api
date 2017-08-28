@@ -8,6 +8,7 @@ import { getCategoryFallback } from '../knowledge-base/helpers';
 import EmailService from '../services/email';
 import Mixpanel from '../services/event-tracking';
 import * as env from '../env';
+import { shuffle } from '../utils';
 
 /* TODO(nicksahler): Declare in machine, automatically route */
 export function getBaseState(providerName, section) {
@@ -31,7 +32,7 @@ export function getBaseState(providerName, section) {
 
 export function randomPick(array = [], num = 1) {
   if (num !== 1) {
-    return array.sort(() => 0.5 - Math.random()).slice(0, num);
+    return shuffle(array).slice(0, num);
   }
   return array[Math.floor(Math.random() * array.length)];
 }

@@ -54,3 +54,11 @@ export function baseErrorHandler(err, req, res, next) {
     });
   }
 }
+
+export function shuffle(a) {
+  for (let i = a.length; i; i -= 1) {
+    const j = Math.floor(Math.random() * i);
+    [a[i - 1], a[j]] = [a[j], a[i - 1]];
+  }
+  return a;
+}
