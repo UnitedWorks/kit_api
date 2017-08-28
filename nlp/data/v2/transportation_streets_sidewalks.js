@@ -1,7 +1,17 @@
 module.exports = [
   {
+    "text": "Where can I find information on parking?",
+    "intent": "transportation_streets_sidewalks.parking",
+    "entities": []
+  },
+  {
+    "text": "parking rules",
+    "intent": "transportation_streets_sidewalks.parking",
+    "entities": []
+  },
+  {
     "text": "How much money is left on my parking card?",
-    "intent": "transportation_streets_sidewalks.parking_card_balance",
+    "intent": "transportation_streets_sidewalks.parking_card.balance",
     "entities": [
       {
         "start": 29,
@@ -13,62 +23,65 @@ module.exports = [
   },
   {
     "text": "parking card balance",
-    "intent": "transportation_streets_sidewalks.parking_card_balance",
+    "intent": "transportation_streets_sidewalks.parking_card.balance",
     "entities": []
   },
   {
     "text": "How much is left on my parking card",
-    "intent": "transportation_streets_sidewalks.parking_card_balance",
+    "intent": "transportation_streets_sidewalks.parking_card.balance",
     "entities": []
   },
   {
     "text": "What do I do if my parking card isn't working?",
-    "intent": "transportation_streets_sidewalks.parking_card_problem",
+    "intent": "transportation_streets_sidewalks.parking_card.problem",
     "entities": []
   },
   {
     "text": "My parking card isnt working",
-    "intent": "transportation_streets_sidewalks.parking_card_problem",
+    "intent": "transportation_streets_sidewalks.parking_card.problem",
     "entities": []
   },
   {
     "text": "What is the application approval process for a Parking Permit for People with Disabilities?",
-    "intent": "transportation_streets_sidewalks.parking_disability_permit",
+    "intent": "transportation_streets_sidewalks.parking.disability_permit",
     "entities": []
   },
   {
     "text": "I'm disabled. How do I get a special permit?",
-    "intent": "transportation_streets_sidewalks.parking_disability_permit",
+    "intent": "transportation_streets_sidewalks.parking.disability_permit",
     "entities": []
   },
   {
     "text": "How do I renew my Parking Permit For People With Disabilities?",
-    "intent": "transportation_streets_sidewalks.parking_disability_permit",
+    "intent": "transportation_streets_sidewalks.parking.disability_permit",
     "entities": []
   },
   {
     "text": "How can I get a disability sticker for parking?",
-    "intent": "transportation_streets_sidewalks.parking_disability_permit",
+    "intent": "transportation_streets_sidewalks.parking.disability_permit",
     "entities": []
   },
   {
     "text": "I need a parking disability sticker",
-    "intent": "transportation_streets_sidewalks.parking_disability_permit",
+    "intent": "transportation_streets_sidewalks.parking.disability_permit",
     "entities": []
   },
   {
     "text": "Is there a parking meter or sign map?",
-    "intent": "transportation_streets_sidewalks.parking_map",
-    "entities": []
+    "intent": "transportation_streets_sidewalks.map",
+    "entities": [],
+    "meta": {
+      "vague": true
+    }
   },
   {
     "text": "Can I get a map of parking meters?",
-    "intent": "transportation_streets_sidewalks.parking_meter_map",
+    "intent": "transportation_streets_sidewalks.map.parking_meters",
     "entities": []
   },
   {
     "text": "Can I get a map of street signs?",
-    "intent": "transportation_streets_sidewalks.street_sign_map",
+    "intent": "transportation_streets_sidewalks.map.street_signs",
     "entities": []
   },
   {
@@ -92,33 +105,18 @@ module.exports = [
     "entities": []
   },
   {
-    "text": "How many parking permits are allowed per house hold?",
-    "intent": "transportation_streets_sidewalks.parking_residential_permit_numbers",
-    "entities": []
-  },
-  {
     "text": "How do I get a residential parking permit?",
-    "intent": "transportation_streets_sidewalks.parking_residential_permit_request",
+    "intent": "transportation_streets_sidewalks.parking.residential_permit_request",
     "entities": []
   },
   {
-    "text": "Where can I find information on parking?",
-    "intent": "transportation_streets_sidewalks.parking_information",
-    "entities": []
-  },
-  {
-    "text": "Where is parking?",
-    "intent": "transportation_streets_sidewalks.parking_information",
-    "entities": []
-  },
-  {
-    "text": "parking rules",
-    "intent": "transportation_streets_sidewalks.parking_information",
+    "text": "How many parking permits are allowed per house hold?",
+    "intent": "transportation_streets_sidewalks.parking.residential_permit_numbers",
     "entities": []
   },
   {
     "text": "Is there an ASP street map?",
-    "intent": "transportation_streets_sidewalks.parking_rules_asp_info",
+    "intent": "transportation_streets_sidewalks.parking.asp_map",
     "entities": [
       {
         "start": 12,
@@ -135,8 +133,13 @@ module.exports = [
     ]
   },
   {
-    "text": "when is alternate side parking?",
-    "intent": "transportation_streets_sidewalks.parking_rules_asp_info",
+    "text": "What do I need to know about altnerate side parking?",
+    "intent": "transportation_streets_sidewalks.parking.asp_info",
+    "entities": []
+  },
+  {
+    "text": "When is alternate side parking?",
+    "intent": "transportation_streets_sidewalks.parking.asp_schedule",
     "entities": [
       {
         "start": 8,
@@ -147,13 +150,8 @@ module.exports = [
     ]
   },
   {
-    "text": "What do I need to know about altnerate side parking?",
-    "intent": "transportation_streets_sidewalks.parking_rules_asp_info",
-    "entities": []
-  },
-  {
     "text": "is alternate side parking tomorrow?",
-    "intent": "transportation_streets_sidewalks.parking_rules_asp",
+    "intent": "transportation_streets_sidewalks.parking.asp_schedule",
     "entities": [
         {
           "start": 26,
@@ -165,7 +163,7 @@ module.exports = [
   },
   {
     "text": "when do I need to move my car?",
-    "intent": "transportation_streets_sidewalks.parking_rules_asp",
+    "intent": "transportation_streets_sidewalks.parking.asp_schedule",
     "entities": [
       {
         "start": 26,
@@ -177,57 +175,57 @@ module.exports = [
   },
   {
     "text": "Is ASP in effect on weekends?",
-    "intent": "transportation_streets_sidewalks.parking_rules_asp_weekends",
+    "intent": "transportation_streets_sidewalks.parking.asp_weekends",
     "entities": []
   },
   {
     "text": "Can I park overnight on weekends?",
-    "intent": "transportation_streets_sidewalks.parking_rules_asp_weekends",
+    "intent": "transportation_streets_sidewalks.parking.asp_weekends",
     "entities": []
   },
   {
     "text": "does alternate side parking matter on weekends?",
-    "intent": "transportation_streets_sidewalks.parking_rules_asp_weekends",
+    "intent": "transportation_streets_sidewalks.parking.asp_weekends",
     "entities": []
   },
   {
     "text": "How can I check the ASP rules for a specific parking spot?",
-    "intent": "transportation_streets_sidewalks.parking_rules_asp.check",
+    "intent": "transportation_streets_sidewalks.parking.asp.check",
     "entities": []
   },
   {
     "text": "What are the ASP rules where I am?",
-    "intent": "transportation_streets_sidewalks.parking_rules_asp.check",
+    "intent": "transportation_streets_sidewalks.parking.asp.check",
     "entities": []
   },
   {
     "text": "Is there altnerate side parking here?",
-    "intent": "transportation_streets_sidewalks.parking_rules_asp.check",
+    "intent": "transportation_streets_sidewalks.parking.asp.check",
     "entities": []
   },
   {
     "text": "What are the rules for short term overnight parking?",
-    "intent": "transportation_streets_sidewalks.parking_rules_overnight",
+    "intent": "transportation_streets_sidewalks.parking.overnight",
     "entities": []
   },
   {
     "text": "Can I park overnight?",
-    "intent": "transportation_streets_sidewalks.parking_rules_overnight",
+    "intent": "transportation_streets_sidewalks.parking.overnight",
     "entities": []
   },
   {
     "text": "When do I have to move my car in the morning?",
-    "intent": "transportation_streets_sidewalks.parking_rules_overnight",
+    "intent": "transportation_streets_sidewalks.parking.overnight",
     "entities": []
   },
   {
     "text": "What time do I have to move my car by?",
-    "intent": "transportation_streets_sidewalks.parking_rules_overnight",
+    "intent": "transportation_streets_sidewalks.parking.overnight",
     "entities": []
   },
   {
     "text": "Can I park when ASP is in effect and the street sweeper has passed or is late?",
-    "intent": "transportation_streets_sidewalks.parking_rules_asp_sweeper",
+    "intent": "transportation_streets_sidewalks.parking.asp_sweeper",
     "entities": [
       {
         "start": 41,
@@ -239,42 +237,42 @@ module.exports = [
   },
   {
     "text": "Can I park after a street sweeper has passed?",
-    "intent": "transportation_streets_sidewalks.parking_rules_asp_sweeper",
+    "intent": "transportation_streets_sidewalks.parking.asp_sweeper",
     "entities": []
   },
   {
     "text": "The street sweeper has passed, can I park there now?",
-    "intent": "transportation_streets_sidewalks.parking_rules_asp_sweeper",
+    "intent": "transportation_streets_sidewalks.parking.asp_sweeper",
     "entities": []
   },
   {
     "text": "Can I double park when ASP is in effect?",
-    "intent": "transportation_streets_sidewalks.parking_rules_asp_double",
+    "intent": "transportation_streets_sidewalks.parking.asp_double",
     "entities": []
   },
   {
     "text": "Can I double park when alternate side parking is happening?",
-    "intent": "transportation_streets_sidewalks.parking_rules_asp_double",
+    "intent": "transportation_streets_sidewalks.parking.asp_double",
     "entities": []
   },
   {
     "text": "Is double parking allowed when theres alternate side parking?",
-    "intent": "transportation_streets_sidewalks.parking_rules_asp_double",
+    "intent": "transportation_streets_sidewalks.parking.asp_double",
     "entities": []
   },
   {
     "text": "What are parking regulations in a school zone?",
-    "intent": "transportation_streets_sidewalks.parking_rules_school_zone",
+    "intent": "transportation_streets_sidewalks.parking.school_zone",
     "entities": []
   },
   {
     "text": "Can I park in a school zone?",
-    "intent": "transportation_streets_sidewalks.parking_rules_school_zone",
+    "intent": "transportation_streets_sidewalks.parking.school_zone",
     "entities": []
   },
   {
     "text": "How long can a car be parked on the street?",
-    "intent": "transportation_streets_sidewalks.parking_rules_time_limit",
+    "intent": "transportation_streets_sidewalks.parking.time_limit",
     "entities": [
       {
         "start": 22,
@@ -286,12 +284,12 @@ module.exports = [
   },
   {
     "text": "How long can I be parked on the street?",
-    "intent": "transportation_streets_sidewalks.parking_rules_time_limit",
+    "intent": "transportation_streets_sidewalks.parking.time_limit",
     "entities": []
   },
   {
     "text": "How long can I leave my car on the street?",
-    "intent": "transportation_streets_sidewalks.parking_rules_time_limit",
+    "intent": "transportation_streets_sidewalks.parking.time_limit",
     "entities": []
   },
   {

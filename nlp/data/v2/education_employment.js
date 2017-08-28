@@ -1,7 +1,7 @@
 module.exports = [
   {
     "text": "I've experienced wage theft by not being paid for overtime. What can I do?",
-    "intent": "education_employment.business_wage_theft",
+    "intent": "education_employment.wage_theft",
     "entities": [
       {
         "start": 50,
@@ -13,7 +13,7 @@ module.exports = [
   },
   {
     "text": "I'm not getting paid",
-    "intent": "education_employment.business_wage_theft",
+    "intent": "education_employment.wage_theft",
     "entities": [
       {
         "start": 16,
@@ -25,7 +25,7 @@ module.exports = [
   },
   {
     "text": "My boss hasn't paid me at all the past two weeks",
-    "intent": "education_employment.business_wage_theft",
+    "intent": "education_employment.wage_theft",
     "entities": []
   },
   {

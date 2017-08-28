@@ -193,8 +193,24 @@ module.exports = [
     "entities": []
   },
   {
+    "text": "I need to throw stuff out",
+    "intent": "environment_sanitation.disposal",
+    "entities": [],
+    "meta": {
+      "vague": true
+    }
+  },
+  {
+    "text": "tossing stuff out",
+    "intent": "environment_sanitation.disposal",
+    "entities": [],
+    "meta": {
+      "vague": true
+    }
+  },
+  {
     "text": "How do I dispose of appliances?",
-    "intent": "environment_sanitation.sanitation_disposal_appliance",
+    "intent": "environment_sanitation.disposal.appliance",
     "entities": [
       {
         "start": 9,
@@ -206,7 +222,7 @@ module.exports = [
   },
   {
     "text": "How do I throw out my appliances?",
-    "intent": "environment_sanitation.sanitation_disposal_appliance",
+    "intent": "environment_sanitation.disposal.appliance",
     "entities": [
       {
         "start": 9,
@@ -218,42 +234,42 @@ module.exports = [
   },
   {
     "text": "I want to get rid of appliances",
-    "intent": "environment_sanitation.sanitation_disposal_appliance",
+    "intent": "environment_sanitation.disposal.appliance",
     "entities": []
   },
   {
     "text": "I want to thow out an air conditioner",
-    "intent": "environment_sanitation.sanitation_disposal_appliance",
+    "intent": "environment_sanitation.disposal.appliance",
     "entities": []
   },
   {
     "text": "How do I get rid of an air conditioner?",
-    "intent": "environment_sanitation.sanitation_disposal_appliance",
+    "intent": "environment_sanitation.disposal.appliance",
     "entities": []
   },
   {
     "text": "My air conditioner is broken",
-    "intent": "environment_sanitation.sanitation_disposal_appliance",
+    "intent": "environment_sanitation.disposal.appliance",
     "entities": []
   },
   {
     "text": "How do I dispose of batteries?",
-    "intent": "environment_sanitation.sanitation_disposal_battery",
+    "intent": "environment_sanitation.disposal.battery",
     "entities": []
   },
   {
     "text": "What do I need to do about throwing out batteries",
-    "intent": "environment_sanitation.sanitation_disposal_battery",
+    "intent": "environment_sanitation.disposal.battery",
     "entities": []
   },
   {
     "text": "How do I throw out a large metal item?",
-    "intent": "environment_sanitation.sanitation_disposal_metal",
+    "intent": "environment_sanitation.disposal.metal",
     "entities": []
   },
   {
     "text": "I'm trying to get rid of a big metal item?",
-    "intent": "environment_sanitation.sanitation_disposal_metal",
+    "intent": "environment_sanitation.disposal.metal",
     "entities": [
       {
         "start": 14,
@@ -265,72 +281,72 @@ module.exports = [
   },
   {
     "text": "How can I request bulk item pickup?",
-    "intent": "environment_sanitation.sanitation_bulk_pickup",
+    "intent": "environment_sanitation.disposal.bulk_pickup",
     "entities": []
   },
   {
     "text": "How do I get bulk pickup?",
-    "intent": "environment_sanitation.sanitation_bulk_pickup",
+    "intent": "environment_sanitation.disposal.bulk_pickup",
     "entities": []
   },
   {
     "text": "I need bulk pickup",
-    "intent": "environment_sanitation.sanitation_bulk_pickup",
+    "intent": "environment_sanitation.disposal.bulk_pickup",
     "entities": []
   },
   {
     "text": "How do I dispose of a carpet?",
-    "intent": "environment_sanitation.sanitation_disposal_carpet",
+    "intent": "environment_sanitation.disposal.carpet",
     "entities": []
   },
   {
     "text": "How do I get rid of a carpet?",
-    "intent": "environment_sanitation.sanitation_disposal_carpet",
+    "intent": "environment_sanitation.disposal.carpet",
     "entities": []
   },
   {
     "text": "I need to throw out my carpet?",
-    "intent": "environment_sanitation.sanitation_disposal_carpet",
+    "intent": "environment_sanitation.disposal.carpet",
     "entities": []
   },
   {
     "text": "I want to throw out my couch",
-    "intent": "environment_sanitation.sanitation_disposal_furniture",
+    "intent": "environment_sanitation.disposal.furniture",
     "entities": []
   },
   {
     "text": "I need to get rid of my sofa?",
-    "intent": "environment_sanitation.sanitation_disposal_furniture",
+    "intent": "environment_sanitation.disposal.furniture",
     "entities": []
   },
   {
     "text": "How do I throw out my futon?",
-    "intent": "environment_sanitation.sanitation_disposal_furniture",
+    "intent": "environment_sanitation.disposal.furniture",
     "entities": []
   },
   {
     "text": "Is composting allowed?",
-    "intent": "environment_sanitation.sanitation_compost",
+    "intent": "environment_sanitation.compost",
     "entities": []
   },
   {
     "text": "Can I compost?",
-    "intent": "environment_sanitation.sanitation_compost",
+    "intent": "environment_sanitation.compost",
     "entities": []
   },
   {
     "text": "What do I do with compost?",
-    "intent": "environment_sanitation.sanitation_compost",
+    "intent": "environment_sanitation.compost",
     "entities": []
   },
   {
     "text": "When do you collect compost?",
-    "intent": "environment_sanitation.sanitation_compost_schedule",
+    "intent": "environment_sanitation.compost.schedule",
     "entities": []
   },
   {
     "text": "Where can I dispose of electronics?",
-    "intent": "environment_sanitation.sanitation_electronics_disposal",
+    "intent": "environment_sanitation.disposal.electronics",
     "entities": []
   },
   {
@@ -340,62 +356,62 @@ module.exports = [
   },
   {
     "text": "How do I dispose of a lawn mower?",
-    "intent": "environment_sanitation.sanitation_lawn_mower",
+    "intent": "environment_sanitation.disposal.lawn_mower",
     "entities": []
   },
   {
     "text": "How should leaves be handled?",
-    "intent": "environment_sanitation.sanitation_leaf_disposal",
+    "intent": "environment_sanitation.disposal.leaf",
     "entities": []
   },
   {
     "text": "What do I do about leaves?",
-    "intent": "environment_sanitation.sanitation_leaf_disposal",
+    "intent": "environment_sanitation.disposal.leaf",
     "entities": []
   },
   {
     "text": "Do I need to bag my leaves?",
-    "intent": "environment_sanitation.sanitation_leaf_disposal",
+    "intent": "environment_sanitation.disposal.leaf",
     "entities": []
   },
   {
     "text": "Do I brush leaves to the curb?",
-    "intent": "environment_sanitation.sanitation_leaf_disposal",
+    "intent": "environment_sanitation.disposal.leaf",
     "entities": []
   },
   {
     "text": "How do I dispose of my mattress?",
-    "intent": "environment_sanitation.sanitation_mattress_disposal",
+    "intent": "environment_sanitation.disposal.mattress",
     "entities": []
   },
   {
     "text": "Where do I find a mattress disposal bag?",
-    "intent": "environment_sanitation.sanitation_mattress_disposal_bag",
+    "intent": "environment_sanitation.mattress_disposal_bag",
     "entities": []
   },
   {
     "text": "Where do I throw out paint?",
-    "intent": "environment_sanitation.sanitation_paint_disposal",
+    "intent": "environment_sanitation.disposal.paint",
     "entities": []
   },
   {
     "text": "How do I throw out paint?",
-    "intent": "environment_sanitation.sanitation_paint_disposal",
+    "intent": "environment_sanitation.disposal.paint",
     "entities": []
   },
   {
     "text": "How do I throw out a piano?",
-    "intent": "environment_sanitation.sanitation_piano_disposal ",
+    "intent": "environment_sanitation.disposal.piano",
     "entities": []
   },
   {
     "text": "How do I get rid of a piano?",
-    "intent": "environment_sanitation.sanitation_piano_disposal ",
+    "intent": "environment_sanitation.disposal.piano",
     "entities": []
   },
   {
     "text": "Do I need special bins for recycling?",
-    "intent": "environment_sanitation.sanitation_recycling_bins",
+    "intent": "environment_sanitation.recycling.bins",
     "entities": [
       {
         "start": 18,
@@ -407,12 +423,12 @@ module.exports = [
   },
   {
     "text": "Can I use a blue recycling bin instead of the standard ones?",
-    "intent": "environment_sanitation.sanitation_recycling_bins",
+    "intent": "environment_sanitation.recycling.bins",
     "entities": []
   },
   {
     "text": "Can recycling be mixed?",
-    "intent": "environment_sanitation.sanitation_recycling_mix",
+    "intent": "environment_sanitation.recycling.mix",
     "entities": [
       {
         "start": 4,
@@ -424,7 +440,7 @@ module.exports = [
   },
   {
     "text": "Does recycling need to be separated?",
-    "intent": "environment_sanitation.sanitation_recycling_mix",
+    "intent": "environment_sanitation.recycling.mix",
     "entities": []
   },
   {
@@ -520,18 +536,34 @@ module.exports = [
     "entities": []
   },
   {
+    "text": "Do we recycle?",
+    "intent": "environment_sanitation.recycling",
+    "entities": [],
+    "meta": {
+      "vague": true
+    }
+  },
+  {
+    "text": "recycle?",
+    "intent": "environment_sanitation.recycling",
+    "entities": [],
+    "meta": {
+      "vague": true
+    }
+  },
+  {
     "text": "Where do I dispose of my recycling?",
-    "intent": "environment_sanitation.sanitation_recycling_location",
+    "intent": "environment_sanitation.recycling.location",
     "entities": []
   },
   {
     "text": "Where do I bring recycling?",
-    "intent": "environment_sanitation.sanitation_recycling_location",
+    "intent": "environment_sanitation.recycling.location",
     "entities": []
   },
   {
     "text": "Which day is recycling?",
-    "intent": "environment_sanitation.sanitation_recycling_schedule",
+    "intent": "environment_sanitation.recycling.schedule",
     "entities": [
       {
         "start": 6,
@@ -543,17 +575,17 @@ module.exports = [
   },
   {
     "text": "When is recycling?",
-    "intent": "environment_sanitation.sanitation_recycling_schedule",
+    "intent": "environment_sanitation.recycling.schedule",
     "entities": []
   },
   {
     "text": "What is the recycling schedule?",
-    "intent": "environment_sanitation.sanitation_recycling_schedule",
+    "intent": "environment_sanitation.recycling.schedule",
     "entities": []
   },
   {
     "text": "Is there recycling next week?",
-    "intent": "environment_sanitation.sanitation_recycling_schedule",
+    "intent": "environment_sanitation.recycling.schedule",
     "entities": [
       {
         "start": 24,
@@ -565,7 +597,7 @@ module.exports = [
   },
   {
     "text": "Is recycling next Wednesday?",
-    "intent": "environment_sanitation.sanitation_recycling_schedule",
+    "intent": "environment_sanitation.recycling.schedule",
     "entities": [
       {
         "start": 18,
@@ -577,7 +609,7 @@ module.exports = [
   },
   {
     "text": "When is recycling next month?",
-    "intent": "environment_sanitation.sanitation_recycling_schedule",
+    "intent": "environment_sanitation.recycling.schedule",
     "entities": [
       {
         "start": 23,

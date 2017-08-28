@@ -19,7 +19,7 @@ knex.select().from('knowledge_categorys').then((catRows) => {
   });
   // Put together operations
   commonExamples.filter((value, index, array) => {
-    if (value.intent && array[index - 1] && value.intent !== array[index - 1].intent && !nonCategories.includes(value.intent.split('.')[0])) {
+    if (value.intent && !nonCategories.includes(value.intent.split('.')[0]) && (index === 0 || (array[index - 1] && value.intent !== array[index - 1].intent))) {
       return value;
     }
     return null;
@@ -35,9 +35,19 @@ knex.select().from('knowledge_categorys').then((catRows) => {
         if (categoryHash[example.intent.split('.')[0]]) {
           insertProps.knowledge_category_id = categoryHash[example.intent.split('.')[0]];
         }
+        // Check for meta properties
+        if (example.meta) {
+          if (example.meta.vague === true) insertProps.vague = true;
+        }
         // Insert
         return knex('knowledge_questions').insert(insertProps).returning('id');
       }
+      if (example.meta) {
+        if (example.meta.vague === true) {
+          return knex('knowledge_questions').where({ label: row[0].label }).update({ vague: true }).returning('id');
+        }
+      }
+      if (row[0].vague === true) return knex('knowledge_questions').where({ label: row[0].label }).update({ vague: false });
     }));
   });
 

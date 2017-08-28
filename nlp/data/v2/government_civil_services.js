@@ -171,17 +171,17 @@ module.exports = [
   },
   {
     "text": "How long does it take to get a marriage license?",
-    "intent": "government_civil_services.document_marriage_union_license_timeline",
+    "intent": "government_civil_services.document_marriage_union_license.timeline",
     "entities": []
   },
   {
     "text": "When do I get my marriage license?",
-    "intent": "government_civil_services.document_marriage_union_license_timeline",
+    "intent": "government_civil_services.document_marriage_union_license.timeline",
     "entities": []
   },
   {
     "text": "When do I get my civil union certificate?",
-    "intent": "government_civil_services.document_marriage_union_license_timeline",
+    "intent": "government_civil_services.document_marriage_union_license.timeline",
     "entities": []
   },
   {
