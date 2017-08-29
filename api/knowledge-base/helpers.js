@@ -292,19 +292,16 @@ export async function createService(service, organization, location, options) {
     phone_number: service.phone_number,
     url: service.url,
     organization_id: organization.id,
+    availabilitys: service.availabilitys,
   };
   // Set Location
   if (location) {
     const locationJSON = await createLocation(location, { returnJSON: true });
     if (locationJSON) composedService.location_id = locationJSON.id;
   }
-  const eventRules = service.eventRules;
   return KnowledgeService.forge(composedService).save(null, { method: 'insert' })
-    .then((serviceData) => {
-      return upsertEventRules(eventRules, { knowledge_service_id: serviceData.get('id') })
-        .then(() => (options.returnJSON ? serviceData.toJSON() : serviceData))
-        .catch(err => err);
-    }).catch(err => err);
+    .then(serviceData => (options.returnJSON ? serviceData.toJSON() : serviceData))
+    .catch(err => err);
 }
 
 export async function updateService(service, options) {
@@ -316,6 +313,7 @@ export async function updateService(service, options) {
     eligibility_information: service.eligibility_information,
     phone_number: service.phone_number,
     url: service.url,
+    availabilitys: service.availabilitys,
   };
   // Set Location
   if (service.location && !service.location.id) {
@@ -324,13 +322,9 @@ export async function updateService(service, options) {
   } else {
     compiledService.location_id = null;
   }
-  const eventRules = service.eventRules;
   return KnowledgeService.forge(compiledService).save(null, { method: 'update' })
-    .then((serviceData) => {
-      return upsertEventRules(eventRules, { knowledge_service_id: serviceData.get('id') })
-        .then(() => (options.returnJSON ? serviceData.toJSON() : serviceData))
-        .catch(err => err);
-    }).catch(err => err);
+    .then(serviceData => (options.returnJSON ? serviceData.toJSON() : serviceData))
+    .catch(err => err);
 }
 
 export const deleteService = (serviceId) => {
