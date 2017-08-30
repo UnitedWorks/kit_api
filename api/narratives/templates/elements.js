@@ -1,3 +1,5 @@
+import { getPlacesUrl } from '../../utils';
+
 export const genericSanitation = {
   title: 'The basics!',
   subtitle: 'Schedule information and reminders about garbage and recycling!',
@@ -293,11 +295,82 @@ export function genericContact(contact) {
       email: contact.email,
     });
   }
-  if (contact.website) {
+  if (contact.url) {
     buttons.push({
       type: 'web_url',
-      title: contact.website,
-      url: contact.website,
+      title: contact.url,
+      url: contact.url,
+    });
+  }
+  if (buttons.length < 3) buttons.push({ type: 'element_share' });
+  if (buttons.length > 0) element.buttons = buttons;
+  return element;
+}
+
+export function genericFacility(facility) {
+  const element = {
+    title: facility.name,
+    subtitle: `(Facility) ${facility.brief_description}`,
+  };
+  const buttons = [];
+  if (facility.hasOwnProperty('location') && facility.location.display_name != null) {
+    buttons.push({
+      type: 'web_url',
+      title: facility.location.display_name,
+      url: getPlacesUrl(facility.location.display_name),
+    });
+  }
+  if (facility.phone_number) {
+    buttons.push({
+      type: 'phone_number',
+      title: facility.phone_number,
+      payload: facility.phone_number,
+    });
+  }
+  if (facility.url) {
+    buttons.push({
+      type: 'web_url',
+      title: facility.url,
+      url: facility.url,
+    });
+  }
+  if (facility.email && buttons.length < 3) {
+    buttons.push({
+      type: 'email',
+      title: facility.email,
+      email: facility.email,
+    });
+  }
+  if (buttons.length < 3) buttons.push({ type: 'element_share' });
+  if (buttons.length > 0) element.buttons = buttons;
+  return element;
+}
+
+export function genericService(service) {
+  const element = {
+    title: service.name,
+    subtitle: `(Service) ${service.brief_description}`,
+  };
+  const buttons = [];
+  if (service.phone_number) {
+    buttons.push({
+      type: 'phone_number',
+      title: service.phone_number,
+      payload: service.phone_number,
+    });
+  }
+  if (service.email) {
+    buttons.push({
+      type: 'email',
+      title: service.email,
+      email: service.email,
+    });
+  }
+  if (service.url) {
+    buttons.push({
+      type: 'web_url',
+      title: service.url,
+      url: service.url,
     });
   }
   if (buttons.length < 3) buttons.push({ type: 'element_share' });
