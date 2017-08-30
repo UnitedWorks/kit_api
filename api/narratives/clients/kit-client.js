@@ -2,6 +2,7 @@ import { RRule, RRuleSet } from 'rrule';
 import moment from 'moment';
 import { getAnswers as getAnswersHelper } from '../../knowledge-base/helpers';
 import * as elementTemplates from '../templates/elements';
+import inside from 'point-in-polygon';
 
 export default class KitClient {
   constructor(config = {}) {
@@ -46,9 +47,29 @@ export default class KitClient {
 
   static entityAvailabilityToText(type, entity, { datetime, constituentAttributes = {} }, options = {}) {
     let entityAvailabilityText = '';
+    function geoCheck(geo, constituentPosition) {
+      let passesGeoCheck = false;
+      if (geo && geo[0]) {
+        if (geo && geo[0]) {
+          geo.forEach((boundary) => {
+            const boundaryPolygon = boundary[0].map(c => [c.lat, c.lng]);
+            if (inside(constituentPosition, boundaryPolygon)) passesGeoCheck = true;
+          })
+        }
+      }
+      return passesGeoCheck;
+    }
+    // Check if a entity's operations use geo and constituent home address is available.
+    // If none available, send back message asking for default_address
+    if (entity.operations && entity.operations.filter(o => o.geo).length > 0 && !constituentAttributes.default_location) {
+      return `To lookup availability for ${entity.name}, we need a default address to check against. Please type "My address is ____" or "Set default address" to do that and ask once more!`;
+    }
     // Describe General Schedule (even if no datetime, mention schedule)
     if (!datetime) {
       entity.operations.forEach((operation, index, array) => {
+        // Geo Check
+        if (operation.geo && operation.geo[0] && !geoCheck(operation.geo, [constituentAttributes.default_location.lat, constituentAttributes.default_location.lon])) return;
+        // Analyize RRules/Times
         const rule = new RRule(RRule.parseString(operation.rrule));
         const timeStart = moment(operation.t_start, 'HH-mm-ss');
         const timeEnd = moment(operation.t_end, 'HH-mm-ss');
@@ -58,6 +79,9 @@ export default class KitClient {
     // Speak to Specific Day Availability
     } else if (datetime[0].grain === 'day') {
       entity.operations.forEach((operation) => {
+        // Geo Check
+        if (operation.geo && operation.geo[0] && !geoCheck(operation.geo, [constituentAttributes.default_location.lat, constituentAttributes.default_location.lon])) return;
+        // Analyize RRules/Times
         const rruleSet = new RRuleSet();
         rruleSet.rrule(RRule.fromString(operation.rrule));
         const timeStart = moment(operation.t_start, 'HH-mm-ss');
@@ -84,5 +108,4 @@ export default class KitClient {
     // Otherwise send back nothing
     return null;
   }
-
 }
