@@ -123,12 +123,21 @@ export async function fetchAnswers(intent, session) {
     interface: session.messagingClient.provider,
   });
   // Translate Entities to Templates/Text
-  session.messagingClient
-    .addAll(KitClient.staticFromAnswers(answers), replyTemplates.evalHelpfulAnswer);
+  // If we have a datetime, filter out unavailable services/facilities
+  if (entities[TAGS.DATETIME]) {
+    session.messagingClient.addAll(KitClient.staticFromAnswers({
+      ...answers,
+      services: answers.services.filter(entity => KitClient.entityAvailabilityToText('service', entity, { datetime: entities[TAGS.DATETIME], constituentAttributes: session.get('attributes') })),
+      facilities: answers.facilities.filter(entity => KitClient.entityAvailabilityToText('facility', entity, { datetime: entities[TAGS.DATETIME], constituentAttributes: session.get('attributes') })),
+    }), replyTemplates.evalHelpfulAnswer);
+  } else {
+    session.messagingClient
+      .addAll(KitClient.staticFromAnswers(answers), replyTemplates.evalHelpfulAnswer);
+  }
   // Availability Checks on Facilities/Services (currently just time/location.
   // Constituent attributes should be a filtering factor on even static)
-  session.messagingClient.addAll(answers.services.map(entity => KitClient.entityAvailabilityToText('service', entity, { datetime: entities[TAGS.DATETIME], constituentAttributes: session.get('attributes') })), replyTemplates.evalHelpfulAnswer);
-  session.messagingClient.addAll(answers.facilities.map(entity => KitClient.entityAvailabilityToText('facility', entity, { datetime: entities[TAGS.DATETIME], constituentAttributes: session.get('attributes') })), replyTemplates.evalHelpfulAnswer);
+  session.messagingClient.addAll(answers.services.map(entity => KitClient.entityAvailabilityToText('service', entity, { datetime: entities[TAGS.DATETIME], constituentAttributes: session.get('attributes') })).filter(s => s), replyTemplates.evalHelpfulAnswer);
+  session.messagingClient.addAll(answers.facilities.map(entity => KitClient.entityAvailabilityToText('facility', entity, { datetime: entities[TAGS.DATETIME], constituentAttributes: session.get('attributes') })).filter(s => s), replyTemplates.evalHelpfulAnswer);
   return session.messagingClient.runQuene().then(() => {
     // If we have a prompt, prompt user about it
     if (answers.prompt && answers.prompt.steps.length > 0) {
