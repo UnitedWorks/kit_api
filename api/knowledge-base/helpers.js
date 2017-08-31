@@ -28,9 +28,8 @@ export async function getAnswers(params = {}, options = {}) {
   const data = await KnowledgeQuestion.where({ label: params.label }).fetch({
     withRelated: [{
       answers: q => q.where('organization_id', params.organization_id).whereNotNull('approved_at'),
-    }, 'category', 'answers.facility', 'answers.facility.location', 'answers.facility.eventRules',
-      'answers.service', 'answers.service.location', 'answers.service.eventRules',
-      'answers.contact', 'answers.prompt', 'answers.prompt.steps'],
+    }, 'category', 'answers.facility', 'answers.facility.location', 'answers.service',
+      'answers.service.location', 'answers.contact', 'answers.prompt', 'answers.prompt.steps'],
   }).then(d => d);
   if (!options.returnJSON) return data.get('answers');
   if (data == null) return {};
@@ -161,12 +160,6 @@ export const makeAnswer = (organization, question, answer, options = { returnJSO
     .catch(error => error);
 };
 
-export const upsertEventRules = (eventRules, idsObj) => {
-  return Promise.all(
-    eventRules.map(rule => EventRule.forge(Object.assign(rule, idsObj)).save())
-  ).then(results => results).catch(error => error);
-};
-
 export const saveLocation = (location, options = {}) => {
   const locationObj = {};
   if (typeof location === 'string') {
@@ -233,19 +226,16 @@ export async function createFacility(facility, organization, location, options) 
     phone_number: facility.phone_number,
     url: facility.url,
     organization_id: organization.id,
+    operations: facility.operations,
   };
   // Set Location
   if (location) {
     const locationJSON = await createLocation(location, { returnJSON: true });
     if (locationJSON) composedFacility.location_id = locationJSON.id;
   }
-  const eventRules = facility.eventRules;
   return KnowledgeFacility.forge(composedFacility).save(null, { method: 'insert' })
-  .then((facilityData) => {
-    return upsertEventRules(eventRules, { knowledge_facility_id: facilityData.get('id') })
-      .then(() => (options.returnJSON ? facilityData.toJSON() : facilityData))
-      .catch(err => err);
-  }).catch(err => err);
+    .then(facilityData => (options.returnJSON ? facilityData.toJSON() : facilityData))
+    .catch(err => err);
 }
 
 export async function updateFacility(facility, options) {
@@ -257,6 +247,7 @@ export async function updateFacility(facility, options) {
     eligibility_information: facility.eligibility_information,
     phone_number: facility.phone_number,
     url: facility.url,
+    operations: facility.operations,
   };
   // Set Location
   if (!facility.location.id) {
@@ -265,21 +256,15 @@ export async function updateFacility(facility, options) {
   } else {
     compiledFacility.location_id = null;
   }
-  const eventRules = facility.eventRules;
   return KnowledgeFacility.forge(compiledFacility).save(null, { method: 'update' })
-    .then((facilityData) => {
-      return upsertEventRules(eventRules, { knowledge_facility_id: facilityData.get('id') })
-        .then(() => (options.returnJSON ? facilityData.toJSON() : facilityData))
-        .catch(err => err);
-    }).catch(err => err);
+    .then((facilityData) => (options.returnJSON ? facilityData.toJSON() : facilityData))
+    .catch(err => err);
 }
 
 export const deleteFacility = (facilityId) => {
   return KnowledgeAnswer.where({ knowledge_facility_id: facilityId }).destroy().then(() => {
-    return EventRule.where({ knowledge_facility_id: facilityId }).destroy().then(() => {
-      return KnowledgeFacility.forge({ id: facilityId }).destroy().then(() => {
-        return { id: facilityId };
-      }).catch(err => err);
+    return KnowledgeFacility.forge({ id: facilityId }).destroy().then(() => {
+      return { id: facilityId };
     }).catch(err => err);
   }).catch(err => err);
 };
@@ -292,19 +277,16 @@ export async function createService(service, organization, location, options) {
     phone_number: service.phone_number,
     url: service.url,
     organization_id: organization.id,
+    operations: service.operations,
   };
   // Set Location
   if (location) {
     const locationJSON = await createLocation(location, { returnJSON: true });
     if (locationJSON) composedService.location_id = locationJSON.id;
   }
-  const eventRules = service.eventRules;
   return KnowledgeService.forge(composedService).save(null, { method: 'insert' })
-    .then((serviceData) => {
-      return upsertEventRules(eventRules, { knowledge_service_id: serviceData.get('id') })
-        .then(() => (options.returnJSON ? serviceData.toJSON() : serviceData))
-        .catch(err => err);
-    }).catch(err => err);
+    .then(serviceData => (options.returnJSON ? serviceData.toJSON() : serviceData))
+    .catch(err => err);
 }
 
 export async function updateService(service, options) {
@@ -316,6 +298,7 @@ export async function updateService(service, options) {
     eligibility_information: service.eligibility_information,
     phone_number: service.phone_number,
     url: service.url,
+    operations: service.operations,
   };
   // Set Location
   if (service.location && !service.location.id) {
@@ -324,21 +307,15 @@ export async function updateService(service, options) {
   } else {
     compiledService.location_id = null;
   }
-  const eventRules = service.eventRules;
   return KnowledgeService.forge(compiledService).save(null, { method: 'update' })
-    .then((serviceData) => {
-      return upsertEventRules(eventRules, { knowledge_service_id: serviceData.get('id') })
-        .then(() => (options.returnJSON ? serviceData.toJSON() : serviceData))
-        .catch(err => err);
-    }).catch(err => err);
+    .then(serviceData => (options.returnJSON ? serviceData.toJSON() : serviceData))
+    .catch(err => err);
 }
 
 export const deleteService = (serviceId) => {
   return KnowledgeAnswer.where({ knowledge_service_id: serviceId }).destroy().then(() => {
-    return EventRule.where({ knowledge_service_id: serviceId }).destroy().then(() => {
-      return KnowledgeService.forge({ id: serviceId }).destroy().then(() => {
-        return { id: serviceId };
-      }).catch(err => err);
+    return KnowledgeService.forge({ id: serviceId }).destroy().then(() => {
+      return { id: serviceId };
     }).catch(err => err);
   }).catch(err => err);
 };

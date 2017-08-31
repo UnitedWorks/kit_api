@@ -12,18 +12,18 @@ export class HTTPClient extends BaseClient {
   }
 
   send(content, quickActions) {
-    return new Promise((resolve, reject)=>{
+    return new Promise((resolve, reject) => {
       this.messages.push({ content, quickActions })
       resolve();
     });
   }
 
   end() {
-    this.config.res.send({ 
+    this.config.res.send({
       meta: {
-        constituent_id: this.config.constituent.id
-      }, 
-      messages: this.messages 
+        constituent_id: this.config.constituent.id,
+      },
+      messages: this.messages,
     });
   }
 }

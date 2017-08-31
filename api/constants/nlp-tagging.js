@@ -1,7 +1,3 @@
-// Locations
-export const LOOKING_FOR = 'looking_for';
-export const WHERE = 'where';
-
 // Complaint Values
 export const COMPLAINT = 'complaint';
 
@@ -125,3 +121,6 @@ export const WHEN = 'when';
 export const DEADLINE = 'deadline';
 export const OPEN = 'open';
 export const DAYS = 'days';
+
+// Location
+export const LOCATION = 'location';

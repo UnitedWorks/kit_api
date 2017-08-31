@@ -8,10 +8,6 @@ export const Location = bookshelf.Model.extend({
   tableName: 'locations',
 });
 
-export const EventRule = bookshelf.Model.extend({
-  tableName: 'event_rules',
-});
-
 // Knowledge Base Entities
 export const KnowledgeCategory = bookshelf.Model.extend({
   tableName: 'knowledge_categorys',
@@ -59,9 +55,6 @@ export const KnowledgeFacility = bookshelf.Model.extend({
   events() {
     return this.hasMany(KnowledgeEvent, 'knowledge_facility_id');
   },
-  eventRules() {
-    return this.hasMany(EventRule, 'knowledge_facility_id');
-  },
   services() {
     return this.hasMany(KnowledgeService, 'knowledge_facility_id');
   },
@@ -81,9 +74,6 @@ export const KnowledgeService = bookshelf.Model.extend({
   location() {
     return this.belongsTo(Location, 'location_id');
   },
-  eventRules() {
-    return this.hasMany(EventRule, 'knowledge_service_id');
-  },
 });
 
 export const KnowledgeEvent = bookshelf.Model.extend({
@@ -96,9 +86,6 @@ export const KnowledgeEvent = bookshelf.Model.extend({
   },
   location() {
     return this.hasOne(Location, 'id');
-  },
-  eventRules() {
-    return this.hasMany(EventRule, 'knowledge_event_id');
   },
   service() {
     return this.belongsTo(KnowledgeService, 'knowledge_service_id');

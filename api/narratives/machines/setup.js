@@ -1,6 +1,7 @@
 import geocoder from '../../services/geocoder';
 import { logger } from '../../logger';
 import { nlp } from '../../services/nlp';
+import * as TAGS from '../../constants/nlp-tagging';
 import SlackService from '../../services/slack';
 import { getGovernmentOrganizationAtLocation } from '../../accounts/helpers';
 
@@ -110,6 +111,24 @@ export default {
         this.messagingClient.send('Sorry, I didn\'t catch whether that was correct.');
       });
     },
+  },
+
+  async default_location() {
+    if (this.snapshot.nlp.entities && !this.snapshot.nlp.entities[TAGS.LOCATION]) {
+      this.messagingClient.send('Sorry, I didn\'t catch an address. Did you mention city and state?');
+      return this.getBaseState();
+    }
+    const geoData = await geocoder(this.snapshot.nlp.entities[TAGS.LOCATION][0].value).then(gd => gd[0]);
+    if (geoData) {
+      this.set('attributes', {
+        ...this.get('attributes'),
+        default_location: geoData,
+      });
+      this.messagingClient.send(`Thanks! I've set your default location to ${this.get('attributes').default_location.display_name}`);
+    } else {
+      this.messagingClient.send('Sorry, I didn\'t catch an address. Can you say that again?');
+    }
+    return this.getBaseState();
   },
 
 };

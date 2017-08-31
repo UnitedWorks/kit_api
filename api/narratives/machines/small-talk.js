@@ -149,6 +149,7 @@ export default {
           'interaction.tasks.get': 'get_tasks',
 
           'settings.locality.change': 'setup.reset_organization',
+          'settings.default_location': 'setup.default_location',
         };
 
         if (entities.intent && entities.intent[0]) {

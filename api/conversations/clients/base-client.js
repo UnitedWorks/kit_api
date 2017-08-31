@@ -9,17 +9,17 @@ export default class BaseClient {
 
   isTyping() {
     // By default isn't used
-    return new Promise((resolve) => { resolve() });
+    return new Promise((resolve) => { resolve(); });
   }
 
   end() {
     // For streaming type clients. Just HTTP for now.
-    return new Promise((resolve) => { resolve() });
+    return new Promise((resolve) => { resolve(); });
   }
 
   send() {
     // To be overridden.
-    return new Promise((resolve) => { resolve() });
+    return new Promise((resolve) => { resolve(); });
   }
 
   addToQuene(text, attachment, quickReplies) {
