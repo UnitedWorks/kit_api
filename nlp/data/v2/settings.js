@@ -92,6 +92,30 @@ module.exports = [
     ]
   },
   {
+    "text": "I just moved to 309 Lincoln Ave, Highland Park, NJ 08904",
+    "intent": "settings.default_location",
+    "entities": [
+      {
+        "start": 16,
+        "end": 56,
+        "entity": "wit$location",
+        "value": "309 Lincoln Ave, Highland Park, NJ 08904"
+      }
+    ]
+  },
+  {
+    "text": "my address is 309 Lincoln Ave, Highland Park, NJ 08904",
+    "intent": "settings.default_location",
+    "entities": [
+      {
+        "start": 14,
+        "end": 54,
+        "entity": "wit$location",
+        "value": "309 Lincoln Ave, Highland Park, NJ 08904"
+      }
+    ]
+  },
+  {
     "text": "I dont live there",
     "intent": "settings.default_location",
     "entities": []
