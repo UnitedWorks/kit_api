@@ -448,12 +448,6 @@ module.exports = [
     "intent": "environment_sanitation.sanitation_garbage_schedule",
     "entities": [
       {
-        "start": 5,
-        "end": 8,
-        "value": "day",
-        "entity": "schedule"
-      },
-      {
         "start": 12,
         "end": 17,
         "value": "environment_sanitation",
@@ -465,12 +459,6 @@ module.exports = [
     "text": "Is garbage picked up tomorrow?",
     "intent": "environment_sanitation.sanitation_garbage_schedule",
     "entities": [
-      {
-        "start": 21,
-        "end": 29,
-        "value": "day",
-        "entity": "schedule"
-      },
       {
         "start": 3,
         "end": 10,
@@ -487,38 +475,17 @@ module.exports = [
   {
     "text": "Is there trash pickup next week?",
     "intent": "environment_sanitation.sanitation_garbage_schedule",
-    "entities": [
-      {
-        "start": 27,
-        "end": 31,
-        "value": "week",
-        "entity": "schedule"
-      }
-    ]
+    "entities": []
   },
   {
     "text": "Is there garbage pickup next week?",
     "intent": "environment_sanitation.sanitation_garbage_schedule",
-    "entities": [
-      {
-        "start": 29,
-        "end": 33,
-        "value": "week",
-        "entity": "schedule"
-      }
-    ]
+    "entities": []
   },
   {
     "text": "Is trash pickup next Tuesday?",
     "intent": "environment_sanitation.sanitation_garbage_schedule",
-    "entities": [
-      {
-        "start": 21,
-        "end": 28,
-        "value": "week",
-        "entity": "schedule"
-      }
-    ]
+    "entities": []
   },
   {
     "text": "What is the trash schedule?",
@@ -564,14 +531,7 @@ module.exports = [
   {
     "text": "Which day is recycling?",
     "intent": "environment_sanitation.recycling.schedule",
-    "entities": [
-      {
-        "start": 6,
-        "end": 9,
-        "value": "day",
-        "entity": "schedule"
-      }
-    ]
+    "entities": []
   },
   {
     "text": "When is recycling?",
@@ -586,38 +546,17 @@ module.exports = [
   {
     "text": "Is there recycling next week?",
     "intent": "environment_sanitation.recycling.schedule",
-    "entities": [
-      {
-        "start": 24,
-        "end": 28,
-        "value": "week",
-        "entity": "schedule"
-      }
-    ]
+    "entities": []
   },
   {
     "text": "Is recycling next Wednesday?",
     "intent": "environment_sanitation.recycling.schedule",
-    "entities": [
-      {
-        "start": 18,
-        "end": 27,
-        "value": "day",
-        "entity": "schedule"
-      }
-    ]
+    "entities": []
   },
   {
     "text": "When is recycling next month?",
     "intent": "environment_sanitation.recycling.schedule",
-    "entities": [
-      {
-        "start": 23,
-        "end": 28,
-        "value": "month",
-        "entity": "schedule"
-      }
-    ]
+    "entities": []
   },
   {
     "text": "Where do I dispose used syringes?",

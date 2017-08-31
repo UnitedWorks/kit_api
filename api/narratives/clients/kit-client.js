@@ -29,7 +29,7 @@ export default class KitClient {
     return null;
   }
 
-  static staticFromAnswers(answers) {
+  static genericTemplateFromAnswers(answers) {
     const answerArray = [{
       type: 'template',
       templateType: 'generic',
@@ -45,17 +45,44 @@ export default class KitClient {
     return answerArray;
   }
 
-  static entityAvailabilityToText(type, entity, { datetime, constituentAttributes = {} }, options = {}) {
+  static genericTemplateFromEntities(entityArray) {
+    return [{
+      type: 'template',
+      templateType: 'generic',
+      image_aspect_ratio: 'horizontal',
+      elements: entityArray.map((e) => {
+        if (e.type === 'service') return elementTemplates.genericService(e.payload);
+        if (e.type === 'facility') return elementTemplates.genericFacility(e.payload);
+        if (e.type === 'contact') return elementTemplates.genericContact(e.payload);
+        return null;
+      }).filter(d => d),
+    }];
+  }
+
+  static entityContactToText(entity, property) {
+    let entityContactText = '';
+    // Return specific info
+    if (property === 'phone') {
+      if (entity.phone_number) return `${entity.name} can be reached at ${entity.phone_number}.`;
+      entityContactText = `I can't find a phone number for ${entity.name}.`;
+    // Or general contact info
+    } else {
+      if (entity.phone_number || entity.url) {
+        entityContactText = `${entity.name} is available at ${entity.phone_number}${entity.phone_number && entity.url ? ' / ' : ''}${entity.url}.`;
+      }
+    }
+    return entityContactText.length > 0 ? entityContactText : null;
+  }
+
+  static entityAvailabilityToText(type, entity, { datetime, constituentAttributes = {} }) {
     let entityAvailabilityText = '';
     function geoCheck(geo, constituentPosition) {
       let passesGeoCheck = false;
       if (geo && geo[0]) {
-        if (geo && geo[0]) {
-          geo.forEach((boundary) => {
-            const boundaryPolygon = boundary[0].map(c => [c.lat, c.lng]);
-            if (inside(constituentPosition, boundaryPolygon)) passesGeoCheck = true;
-          })
-        }
+        geo.forEach((boundary) => {
+          const boundaryPolygon = boundary[0].map(c => [c.lat, c.lng]);
+          if (inside(constituentPosition, boundaryPolygon)) passesGeoCheck = true;
+        });
       }
       return passesGeoCheck;
     }

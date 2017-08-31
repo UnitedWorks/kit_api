@@ -206,12 +206,6 @@ module.exports = [
     "intent": "health_medicine.clinics",
     "entities": [
       {
-        "start": 0,
-        "end": 4,
-        "value": "open_now",
-        "entity": "schedule"
-      },
-      {
         "start": 5,
         "end": 12,
         "value": "health_medicine",
@@ -222,14 +216,7 @@ module.exports = [
   {
     "text": "open clinics nearby",
     "intent": "health_medicine.clinics",
-    "entities": [
-      {
-        "start": 0,
-        "end": 4,
-        "value": "open_now",
-        "entity": "schedule"
-      }
-    ]
+    "entities": []
   },
   {
     "text": "I need a doctor",

@@ -39,7 +39,7 @@ export default {
       }
       return new KitClient({ organization: this.get('organization') })
         .getAnswer('employment_job_training').then((answers) => {
-          this.messagingClient.addAll(KitClient.staticFromAnswers(answers));
+          this.messagingClient.addAll(KitClient.genericTemplateFromAnswers(answers));
           return this.messagingClient.runQuene().then(() => {
             return this.getBaseState();
           });

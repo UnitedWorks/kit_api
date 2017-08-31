@@ -125,14 +125,14 @@ export async function fetchAnswers(intent, session) {
   // Translate Entities to Templates/Text
   // If we have a datetime, filter out unavailable services/facilities
   if (entities[TAGS.DATETIME]) {
-    session.messagingClient.addAll(KitClient.staticFromAnswers({
+    session.messagingClient.addAll(KitClient.genericTemplateFromAnswers({
       ...answers,
       services: answers.services.filter(entity => KitClient.entityAvailabilityToText('service', entity, { datetime: entities[TAGS.DATETIME], constituentAttributes: session.get('attributes') })),
       facilities: answers.facilities.filter(entity => KitClient.entityAvailabilityToText('facility', entity, { datetime: entities[TAGS.DATETIME], constituentAttributes: session.get('attributes') })),
     }), replyTemplates.evalHelpfulAnswer);
   } else {
     session.messagingClient
-      .addAll(KitClient.staticFromAnswers(answers), replyTemplates.evalHelpfulAnswer);
+      .addAll(KitClient.genericTemplateFromAnswers(answers), replyTemplates.evalHelpfulAnswer);
   }
   // Availability Checks on Facilities/Services (currently just time/location.
   // Constituent attributes should be a filtering factor on even static)

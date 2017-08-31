@@ -9,6 +9,7 @@ import EmploymentMachine from './machines/employment';
 import EvaluationMachine from './machines/eval';
 import HealthMachine from './machines/health';
 import PersonalityMachine from './machines/personality';
+import SearchMachine from './machines/search';
 import SetupMachine from './machines/setup';
 import SocialServicesMachine from './machines/social-services';
 import PromptMachine from './machines/prompt';
@@ -21,17 +22,18 @@ import USVoteFoundationMachine from './machines/small-talk-us-vote-foundation';
 
 
 export const stateMachines = {
+  askDarcel: AskDarcelMachine,
   'benefits-internet': BenefitsInternetMachine,
   employment: EmploymentMachine,
   eval: EvaluationMachine,
   health: HealthMachine,
   personality: PersonalityMachine,
+  prompt: PromptMachine,
+  search: SearchMachine,
   setup: SetupMachine,
-  askDarcel: AskDarcelMachine,
-  usVoteFoundation: USVoteFoundationMachine,
   smallTalk: SmallTalkMachine,
   socialServices: SocialServicesMachine,
-  prompt: PromptMachine,
+  usVoteFoundation: USVoteFoundationMachine,
   voting: VotingMachine,
 };
 

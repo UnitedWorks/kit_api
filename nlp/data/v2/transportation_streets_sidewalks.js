@@ -161,14 +161,7 @@ module.exports = [
   {
     "text": "is alternate side parking tomorrow?",
     "intent": "transportation_streets_sidewalks.parking.asp_schedule",
-    "entities": [
-        {
-          "start": 26,
-          "end": 34,
-          "value": "day",
-          "entity": "schedule"
-        }
-    ]
+    "entities": []
   },
   {
     "text": "when do I need to move my car?",
