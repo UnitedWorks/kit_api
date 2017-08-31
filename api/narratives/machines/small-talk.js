@@ -148,6 +148,8 @@ export default {
           'interaction.tasks.create': 'prompt.loading_prompt',
           'interaction.tasks.get': 'get_tasks',
 
+          'search.knowledge_entity': 'search.knowledge_entity',
+
           'settings.locality.change': 'setup.reset_organization',
           'settings.default_location': 'setup.default_location',
         };
@@ -179,23 +181,19 @@ export default {
   },
 
   resident_question_list() {
-    return this.messagingClient.send({ type: 'template', templateType: 'generic', elements: elementTemplates.genericNewResidentFAQList })
-      .then(() => 'start');
+    return this.messagingClient.send({ type: 'template', templateType: 'generic', elements: elementTemplates.genericNewResidentFAQList }).then(() => 'start');
   },
 
   resident_service_list() {
-    return this.messagingClient.send({ type: 'template', templateType: 'generic', elements: elementTemplates.genericNewResidentServicesList })
-      .then(() => 'start');
+    return this.messagingClient.send({ type: 'template', templateType: 'generic', elements: elementTemplates.genericNewResidentServicesList }).then(() => 'start');
   },
 
   business_questions_list() {
-    return this.messagingClient.send({ type: 'template', templateType: 'generic', elements: elementTemplates.genericBusinessQuestions })
-      .then(() => 'start');
+    return this.messagingClient.send({ type: 'template', templateType: 'generic', elements: elementTemplates.genericBusinessQuestions }).then(() => 'start');
   },
 
   business_requirements_list() {
-    return this.messagingClient.send({ type: 'template', templateType: 'generic', elements: elementTemplates.genericBusinessRequirements })
-      .then(() => 'start');
+    return this.messagingClient.send({ type: 'template', templateType: 'generic', elements: elementTemplates.genericBusinessRequirements }).then(() => 'start');
   },
 
   get_tasks() {

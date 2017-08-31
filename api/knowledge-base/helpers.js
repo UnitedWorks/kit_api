@@ -65,6 +65,22 @@ export async function getAnswers(params = {}, options = {}) {
   return answerJSON;
 }
 
+export async function searchKnowledgeEntities(params = {}, options = { returnJSON: true, limit: 10 }) {
+  // Postgres UNION ALL could make this more efficient... but hit a snag with results columns
+  const results = await Promise.all([
+    knex.select(knex.raw(`*, similarity(name, '${params.text}') as similarity`)).from('knowledge_services').where('organization_id', '=', params.organization_id).orderBy('similarity', 'desc').limit(10),
+    knex.select(knex.raw(`*, similarity(name, '${params.text}') as similarity`)).from('knowledge_facilitys').where('organization_id', '=', params.organization_id).orderBy('similarity', 'desc').limit(10),
+    knex.select(knex.raw(`*, similarity(name, '${params.text}') as similarity`)).from('knowledge_contacts').where('organization_id', '=', params.organization_id).orderBy('similarity', 'desc').limit(10),
+  ]).then((d) => {
+    return [].concat(d[0].map(s => ({ type: 'service', payload: s })).filter(s => s.payload.similarity > 0.3))
+      .concat(d[1].map(f => ({ type: 'facility', payload: f })).filter(f => f.payload.similarity > 0.3))
+      .concat(d[2].map(c => ({ type: 'contact', payload: c })).filter(c => c.payload.similarity > 0.3))
+      .sort((a, b) => a.payload.similarity < b.payload.similarity)
+      .slice(0, options.limit);
+  });
+  return options.returnJSON ? JSON.parse(JSON.stringify(results)) : results;
+}
+
 export const getQuestions = (params = {}) => {
   return KnowledgeQuestion.query((qb) => {
     qb.select(['knowledge_questions.id', 'knowledge_questions.question',

@@ -280,14 +280,7 @@ module.exports = [
   {
     "text": "Open showers",
     "intent": "social_services.hygiene",
-    "entities": [
-      {
-        "start": 0,
-        "end": 4,
-        "value": "open_now",
-        "entity": "schedule"
-      }
-    ]
+    "entities": []
   },
   {
     "text": "need a toilet",
@@ -297,14 +290,7 @@ module.exports = [
   {
     "text": "open public bathrooms",
     "intent": "social_services.hygiene",
-    "entities": [
-      {
-        "start": 0,
-        "end": 4,
-        "value": "open_now",
-        "entity": "schedule"
-      }
-    ]
+    "entities": []
   },
   {
     "text": "Where is a nearby toilet",

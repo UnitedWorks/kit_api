@@ -82,14 +82,7 @@ module.exports = [
   {
     "text": "Whats happening in town today?",
     "intent": "general.community_events",
-    "entities": [
-      {
-        "start": 24,
-        "end": 29,
-        "value": "day",
-        "entity": "schedule"
-      }
-    ]
+    "entities": []
   },
   {
     "text": "How do I get a membership to use community facilities?",

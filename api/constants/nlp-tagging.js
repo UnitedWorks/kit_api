@@ -123,4 +123,17 @@ export const OPEN = 'open';
 export const DAYS = 'days';
 
 // Location
+// NAME
 export const LOCATION = 'location';
+
+// Entity Properties
+// NAME
+export const ENTITY_PROPERTY = 'entity_property';
+// VALUES
+export const AVAILABILITY = 'availability';
+export const AVAILABILITY_SCHEDULE = 'availability.schedule';
+export const CONTACT = 'contact';
+export const CONTACT_PHONE = 'contact.phone';
+export const CONTACT_EMAIL = 'contact.email';
+// export const LOCATION = 'location';
+export const LOCATION_ADDRESS = 'location.address';
