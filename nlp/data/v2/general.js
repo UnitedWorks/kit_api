@@ -127,6 +127,18 @@ module.exports = [
     ]
   },
   {
+    "text": "where can i find pokemon",
+    "intent": "general.pokemon_go",
+    "entities": [
+      {
+        "start": 17,
+        "end": 24,
+        "value": "general",
+        "entity": "category_keywords"
+      }
+    ]
+  },
+  {
     "text": "Pokemon Go",
     "intent": "general.pokemon_go",
     "entities": [

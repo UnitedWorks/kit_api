@@ -1,5 +1,21 @@
 module.exports = [
   {
+    "text": "parking",
+    "intent": "transportation_streets_sidewalks.parking",
+    "entities": [],
+    "meta": {
+      "vague": true
+    }
+  },
+  {
+    "text": "parking info",
+    "intent": "transportation_streets_sidewalks.parking",
+    "entities": [],
+    "meta": {
+      "vague": true
+    }
+  },
+  {
     "text": "Where can I find information on parking?",
     "intent": "transportation_streets_sidewalks.parking",
     "entities": [],
@@ -9,6 +25,14 @@ module.exports = [
   },
   {
     "text": "parking rules",
+    "intent": "transportation_streets_sidewalks.parking",
+    "entities": [],
+    "meta": {
+      "vague": true
+    }
+  },
+  {
+    "text": "what are the parking rules?",
     "intent": "transportation_streets_sidewalks.parking",
     "entities": [],
     "meta": {
@@ -120,6 +144,16 @@ module.exports = [
   },
   {
     "text": "How many parking permits are allowed per house hold?",
+    "intent": "transportation_streets_sidewalks.parking.residential_permit_numbers",
+    "entities": []
+  },
+  {
+    "text": "how do i get a parking permit",
+    "intent": "transportation_streets_sidewalks.parking.residential_permit_numbers",
+    "entities": []
+  },
+  {
+    "text": "i need a parking permit",
     "intent": "transportation_streets_sidewalks.parking.residential_permit_numbers",
     "entities": []
   },
@@ -679,6 +713,18 @@ module.exports = [
       {
         "start": 14,
         "end": 28,
+        "value": "transportation_streets_sidewalks",
+        "entity": "category_keywords"
+      }
+    ]
+  },
+  {
+    "text": "Street cleaning schedule?",
+    "intent": "transportation_streets_sidewalks.street_sweep_schedule",
+    "entities": [
+      {
+        "start": 0,
+        "end": 15,
         "value": "transportation_streets_sidewalks",
         "entity": "category_keywords"
       }
