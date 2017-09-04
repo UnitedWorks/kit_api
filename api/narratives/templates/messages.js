@@ -6,6 +6,7 @@ export const i18n = (key, inserts = {}) => {
     dont_know: 'So sorry, I don’t know the answer to this question.  I am going to make a note of this for next time.',
     setup_ask_city: 'Ok! What\'s your CITY and STATE?  Ex) "New Brunswick, NJ"',
     setup_invalid_location: 'Hmm, I wasn\'t able to find anything. Can you try giving me a CITY and STATE again? Ex) "New Brunswick, NJ"',
+    us_vote_attribution: 'Voting/election info provided by the U.S. Vote Foundation',
   };
   return translations[key];
 };

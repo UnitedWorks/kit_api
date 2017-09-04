@@ -1,11 +1,13 @@
 import VotingClient from '../clients/voting-client';
 import * as US_VOTE_CONSTANTS from '../../constants/voting-foundation';
 import { getPlacesUrl } from '../../utils';
+import { i18n } from '../templates/messages';
 
 export default {
   votingDeadlines() {
     if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting.votingDeadlines');
     return new VotingClient({ location: this.get('location') }).getElections().then((elections) => {
+      this.messagingClient.addToQuene(i18n('us_vote_attribution'));
       if (elections.length === 0) {
         this.messagingClient.addToQuene('There are no upcoming elections!');
       } else {
@@ -20,7 +22,6 @@ export default {
           this.messagingClient.addToQuene('You have no upcoming deadlines, but that doesn\'t mean you shouldn\'t register.', quickReplies);
         }
       }
-
       return this.messagingClient.runQuene().then(() => this.getBaseState());
     });
   },
@@ -29,6 +30,7 @@ export default {
     if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting.electionSchedule');
     this.messagingClient.send('Hmmm, let me go grab the calendar!');
     return new VotingClient({ location: this.get('location') }).getElections().then((elections) => {
+      this.messagingClient.addToQuene(i18n('us_vote_attribution'));
       if (elections.length === 0) {
         this.messagingClient.addToQuene('There are no upcoming elections!');
       } else {
@@ -52,7 +54,7 @@ export default {
           this.messagingClient.addToQuene({
             type: 'template',
             templateType: 'list',
-            elements,
+            elements: elements.length > 1 ? elements : elements.concat({ title: 'No deadlines found', subtitle: 'Please visit the linked elections website' }),
             buttons: [{
               type: 'web_url',
               title: election.urls[0].name,
@@ -66,7 +68,8 @@ export default {
         });
         this.messagingClient.addToQuene(`You have ${Math.floor((earliestRegistrationDate.getTime() - Date.now()) / 86400000)} days left to register. Are you ready for the elections?`, quickReplies);
       }
-      return this.messagingClient.runQuene().then(() => this.getBaseState());
+      this.messagingClient.runQuene();
+      return this.getBaseState();
     });
   },
 
@@ -76,8 +79,8 @@ export default {
       votingClientInstance.getGeneralStateInfo(),
     ]).then((data) => {
       const stateInfo = data[0];
-
       const quickActions = [];
+      this.messagingClient.addToQuene(i18n('us_vote_attribution'));
       stateInfo.lookup_tools.forEach((tool) => {
         if (tool.lookup_tool.kind === US_VOTE_CONSTANTS.POLLING_LOCATION) {
           quickActions.push({
@@ -96,13 +99,13 @@ export default {
           });
         }
       });
-      this.messagingClient.send({
+      this.messagingClient.addToQuene({
         type: 'template',
         templateType: 'button',
         text: `This what I know about the polls. ${VotingClient.extractPollDetails(stateInfo.voting_general_info)}`,
         buttons: quickActions,
       });
-
+      this.messagingClient.runQuene();
       return this.getBaseState();
     });
   },
@@ -111,6 +114,7 @@ export default {
     if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting.voterRegistrationCheck');
     const quickActions = [];
     return new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
+      this.messagingClient.addToQuene(i18n('us_vote_attribution'));
       info.lookup_tools.forEach((tool) => {
         if (tool.lookup_tool.kind === US_VOTE_CONSTANTS.REGISTRATION_STATUS) {
           quickActions.push({
@@ -121,14 +125,14 @@ export default {
           });
         }
       });
-      return this.messagingClient.send({
+      this.messagingClient.addToQuene({
         type: 'template',
         templateType: 'button',
         text: `Here's a way to check if your registered in ${this.get('location').address.state}:`,
         buttons: quickActions,
-      }).then(() => {
-        return this.checkMultiRedirect('voterRegistrationCheck', this.getBaseState());
       });
+      this.messagingClient.runQuene();
+      return this.checkMultiRedirect('voterRegistrationCheck', this.getBaseState());
     });
   },
 
@@ -142,7 +146,7 @@ export default {
     ]).then((data) => {
       const stateInfo = data[0];
       const electionsInfo = data[1];
-
+      this.messagingClient.addToQuene(i18n('us_vote_attribution'));
       this.messagingClient.addToQuene(VotingClient.extractRegistrationDetails(
         stateInfo.voting_general_info));
       const registrationDeadline = VotingClient.getClosestRegistrationDeadline(electionsInfo,
@@ -187,21 +191,21 @@ export default {
         templateType: 'generic',
         elements,
       });
-      return this.messagingClient.runQuene().then(() => {
-        return this.checkMultiRedirect('voterRegistrationGet', this.getBaseState());
-      });
+      this.messagingClient.runQuene();
+      return this.checkMultiRedirect('voterRegistrationGet', this.getBaseState());
     });
   },
 
   sampleBallot() {
     if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting.sampleBallot');
     return new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
+      this.messagingClient.addToQuene(i18n('us_vote_attribution'));
       info.lookup_tools.forEach((tool) => {
         if (tool.lookup_tool.kind === 'sample_ballot') {
-          this.messagingClient.send(`Check here for a sample ballot: ${tool.url}`);
+          this.messagingClient.addToQuene(`Check here for a sample ballot: ${tool.url}`);
         }
       });
-
+      this.messagingClient.runQuene();
       return this.getBaseState();
     });
   },
@@ -211,11 +215,13 @@ export default {
     return new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
       const absenteeVotingDetails = VotingClient.extractAbsenteeVoteDetails(
         info.voting_general_info);
+      this.messagingClient.addToQuene(i18n('us_vote_attribution'));
       if (absenteeVotingDetails) {
-        this.messagingClient.send(`${absenteeVotingDetails}`);
+        this.messagingClient.addToQuene(`${absenteeVotingDetails}`);
       } else {
-        this.messagingClient.send('Hmm, your state doesn\'t seem to allow absentee voting.');
+        this.messagingClient.addToQuene('Hmm, your state doesn\'t seem to allow absentee voting.');
       }
+      this.messagingClient.runQuene();
       return this.getBaseState();
     });
   },
@@ -225,11 +231,13 @@ export default {
     return new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
       const earlyVotingDetails = VotingClient.extractEarlyVotingDetails(
         info.voting_general_info);
+      this.messagingClient.addToQuene(i18n('us_vote_attribution'));
       if (earlyVotingDetails) {
-        this.messagingClient.send(`${earlyVotingDetails}`);
+        this.messagingClient.addToQuene(`${earlyVotingDetails}`);
       } else {
-        this.messagingClient.send('Hmm, it doesn\'t seem that your state allows early voting.');
+        this.messagingClient.addToQuene('Hmm, it doesn\'t seem that your state allows early voting.');
       }
+      this.messagingClient.runQuene();
       return this.getBaseState();
     });
   },
@@ -237,6 +245,7 @@ export default {
   voterIdRequirements() {
     if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting.voterIdRequirements');
     return new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
+      this.messagingClient.addToQuene(i18n('us_vote_attribution'));
       // Identification
       let idMessage = '';
       info.identification_requirements.forEach((idRequirement) => {
@@ -251,13 +260,15 @@ export default {
         return { content_type: 'text', title: label, payload: label };
       });
       this.messagingClient.addToQuene(idMessage, quickReplies);
-      return this.messagingClient.runQuene().then(() => this.getBaseState());
+      this.messagingClient.runQuene();
+      return this.getBaseState();
     });
   },
 
   stateVotingRules() {
     if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting.stateVotingRules');
     return new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
+      this.messagingClient.addToQuene(i18n('us_vote_attribution'));
       // Eligibility
       let eligibleMessage = `${info.eligibility_requirements[0].header} `;
       info.eligibility_requirements[0].items.forEach(({ item }, index) => {
@@ -272,13 +283,15 @@ export default {
         return { content_type: 'text', title: label, payload: label };
       });
       this.messagingClient.addToQuene(notEligibleMessage, quickActions);
-      return this.messagingClient.runQuene().then(() => this.getBaseState());
+      this.messagingClient.runQuene();
+      return this.getBaseState();
     });
   },
 
   voterProblem() {
     if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting.voterProblem');
     return new VotingClient({ location: this.get('location') }).getLocalElectionOffice().then((info) => {
+      this.messagingClient.addToQuene(i18n('us_vote_attribution'));
       if (info && info.office) {
         const officeElements = [{
           title: info.office.express_address.address_to || 'Elections Office',
@@ -324,7 +337,8 @@ export default {
         text: 'If someone is preventing you from voting call these hotlines:',
         buttons: quickActions,
       });
-      return this.messagingClient.runQuene().then(() => this.getBaseState());
+      this.messagingClient.runQuene();
+      return this.getBaseState();
     });
   },
 
@@ -334,8 +348,8 @@ export default {
     return Promise.all([
       votingClientInstance.getGeneralStateInfo(),
     ]).then((data) => {
+      this.messagingClient.addToQuene(i18n('us_vote_attribution'));
       const stateInfo = data[0];
-
       const elements = [{
         title: 'Voting Help Menu',
         buttons: [{
@@ -363,7 +377,8 @@ export default {
         templateType: 'generic',
         elements,
       });
-      return this.messagingClient.runQuene().then(() => this.getBaseState());
+      this.messagingClient.runQuene();
+      return this.getBaseState();
     });
   },
 
