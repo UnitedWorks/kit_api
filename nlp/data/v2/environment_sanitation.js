@@ -17,47 +17,6 @@ module.exports = [
     "entities": []
   },
   {
-    "text": "Animals keep eating my garbage",
-    "intent": "environment_sanitation.sanitation_garbage_protection",
-    "entities": [
-      {
-        "start": 1,
-        "end": 7,
-        "value": "environment_sanitation",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "Rodents keep eating the garbage",
-    "intent": "environment_sanitation.sanitation_garbage_protection",
-    "entities": [
-      {
-        "start": 1,
-        "end": 7,
-        "value": "environment_sanitation",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "How do I stop animals from eating my garbage?",
-    "intent": "environment_sanitation.sanitation_garbage_protection",
-    "entities": []
-  },
-  {
-    "text": "How do I report a waterway that is an unusual color?",
-    "intent": "environment_sanitation.environment_waterway.report",
-    "entities": [
-      {
-        "start": 18,
-        "end": 26,
-        "value": "environment_sanitation",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
     "text": "It looks like theres oil on the water",
     "intent": "environment_sanitation.environment_waterway.report",
     "entities": [
@@ -350,11 +309,6 @@ module.exports = [
     "entities": []
   },
   {
-    "text": "Where do I dispose of my garbage?",
-    "intent": "environment_sanitation.sanitation_garbage_location",
-    "entities": []
-  },
-  {
     "text": "How do I dispose of a lawn mower?",
     "intent": "environment_sanitation.disposal.lawn_mower",
     "entities": []
@@ -410,6 +364,125 @@ module.exports = [
     "entities": []
   },
   {
+    "text": "i have garbage",
+    "intent": "environment_sanitation.trash",
+    "entities": [],
+    "meta": {
+      "vague": true
+    }
+  },
+  {
+    "text": "What day is trash pickup?",
+    "intent": "environment_sanitation.trash.schedule",
+    "entities": [
+      {
+        "start": 12,
+        "end": 17,
+        "value": "environment_sanitation",
+        "entity": "category_keywords"
+      }
+    ]
+  },
+  {
+    "text": "Is garbage picked up tomorrow?",
+    "intent": "environment_sanitation.trash.schedule",
+    "entities": [
+      {
+        "start": 3,
+        "end": 10,
+        "value": "environment_sanitation",
+        "entity": "category_keywords"
+      }
+    ]
+  },
+  {
+    "text": "When is trash pickup?",
+    "intent": "environment_sanitation.trash.schedule",
+    "entities": []
+  },
+  {
+    "text": "Is there trash pickup next week?",
+    "intent": "environment_sanitation.trash.schedule",
+    "entities": []
+  },
+  {
+    "text": "Is there garbage pickup next week?",
+    "intent": "environment_sanitation.trash.schedule",
+    "entities": []
+  },
+  {
+    "text": "Is trash pickup next Tuesday?",
+    "intent": "environment_sanitation.trash.schedule",
+    "entities": []
+  },
+  {
+    "text": "What is the trash schedule?",
+    "intent": "environment_sanitation.trash.schedule",
+    "entities": []
+  },
+  {
+    "text": "What day is trash? ",
+    "intent": "environment_sanitation.trash.schedule",
+    "entities": []
+  },
+  {
+    "text": "Garbage Schedule",
+    "intent": "environment_sanitation.trash.schedule",
+    "entities": []
+  },
+  {
+    "text": "my garbage schedule",
+    "intent": "environment_sanitation.trash.schedule",
+    "entities": []
+  },
+  {
+    "text": "Where do I dispose of my garbage?",
+    "intent": "environment_sanitation.trash.location",
+    "entities": []
+  },
+
+  {
+    "text": "Animals keep eating my garbage",
+    "intent": "environment_sanitation.trash.animals",
+    "entities": [
+      {
+        "start": 1,
+        "end": 7,
+        "value": "environment_sanitation",
+        "entity": "category_keywords"
+      }
+    ]
+  },
+  {
+    "text": "Rodents keep eating the garbage",
+    "intent": "environment_sanitation.trash.animals",
+    "entities": [
+      {
+        "start": 1,
+        "end": 7,
+        "value": "environment_sanitation",
+        "entity": "category_keywords"
+      }
+    ]
+  },
+  {
+    "text": "How do I stop animals from eating my garbage?",
+    "intent": "environment_sanitation.trash.animals",
+    "entities": []
+  },
+  {
+    "text": "How do I report a waterway that is an unusual color?",
+    "intent": "environment_sanitation.environment_waterway.report",
+    "entities": [
+      {
+        "start": 18,
+        "end": 26,
+        "value": "environment_sanitation",
+        "entity": "category_keywords"
+      }
+    ]
+  },
+  {
     "text": "Do I need special bins for recycling?",
     "intent": "environment_sanitation.recycling.bins",
     "entities": [
@@ -441,65 +514,6 @@ module.exports = [
   {
     "text": "Does recycling need to be separated?",
     "intent": "environment_sanitation.recycling.mix",
-    "entities": []
-  },
-  {
-    "text": "What day is trash pickup?",
-    "intent": "environment_sanitation.sanitation_garbage_schedule",
-    "entities": [
-      {
-        "start": 12,
-        "end": 17,
-        "value": "environment_sanitation",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "Is garbage picked up tomorrow?",
-    "intent": "environment_sanitation.sanitation_garbage_schedule",
-    "entities": [
-      {
-        "start": 3,
-        "end": 10,
-        "value": "environment_sanitation",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "When is trash pickup?",
-    "intent": "environment_sanitation.sanitation_garbage_schedule",
-    "entities": []
-  },
-  {
-    "text": "Is there trash pickup next week?",
-    "intent": "environment_sanitation.sanitation_garbage_schedule",
-    "entities": []
-  },
-  {
-    "text": "Is there garbage pickup next week?",
-    "intent": "environment_sanitation.sanitation_garbage_schedule",
-    "entities": []
-  },
-  {
-    "text": "Is trash pickup next Tuesday?",
-    "intent": "environment_sanitation.sanitation_garbage_schedule",
-    "entities": []
-  },
-  {
-    "text": "What is the trash schedule?",
-    "intent": "environment_sanitation.sanitation_garbage_schedule",
-    "entities": []
-  },
-  {
-    "text": "What day is trash? ",
-    "intent": "environment_sanitation.sanitation_garbage_schedule",
-    "entities": []
-  },
-  {
-    "text": "Garbage  Schedule",
-    "intent": "environment_sanitation.sanitation_garbage_schedule",
     "entities": []
   },
   {
@@ -555,6 +569,16 @@ module.exports = [
   },
   {
     "text": "When is recycling next month?",
+    "intent": "environment_sanitation.recycling.schedule",
+    "entities": []
+  },
+  {
+    "text": "Recycling Schedule",
+    "intent": "environment_sanitation.recycling.schedule",
+    "entities": []
+  },
+  {
+    "text": "my recycling schedule",
     "intent": "environment_sanitation.recycling.schedule",
     "entities": []
   },

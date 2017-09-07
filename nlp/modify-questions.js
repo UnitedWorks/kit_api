@@ -124,6 +124,18 @@ const updateOperations = [
     from: 'environment_sanitation.sanitation_compost_schedule',
     to: 'environment_sanitation.compost.schedule',
   },
+  {
+    from: 'environment_sanitation.sanitation_garbage_schedule',
+    to: 'environment_sanitation.trash.schedule',
+  },
+  {
+    from: 'environment_sanitation.sanitation_garbage_location',
+    to: 'environment_sanitation.trash.location',
+  },
+  {
+    from: 'environment_sanitation.sanitation_garbage_protection',
+    to: 'environment_sanitation.trash.animals',
+  },
   // Transportation
   {
     from: 'transportation_streets_sidewalks.parking_map',
