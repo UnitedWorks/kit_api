@@ -103,7 +103,7 @@ export default {
   start: {
     message() {
       if (!this.snapshot.input.payload.text && this.snapshot.input.payload.payload) {
-        this.snapshot.input.payload.text = this.snapshot.input.payload;
+        this.snapshot.input.payload.text = this.snapshot.input.payload.payload;
       }
       return nlp.message(this.snapshot.input.payload.text).then((nlpData) => {
         this.snapshot.nlp = nlpData;
