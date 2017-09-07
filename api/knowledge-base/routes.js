@@ -74,7 +74,7 @@ router.route('/facilities')
    * @param {Object} organization - Organization to associate facility with
    * @return {Object}
    */
-  .post(requireAuth, (req, res, next) => {
+  .post((req, res, next) => {
     createFacility(req.body.facility, req.body.organization, req.body.facility.location,
       { returnJSON: true })
       .then(facility => res.status(200).send({ facility }))
@@ -86,7 +86,7 @@ router.route('/facilities')
    * @param {Number} facility.id - Required: Id of updated object
    * @return {Object}
    */
-   .put(requireAuth, (req, res, next) => {
+   .put((req, res, next) => {
      updateFacility(req.body.facility, { returnJSON: true })
        .then(updated => res.status(200).send({ facility: updated }))
        .catch(err => next(err));
@@ -96,7 +96,7 @@ router.route('/facilities')
     * @param {Number} id - Id of the facility to be removed
     * @return {Object}
     */
-  .delete(requireAuth, (req, res, next) => {
+  .delete((req, res, next) => {
     deleteFacility(req.query.facility_id)
       .then(facility => res.status(200).send({ facility }))
       .catch(err => next(err));
@@ -120,7 +120,7 @@ router.route('/events')
    * Create event
    * @return {Object}
    */
-  .post(requireAuth, (req, res) => {
+  .post((req, res) => {
     KnowledgeEvent.forge(req.body.event).save(null, { method: 'insert' })
       .then((saved) => {
         res.status(200).send({ event: saved });
@@ -132,7 +132,7 @@ router.route('/events')
    * Update event
    * @return {Object}
    */
-  .put(requireAuth, (req, res) => {
+  .put((req, res) => {
     KnowledgeEvent.forge(req.body.event).save(null, { method: 'update' })
       .then((updated) => {
         res.status(200).send({ event: updated });
@@ -145,7 +145,7 @@ router.route('/events')
    * @param {Number} id - Id of the event to be removed
    * @return {Object}
    */
-  .delete(requireAuth, (req, res) => {
+  .delete((req, res) => {
     KnowledgeEvent.forge({ id: req.query.id }).destroy()
       .then(() => {
         res.status(200).send();
@@ -175,7 +175,7 @@ router.route('/services')
    * @param {Object} organization - Organization to associate service with
    * @return {Object}
    */
-  .post(requireAuth, (req, res, next) => {
+  .post((req, res, next) => {
     createService(req.body.service, req.body.organization, req.body.service.location,
       { returnJSON: true })
       .then(saved => res.status(200).send({ service: saved }))
@@ -186,7 +186,7 @@ router.route('/services')
    * @param {Object} service - Object for service update
    * @return {Object}
    */
-  .put(requireAuth, (req, res, next) => {
+  .put((req, res, next) => {
     updateService(req.body.service, { returnJSON: true })
       .then(saved => res.status(200).send({ service: saved }))
       .catch(err => next(err));
@@ -196,7 +196,7 @@ router.route('/services')
    * @param {Number} id - Id of the service to be deleted
    * @return {Object}
    */
-  .delete(requireAuth, (req, res, next) => {
+  .delete((req, res, next) => {
     deleteService(req.query.service_id)
       .then(service => res.status(200).send({ service }))
       .catch(err => next(err));

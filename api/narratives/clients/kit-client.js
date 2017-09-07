@@ -30,18 +30,22 @@ export default class KitClient {
   }
 
   static genericTemplateFromAnswers(answers) {
-    const answerArray = [{
-      type: 'template',
-      templateType: 'generic',
-      image_aspect_ratio: 'horizontal',
-      elements: [
-        ...answers.services.map(s => elementTemplates.genericService(s)),
-        ...answers.facilities.map(f => elementTemplates.genericFacility(f)),
-        ...answers.contacts.map(c => elementTemplates.genericContact(c)),
-      ],
-    }];
+    const templateElements = [
+      ...answers.services.map(s => elementTemplates.genericService(s)),
+      ...answers.facilities.map(f => elementTemplates.genericFacility(f)),
+      ...answers.contacts.map(c => elementTemplates.genericContact(c)),
+    ];
+    const answerArray = [];
     const textAnswer = KitClient.answerText(answers);
-    if (textAnswer) answerArray.unshift(textAnswer);
+    if (textAnswer) answerArray.push(textAnswer);
+    if (templateElements.length > 0) {
+      answerArray.push({
+        type: 'template',
+        templateType: 'generic',
+        image_aspect_ratio: 'horizontal',
+        elements: templateElements,
+      });
+    }
     return answerArray;
   }
 

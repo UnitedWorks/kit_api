@@ -136,8 +136,15 @@ export async function fetchAnswers(intent, session) {
   }
   // Availability Checks on Facilities/Services (currently just time/location.
   // Constituent attributes should be a filtering factor on even static)
-  session.messagingClient.addAll(answers.services.map(entity => KitClient.entityAvailabilityToText('service', entity, { datetime: entities[TAGS.DATETIME], constituentAttributes: session.get('attributes') })).filter(s => s), replyTemplates.evalHelpfulAnswer);
-  session.messagingClient.addAll(answers.facilities.map(entity => KitClient.entityAvailabilityToText('facility', entity, { datetime: entities[TAGS.DATETIME], constituentAttributes: session.get('attributes') })).filter(s => s), replyTemplates.evalHelpfulAnswer);
+  const entityAvailabilities = [
+    ...answers.services.map(entity => KitClient.entityAvailabilityToText('service', entity, { datetime: entities[TAGS.DATETIME], constituentAttributes: session.get('attributes') })).filter(s => s),
+    ...answers.facilities.map(entity => KitClient.entityAvailabilityToText('facility', entity, { datetime: entities[TAGS.DATETIME], constituentAttributes: session.get('attributes') })).filter(s => s),
+  ];
+  if (entityAvailabilities.length > 0) {
+    session.messagingClient.addAll(entityAvailabilities, replyTemplates.evalHelpfulAnswer);
+  } else {
+    session.messagingClient.addToQuene('There doesn\'t seem to an available service or facility for that date/time.');
+  }
   return session.messagingClient.runQuene().then(() => {
     // If we have a prompt, prompt user about it
     if (answers.prompt && answers.prompt.steps.length > 0) {

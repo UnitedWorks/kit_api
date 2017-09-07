@@ -114,11 +114,13 @@ export default {
   },
 
   async default_location() {
-    if (this.snapshot.nlp.entities && !this.snapshot.nlp.entities[TAGS.LOCATION]) {
-      this.messagingClient.send('Sorry, I didn\'t catch an address. Did you mention city and state?');
+    if (this.snapshot.nlp.entities && !(this.snapshot.nlp.entities[TAGS.LOCATION] || this.snapshot.nlp.entities[TAGS.LOCAL_SEARCH_QUERY])) {
+      this.messagingClient.send('Sorry, I didn\'t catch an address. Did you mention a city and state?');
       return this.getBaseState();
     }
-    const geoData = await geocoder(this.snapshot.nlp.entities[TAGS.LOCATION][0].value).then(gd => gd[0]);
+    // I hate this random string joining so much
+    const formedString = `${this.snapshot.nlp.entities[TAGS.LOCAL_SEARCH_QUERY].map(l => l.value).join(' ')}${this.snapshot.nlp.entities[TAGS.LOCATION] ? this.snapshot.nlp.entities[TAGS.LOCATION][0].value : ''}`;
+    const geoData = await geocoder(formedString).then(gd => gd[0]);
     if (geoData) {
       this.set('attributes', {
         ...this.get('attributes'),
