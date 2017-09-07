@@ -29,14 +29,10 @@ export default {
     // Pick off information based on the request (phone, schedule, etc.)
     if (this.snapshot.nlp.entities && this.snapshot.nlp.entities.entity_property && this.snapshot.nlp.entities.entity_property[0]) {
       const lookupType = this.snapshot.nlp.entities.entity_property[0].value;
-      console.log(lookupType, LOOKUP.CONTACT_PHONE)
-      console.log(lookupType === LOOKUP.CONTACT_PHONE)
-      console.log(knowledgeEntities)
       this.messagingClient.addAll(knowledgeEntities.map((entity) => {
         if (lookupType === LOOKUP.AVAILABILITY_SCHEDULE) {
           return KitClient.entityAvailabilityToText(entity.type, entity.payload, { constituentAttributes: this.get('attributes') })
         } else if (lookupType === LOOKUP.CONTACT_PHONE) {
-          console.log(lookupType)
           return KitClient.entityContactToText(entity.payload, 'phone');
         } else if (lookupType === LOOKUP.CONTACT) {
           return KitClient.entityContactToText(entity.payload);

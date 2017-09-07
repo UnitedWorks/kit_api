@@ -125,6 +125,7 @@ export const DAYS = 'days';
 // Location
 // NAME
 export const LOCATION = 'location';
+export const LOCAL_SEARCH_QUERY = 'local_search_query';
 
 // Entity Properties
 // NAME

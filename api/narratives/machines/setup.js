@@ -130,5 +130,4 @@ export default {
     }
     return this.getBaseState();
   },
-
 };

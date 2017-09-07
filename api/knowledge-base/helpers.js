@@ -242,7 +242,7 @@ export async function createFacility(facility, organization, location, options) 
     phone_number: facility.phone_number,
     url: facility.url,
     organization_id: organization.id,
-    operations: facility.operations,
+    availabilitys: facility.availabilitys,
   };
   // Set Location
   if (location) {
@@ -263,7 +263,7 @@ export async function updateFacility(facility, options) {
     eligibility_information: facility.eligibility_information,
     phone_number: facility.phone_number,
     url: facility.url,
-    operations: facility.operations,
+    availabilitys: facility.availabilitys,
   };
   // Set Location
   if (!facility.location.id) {
@@ -293,7 +293,7 @@ export async function createService(service, organization, location, options) {
     phone_number: service.phone_number,
     url: service.url,
     organization_id: organization.id,
-    operations: service.operations,
+    availabilitys: service.availabilitys,
   };
   // Set Location
   if (location) {
@@ -314,7 +314,7 @@ export async function updateService(service, options) {
     eligibility_information: service.eligibility_information,
     phone_number: service.phone_number,
     url: service.url,
-    operations: service.operations,
+    availabilitys: service.availabilitys,
   };
   // Set Location
   if (service.location && !service.location.id) {

@@ -86,14 +86,14 @@ export default class KitClient {
       }
       return passesGeoCheck;
     }
-    // Check if a entity's operations use geo and constituent home address is available.
+    // Check if a entity's availabilitys use geo and constituent home address is available.
     // If none available, send back message asking for default_address
-    if (entity.operations && entity.operations.filter(o => o.geo).length > 0 && !constituentAttributes.default_location) {
+    if (entity.availabilitys && entity.availabilitys.filter(o => o.geo).length > 0 && !constituentAttributes.default_location) {
       return `To lookup availability for ${entity.name}, we need a default address to check against. Please type "My address is ____" or "Set default address" to do that and ask once more!`;
     }
     // Describe General Schedule (even if no datetime, mention schedule)
     if (!datetime) {
-      entity.operations.forEach((operation, index, array) => {
+      entity.availabilitys.forEach((operation, index, array) => {
         // Geo Check
         if (operation.geo && operation.geo[0] && !geoCheck(operation.geo, [constituentAttributes.default_location.lat, constituentAttributes.default_location.lon])) return;
         // Analyize RRules/Times
@@ -101,11 +101,11 @@ export default class KitClient {
         const timeStart = moment(operation.t_start, 'HH-mm-ss');
         const timeEnd = moment(operation.t_end, 'HH-mm-ss');
         entityAvailabilityText = entityAvailabilityText.concat(
-          `${rule.toText()}${operation.t_start && operation.t_end ? ` (${timeStart.format('h:mm A')} - ${timeEnd.format('h:mm A')})` : ' (No Hours Listed)'}${index !== array.length - 1 ? ' / ' : ''}`);
+          `${rule.toText()}${operation.t_start && operation.t_end ? ` (${timeStart.format('h:mm A')} - ${timeEnd.format('h:mm A')})` : ' (No Hours Listed)'}${index === array.length - 1 ? ' / ' : ''}`);
       });
     // Speak to Specific Day Availability
     } else if (datetime[0].grain === 'day') {
-      entity.operations.forEach((operation) => {
+      entity.availabilitys.forEach((operation) => {
         // Geo Check
         if (operation.geo && operation.geo[0] && !geoCheck(operation.geo, [constituentAttributes.default_location.lat, constituentAttributes.default_location.lon])) return;
         // Analyize RRules/Times
@@ -127,7 +127,7 @@ export default class KitClient {
     /* TODO Get Next Availability (how does this trigger? action?) */
     if (entityAvailabilityText.length > 0) {
       if (type === 'service') {
-        return `${entity.name} is running in your area ${entityAvailabilityText}`;
+        return `${entity.name} is operating in your area ${entityAvailabilityText}`;
       } else if (type === 'facility') {
         return `${entity.name} is open ${entityAvailabilityText}`;
       }
