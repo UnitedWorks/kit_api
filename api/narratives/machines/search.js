@@ -2,6 +2,8 @@ import { searchKnowledgeEntities } from '../../knowledge-base/helpers';
 import KitClient from '../clients/kit-client';
 import * as replyTemplates from '../templates/quick-replies';
 import * as LOOKUP from '../../constants/nlp-tagging';
+import SlackService from '../../services/slack';
+import { logger } from '../../logger';
 
 export default {
   async knowledge_entity() {
@@ -20,6 +22,14 @@ export default {
       organization_id: this.snapshot.organization_id,
     }, { limit: 3 });
     if (knowledgeEntities.length === 0) {
+      try {
+        new SlackService({
+          username: 'Entity Search Returned Nothing',
+          icon: 'disappointed',
+        }).send(`>*Query*: ${this.snapshot.input.payload.text}`);
+      } catch (e) {
+        logger.error(e);
+      }
       this.messagingClient.send('Hmm, I wasn\'t able to find any relevant facilities, services, or contacts. Sorry about that.');
       return this.getBaseState();
     }
