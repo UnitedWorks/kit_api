@@ -4,16 +4,7 @@ import { nlp } from '../../services/nlp';
 import * as TAGS from '../../constants/nlp-tagging';
 import SlackService from '../../services/slack';
 import { getGovernmentOrganizationAtLocation } from '../../accounts/helpers';
-
-const admin_levels = {
-  country: 2,
-  state: 4,
-  state_district: 5,
-  county: 7,
-  village: 8,
-  city_district: 9,
-  suburb: 10,
-};
+import { i18n } from '../templates/messages';
 
 export default {
   reset_organization() {
@@ -25,8 +16,6 @@ export default {
     message() {
       /* Get input, process it, and get a geolocation */
       const input = this.snapshot.input.payload.text || this.snapshot.input.payload.payload;
-      logger.info(`made it this far... ${input}`);
-
       return geocoder(input).then((data) => {
         logger.info(data);
         const validResults = data.filter((result) => {

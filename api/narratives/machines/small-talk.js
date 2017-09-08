@@ -216,12 +216,16 @@ export default {
       username: 'Misunderstood Request',
       icon: 'question',
     }).send(`>*Request Message*: ${this.snapshot.input.payload.text}\n>*Constituent ID*: ${this.snapshot.constituent.id}`);
-    Mixpanel.track('constituent_input_failure', {
-      distinct_id: this.snapshot.constituent.id,
-      constituent_id: this.snapshot.constituent.id,
-      organization_id: this.get('organization').id,
-      interface: this.messagingClient.provider,
-    });
+    try {
+      Mixpanel.track('constituent_input_failure', {
+        distinct_id: this.snapshot.constituent.id,
+        constituent_id: this.snapshot.constituent.id,
+        organization_id: this.get('organization').id,
+        interface: this.messagingClient.provider,
+      });
+    } catch (e) {
+      logger.error(e);
+    }
     // Handle Failure
     const firstFailMessage = randomPick([
       'Oops! My circuits went haywire. Can you say that a different way?',

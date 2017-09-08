@@ -2,6 +2,7 @@ import { NarrativeSession } from './models';
 import { getBaseState, getOrgNameFromConstituentEntry } from './helpers';
 import StateMachine from './state-machine';
 import Mixpanel from '../services/event-tracking';
+import { logger } from '../logger';
 
 // Base Machines
 import BenefitsInternetMachine from './machines/benefits-internet';
@@ -57,12 +58,16 @@ export class NarrativeSessionMachine extends StateMachine {
     this.set('last_checked', Date.now());
     this.snapshot = snapshot;
     this.messagingClient = messagingClient;
-    Mixpanel.track('constituent_input', {
-      distinct_id: this.snapshot.constituent.id,
-      constituent_id: this.snapshot.constituent.id,
-      organization_id: this.get('organization').id,
-      interface: this.messagingClient.provider,
-    });
+    try {
+      Mixpanel.track('constituent_input', {
+        distinct_id: this.snapshot.constituent.id,
+        constituent_id: this.snapshot.constituent.id,
+        organization_id: this.get('organization').id,
+        interface: this.messagingClient.provider,
+      });
+    } catch (e) {
+      logger.error(e);
+    }
   }
 
   stateRedirect(instructions, nextState, message) {

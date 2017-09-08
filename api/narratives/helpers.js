@@ -9,6 +9,7 @@ import EmailService from '../services/email';
 import Mixpanel from '../services/event-tracking';
 import * as env from '../env';
 import { shuffle } from '../utils';
+import { logger } from '../logger';
 
 /* TODO(nicksahler): Declare in machine, automatically route */
 export function getBaseState(providerName, section) {
@@ -54,15 +55,19 @@ export async function fetchAnswers(intent, session) {
     // See if we have fallback contacts
     if (fallbackData.contacts.length === 0) {
       session.messagingClient.addToQuene(i18n('dont_know'));
-      Mixpanel.track('answer_sent', {
-        distinct_id: session.snapshot.constituent.id,
-        constituent_id: session.snapshot.constituent.id,
-        organization_id: session.get('organization').id,
-        knowledge_category_id: question.knowledge_category_id,
-        question_id: question.id,
-        status: 'failed',
-        interface: session.messagingClient.provider,
-      });
+      try {
+        Mixpanel.track('answer_sent', {
+          distinct_id: session.snapshot.constituent.id,
+          constituent_id: session.snapshot.constituent.id,
+          organization_id: session.get('organization').id,
+          knowledge_category_id: question.knowledge_category_id,
+          question_id: question.id,
+          status: 'failed',
+          interface: session.messagingClient.provider,
+        });
+      } catch (e) {
+        logger.error(e);
+      }
     } else {
       // If we do, templates!
       session.messagingClient.addToQuene(i18n('dont_know'));
@@ -83,18 +88,22 @@ export async function fetchAnswers(intent, session) {
         elements: fallbackData.contacts.map(
           contact => elementTemplates.genericContact(contact)),
       }, replyTemplates.evalHelpfulAnswer);
-      Mixpanel.track('answer_sent', {
-        distinct_id: session.snapshot.constituent.id,
-        constituent_id: session.snapshot.constituent.id,
-        organization_id: session.get('organization').id,
-        knowledge_category_id: question ? question.knowledge_category_id : null,
-        question_id: question ? question.id : null,
-        status: 'fallback',
-        interface: session.messagingClient.provider,
-      });
+      try {
+        Mixpanel.track('answer_sent', {
+          distinct_id: session.snapshot.constituent.id,
+          constituent_id: session.snapshot.constituent.id,
+          organization_id: session.get('organization').id,
+          knowledge_category_id: question ? question.knowledge_category_id : null,
+          question_id: question ? question.id : null,
+          status: 'fallback',
+          interface: session.messagingClient.provider,
+        });
+      } catch (e) {
+        logger.error(e);
+      }
     }
     // EMAIL: See if have a representative we can send this to
-    if (fallbackData.representatives.length > 0) {
+    if (question && fallbackData.representatives.length > 0) {
       const repEmails = [];
       fallbackData.representatives.forEach((rep) => {
         repEmails.push({ name: rep.name, email: rep.email });
@@ -106,22 +115,26 @@ export async function fetchAnswers(intent, session) {
       });
     }
     // If we didn't provide any info, don't bother asking if it was helpful
-    if (fallbackData.representatives.length > 0 || fallbackData.contacts.length > 0) {
+    if (question && (fallbackData.representatives.length > 0 || fallbackData.contacts.length > 0)) {
       session.messagingClient.addToQuene('Was this helpful?', [...replyTemplates.evalHelpfulAnswer]);
     }
     // Run Message
     return session.messagingClient.runQuene().then(() => session.getBaseState());
   }
   // Otherwise, proceed with answers
-  Mixpanel.track('answer_sent', {
-    distinct_id: session.snapshot.constituent.id,
-    constituent_id: session.snapshot.constituent.id,
-    organization_id: session.get('organization').id,
-    knowledge_category_id: question.knowledge_category_id,
-    question_id: question.id,
-    status: 'available',
-    interface: session.messagingClient.provider,
-  });
+  try {
+    Mixpanel.track('answer_sent', {
+      distinct_id: session.snapshot.constituent.id,
+      constituent_id: session.snapshot.constituent.id,
+      organization_id: session.get('organization').id,
+      knowledge_category_id: question.knowledge_category_id,
+      question_id: question.id,
+      status: 'available',
+      interface: session.messagingClient.provider,
+    });
+  } catch (e) {
+    logger.error(e);
+  }
   // Translate Entities to Templates/Text
   // If we have a datetime, filter out unavailable services/facilities
   if (entities[TAGS.DATETIME]) {
