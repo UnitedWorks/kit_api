@@ -60,9 +60,14 @@ export default {
   },
 
   async event() {
-    this.messagingClient.addToQuene('Hmm, let me go see what I can find for you!');
     const feeds = await Feed.where({ organization_id: this.snapshot.organization_id, entity: FEED_CONSTANTS.EVENT })
       .fetchAll().then(f => f.toJSON());
+    if (feeds.length > 0) {
+      this.messagingClient.addToQuene('Hmm, let me go see what I can find for you!');
+    } else {
+      this.messagingClient.send('Your local gov hasn\'t recorded any events yet. Sorry!');
+      return this.getBaseState();
+    }
     const allEvents = await Promise.all(feeds.map(f => runFeed(f).then(found => found.events)))
       .then((feed) => {
         let flattenedArray = [];
@@ -73,7 +78,11 @@ export default {
       .sort((a, b) => stringSimilarity.compareTwoStrings(this.snapshot.input.payload.text, b.name) -
           stringSimilarity.compareTwoStrings(this.snapshot.input.payload.text, a.name))
       .slice(0, 9).map(event => ({ type: 'event', payload: event }));
-    this.messagingClient.addAll(KitClient.genericTemplateFromEntities(filteredEvents), replyTemplates.evalHelpfulAnswer);
+    if (filteredEvents.length > 0) {
+      this.messagingClient.addAll(KitClient.genericTemplateFromEntities(filteredEvents), replyTemplates.evalHelpfulAnswer);
+    } else {
+      this.messagingClient.addToQuene('Sorry, I was unable to find upcoming events for you.');
+    }
     return this.messagingClient.runQuene().then(() => this.getBaseState());
   },
 };
