@@ -97,26 +97,26 @@ export default class KitClient {
     }
     // Describe General Schedule (even if no datetime, mention schedule)
     if (!datetime) {
-      entity.availabilitys.forEach((operation, index, array) => {
+      entity.availabilitys.forEach((availability, index, array) => {
         // Geo Check
-        if (operation.geo && operation.geo[0] && !geoCheck(operation.geo, [constituentAttributes.default_location.lat, constituentAttributes.default_location.lon])) return;
+        if (availability.geo && availability.geo[0] && !geoCheck(availability.geo, [constituentAttributes.default_location.lat, constituentAttributes.default_location.lon])) return;
         // Analyize RRules/Times
-        const rule = new RRule(RRule.parseString(operation.rrule));
-        const timeStart = moment(operation.t_start, 'HH-mm-ss');
-        const timeEnd = moment(operation.t_end, 'HH-mm-ss');
+        const rule = new RRule(RRule.parseString(availability.rrule));
+        const timeStart = moment(availability.t_start, 'HH-mm-ss');
+        const timeEnd = moment(availability.t_end, 'HH-mm-ss');
         entityAvailabilityText = entityAvailabilityText.concat(
-          `${rule.toText()}${operation.t_start && operation.t_end ? ` (${timeStart.format('h:mm A')} - ${timeEnd.format('h:mm A')})` : ' (No Hours Listed)'}${index === array.length - 1 ? ' / ' : ''}`);
+          `${rule.toText()}${availability.t_start && availability.t_end ? ` (${timeStart.format('h:mm A')} - ${timeEnd.format('h:mm A')})` : ' (No Hours Listed)'}${index === array.length - 1 ? ' / ' : ''}`);
       });
     // Speak to Specific Day Availability
     } else if (datetime[0].grain === 'day') {
-      entity.availabilitys.forEach((operation) => {
+      entity.availabilitys.forEach((availability) => {
         // Geo Check
-        if (operation.geo && operation.geo[0] && !geoCheck(operation.geo, [constituentAttributes.default_location.lat, constituentAttributes.default_location.lon])) return;
+        if (availability.geo && availability.geo[0] && !geoCheck(availability.geo, [constituentAttributes.default_location.lat, constituentAttributes.default_location.lon])) return;
         // Analyize RRules/Times
         const rruleSet = new RRuleSet();
-        rruleSet.rrule(RRule.fromString(operation.rrule));
-        const timeStart = moment(operation.t_start, 'HH-mm-ss');
-        const timeEnd = moment(operation.t_end, 'HH-mm-ss');
+        rruleSet.rrule(RRule.fromString(availability.rrule));
+        const timeStart = moment(availability.t_start, 'HH-mm-ss');
+        const timeEnd = moment(availability.t_end, 'HH-mm-ss');
         const floorDate = new Date(datetime[0].value);
         floorDate.setHours(0);
         const dayLaterDate = new Date(datetime[0].value);
@@ -124,7 +124,7 @@ export default class KitClient {
         const betweenSlice = rruleSet.between(floorDate, dayLaterDate);
         if (betweenSlice.length > 0) {
           entityAvailabilityText = entityAvailabilityText.concat(
-            `${moment(betweenSlice[0]).format('dddd, M/DD')}${operation.t_start && operation.t_end ? ` (${timeStart.format('h:mm A')} - ${timeEnd.format('h:mm A')})` : ' (No Hours Listed)'}`);
+            `${moment(betweenSlice[0]).format('dddd, M/DD')}${availability.t_start && availability.t_end ? ` (${timeStart.format('h:mm A')} - ${timeEnd.format('h:mm A')})` : ' (No Hours Listed)'}`);
         }
       });
     }
