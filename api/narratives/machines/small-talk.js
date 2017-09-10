@@ -149,6 +149,7 @@ export default {
           'interaction.tasks.get': 'get_tasks',
 
           'search.knowledge_entity': 'search.knowledge_entity',
+          'search.event': 'search.event',
 
           'settings.locality.change': 'setup.reset_organization',
           'settings.default_location': 'setup.default_location',

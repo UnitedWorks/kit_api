@@ -11,7 +11,7 @@ module.exports = [
         "start": 22,
         "end": 31,
         "value": "city hall",
-        "entity": "wit$local_search_query"
+        "entity": "wit$search_query"
       }
     ]
   },
@@ -27,7 +27,7 @@ module.exports = [
         "start": 28,
         "end": 37,
         "value": "city hall",
-        "entity": "wit$local_search_query"
+        "entity": "wit$search_query"
       }
     ]
   },
@@ -43,7 +43,7 @@ module.exports = [
         "start": 30,
         "end": 44,
         "value": "local precinct",
-        "entity": "wit$local_search_query"
+        "entity": "wit$search_query"
       }
     ]
   },
@@ -59,7 +59,7 @@ module.exports = [
         "start": 13,
         "end": 27,
         "value": "public library",
-        "entity": "wit$local_search_query"
+        "entity": "wit$search_query"
       }
     ]
   },
@@ -75,7 +75,7 @@ module.exports = [
         "start": 26,
         "end": 50,
         "value": "resident response center",
-        "entity": "wit$local_search_query"
+        "entity": "wit$search_query"
       }
     ]
   },
@@ -91,7 +91,7 @@ module.exports = [
         "start": 8,
         "end": 31,
         "value": "health & human services",
-        "entity": "wit$local_search_query"
+        "entity": "wit$search_query"
       }
     ]
   },
@@ -107,7 +107,7 @@ module.exports = [
         "start": 28,
         "end": 52,
         "value": "Resident Response Center",
-        "entity": "wit$local_search_query"
+        "entity": "wit$search_query"
       }
     ]
   },
@@ -123,7 +123,7 @@ module.exports = [
         "start": 33,
         "end": 48,
         "value": "sherif's office",
-        "entity": "wit$local_search_query"
+        "entity": "wit$search_query"
       }
     ]
   },
@@ -139,8 +139,88 @@ module.exports = [
         "start": 33,
         "end": 48,
         "value": "sherif's office",
-        "entity": "wit$local_search_query"
+        "entity": "wit$search_query"
       }
     ]
-  }
+  },
+  {
+    "text": "When is the next City Council Meeting?",
+    "intent": "search.event",
+    "entities": [
+      {
+        "value": "availability.schedule",
+        "entity": "entity_property"
+      },
+      {
+        "start": 17,
+        "end": 37,
+        "value": "City Council Meeting",
+        "entity": "wit$search_query"
+      }
+    ]
+  },
+  {
+    "text": "when is the city council meeting",
+    "intent": "search.event",
+    "entities": [
+      {
+        "value": "availability.schedule",
+        "entity": "entity_property"
+      },
+      {
+        "start": 12,
+        "end": 32,
+        "value": "city council meeting",
+        "entity": "wit$search_query"
+      }
+    ]
+  },
+  {
+    "text": "When day is the town council meeting next?",
+    "intent": "search.event",
+    "entities": [
+      {
+        "value": "availability.schedule",
+        "entity": "entity_property"
+      },
+      {
+        "start": 16,
+        "end": 36,
+        "value": "town council meeting",
+        "entity": "wit$search_query"
+      }
+    ]
+  },
+  {
+    "text": "council meeting schedule",
+    "intent": "search.event",
+    "entities": [
+      {
+        "value": "availability.schedule",
+        "entity": "entity_property"
+      },
+      {
+        "start": 0,
+        "end": 15,
+        "value": "council meeting",
+        "entity": "wit$search_query"
+      }
+    ]
+  },
+  {
+    "text": "when is the parade?",
+    "intent": "search.event",
+    "entities": [
+      {
+        "value": "availability.schedule",
+        "entity": "entity_property"
+      },
+      {
+        "start": 12,
+        "end": 18,
+        "value": "parade",
+        "entity": "wit$search_query"
+      }
+    ]
+  },
 ];
