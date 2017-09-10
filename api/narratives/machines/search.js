@@ -1,15 +1,19 @@
+import stringSimilarity from 'string-similarity';
 import { searchKnowledgeEntities } from '../../knowledge-base/helpers';
 import KitClient from '../clients/kit-client';
 import * as replyTemplates from '../templates/quick-replies';
 import * as LOOKUP from '../../constants/nlp-tagging';
 import SlackService from '../../services/slack';
 import { logger } from '../../logger';
+import { Feed } from '../../feeds/models';
+import * as FEED_CONSTANTS from '../../constants/feeds';
+import { runFeed } from '../../feeds/helpers';
 
 export default {
   async knowledge_entity() {
     let entityString = null;
-    if (this.snapshot.nlp.entities.local_search_query && this.snapshot.nlp.entities.local_search_query[0]) {
-      entityString = this.snapshot.nlp.entities.local_search_query[0].value;
+    if (this.snapshot.nlp.entities.search_query && this.snapshot.nlp.entities.search_query[0]) {
+      entityString = this.snapshot.nlp.entities.search_query[0].value;
     } else if (this.snapshot.nlp.entities.location && this.snapshot.nlp.entities.location[0]) {
       entityString = this.snapshot.nlp.entities.location[0].value;
     }
@@ -52,6 +56,24 @@ export default {
         return null;
       }).filter(text => text), replyTemplates.evalHelpfulAnswer);
     }
+    return this.messagingClient.runQuene().then(() => this.getBaseState());
+  },
+
+  async event() {
+    this.messagingClient.addToQuene('Hmm, let me go see what I can find for you!');
+    const feeds = await Feed.where({ organization_id: this.snapshot.organization_id, entity: FEED_CONSTANTS.EVENT })
+      .fetchAll().then(f => f.toJSON());
+    const allEvents = await Promise.all(feeds.map(f => runFeed(f).then(found => found.events)))
+      .then((feed) => {
+        let flattenedArray = [];
+        feed.forEach(f => (flattenedArray = flattenedArray.concat(...f)));
+        return flattenedArray;
+      });
+    const filteredEvents = allEvents.filter(event => stringSimilarity.compareTwoStrings(this.snapshot.input.payload.text, event.name) > 0.32)
+      .sort((a, b) => stringSimilarity.compareTwoStrings(this.snapshot.input.payload.text, b.name) -
+          stringSimilarity.compareTwoStrings(this.snapshot.input.payload.text, a.name))
+      .slice(0, 9).map(event => ({ type: 'event', payload: event }));
+    this.messagingClient.addAll(KitClient.genericTemplateFromEntities(filteredEvents), replyTemplates.evalHelpfulAnswer);
     return this.messagingClient.runQuene().then(() => this.getBaseState());
   },
 };

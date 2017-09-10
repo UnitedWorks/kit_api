@@ -39,7 +39,7 @@ router.route('/')
   });
 
 router.get('/run', (req, res, next) => {
-  runFeed(req.query.feed_id).then((data) => {
+  runFeed({ id: req.query.feed_id }).then((data) => {
     res.status(200).send(data);
   }).catch(err => next(err));
 });

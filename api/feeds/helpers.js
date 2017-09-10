@@ -4,22 +4,6 @@ import ical from 'ical';
 import { Feed } from './models';
 import * as CONSTANTS from '../constants/feeds';
 
-export function veventToKnowledgeEvent(vevent) {
-  return {
-    name: vevent.summary,
-    description: vevent.description,
-    organization_id: vevent.organization_id,
-    url: vevent.url,
-    location: {
-      display_name: vevent.location,
-    },
-    availabilitys: [{
-      t_start: vevent.start,
-      t_end: vevent.end,
-    }],
-  };
-}
-
 async function scrapeEvents(script) {
   // This is a mess. Evaluating code stored in feed columns. Example below
   const results = await eval(script)(axios, cheerio).then(r => r);
@@ -42,7 +26,7 @@ Example Feed script code:
       let date = null;
       const event = {
         url: 'http://www.cityofjerseycity.com/meetings-calendar.aspx',
-        availablitys: [{}],
+        availabilitys: [{}],
       };
       $(elem).find('tbody').children().each((i, tr) => {
         if (i === 0) {
@@ -51,7 +35,7 @@ Example Feed script code:
           if (searchResults.length > 1) date = searchResults[1];
           delete event.name;
           delete event.location;
-          event.availablitys = [{}];
+          event.availabilitys = [{}];
         } else {
           // Otherwise we're grabbing an event
           $(tr).find('.mv_TodayCell').find('tr').each((dataIndex, data) => {
@@ -64,25 +48,43 @@ Example Feed script code:
               if (locRegex) event.location = { display_name: locRegex };
             } else if (dataIndex === 2) {
               // Start Date/Time
-              event.availablitys[0].t_start = new Date(`${/Start:(.*)/.exec($(data).text())[1]}${date}`);
+              event.availabilitys[0].t_start = new Date(`${/Start:(.*)/.exec($(data).text())[1]}${date}`);
             } else if (dataIndex === 3) {
               // End Date/Time
-              event.availablitys[0].t_end = new Date(`${/End:(.*)/.exec($(data).text())[1]}${date}`);
+              event.availabilitys[0].t_end = new Date(`${/End:(.*)/.exec($(data).text())[1]}${date}`);
             }
           });
           // Only push if we got at least a title
         }
       });
-      if (event.name && event.availablitys[0].t_start > Date.now()) events.push(event);
+      if (event.name && event.availabilitys[0].t_start > Date.now()) events.push(event);
     });
     return events;
   });
 })
 */
 
+export function veventToKnowledgeEvent(vevent) {
+  return {
+    name: vevent.summary,
+    description: vevent.description,
+    organization_id: vevent.organization_id,
+    url: vevent.url,
+    location: {
+      display_name: vevent.location,
+    },
+    availabilitys: [{
+      t_start: vevent.start,
+      t_end: vevent.end,
+    }],
+  };
+}
 
-export async function runFeed(id, options = { filterPast: true }) {
-  const feed = await Feed.where({ id }).fetch().then(f => (f ? f.toJSON() : null));
+export async function runFeed(feed, options = { filterPast: true }) {
+  if (!feed.id) throw new Error('No feed.id provided');
+  if (!feed.format) {
+    feed = await Feed.where({ id: feed.id }).fetch().then(f => (f ? f.toJSON() : null));
+  }
   // iCal
   if (feed.format === CONSTANTS.ICS) {
     const ics = await axios.get(feed.url).then(c => ical.parseICS(c.data));

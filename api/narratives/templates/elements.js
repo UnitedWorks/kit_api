@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { getPlacesUrl } from '../../utils';
 
 export const genericSanitation = {
@@ -309,8 +310,8 @@ export function genericContact(contact) {
 
 export function genericFacility(facility) {
   const element = {
-    title: facility.name,
-    subtitle: `(Facility) ${facility.brief_description}`,
+    title: `${facility.name} (Facility)`,
+    subtitle: `${facility.brief_description}`,
   };
   const buttons = [];
   if (facility.hasOwnProperty('location') && facility.location.display_name != null) {
@@ -348,8 +349,8 @@ export function genericFacility(facility) {
 
 export function genericService(service) {
   const element = {
-    title: service.name,
-    subtitle: `(Service) ${service.brief_description}`,
+    title: `${service.name} (Service)`,
+    subtitle: `${service.brief_description}`,
   };
   const buttons = [];
   if (service.phone_number) {
@@ -371,6 +372,39 @@ export function genericService(service) {
       type: 'web_url',
       title: service.url,
       url: service.url,
+    });
+  }
+  if (buttons.length < 3) buttons.push({ type: 'element_share' });
+  if (buttons.length > 0) element.buttons = buttons;
+  return element;
+}
+
+export function genericEvent(event) {
+  const element = {
+    title: `${event.name} (Event)`,
+  };
+  // Set date-time
+  let dtString = null;
+  if (event.availabilitys[0].t_start && event.availabilitys[0].t_end) {
+    dtString = `${moment(event.availabilitys[0].t_start).format('ddd, MMM Do YYYY, h:mm a')} - ${moment(event.availabilitys[0].t_end).format('h:mm a')}`;
+  } else if (event.availabilitys[0].t_start) {
+    dtString = moment(event.availabilitys[0].t_start).format('ddd, MMM Do YYYY, h:mm a');
+  }
+  if (dtString) element.subtitle = dtString;
+  if (event.description) element.subtitle = `${element.subtitle} - ${event.description}`;
+  const buttons = [];
+  if (event.hasOwnProperty('location') && event.location.display_name != null) {
+    buttons.push({
+      type: 'web_url',
+      title: event.location.display_name,
+      url: getPlacesUrl(event.location.display_name),
+    });
+  }
+  if (event.url) {
+    buttons.push({
+      type: 'web_url',
+      title: event.url,
+      url: event.url,
     });
   }
   if (buttons.length < 3) buttons.push({ type: 'element_share' });

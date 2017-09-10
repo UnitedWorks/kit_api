@@ -58,6 +58,7 @@ export default class KitClient {
         if (e.type === 'service') return elementTemplates.genericService(e.payload);
         if (e.type === 'facility') return elementTemplates.genericFacility(e.payload);
         if (e.type === 'contact') return elementTemplates.genericContact(e.payload);
+        if (e.type === 'event') return elementTemplates.genericEvent(e.payload);
         return null;
       }).filter(d => d),
     }];
