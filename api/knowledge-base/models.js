@@ -133,6 +133,9 @@ export const KnowledgeAnswer = bookshelf.Model.extend({
   service() {
     return this.hasOne(KnowledgeService, 'id', 'knowledge_service_id');
   },
+  media() {
+    return this.hasOne(Media, 'id', 'media_id');
+  },
   feed() {
     return this.hasOne(Feed, 'id', 'feed_id');
   },
@@ -141,5 +144,5 @@ export const KnowledgeAnswer = bookshelf.Model.extend({
   },
   prompt() {
     return this.hasOne(Prompt, 'id', 'prompt_id');
-  }
+  },
 });

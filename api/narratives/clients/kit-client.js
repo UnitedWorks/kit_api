@@ -29,6 +29,23 @@ export default class KitClient {
     return null;
   }
 
+  static answerMedia(mediaObj) {
+    if (mediaObj.type === 'image') {
+      return {
+        name: mediaObj.name.slice(mediaObj.name.indexOf('_') + 1),
+        type: 'image',
+        url: mediaObj.url,
+      };
+    } else if (mediaObj.type === 'file') {
+      return {
+        name: mediaObj.name.slice(mediaObj.name.indexOf('_') + 1),
+        type: 'file',
+        url: mediaObj.url,
+      };
+    }
+    return null;
+  }
+
   static genericTemplateFromAnswers(answers) {
     const templateElements = [
       ...answers.services.map(s => elementTemplates.genericService(s)),
@@ -46,6 +63,9 @@ export default class KitClient {
         image_aspect_ratio: 'horizontal',
         elements: templateElements.slice(0, 10),
       });
+    }
+    if (answers.media && answers.media.length > 0) {
+      answers.media.forEach(media => answerArray.push(KitClient.answerMedia(media)));
     }
     return answerArray;
   }

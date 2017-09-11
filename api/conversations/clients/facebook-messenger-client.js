@@ -134,6 +134,13 @@ export class FacebookMessengerClient extends BaseClient {
           sendData.message.attachment.payload.buttons = buttonTransforming(content.buttons);
         }
       }
+    } else if (typeof content === 'object' && (content.type === 'file' || content.type === 'image')) {
+      sendData.message.attachment = {
+        type: content.type,
+        payload: {
+          url: content.url,
+        },
+      };
     } else {
       sendData.message.attachment = {
         type: content.type,

@@ -30,7 +30,8 @@ export async function getAnswers(params = {}, options = {}) {
     withRelated: [{
       answers: q => q.where('organization_id', params.organization_id).whereNotNull('approved_at'),
     }, 'category', 'answers.facility', 'answers.facility.location', 'answers.service',
-      'answers.service.location', 'answers.contact', 'answers.feed', 'answers.prompt', 'answers.prompt.steps'],
+      'answers.service.location', 'answers.contact', 'answers.feed', 'answers.media',
+      'answers.prompt', 'answers.prompt.steps'],
   }).then(d => d);
   if (!options.returnJSON) return data.get('answers');
   if (data == null) return {};
@@ -44,7 +45,7 @@ export async function getAnswers(params = {}, options = {}) {
   if (questionJSON.vague) {
     const altQuestions = await KnowledgeQuestion.where('label', '~', `${questionJSON.label}.`).fetchAll().then(results => results.toJSON());
     return { question: questionJSON, altQuestions };
-  } else if (options.groupKnowledge) {
+  } else if (options.groupKnowledge && answerJSON.length > 0) {
     // Reformat Answers
     const answerGrouped = {
       category: questionJSON.category,
@@ -57,15 +58,12 @@ export async function getAnswers(params = {}, options = {}) {
           feed.filter(f => f).forEach(f => (flattenedArray = flattenedArray.concat(...f)));
           return flattenedArray;
         }),
+      media: answerJSON.filter(a => a.media_id).map(a => a.media),
       prompt: answerJSON.filter(a => a.prompt_id).map(a => a.prompt)[0],
     };
     const baseTextAnswer = answerJSON.filter(a => a.text != null);
-    const baseUrlAnswer = answerJSON.filter(a => a.url != null);
     if (baseTextAnswer.length > 0) {
       answerGrouped.text = baseTextAnswer[0].text;
-    }
-    if (baseUrlAnswer.length > 0) {
-      answerGrouped.url = baseUrlAnswer[0].url;
     }
     return { question: questionJSON, answers: answerGrouped };
   }
