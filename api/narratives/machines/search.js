@@ -75,7 +75,7 @@ export default {
         return flattenedArray;
       });
     const filteredEvents = allEvents.filter(event => stringSimilarity.compareTwoStrings(this.snapshot.input.payload.text, event.name) > 0.32)
-      .slice(0, 9).map(event => ({ type: 'event', payload: event }));
+      .slice(0, 10).map(event => ({ type: 'event', payload: event }));
     if (filteredEvents.length > 0) {
       this.messagingClient.addAll(KitClient.genericTemplateFromEntities(filteredEvents), replyTemplates.evalHelpfulAnswer);
     } else {

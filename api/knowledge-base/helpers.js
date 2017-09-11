@@ -1,11 +1,12 @@
 import { knex } from '../orm';
 import * as env from '../env';
 import { Representative } from '../accounts/models';
-import { EventRule, KnowledgeAnswer, KnowledgeCategory, KnowledgeFacility, KnowledgeService,
+import { KnowledgeAnswer, KnowledgeCategory, KnowledgeFacility, KnowledgeService,
   KnowledgeQuestion, KnowledgeContact, Location } from './models';
 import { upsertPrompt } from '../prompts/helpers';
 import geocoder from '../services/geocoder';
 import EmailService from '../services/email';
+import { runFeed } from '../feeds/helpers';
 
 export const incrementTimesAsked = (questionId, orgId) => {
   if (!questionId || !orgId) return;
@@ -29,7 +30,7 @@ export async function getAnswers(params = {}, options = {}) {
     withRelated: [{
       answers: q => q.where('organization_id', params.organization_id).whereNotNull('approved_at'),
     }, 'category', 'answers.facility', 'answers.facility.location', 'answers.service',
-      'answers.service.location', 'answers.contact', 'answers.prompt', 'answers.prompt.steps'],
+      'answers.service.location', 'answers.contact', 'answers.feed', 'answers.prompt', 'answers.prompt.steps'],
   }).then(d => d);
   if (!options.returnJSON) return data.get('answers');
   if (data == null) return {};
@@ -46,11 +47,17 @@ export async function getAnswers(params = {}, options = {}) {
   } else if (options.groupKnowledge) {
     // Reformat Answers
     const answerGrouped = {
+      category: questionJSON.category,
       facilities: answerJSON.filter(a => a.knowledge_facility_id).map(a => a.facility),
       services: answerJSON.filter(a => a.knowledge_service_id).map(a => a.service),
       contacts: answerJSON.filter(a => a.knowledge_contact_id).map(a => a.contact),
+      events: await Promise.all(answerJSON.filter(a => a.feed_id).map(answer => runFeed(answer.feed).then(found => found.events)))
+        .then((feed) => {
+          let flattenedArray = [];
+          feed.forEach(f => (flattenedArray = flattenedArray.concat(...f)));
+          return flattenedArray;
+        }),
       prompt: answerJSON.filter(a => a.prompt_id).map(a => a.prompt)[0],
-      category: questionJSON.category,
     };
     const baseTextAnswer = answerJSON.filter(a => a.text != null);
     const baseUrlAnswer = answerJSON.filter(a => a.url != null);

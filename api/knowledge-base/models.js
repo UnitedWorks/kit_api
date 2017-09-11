@@ -1,6 +1,7 @@
 import { bookshelf } from '../orm';
 import { Organization, Representative } from '../accounts/models';
 import { Media } from '../media/models';
+import { Feed } from '../feeds/models';
 import { Prompt } from '../prompts/models';
 
 // Information Entries - Referenced in knowledge and non-knowledge base tables
@@ -131,6 +132,9 @@ export const KnowledgeAnswer = bookshelf.Model.extend({
   },
   service() {
     return this.hasOne(KnowledgeService, 'id', 'knowledge_service_id');
+  },
+  feed() {
+    return this.hasOne(Feed, 'id', 'feed_id');
   },
   contact() {
     return this.hasOne(KnowledgeContact, 'id', 'knowledge_contact_id');

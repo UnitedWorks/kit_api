@@ -50,7 +50,7 @@ export async function fetchAnswers(intent, session) {
     return session.messagingClient.runQuene().then(() => session.getBaseState());
   // If no answers, run fallback
   } else if (!answers || (!answers.text && !answers.prompt && answers.facilities.length === 0 &&
-    answers.services.length === 0 && answers.contacts.length === 0)) {
+    answers.services.length === 0 && answers.contacts.length === 0 && answers.feeds.length === 0)) {
     const fallbackData = await getCategoryFallback([intent.split('.')[0]], session.get('organization').id).then(fbd => fbd);
     // See if we have fallback contacts
     if (fallbackData.contacts.length === 0) {
@@ -155,7 +155,7 @@ export async function fetchAnswers(intent, session) {
   ];
   if (entityAvailabilities.length > 0) {
     session.messagingClient.addAll(entityAvailabilities, replyTemplates.evalHelpfulAnswer);
-  } else {
+  } else if (entityAvailabilities.length === 0 && !answers.events) {
     session.messagingClient.addToQuene('There doesn\'t seem to an available service or facility for that date/time.');
   }
   return session.messagingClient.runQuene().then(() => {

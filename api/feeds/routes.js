@@ -8,7 +8,7 @@ router.route('/')
   .get((req, res, next) => {
     const filters = {};
     if (req.query.feed_id) filters.id = req.query.feed_id;
-    Feed.where(filters).fetch({ withRelated: ['organizations'] })
+    Feed.where(filters).fetchAll({ withRelated: [] })
       .then((fetched) => {
         if (fetched) {
           res.status(200).send({ feeds: fetched.toJSON() });

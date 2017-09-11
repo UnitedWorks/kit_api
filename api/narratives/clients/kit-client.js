@@ -34,6 +34,7 @@ export default class KitClient {
       ...answers.services.map(s => elementTemplates.genericService(s)),
       ...answers.facilities.map(f => elementTemplates.genericFacility(f)),
       ...answers.contacts.map(c => elementTemplates.genericContact(c)),
+      ...answers.events.map(c => elementTemplates.genericEvent(c)),
     ];
     const answerArray = [];
     const textAnswer = KitClient.answerText(answers);
@@ -43,7 +44,7 @@ export default class KitClient {
         type: 'template',
         templateType: 'generic',
         image_aspect_ratio: 'horizontal',
-        elements: templateElements,
+        elements: templateElements.slice(0, 10),
       });
     }
     return answerArray;
