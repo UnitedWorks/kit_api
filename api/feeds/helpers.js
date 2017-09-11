@@ -79,7 +79,8 @@ export function veventToKnowledgeEvent(vevent) {
   };
 }
 
-export async function runFeed(feed, options = { filterPast: true }) {
+export async function runFeed(feedObj, options = { filterPast: true }) {
+  let feed = feedObj;
   if (!feed.id) throw new Error('No feed.id provided');
   if (!feed.format) {
     feed = await Feed.where({ id: feed.id }).fetch().then(f => (f ? f.toJSON() : null));

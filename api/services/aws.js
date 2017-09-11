@@ -8,7 +8,7 @@ export default class AWSHelper {
       accessKeyId: process.env.AWS_ACCESS_KEY_ID,
       secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     });
-    this.bucket = process.env.NODE_ENV === PRODUCTION ? process.env.AWS_S3_BUCKET : `${process.env.AWS_S3_BUCKET}/dev`;
+    this.bucket = process.env.NODE_ENV === PRODUCTION ? `${process.env.AWS_S3_BUCKET}/uploads` : `${process.env.AWS_S3_BUCKET}/dev`;
   }
   copyExternalUrlToS3(url, directory) {
     const self = this;

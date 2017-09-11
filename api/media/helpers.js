@@ -1,11 +1,13 @@
 import { Media } from './models';
 
-export const saveMedia = (attachment, options = {}) => {
+export const saveMedia = ({ media, organization }, options = {}) => {
   const newModel = {
-    type: attachment.type,
-    url: attachment.payload.url,
+    name: media.name,
+    type: media.type,
+    url: media.url,
+    organization_id: organization.id,
   };
-  return Media.forge(newModel).save().then((data) => {
-    return options.returnJSON ? data.toJSON() : data;
-  }).catch(err => err);
+  return Media.forge(newModel).save()
+  .then(data => (options.returnJSON ? data.toJSON() : data))
+  .catch(err => err);
 };
