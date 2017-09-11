@@ -54,7 +54,7 @@ export async function getAnswers(params = {}, options = {}) {
       events: await Promise.all(answerJSON.filter(a => a.feed_id).map(answer => runFeed(answer.feed).then(found => found.events)))
         .then((feed) => {
           let flattenedArray = [];
-          feed.forEach(f => (flattenedArray = flattenedArray.concat(...f)));
+          feed.filter(f => f).forEach(f => (flattenedArray = flattenedArray.concat(...f)));
           return flattenedArray;
         }),
       prompt: answerJSON.filter(a => a.prompt_id).map(a => a.prompt)[0],

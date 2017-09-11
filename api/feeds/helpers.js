@@ -6,8 +6,7 @@ import * as CONSTANTS from '../constants/feeds';
 
 async function scrapeEvents(script) {
   // This is a mess. Evaluating code stored in feed columns. Example below
-  const results = await eval(script)(axios, cheerio).then(r => r);
-  return results;
+  return await eval(script)(axios, cheerio).then(r => r);
 }
 
 /* TODO: Make this process a little less nuts.

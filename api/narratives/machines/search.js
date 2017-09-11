@@ -71,10 +71,11 @@ export default {
     const allEvents = await Promise.all(feeds.map(f => runFeed(f).then(found => found.events)))
       .then((feed) => {
         let flattenedArray = [];
-        feed.forEach(f => (flattenedArray = flattenedArray.concat(...f)));
+        feed.filter(f => f).forEach(f => (flattenedArray = flattenedArray.concat(...f)));
         return flattenedArray;
       });
     const filteredEvents = allEvents.filter(event => stringSimilarity.compareTwoStrings(this.snapshot.input.payload.text, event.name) > 0.32)
+      .sort((a, b) => a.availabilitys[0].t_start - b.availabilitys[0].t_start)
       .slice(0, 10).map(event => ({ type: 'event', payload: event }));
     if (filteredEvents.length > 0) {
       this.messagingClient.addAll(KitClient.genericTemplateFromEntities(filteredEvents), replyTemplates.evalHelpfulAnswer);
