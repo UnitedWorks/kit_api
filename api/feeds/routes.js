@@ -18,7 +18,7 @@ router.route('/')
       }).catch(err => next(err));
   })
   .post((req, res, next) => {
-    Feed.forge(req.body.feed).save(null, { method: 'insert' })
+    Feed.forge({ ...req.body.feed, organization_id: req.body.organization.id }).save(null, { method: 'insert' })
       .then((saved) => {
         res.status(200).send({ feed: saved.toJSON() });
       }).catch(err => next(err));
