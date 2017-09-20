@@ -2,7 +2,8 @@ import { RRule, RRuleSet } from 'rrule';
 import moment from 'moment';
 import { getAnswers as getAnswersHelper } from '../../knowledge-base/helpers';
 import * as elementTemplates from '../templates/elements';
-import inside from 'point-in-polygon';
+import { i18n } from '../templates/messages';
+import { geoCheck } from '../helpers';
 
 export default class KitClient {
   constructor(config = {}) {
@@ -102,20 +103,10 @@ export default class KitClient {
 
   static entityAvailabilityToText(type, entity, { datetime, constituentAttributes = {} }) {
     let entityAvailabilityText = '';
-    function geoCheck(geo, constituentPosition) {
-      let passesGeoCheck = false;
-      if (geo && geo[0]) {
-        geo.forEach((boundary) => {
-          const boundaryPolygon = boundary[0].map(c => [c.lat, c.lng]);
-          if (inside(constituentPosition, boundaryPolygon)) passesGeoCheck = true;
-        });
-      }
-      return passesGeoCheck;
-    }
     // Check if a entity's availabilitys use geo and constituent home address is available.
     // If none available, send back message asking for default_address
     if (entity.availabilitys && entity.availabilitys.filter(o => o.geo).length > 0 && !constituentAttributes.default_location) {
-      return `To lookup availability for ${entity.name}, we need a default address to check against. Please type "My address is ____" or "Set default address" to do that and ask once more!`;
+      return i18n('default_location', { name: entity.name });
     }
     // Describe General Schedule (even if no datetime, mention schedule)
     if (!datetime) {

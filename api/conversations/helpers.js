@@ -2,23 +2,41 @@ import axios from 'axios';
 import { NarrativeSession } from '../narratives/models';
 import { MessageEntry } from './models';
 import { broadcastPrompt } from '../prompts/helpers';
+import { geoCheck } from '../narratives/helpers';
 import Clients from './clients';
+import { i18n } from '../narratives/templates/messages';
 
-export function broadcastMessage(broadcast, organization) {
-  return NarrativeSession.where({ organization_id: organization.id })
-    .fetchAll({ withRelated: ['constituent', 'constituent.facebookEntry', 'constituent.smsEntry'] }).then((citySessions) => {
-      citySessions.toJSON().forEach((session) => {
-        if (session.constituent.facebook_id) {
-          new Clients.FacebookMessengerClient({
-            constituent: session.constituent,
-          }).send(broadcast.message);
-        } else if (session.constituent.phone) {
-          new Clients.TwilioSMSClient({
-            constituent: session.constituent,
-          }).send(broadcast.message);
-        }
-      });
-    }).catch(err => err);
+export function getPreferredClient(constituent) {
+  if (constituent.facebook_id) {
+    return new Clients.FacebookMessengerClient({ constituent });
+  } else if (constituent.phone) {
+    return new Clients.TwilioSMSClient({ constituent });
+  }
+  return null;
+}
+
+export async function broadcastMessage(broadcast, organization) {
+  const sessions = await NarrativeSession.where({ organization_id: organization.id })
+    .fetchAll({ withRelated: ['constituent', 'constituent.facebookEntry', 'constituent.smsEntry'] })
+    .then(fetched => fetched.toJSON());
+  sessions.forEach((session) => {
+    const client = getPreferredClient(session.constituent);
+    if (!client) return;
+    // If availiability polygon exists, run check
+    if (broadcast.availability && broadcast.availability.geo) {
+      // Check for default address. If none exists, ask to set
+      if (!session.data_store.attributes || (session.data_store.attributes && !session.data_store.attributes.default_location)) {
+        client.send(i18n('default_location'));
+      } else {
+        const constituentPosition = session.data_store.attributes.default_location;
+        const constituentIncluded = geoCheck(broadcast.availability.geo,
+          [constituentPosition.lat, constituentPosition.lon]);
+        if (constituentIncluded) client.send(broadcast.message);
+      }
+    } else {
+      client.send(broadcast.message);
+    }
+  });
 }
 
 export function broadcastHelper(broadcast, organization) {

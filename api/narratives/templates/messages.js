@@ -7,6 +7,7 @@ export const i18n = (key, inserts = {}) => {
     setup_ask_city: 'Ok! What\'s your CITY and STATE?  Ex) "New Brunswick, NJ"',
     setup_invalid_location: 'Hmm, I wasn\'t able to find anything. Can you try giving me a CITY and STATE again? Ex) "New Brunswick, NJ"',
     us_vote_attribution: 'Voting/election info provided by the U.S. Vote Foundation',
+    default_location: inserts.name ? `To lookup availability for ${inserts.name}, we need a default address to check against. Please type "My address is ____" or "Set default address" to do that and ask once more. Thanks!` : 'For notifications and detailed service updates, it helps us if we your residential adderss. Please type something like "My address is ____" or "I live at ____". Thanks!',
   };
   return translations[key];
 };

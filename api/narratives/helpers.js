@@ -1,3 +1,4 @@
+import { pointPolygonCollision, pointCircleCollision } from '../utils/collision';
 import * as PROVIDERS from '../constants/providers';
 import KitClient from './clients/kit-client';
 import * as TAGS from '../constants/nlp-tagging';
@@ -36,6 +37,23 @@ export function randomPick(array = [], num = 1) {
     return shuffle(array).slice(0, num);
   }
   return array[Math.floor(Math.random() * array.length)];
+}
+
+export function geoCheck(geo, constituentPosition) {
+  let passesGeoCheck = false;
+  if (geo && geo[0]) {
+    geo.forEach((boundary) => {
+      if (boundary.length) {
+        // If Polygon
+        const boundaryPolygon = boundary[0].map(c => [c.lat, c.lng]);
+        if (pointPolygonCollision(constituentPosition, boundaryPolygon)) passesGeoCheck = true;
+      } else if (boundary.radius) {
+        // If Circle
+        if (pointCircleCollision(constituentPosition, [boundary.lat, boundary.lng], boundary.radius)) passesGeoCheck = true;
+      }
+    });
+  }
+  return passesGeoCheck;
 }
 
 /* TODO(nicksahler) Move this all to higher order answering */
