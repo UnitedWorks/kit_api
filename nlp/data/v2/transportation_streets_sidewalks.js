@@ -49,10 +49,7 @@ module.exports = [
         "value": "transportation_streets_sidewalks",
         "entity": "category_keywords"
       }
-    ],
-    "meta": {
-      "vague": true
-    }
+    ]
   },
   {
     "text": "parking card balance",
@@ -198,12 +195,70 @@ module.exports = [
     "entities": []
   },
   {
+    "text": "Is alternate side parking in effect?",
+    "intent": "transportation_streets_sidewalks.parking.asp_schedule",
+    "entities": []
+  },
+  {
     "text": "when do I need to move my car?",
     "intent": "transportation_streets_sidewalks.parking.asp_schedule",
     "entities": [
       {
         "start": 26,
         "end": 29,
+        "value": "transportation_streets_sidewalks",
+        "entity": "category_keywords"
+      }
+    ]
+  },
+  {
+    "text": "when is street sweeping",
+    "intent": "transportation_streets_sidewalks.parking.asp_schedule",
+    "entities": [
+      {
+        "start": 8,
+        "end": 23,
+        "value": "transportation_streets_sidewalks",
+        "entity": "category_keywords"
+      }
+    ]
+  },
+  {
+    "text": "When is street cleaning?",
+    "intent": "transportation_streets_sidewalks.parking.asp_schedule",
+    "entities": [
+      {
+        "start": 8,
+        "end": 23,
+        "value": "transportation_streets_sidewalks",
+        "entity": "category_keywords"
+      }
+    ]
+  },
+  {
+    "text": "when is street cleaning",
+    "intent": "transportation_streets_sidewalks.parking.asp_schedule",
+    "entities": []
+  },
+  {
+    "text": "When does the street cleaner come?",
+    "intent": "transportation_streets_sidewalks.parking.asp_schedule",
+    "entities": [
+      {
+        "start": 14,
+        "end": 28,
+        "value": "transportation_streets_sidewalks",
+        "entity": "category_keywords"
+      }
+    ]
+  },
+  {
+    "text": "Street cleaning schedule?",
+    "intent": "transportation_streets_sidewalks.parking.asp_schedule",
+    "entities": [
+      {
+        "start": 0,
+        "end": 15,
         "value": "transportation_streets_sidewalks",
         "entity": "category_keywords"
       }
@@ -519,26 +574,6 @@ module.exports = [
     "entities": []
   },
   {
-    "text": "How do I report dangerous motorized scooter use?",
-    "intent": "transportation_streets_sidewalks.vehicle_wrecklessness.report",
-    "entities": []
-  },
-  {
-    "text": "How do I report dangerous driving?",
-    "intent": "transportation_streets_sidewalks.vehicle_wrecklessness.report",
-    "entities": []
-  },
-  {
-    "text": "There's a crazy driver here",
-    "intent": "transportation_streets_sidewalks.vehicle_wrecklessness.report",
-    "entities": []
-  },
-  {
-    "text": "I just saw someone speed down my street",
-    "intent": "transportation_streets_sidewalks.vehicle_wrecklessness.report",
-    "entities": []
-  },
-  {
     "text": "How do I request a bike lane?",
     "intent": "transportation_streets_sidewalks.bike_lane.request",
     "entities": [
@@ -676,59 +711,6 @@ module.exports = [
     "text": "My street hasn't been plowed yet",
     "intent": "transportation_streets_sidewalks.plow_schedule",
     "entities": []
-  },
-  {
-    "text": "when is street sweeping",
-    "intent": "transportation_streets_sidewalks.street_sweep_schedule",
-    "entities": [
-      {
-        "start": 8,
-        "end": 23,
-        "value": "transportation_streets_sidewalks",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "When is street cleaning?",
-    "intent": "transportation_streets_sidewalks.street_sweep_schedule",
-    "entities": [
-      {
-        "start": 8,
-        "end": 23,
-        "value": "transportation_streets_sidewalks",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "when is street cleaning",
-    "intent": "transportation_streets_sidewalks.street_sweep_schedule",
-    "entities": []
-  },
-  {
-    "text": "When does the street cleaner come?",
-    "intent": "transportation_streets_sidewalks.street_sweep_schedule",
-    "entities": [
-      {
-        "start": 14,
-        "end": 28,
-        "value": "transportation_streets_sidewalks",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "Street cleaning schedule?",
-    "intent": "transportation_streets_sidewalks.street_sweep_schedule",
-    "entities": [
-      {
-        "start": 0,
-        "end": 15,
-        "value": "transportation_streets_sidewalks",
-        "entity": "category_keywords"
-      }
-    ]
   },
   {
     "text": "How do I report a pothole?",
@@ -1013,5 +995,40 @@ module.exports = [
     "text": "Did my vehicle get towed?",
     "intent": "transportation_streets_sidewalks.vehicle_towed.search",
     "entities": []
-  }
+  },
+  {
+    "text": "There's a car idling here",
+    "intent": "transportation_streets_sidewalks.vehicle.idling",
+    "entities": []
+  },
+  {
+    "text": "I want to report an idling vehicle",
+    "intent": "transportation_streets_sidewalks.vehicle.idling",
+    "entities": []
+  },
+  {
+    "text": "This truck has been running for 30 minutes with no one in it",
+    "intent": "transportation_streets_sidewalks.vehicle.idling",
+    "entities": []
+  },
+  {
+    "text": "How do I report dangerous motorized scooter use?",
+    "intent": "transportation_streets_sidewalks.vehicle_wrecklessness.report",
+    "entities": []
+  },
+  {
+    "text": "How do I report dangerous driving?",
+    "intent": "transportation_streets_sidewalks.vehicle_wrecklessness.report",
+    "entities": []
+  },
+  {
+    "text": "There's a crazy driver here",
+    "intent": "transportation_streets_sidewalks.vehicle_wrecklessness.report",
+    "entities": []
+  },
+  {
+    "text": "I just saw someone speed down my street",
+    "intent": "transportation_streets_sidewalks.vehicle_wrecklessness.report",
+    "entities": []
+  },
 ];

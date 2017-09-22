@@ -14,6 +14,19 @@ const updateOperations = [
     from: 'business_finance.business_wage_theft',
     to: 'education_employment.wage_theft',
   },
+  // Education
+  {
+    from: 'education_employment.education_public_schools',
+    to: 'education_employment.public_schools.list',
+  },
+  {
+    from: 'education_employment.education_transfer',
+    to: 'education_employment.public_schools.transfer',
+  },
+  {
+    from: 'education_employment.education_transfer.check',
+    to: 'education_employment.public_schools.transfer_status',
+  },
   // Property
   {
     from: 'property_buildings_homes.home_occupancy_max',
@@ -136,6 +149,10 @@ const updateOperations = [
     from: 'environment_sanitation.sanitation_garbage_protection',
     to: 'environment_sanitation.trash.animals',
   },
+  // Health
+  {
+    delete: 'health_medicine.health_emergency',
+  },
   // Transportation
   {
     from: 'transportation_streets_sidewalks.parking_map',
@@ -208,6 +225,9 @@ const updateOperations = [
   {
     from: 'transportation_streets_sidewalks.parking_rules_school_zone',
     to: 'transportation_streets_sidewalks.parking.school_zone',
+  },
+  {
+    delete: 'transportation_streets_sidewalks.street_sweep_schedule',
   },
   // Civil Services
   {

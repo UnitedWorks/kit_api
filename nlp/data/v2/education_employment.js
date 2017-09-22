@@ -57,13 +57,28 @@ module.exports = [
     "entities": []
   },
   {
+    "text": "Are schools open?",
+    "intent": "education_employment.public_schools.status",
+    "entities": []
+  },
+  {
+    "text": "Is school in session today?",
+    "intent": "education_employment.public_schools.status",
+    "entities": []
+  },
+  {
+    "text": "are schools closed?",
+    "intent": "education_employment.public_schools.status",
+    "entities": []
+  },
+  {
     "text": "What are all the public schools?",
-    "intent": "education_employment.education_public_schools",
+    "intent": "education_employment.public_schools.list",
     "entities": []
   },
   {
     "text": "Where can I send my kid to school?",
-    "intent": "education_employment.education_public_schools",
+    "intent": "education_employment.public_schools.list",
     "entities": [
       {
         "start": 27,
@@ -75,37 +90,37 @@ module.exports = [
   },
   {
     "text": "What schools are in my area?",
-    "intent": "education_employment.education_public_schools",
+    "intent": "education_employment.public_schools.list",
     "entities": []
   },
   {
     "text": "How do I transfer my child to a new school?",
-    "intent": "education_employment.education_transfer",
+    "intent": "education_employment.public_schools.transfer",
     "entities": []
   },
   {
     "text": "Can I transfer my kid to another school?",
-    "intent": "education_employment.education_transfer",
+    "intent": "education_employment.public_schools.transfer",
     "entities": []
   },
   {
     "text": "I want to put my kid in a new school",
-    "intent": "education_employment.education_transfer",
+    "intent": "education_employment.public_schools.transfer",
     "entities": []
   },
   {
     "text": "We're moving so my kid needs to change schools",
-    "intent": "education_employment.education_transfer",
+    "intent": "education_employment.public_schools.transfer",
     "entities": []
   },
   {
     "text": "How do I check the status of my school transfer?",
-    "intent": "education_employment.education_transfer.check",
+    "intent": "education_employment.public_schools.transfer_status",
     "entities": []
   },
   {
     "text": "Can I get an update on my kid's school transfer?",
-    "intent": "education_employment.education_transfer.check",
+    "intent": "education_employment.public_schools.transfer_status",
     "entities": []
   },
   {

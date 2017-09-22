@@ -165,6 +165,16 @@ module.exports = [
     "entities": []
   },
   {
+    "text": "What can I ask?",
+    "intent": "speech.help",
+    "entities": []
+  },
+  {
+    "text": "you do what?",
+    "intent": "speech.help",
+    "entities": []
+  },
+  {
     "text": "what can you help me with?",
     "intent": "speech.help",
     "entities": []
@@ -220,6 +230,11 @@ module.exports = [
     "entities": []
   },
   {
+    "text": "howdy",
+    "intent": "speech.greeting",
+    "entities": []
+  },
+  {
     "text": "hello!",
     "intent": "speech.greeting",
     "entities": []
@@ -230,7 +245,22 @@ module.exports = [
     "entities": []
   },
   {
+    "text": "Hey!",
+    "intent": "speech.greeting",
+    "entities": []
+  },
+  {
+    "text": "hey!!",
+    "intent": "speech.greeting",
+    "entities": []
+  },
+  {
     "text": "hi",
+    "intent": "speech.greeting",
+    "entities": []
+  },
+  {
+    "text": "hi!",
     "intent": "speech.greeting",
     "entities": []
   },

@@ -350,6 +350,16 @@ module.exports = [
     "entities": []
   },
   {
+    "text": "When is the next vote?",
+    "intent": "voting.elections",
+    "entities": []
+  },
+  {
+    "text": "When's the next election",
+    "intent": "voting.elections",
+    "entities": []
+  },
+  {
     "text": "poll location",
     "intent": "voting.polls.find",
     "entities": []

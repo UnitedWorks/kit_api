@@ -144,6 +144,38 @@ module.exports = [
     ]
   },
   {
+    "text": "Is city hall open",
+    "intent": "search.knowledge_entity",
+    "entities": [
+      {
+        "value": "availability.schedule",
+        "entity": "entity_property"
+      },
+      {
+        "start": 3,
+        "end": 12,
+        "value": "city hall",
+        "entity": "wit$search_query"
+      }
+    ]
+  },
+  {
+    "text": "Is the library closed?",
+    "intent": "search.knowledge_entity",
+    "entities": [
+      {
+        "value": "availability.schedule",
+        "entity": "entity_property"
+      },
+      {
+        "start": 7,
+        "end": 14,
+        "value": "library",
+        "entity": "wit$search_query"
+      }
+    ]
+  },
+  {
     "text": "When is the next City Council Meeting?",
     "intent": "search.event",
     "entities": [
@@ -171,6 +203,22 @@ module.exports = [
         "start": 12,
         "end": 32,
         "value": "city council meeting",
+        "entity": "wit$search_query"
+      }
+    ]
+  },
+  {
+    "text": "when is the next council meeting?",
+    "intent": "search.event",
+    "entities": [
+      {
+        "value": "availability.schedule",
+        "entity": "entity_property"
+      },
+      {
+        "start": 17,
+        "end": 32,
+        "value": "council meeting",
         "entity": "wit$search_query"
       }
     ]
@@ -219,6 +267,38 @@ module.exports = [
         "start": 12,
         "end": 18,
         "value": "parade",
+        "entity": "wit$search_query"
+      }
+    ]
+  },
+  {
+    "text": "When's the City Council Caucus",
+    "intent": "search.event",
+    "entities": [
+      {
+        "value": "availability.schedule",
+        "entity": "entity_property"
+      },
+      {
+        "start": 11,
+        "end": 30,
+        "value": "City Council Caucus",
+        "entity": "wit$search_query"
+      }
+    ]
+  },
+  {
+    "text": "whens the next art gallery showing",
+    "intent": "search.event",
+    "entities": [
+      {
+        "value": "availability.schedule",
+        "entity": "entity_property"
+      },
+      {
+        "start": 15,
+        "end": 34,
+        "value": "art gallery showing",
         "entity": "wit$search_query"
       }
     ]
