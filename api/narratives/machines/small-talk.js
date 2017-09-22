@@ -11,6 +11,7 @@ import * as replyTemplates from '../templates/quick-replies';
 import { i18n } from '../templates/messages';
 import * as ATTRIBUTES from '../../constants/attributes';
 import { TYPE_MAP } from '../../constants/tasks';
+import * as KNOWLEDGE_CONST from '../../constants/knowledge-base';
 
 export default {
   init: {
@@ -239,7 +240,7 @@ export default {
     // If second failure, fetch resources to assist
     const labels = [];
     if (!this.snapshot.nlp.entities.category_keywords || this.snapshot.nlp.entities.category_keywords.length === 0) {
-      labels.push('general');
+      labels.push(KNOWLEDGE_CONST.GENERAL_LABEL);
     } else {
       this.snapshot.nlp.entities.category_keywords.forEach(entity => labels.push(entity.value));
     }

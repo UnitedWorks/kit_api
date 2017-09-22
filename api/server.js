@@ -6,6 +6,7 @@ import path from 'path';
 import { logger } from './logger';
 import { baseErrorHandler } from './utils';
 import queue from './queue';
+import { watchers } from './cron';
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -79,4 +80,8 @@ app.listen(port, () => {
   logger.info(`Server listening at port: ${port}`);
 });
 
+// Queues
 // queue();
+
+// Crons
+watchers();

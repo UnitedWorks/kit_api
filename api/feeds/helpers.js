@@ -1,6 +1,8 @@
 import axios from 'axios';
 import cheerio from 'cheerio';
 import ical from 'ical';
+import moment from 'moment';
+import Twitter from 'twitter';
 import { Feed } from './models';
 import * as CONSTANTS from '../constants/feeds';
 
@@ -87,7 +89,7 @@ export async function runFeed(feedObj, options = { filterPast: true }) {
   }
   // iCal
   if (feed.format === CONSTANTS.ICS) {
-    const ics = await axios.get(feed.url).then(c => ical.parseICS(c.data));
+    const ics = await axios.get(feed.config.url).then(c => ical.parseICS(c.data));
     const events = Object.keys(ics)
       // Obj to array
       .map(v => ics[v])
@@ -104,4 +106,35 @@ export async function runFeed(feedObj, options = { filterPast: true }) {
     };
   }
   return {};
+}
+
+export async function runWatcher(feedObj, options = { hours: 24 }) {
+  let feed = feedObj;
+  if (!feed.id) throw new Error('No feed.id provided');
+  if (!feed.format) {
+    feed = await Feed.where({ id: feed.id }).fetch().then(f => (f ? f.toJSON() : null));
+  }
+  if (feed.format === CONSTANTS.TWITTER && feed.topic === CONSTANTS.SCHEDULE) {
+    const twitterClient = new Twitter({
+      consumer_key: process.env.TWITTER_CONSUMER_KEY,
+      consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
+      bearer_token: process.env.TWITTER_BEARER,
+    });
+    const filteredTweets = await new Promise((resolve, reject) => {
+      twitterClient.get('/statuses/user_timeline.json', {
+        screen_name: feed.config.twitter_handle,
+      }, (error, tweets) => {
+        if (error) reject(error);
+        const mappedTweets = tweets.map(t => ({
+          text: t.text,
+          created_at: t.created_at,
+          organization_id: feed.organization_id,
+          url: `https://twitter.com/JC_Gov/status/${t.id_str}`,
+        }));
+        resolve(mappedTweets.filter(t => (moment().diff(moment(new Date(t.created_at)), 'h') <= options.hours)));
+      });
+    }).then(t => t);
+    return filteredTweets;
+  }
+  return [];
 }

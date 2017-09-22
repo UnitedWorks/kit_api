@@ -1,8 +1,18 @@
 import { Router } from 'express';
 import { Feed } from './models';
-import { runFeed } from './helpers';
 
 const router = new Router();
+
+function formattedFeedObj(bodyFeed) {
+  const cleanObj = bodyFeed;
+  if (cleanObj.format !== 'twitter') {
+    cleanObj.watcher = false;
+    delete cleanObj.config.twitter_handle;
+  }
+  if (cleanObj.format !== 'ics' && cleanObj.format !== 'rss') delete cleanObj.config.url;
+  if (cleanObj.format !== 'scraped') cleanObj.script = null;
+  return cleanObj;
+}
 
 router.route('/')
   .get((req, res, next) => {
@@ -18,13 +28,13 @@ router.route('/')
       }).catch(err => next(err));
   })
   .post((req, res, next) => {
-    Feed.forge({ ...req.body.feed, organization_id: req.body.organization.id }).save(null, { method: 'insert' })
+    Feed.forge({ ...formattedFeedObj(req.body.feed), organization_id: req.body.organization.id }).save(null, { method: 'insert' })
       .then((saved) => {
         res.status(200).send({ feed: saved.toJSON() });
       }).catch(err => next(err));
   })
   .put((req, res, next) => {
-    Feed.where({ id: req.body.feed.id }).save(req.body.feed, { method: 'update', patch: true })
+    Feed.where({ id: req.body.feed.id }).save(formattedFeedObj(req.body.feed), { method: 'update', patch: true })
       .then((updated) => {
         updated.refresh().then((refreshedFeed) => {
           res.status(200).send({ feed: refreshedFeed.toJSON() });
@@ -37,11 +47,5 @@ router.route('/')
         res.status(200).send({ feed: { id: req.query.id } });
       }).catch(err => next(err));
   });
-
-router.get('/run', (req, res, next) => {
-  runFeed({ id: req.query.feed_id }).then((data) => {
-    res.status(200).send(data);
-  }).catch(err => next(err));
-});
 
 module.exports = router;

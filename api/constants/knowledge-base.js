@@ -17,9 +17,11 @@ export const HEALTH = 'Health and Medicine';
 export const PUBLIC_SAFETY = 'Public Safety and Law';
 export const GOVERNMENT = 'Government and Civil Services';
 export const GENERAL = 'General';
-
 export const CATEGORIES = [TRANSPORTATION, ENVIRONMENT, PROPERTY, EDUCATION, BUSINESS,
   SOCIAL_SERVICES, HEALTH, PUBLIC_SAFETY, GOVERNMENT, GENERAL];
+
+// FAQ Category Labels
+export const GENERAL_LABEL = 'general';
 
 // Facility Types
 export const AFTER_SCHOOL = 'After School Program';

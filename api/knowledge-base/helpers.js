@@ -7,6 +7,7 @@ import { upsertPrompt } from '../prompts/helpers';
 import geocoder from '../services/geocoder';
 import EmailService from '../services/email';
 import { runFeed } from '../feeds/helpers';
+import * as KNOWLEDGE_CONST from '../constants/knowledge-base';
 
 export const incrementTimesAsked = (questionId, orgId) => {
   if (!questionId || !orgId) return;
@@ -88,11 +89,13 @@ export async function searchKnowledgeEntities(params = {}, options = { returnJSO
 
 export const getQuestions = (params = {}) => {
   return KnowledgeQuestion.query((qb) => {
-    qb.select(['knowledge_questions.id', 'knowledge_questions.question',
+    qb.select(['knowledge_questions.id', 'knowledge_questions.question', 'knowledge_questions.label',
       'knowledge_questions.knowledge_category_id', 'knowledge_question_stats.times_asked'])
       .leftOuterJoin('knowledge_question_stats', function() {
         this.on('knowledge_questions.id', '=', 'knowledge_question_stats.question_id');
       })
+      .where('knowledge_question_stats.organization_id', '=', params.organization_id)
+      .orWhereNull('knowledge_question_stats.organization_id')
       .orderByRaw('times_asked DESC NULLS LAST');
   }).fetchAll({
     withRelated: {
@@ -533,12 +536,12 @@ export async function getCategoryFallback(labels, orgId) {
   });
   // If no contacts, look farther up
   if (mergedContacts.length === 0) {
-    await KnowledgeCategory.where({ label: 'general' }).fetch({
+    await KnowledgeCategory.where({ label: KNOWLEDGE_CONST.GENERAL_LABEL }).fetch({
       withRelated: [{
         contacts: q => q.where('knowledge_contacts.organization_id', '=', orgId),
       }],
     }).then((generalData) => {
-      fallbackObj.labels = ['general'];
+      fallbackObj.labels = [KNOWLEDGE_CONST.GENERAL_LABEL];
       fallbackObj.fellback = true;
       fallbackObj.contacts = (generalData) ? generalData.toJSON().contacts : [];
     });
