@@ -41,7 +41,7 @@ async function twitterFeeds() {
 
 export const watchers = () => {
   // Run Twitter Search Each Morning
-  schedule.scheduleJob('* * 6 * * *', () => {
-    twitterFeeds();
-  });
+  // schedule.scheduleJob('* * 6 * * *', () => {
+  //   twitterFeeds();
+  // });
 };
