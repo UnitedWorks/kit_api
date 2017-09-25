@@ -4,7 +4,7 @@ import ical from 'ical';
 import moment from 'moment';
 import Twitter from 'twitter';
 import { Feed } from './models';
-import * as CONSTANTS from '../constants/feeds';
+import * as FEED_CONSTANTS from '../constants/feeds';
 
 async function scrapeEvents(script) {
   // This is a mess. Evaluating code stored in feed columns. Example below
@@ -88,7 +88,7 @@ export async function runFeed(feedObj, options = { filterPast: true }) {
     feed = await Feed.where({ id: feed.id }).fetch().then(f => (f ? f.toJSON() : null));
   }
   // iCal
-  if (feed.format === CONSTANTS.ICS) {
+  if (feed.format === FEED_CONSTANTS.ICS) {
     const ics = await axios.get(feed.config.url).then(c => ical.parseICS(c.data));
     const events = Object.keys(ics)
       // Obj to array
@@ -99,7 +99,7 @@ export async function runFeed(feedObj, options = { filterPast: true }) {
       // Refromat to our standard
       .map(event => veventToKnowledgeEvent({ ...event, organization_id: feed.organization_id }));
     return { events };
-  } else if (feed.format === CONSTANTS.SCRAPED) {
+  } else if (feed.format === FEED_CONSTANTS.SCRAPED) {
     const results = await scrapeEvents(feed.script).then(r => r)
     return {
       events: results,
@@ -114,7 +114,7 @@ export async function runWatcher(feedObj, options = { hours: 24 }) {
   if (!feed.format) {
     feed = await Feed.where({ id: feed.id }).fetch().then(f => (f ? f.toJSON() : null));
   }
-  if (feed.format === CONSTANTS.TWITTER && feed.topic === CONSTANTS.SCHEDULE) {
+  if (feed.format === FEED_CONSTANTS.TWITTER && feed.topic === FEED_CONSTANTS.ALERTS_SCHEDULE_CHANGE) {
     const twitterClient = new Twitter({
       consumer_key: process.env.TWITTER_CONSUMER_KEY,
       consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
@@ -129,7 +129,7 @@ export async function runWatcher(feedObj, options = { hours: 24 }) {
           text: t.text,
           created_at: t.created_at,
           organization_id: feed.organization_id,
-          url: `https://twitter.com/JC_Gov/status/${t.id_str}`,
+          url: `https://twitter.com/${feed.config.twitter_handle}/status/${t.id_str}`,
         }));
         resolve(mappedTweets.filter(t => (moment().diff(moment(new Date(t.created_at)), 'h') <= options.hours)));
       });

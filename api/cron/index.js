@@ -1,6 +1,8 @@
 import schedule from 'node-schedule';
 import * as env from '../env';
 import * as KNOWLEDGE_CONST from '../constants/knowledge-base';
+import * as FEED_CONST from '../constants/feeds';
+import { logger } from '../logger';
 import { nlp } from '../services/nlp';
 import EmailService from '../services/email';
 import { Feed } from '../feeds/models';
@@ -15,13 +17,14 @@ async function twitterFeeds() {
     data.forEach(tw => (compiledData.push(...tw)))
     return compiledData;
   });
-  // On each response, check if there's something suggesting time/date change
-  const alerts = await Promise.all(feedData.map((d) => {
-    return nlp.message(d.text).then((witResponse) => {
-      if (witResponse.entities.datetime) return d;
-      return null;
-    });
-  })).then(a => a);
+  // On each response, check for entities
+  const alerts = await Promise.all(feedData.map(d => nlp.message(d.text).then((wit) => {
+    // Check for watcher => schedule change
+    if (wit.entities.watchers) {
+      return wit.entities.watchers.filter(w =>
+        w.value === FEED_CONST.ALERTS_SCHEDULE_CHANGE).length > 0 ? d : null;
+    }
+  }))).then(filtered => filtered.filter(a => a));
   // Group by organization
   const alertDeck = {};
   alerts.forEach((a) => {
@@ -31,17 +34,17 @@ async function twitterFeeds() {
   // Email reps responsbile for the general category + link to FAQ page
   Object.keys(alertDeck).forEach((key) => {
     getCategoryFallback([KNOWLEDGE_CONST.GENERAL_LABEL], key).then((fb) => {
-      new EmailService().send('🤖 Service Watcher Alert',
-        `I noticed recent public updates were made mentioning dates/times. Please review to see if they affect any service answers:<br><br>${alertDeck[key].map(u => `<b>${u.text}</b> (<a href="${u.url}" target="_blank">${u.url})</a><br>`)}<br><br><a href="${env.getDashboardRoot()}/interfaces/faq?organization_id=${key}" target="_blank">Click here to review answers of common services</a> or <a href="${env.getDashboardRoot()}/interfaces/broadcasting?organization_id=${key}" target="_blank">click here to make a broadcast notification</a>.`,
+      new EmailService().send('🤖 Service Change Watcher',
+        `Some recent public updates mentioned cancellations/rescheduling. Please review <a href="${env.getDashboardRoot()}/interfaces/faq?organization_id=${key}" target="_blank">common service answers</a> or <a href="${env.getDashboardRoot()}/interfaces/broadcasting?organization_id=${key}" target="_blank">broadcast a message</a>:<br><br>${alertDeck[key].map(u => `<b>${u.text}</b> (<a href="${u.url}" target="_blank">${u.url})</a><br>`)}`,
         fb.representatives.map(r => ({ email: r.email, name: r.name })),
       );
-    });
+    }).catch(err => logger.error(err));
   });
 }
 
 export const watchers = () => {
   // Run Twitter Search Each Morning
-  // schedule.scheduleJob('* * 6 * * *', () => {
-  //   twitterFeeds();
-  // });
+  schedule.scheduleJob('0 30 12 * * *', () => {
+    twitterFeeds();
+  });
 };

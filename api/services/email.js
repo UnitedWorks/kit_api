@@ -4,7 +4,6 @@ import { logger } from '../logger';
 export default class EmailService {
 
   send(subject, content, toEmail, customAttributes = {}, fromEmail = { email: 'alert@email.kit.community', name: 'Hey Mayor!' }) {
-
     const emailRequestObj = {
       personalizations: [{
         to: [],

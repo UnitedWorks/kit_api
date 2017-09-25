@@ -34,7 +34,7 @@ router.route('/')
       }).catch(err => next(err));
   })
   .put((req, res, next) => {
-    Feed.where({ id: req.body.feed.id }).save(formattedFeedObj(req.body.feed), { method: 'update', patch: true })
+    Feed.where({ id: req.body.feed.id }).save({ ...formattedFeedObj(req.body.feed), organization_id: req.body.feed.organization_id || req.body.organization.id }, { method: 'update', patch: true })
       .then((updated) => {
         updated.refresh().then((refreshedFeed) => {
           res.status(200).send({ feed: refreshedFeed.toJSON() });

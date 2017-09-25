@@ -12,6 +12,6 @@ export const FACILITY = 'facility';
 export const FEED_TYPES = [EVENT, SERVICE, FACILITY];
 
 // TOPIC
-export const SUBJECT = 'public_meetings';
+export const MEETINGS_PUBLIC = 'meetings.public';
 export const CULTURAL = 'cultural';
-export const SCHEDULE = 'schedule';
+export const ALERTS_SCHEDULE_CHANGE = 'alerts.schedule_change';
