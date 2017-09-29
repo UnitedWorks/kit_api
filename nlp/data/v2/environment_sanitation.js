@@ -17,35 +17,6 @@ module.exports = [
     "entities": []
   },
   {
-    "text": "It looks like theres oil on the water",
-    "intent": "environment_sanitation.environment_waterway.report",
-    "entities": [
-      {
-        "start": 32,
-        "end": 37,
-        "value": "environment_sanitation",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "The river looks weird",
-    "intent": "environment_sanitation.environment_waterway.report",
-    "entities": [
-      {
-        "start": 4,
-        "end": 9,
-        "value": "environment_sanitation",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "The river looks dirty",
-    "intent": "environment_sanitation.environment_waterway.report",
-    "entities": []
-  },
-  {
     "text": "Can I bring alcohol to the park?",
     "intent": "environment_sanitation.park_alcohol",
     "entities": [
@@ -86,40 +57,6 @@ module.exports = [
     "text": "Am I allowed to bring a dog to a park?",
     "intent": "environment_sanitation.park_pets",
     "entities": []
-  },
-  {
-    "text": "Can I reserve a park or picnic area?",
-    "intent": "environment_sanitation.park_reservations",
-    "entities": [
-      {
-        "start": 24,
-        "end": 30,
-        "value": "environment_sanitation",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "How do I reserve a section at the park for a party?",
-    "intent": "environment_sanitation.park_reservations",
-    "entities": []
-  },
-  {
-    "text": "How do I reserve a park pavilion?",
-    "intent": "environment_sanitation.park_reservations",
-    "entities": []
-  },
-  {
-    "text": "How do I reserve a sports field?",
-    "intent": "environment_sanitation.park_reservations",
-    "entities": [
-      {
-        "start": 19,
-        "end": 31,
-        "value": "environment_sanitation",
-        "entity": "category_keywords"
-      }
-    ]
   },
   {
     "text": "Can I smoke in the park?",
@@ -439,48 +376,6 @@ module.exports = [
     "text": "Where do I dispose of my garbage?",
     "intent": "environment_sanitation.trash.location",
     "entities": []
-  },
-
-  {
-    "text": "Animals keep eating my garbage",
-    "intent": "environment_sanitation.trash.animals",
-    "entities": [
-      {
-        "start": 1,
-        "end": 7,
-        "value": "environment_sanitation",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "Rodents keep eating the garbage",
-    "intent": "environment_sanitation.trash.animals",
-    "entities": [
-      {
-        "start": 1,
-        "end": 7,
-        "value": "environment_sanitation",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "How do I stop animals from eating my garbage?",
-    "intent": "environment_sanitation.trash.animals",
-    "entities": []
-  },
-  {
-    "text": "How do I report a waterway that is an unusual color?",
-    "intent": "environment_sanitation.environment_waterway.report",
-    "entities": [
-      {
-        "start": 18,
-        "end": 26,
-        "value": "environment_sanitation",
-        "entity": "category_keywords"
-      }
-    ]
   },
   {
     "text": "Do I need special bins for recycling?",

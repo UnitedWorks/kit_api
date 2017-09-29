@@ -8,7 +8,7 @@ const axios = require('axios');
 
 // Update the Wit App
 const witFormatedExamples = require('./data').rasa_nlu_data.common_examples.map((example) => {
-  const entities = [...example.entities];
+  const entities = example.entities || [];
   if (example.intent) {
     entities.push({
       entity: 'intent',
