@@ -46,8 +46,8 @@ SO['business_finance.complaint'] = {};
 
 // Environment
 SO['environment_sanitation.tree'] = {
-  domain: 'environment_sanitation',
-  theme: 'tree',
+  knowledge_category: 'environment_sanitation',
+  domain: 'tree',
   params: {
     location,
     attachment: image,
@@ -70,8 +70,8 @@ SO['environment_sanitation.water.flooding'] = {};
 SO['environment_sanitation.water.quality'] = {};
 SO['environment_sanitation.air.quality'] = {};
 SO['environment_sanitation.dumping'] = {
-  domain: 'environment_sanitation',
-  theme: 'dumping',
+  knowledge_category: 'environment_sanitation',
+  domain: 'dumping',
   params: {
     location,
     attachment: image,
@@ -89,105 +89,105 @@ SO['health_medicine.unsanitary.housing'] = {};
 SO['health_medicine.unsanitary.resturaunt'] = {};
 SO['health_medicine.standing_water'] = {};
 SO['health_medicine.animal.rabid'] = {
-  domain: 'health_medicine',
-  theme: 'animal',
+  knowledge_category: 'health_medicine',
+  domain: 'animal',
   params: {
     location,
     topic: { value: 'rabid' },
   },
 };
 SO['health_medicine.animal.dead'] = {
-  domain: 'health_medicine',
-  theme: 'animal',
+  knowledge_category: 'health_medicine',
+  domain: 'animal',
   params: {
     location,
     topic: { value: 'dead' },
   },
 };
 SO['health_medicine.animal.excrement'] = {
-  domain: 'health_medicine',
-  theme: 'animal',
+  knowledge_category: 'health_medicine',
+  domain: 'animal',
   params: {
     location,
     topic: { value: 'excrement' },
   },
 };
 SO['health_medicine.rodents'] = {
-  domain: 'health_medicine',
-  theme: 'rodents',
+  knowledge_category: 'health_medicine',
+  domain: 'rodents',
   params: {
     location,
     private_property,
   },
 };
 SO['health_medicine.insects'] = {
-  domain: 'health_medicine',
-  theme: 'insects',
+  knowledge_category: 'health_medicine',
+  domain: 'insects',
   params: {
     location,
     private_property,
   },
 };
 SO['health_medicine.insects.bed_bugs'] = {
-  domain: 'health_medicine',
-  theme: 'insects',
+  knowledge_category: 'health_medicine',
+  domain: 'insects',
   params: { ...SO['health_medicine.insects'].params,
     topic: { value: 'bed_bugs' },
   },
 };
 SO['health_medicine.insects.bees'] = {
-  domain: 'health_medicine',
-  theme: 'insects',
+  knowledge_category: 'health_medicine',
+  domain: 'insects',
   params: { ...SO['health_medicine.insects'].params,
     topic: { value: 'bed_bugs' },
   },
 };
 
 // Property
-SO['property_building_homes.accessibility.ramp'] = {};
-SO['property_building_homes.accessibility.broken_elevator'] = {};
-SO['property_building_homes.accessibility.broken_escalator'] = {};
-SO['property_building_homes.housing_violation'] = {
-  domain: 'property_building_homes',
-  theme: 'housing_violation',
+SO['property_buildings_homes.accessibility.ramp'] = {};
+SO['property_buildings_homes.accessibility.broken_elevator'] = {};
+SO['property_buildings_homes.accessibility.broken_escalator'] = {};
+SO['property_buildings_homes.housing_violation'] = {
+  knowledge_category: 'property_buildings_homes',
+  domain: 'housing_violation',
   params: {
     location,
     email,
   },
 };
-SO['property_building_homes.housing_violation.heat'] = SO['property_building_homes.housing_violation'];
-SO['property_building_homes.housing_violation.heat'].params.topic = { value: 'heat' };
-SO['property_building_homes.housing_violation.hot_water'] = SO['property_building_homes.housing_violation'];
-SO['property_building_homes.housing_violation.hot_water'].params.topic = { value: 'hot_water' };
-SO['property_building_homes.housing_violation.repairs'] = SO['property_building_homes.housing_violation'];
-SO['property_building_homes.housing_violation.repairs'].params.topic = { value: 'repairs' };
-SO['property_building_homes.housing_violation.tree_damage'] = SO['property_building_homes.housing_violation'];
-SO['property_building_homes.housing_violation.tree_damage'].params.topic = { value: 'tree_damage' };
-SO['property_building_homes.housing_violation.illegal_apartments'] = SO['property_building_homes.housing_violation'];
-SO['property_building_homes.housing_violation.illegal_apartments'].params.topic = { value: 'illegal_apartments' };
-SO['property_building_homes.housing_assistance'] = {
-  domain: 'property_building_homes',
-  theme: 'housing_assistance',
+SO['property_buildings_homes.housing_violation.heat'] = SO['property_buildings_homes.housing_violation'];
+SO['property_buildings_homes.housing_violation.heat'].params.topic = { value: 'heat' };
+SO['property_buildings_homes.housing_violation.hot_water'] = SO['property_buildings_homes.housing_violation'];
+SO['property_buildings_homes.housing_violation.hot_water'].params.topic = { value: 'hot_water' };
+SO['property_buildings_homes.housing_violation.repairs'] = SO['property_buildings_homes.housing_violation'];
+SO['property_buildings_homes.housing_violation.repairs'].params.topic = { value: 'repairs' };
+SO['property_buildings_homes.housing_violation.tree_damage'] = SO['property_buildings_homes.housing_violation'];
+SO['property_buildings_homes.housing_violation.tree_damage'].params.topic = { value: 'tree_damage' };
+SO['property_buildings_homes.housing_violation.illegal_apartments'] = SO['property_buildings_homes.housing_violation'];
+SO['property_buildings_homes.housing_violation.illegal_apartments'].params.topic = { value: 'illegal_apartments' };
+SO['property_buildings_homes.housing_assistance'] = {
+  knowledge_category: 'property_buildings_homes',
+  domain: 'housing_assistance',
   params: {
     public_housing,
   },
 };
-SO['property_building_homes.housing_assistance.rental'] = {};
-SO['property_building_homes.housing_assistance.section_8'] = {};
-SO['property_building_homes.housing_assistance.emergency_housing'] = {};
-SO['property_building_homes.housing_dispute.landlord'] = {};
-SO['property_building_homes.housing_dispute.tenant'] = {};
-SO['property_building_homes.housing_dispute.lease'] = {};
-SO['property_building_homes.housing_dispute.rent_increase'] = {};
-SO['property_building_homes.sewage.backup'] = {};
-SO['property_building_homes.water.pressure'] = {};
-SO['property_building_homes.water.quality'] = {};
-SO['property_building_homes.water.leak'] = {};
-SO['property_building_homes.water.main_break'] = {};
+SO['property_buildings_homes.housing_assistance.rental'] = {};
+SO['property_buildings_homes.housing_assistance.section_8'] = {};
+SO['property_buildings_homes.housing_assistance.emergency_housing'] = {};
+SO['property_buildings_homes.housing_dispute.landlord'] = {};
+SO['property_buildings_homes.housing_dispute.tenant'] = {};
+SO['property_buildings_homes.housing_dispute.lease'] = {};
+SO['property_buildings_homes.housing_dispute.rent_increase'] = {};
+SO['property_buildings_homes.sewage.backup'] = {};
+SO['property_buildings_homes.water.pressure'] = {};
+SO['property_buildings_homes.water.quality'] = {};
+SO['property_buildings_homes.water.leak'] = {};
+SO['property_buildings_homes.water.main_break'] = {};
 
-SO['property_building_homes.construction'] = {
-  domain: 'property_building_homes',
-  theme: 'construction',
+SO['property_buildings_homes.construction'] = {
+  knowledge_category: 'property_buildings_homes',
+  domain: 'construction',
   params: {
     location,
     // topic: {
@@ -199,18 +199,18 @@ SO['property_building_homes.construction'] = {
     private_property,
   },
 };
-SO['property_building_homes.construction.noise'] = SO['property_building_homes.construction'];
-SO['property_building_homes.construction.noise'].params.topic = { value: 'noise' };
-SO['property_building_homes.construction.off_hours'] = SO['property_building_homes.construction'];
-SO['property_building_homes.construction.off_hours'].params.topic = { value: 'off_hours' };
-SO['property_building_homes.construction.no_permit'] = SO['property_building_homes.construction'];
-SO['property_building_homes.construction.no_permit'].params.topic = { value: 'no_permit' };
-SO['property_building_homes.construction.safety'] = SO['property_building_homes.construction'];
-SO['property_building_homes.construction.safety'].params.topic = { value: 'safety' };
+SO['property_buildings_homes.construction.noise'] = SO['property_buildings_homes.construction'];
+SO['property_buildings_homes.construction.noise'].params.topic = { value: 'noise' };
+SO['property_buildings_homes.construction.off_hours'] = SO['property_buildings_homes.construction'];
+SO['property_buildings_homes.construction.off_hours'].params.topic = { value: 'off_hours' };
+SO['property_buildings_homes.construction.no_permit'] = SO['property_buildings_homes.construction'];
+SO['property_buildings_homes.construction.no_permit'].params.topic = { value: 'no_permit' };
+SO['property_buildings_homes.construction.safety'] = SO['property_buildings_homes.construction'];
+SO['property_buildings_homes.construction.safety'].params.topic = { value: 'safety' };
 
-SO['property_building_homes.graffiti'] = {
-  domain: 'property_building_homes',
-  theme: 'graffiti',
+SO['property_buildings_homes.graffiti'] = {
+  knowledge_category: 'property_buildings_homes',
+  domain: 'graffiti',
   params: {
     location,
     attachment: image,
@@ -221,41 +221,55 @@ SO['property_building_homes.graffiti'] = {
     },
   },
 };
-SO['property_building_homes.over_growth'] = {
-  domain: 'property_building_homes',
-  theme: 'over_growth',
+SO['property_buildings_homes.over_growth'] = {
+  knowledge_category: 'property_buildings_homes',
+  domain: 'over_growth',
   params: {
     location,
     attachment: image,
     vacant_lot,
   },
 };
-SO['property_building_homes.blight'] = {
-  domain: 'property_building_homes',
-  theme: 'blight',
+SO['property_buildings_homes.blight'] = {
+  knowledge_category: 'property_buildings_homes',
+  domain: 'blight',
   params: {
     location,
     attachment: image,
     vacant_lot,
   },
 };
-SO['property_building_homes.odor'] = {};
-SO['property_building_homes.odor.gas'] = {};
-SO['property_building_homes.mold'] = {};
-SO['property_building_homes.eviction'] = {};
-SO['property_building_homes.noise'] = {
-  domain: 'property_building_homes',
-  theme: 'noise',
+SO['property_buildings_homes.odor'] = {
+  knowledge_category: 'property_buildings_homes',
+  domain: 'odor',
   params: {
     location,
   },
 };
-SO['property_building_homes.squatting'] = {};
+SO['property_buildings_homes.odor.gas'] = SO['property_buildings_homes.odor'];
+SO['property_buildings_homes.odor.gas'].params.topic = { value: 'gas' };
+SO['property_buildings_homes.mold'] = {
+  knowledge_category: 'property_buildings_homes',
+  domain: 'mold',
+  params: {
+    location,
+    attachment: image,
+  },
+};
+SO['property_buildings_homes.eviction'] = {};
+SO['property_buildings_homes.noise'] = {
+  knowledge_category: 'property_buildings_homes',
+  domain: 'noise',
+  params: {
+    location,
+  },
+};
+SO['property_buildings_homes.squatting'] = {};
 
 // Transportation
 SO['transportation_streets_sidewalks.street'] = {
-  domain: 'transportation_streets_sidewalks',
-  theme: 'street',
+  knowledge_category: 'transportation_streets_sidewalks',
+  domain: 'street',
   params: {
     location,
     attachment: image,
@@ -277,8 +291,8 @@ SO['transportation_streets_sidewalks.curb'] = {};
 SO['transportation_streets_sidewalks.curb.ramp'] = {};
 
 SO['transportation_streets_sidewalks.sign'] = {
-  domain: 'transportation_streets_sidewalks',
-  theme: 'sign',
+  knowledge_category: 'transportation_streets_sidewalks',
+  domain: 'sign',
   params: {
     location,
     attachment: image,
@@ -296,8 +310,8 @@ SO['transportation_streets_sidewalks.sign.request'] = SO['transportation_streets
 SO['transportation_streets_sidewalks.sign.request'].params.topic = { value: 'request' };
 
 SO['transportation_streets_sidewalks.signal'] = {
-  domain: 'transportation_streets_sidewalks',
-  theme: 'signal',
+  knowledge_category: 'transportation_streets_sidewalks',
+  domain: 'signal',
   params: {
     location,
     attachment: image,
@@ -315,8 +329,8 @@ SO['transportation_streets_sidewalks.signal.request'] = SO['transportation_stree
 SO['transportation_streets_sidewalks.signal.request'].params.topic = { value: 'request' };
 
 SO['transportation_streets_sidewalks.street_light'] = {
-  domain: 'transportation_streets_sidewalks',
-  theme: 'street_light',
+  knowledge_category: 'transportation_streets_sidewalks',
+  domain: 'street_light',
   params: {
     location,
     attachment: image,
@@ -334,8 +348,8 @@ SO['transportation_streets_sidewalks.street_light.request'] = SO['transportation
 SO['transportation_streets_sidewalks.street_light.request'].params.topic = { value: 'request' };
 
 SO['transportation_streets_sidewalks.parking_violation'] = {
-  domain: 'transportation_streets_sidewalks',
-  theme: 'parking',
+  knowledge_category: 'transportation_streets_sidewalks',
+  domain: 'parking',
   params: {
     location,
     attachment: image,
@@ -366,8 +380,8 @@ SO['transportation_streets_sidewalks.parking_meter'] = {};
 SO['transportation_streets_sidewalks.parking_meter.broken'] = {};
 
 SO['transportation_streets_sidewalks.construction.noise'] = {
-  domain: 'transportation_streets_sidewalks',
-  theme: 'construction',
+  knowledge_category: 'transportation_streets_sidewalks',
+  domain: 'construction',
   params: {
     location,
     topic: { value: 'noise' },
@@ -383,8 +397,8 @@ SO['transportation_streets_sidewalks.bicycle.abandoned'] = {
   },
 };
 SO['transportation_streets_sidewalks.vehicle.idling'] = {
-  domain: 'transportation_streets_sidewalks',
-  theme: 'vehicle',
+  knowledge_category: 'transportation_streets_sidewalks',
+  domain: 'vehicle',
   params: {
     location,
     attachment: image,
@@ -395,4 +409,14 @@ SO['transportation_streets_sidewalks.vehicle.wreckless'] = {};
 SO['transportation_streets_sidewalks.vehicle.abandoned'] = {};
 SO['transportation_streets_sidewalks.utility.wire_danger'] = {};
 
-module.exports = SO;
+const readySO = {};
+Object.keys(SO).forEach((key) => {
+  if (Object.keys(SO[key]).length > 0) {
+    readySO[key] = SO[key];
+  }
+});
+
+module.exports = {
+  all: SO,
+  ready: readySO,
+};

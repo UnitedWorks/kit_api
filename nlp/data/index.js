@@ -11,7 +11,7 @@ module.exports = {
       // ...require('./v2/health_medicine'),
       // ...require('./v2/interaction'),
       // ...require('./v2/personality'),
-      // ...require('./v2/property_building_homes'),
+      // ...require('./v2/property_buildings_homes'),
       // ...require('./v2/public_safety_law'),
       // ...require('./v2/search'),
       // ...require('./v2/settings'),

@@ -1,6 +1,5 @@
 import { Router } from 'express';
-import { ShoutOut } from './models';
-import * as SHOUT_OUT_CONST from '../constants/shout-outs';
+import shoutOutLogic from './logic';
 
 const router = new Router();
 
@@ -13,6 +12,10 @@ router.post('/', (req, res) => {
   } else {
     res.status(200).send({ received_params: req.body });
   }
+});
+
+router.get('/templates', (req, res) => {
+  res.status(200).send({ templates: shoutOutLogic.ready });
 });
 
 module.exports = router;
