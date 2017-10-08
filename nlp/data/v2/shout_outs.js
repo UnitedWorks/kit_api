@@ -2,10 +2,10 @@ module.exports = [
   // Business
   {
     intent: 'business_finance.appearance',
-    text: '',
+    text: 'This business is falling apart',
   }, {
     intent: 'business_finance.complaint',
-    text: '',
+    text: 'There is a business violating the law',
   },
   // Environment and Sanitation
   {
@@ -78,13 +78,13 @@ module.exports = [
   // Health
   {
     intent: 'health_medicine.unsanitary.business',
-    text: '',
+    text: 'This store has rats all over',
   }, {
     intent: 'health_medicine.unsanitary.food_truck',
-    text: '',
+    text: 'This food truck doesn\'t seem safe',
   }, {
     intent: 'health_medicine.unsanitary.housing',
-    text: '',
+    text: 'This housing complex has garbage throughout',
   }, {
     intent: 'health_medicine.unsanitary.resturaunt',
     text: 'I ate a resturaunt and got sick. What should I do?',
@@ -124,205 +124,205 @@ module.exports = [
   },
   // Property, Building, and Homes
   {
-    intent: 'property_building_homes.accessibility.ramp',
+    intent: 'property_buildings_homes.accessibility.ramp',
     text: 'The building isnt wheelchair accessible',
   }, {
-    intent: 'property_building_homes.accessibility.broken_elevator',
+    intent: 'property_buildings_homes.accessibility.broken_elevator',
     text: 'My buildings elevator is broken',
   }, {
-    intent: 'property_building_homes.accessibility.broken_escalator',
+    intent: 'property_buildings_homes.accessibility.broken_escalator',
     text: 'the escalator to the subway has been broken for over a week',
   }, {
-    intent: 'property_building_homes.housing_violation.heat',
+    intent: 'property_buildings_homes.housing_violation.heat',
     text: 'i dont have heat',
   }, {
-    intent: 'property_building_homes.housing_violation.hot_water',
+    intent: 'property_buildings_homes.housing_violation.hot_water',
     text: "We don't have any hot water in our apartment",
   }, {
-    intent: 'property_building_homes.housing_violation.repairs',
+    intent: 'property_buildings_homes.housing_violation.repairs',
     text: 'How do I report a maintenance problem in my apartment building?',
   }, {
-    intent: 'property_building_homes.housing_violation.repairs',
+    intent: 'property_buildings_homes.housing_violation.repairs',
     text: 'My apartment building is falling apart',
   }, {
-    intent: 'property_building_homes.housing_violation.repairs',
+    intent: 'property_buildings_homes.housing_violation.repairs',
     text: "The landlord isn't taking care of the apartment building",
   }, {
-    intent: 'property_building_homes.housing_violation.tree_damage',
+    intent: 'property_buildings_homes.housing_violation.tree_damage',
     text: 'A fallen tree took out our gutter',
   }, {
-    intent: 'property_building_homes.housing_violation.illegal_apartments',
+    intent: 'property_buildings_homes.housing_violation.illegal_apartments',
     text: 'How do I report an illegal renting?',
   }, {
-    intent: 'property_building_homes.housing_violation.illegal_apartments',
+    intent: 'property_buildings_homes.housing_violation.illegal_apartments',
     text: 'How do I report an illegal rental of living space?',
   }, {
-    intent: 'property_building_homes.housing_violation.illegal_apartments',
+    intent: 'property_buildings_homes.housing_violation.illegal_apartments',
     text: 'There are more people than allowed living in a house',
   }, {
-    intent: 'property_building_homes.housing_assistance',
-    text: '',
+    intent: 'property_buildings_homes.housing_assistance',
+    text: 'I need housing assistance',
   }, {
-    intent: 'property_building_homes.housing_assistance.rental',
-    text: '',
+    intent: 'property_buildings_homes.housing_assistance.rental',
+    text: 'How do I find out about rental assistance?',
   }, {
-    intent: 'property_building_homes.housing_assistance.section_8',
-    text: '',
+    intent: 'property_buildings_homes.housing_assistance.section_8',
+    text: 'How do I find out more about section 8?',
   }, {
-    intent: 'property_building_homes.housing_assistance.emergency_housing',
-    text: '',
+    intent: 'property_buildings_homes.housing_assistance.emergency_housing',
+    text: 'I need housing for the night',
   }, {
-    intent: 'property_building_homes.housing_dispute.landlord',
-    text: '',
+    intent: 'property_buildings_homes.housing_dispute.landlord',
+    text: 'My landlord is terrible',
   }, {
-    intent: 'property_building_homes.housing_dispute.tenant',
-    text: '',
+    intent: 'property_buildings_homes.housing_dispute.tenant',
+    text: 'The apartment next to me is terrible',
   }, {
-    intent: 'property_building_homes.housing_dispute.lease',
-    text: '',
+    intent: 'property_buildings_homes.housing_dispute.lease',
+    text: 'There is a dispute with my lease',
   }, {
-    intent: 'property_building_homes.housing_dispute.rent_increase',
-    text: '',
+    intent: 'property_buildings_homes.housing_dispute.rent_increase',
+    text: 'My rent went up more than allowed',
   }, {
-    intent: 'property_building_homes.sewage.backup',
+    intent: 'property_buildings_homes.sewage.backup',
     text: 'What do I do if sewage is backing up in my basement?',
   }, {
-    intent: 'property_building_homes.sewage.backup',
+    intent: 'property_buildings_homes.sewage.backup',
     text: 'Sewage is backing up into my basement',
   }, {
-    intent: 'property_building_homes.water.pressure',
+    intent: 'property_buildings_homes.water.pressure',
     text: 'How do I report low water pressure in my apartment?',
   }, {
-    intent: 'property_building_homes.water.pressure',
+    intent: 'property_buildings_homes.water.pressure',
     text: 'I think my water pressure is way too low. What do I do?',
   }, {
-    intent: 'property_building_homes.water.pressure',
+    intent: 'property_buildings_homes.water.pressure',
     text: 'The water pressure seems low',
   }, {
-    intent: 'property_building_homes.water.quality',
+    intent: 'property_buildings_homes.water.quality',
     text: 'our water is brown',
   }, {
-    intent: 'property_building_homes.water.leak',
+    intent: 'property_buildings_homes.water.leak',
     text: "There's been a leak in our ceiling that keeps coming back",
   }, {
-    intent: 'property_building_homes.water.main_break',
+    intent: 'property_buildings_homes.water.main_break',
     text: 'I think a water main broke',
   }, {
-    intent: 'property_building_homes.construction.noise',
+    intent: 'property_buildings_homes.construction.noise',
     text: 'How do I report noise from after-hours construction?',
   }, {
-    intent: 'property_building_homes.construction.noise',
+    intent: 'property_buildings_homes.construction.noise',
     text: "This construction is noisy and it's late",
   }, {
-    intent: 'property_building_homes.construction.noise',
+    intent: 'property_buildings_homes.construction.noise',
     text: "There is really loud construction going on",
   }, {
-    intent: 'property_building_homes.construction.noise',
+    intent: 'property_buildings_homes.construction.noise',
     text: "I can't do anything because this construction is so loud",
   }, {
-    intent: 'property_building_homes.construction.noise',
+    intent: 'property_buildings_homes.construction.noise',
     text: "How do I report noisy construction?",
   }, {
-    intent: 'property_building_homes.construction.off_hours',
+    intent: 'property_buildings_homes.construction.off_hours',
     text: 'Is construction allowed to take place this late?',
   }, {
-    intent: 'property_building_homes.construction.no_permit',
+    intent: 'property_buildings_homes.construction.no_permit',
     text: "I don't think this construction crew has a permit",
   }, {
-    intent: 'property_building_homes.construction.safety',
-    text: '',
+    intent: 'property_buildings_homes.construction.safety',
+    text: 'This construction crew isnt operating in a safe manner',
   }, {
-    intent: 'property_building_homes.graffiti',
+    intent: 'property_buildings_homes.graffiti',
     text: 'Who should I call about graffiti?',
   }, {
-    intent: 'property_building_homes.graffiti',
+    intent: 'property_buildings_homes.graffiti',
     text: "There's some graffiti on this wall",
   }, {
-    intent: 'property_building_homes.graffiti',
+    intent: 'property_buildings_homes.graffiti',
     text: 'How do I report graffiti on a building?',
   }, {
-    intent: 'property_building_homes.graffiti',
+    intent: 'property_buildings_homes.graffiti',
     text: 'I found graffiti',
   }, {
-    intent: 'property_building_homes.over_growth',
+    intent: 'property_buildings_homes.over_growth',
     text: 'How do I report overgrown grass or weeds on private property?',
   }, {
-    intent: 'property_building_homes.over_growth',
+    intent: 'property_buildings_homes.over_growth',
     text: "My neighbor's lawn is overgrown",
   }, {
-    intent: 'property_building_homes.over_growth',
+    intent: 'property_buildings_homes.over_growth',
     text: 'My neighbors grass and weeds are out of control',
   }, {
-    intent: 'property_building_homes.over_growth',
+    intent: 'property_buildings_homes.over_growth',
     text: 'How do I get my neighbor to take care of their grass and foilage',
   }, {
-    intent: 'property_building_homes.blight',
+    intent: 'property_buildings_homes.blight',
     text: 'the buildings on Wadsworth are falling apart',
   }, {
-    intent: 'property_building_homes.odor',
+    intent: 'property_buildings_homes.odor',
     text: 'How do I report a gas odor or leak?',
   }, {
-    intent: 'property_building_homes.odor',
+    intent: 'property_buildings_homes.odor',
     text: 'I smell something weird',
   }, {
-    intent: 'property_building_homes.odor.gas',
+    intent: 'property_buildings_homes.odor.gas',
     text: 'Theres a gas leak',
   }, {
-    intent: 'property_building_homes.odor.gas',
+    intent: 'property_buildings_homes.odor.gas',
     text: 'I think I smell gas leaking',
   }, {
-    intent: 'property_building_homes.mold',
+    intent: 'property_buildings_homes.mold',
     text: "There's mold growing in my house",
   }, {
-    intent: 'property_building_homes.mold',
+    intent: 'property_buildings_homes.mold',
     text: 'How do I report mold?',
   }, {
-    intent: 'property_building_homes.mold',
+    intent: 'property_buildings_homes.mold',
     text: 'How do I report mold in my apartment?',
   }, {
-    intent: 'property_building_homes.eviction',
+    intent: 'property_buildings_homes.eviction',
     text: "I'm getting evicted from my home without any warning",
   }, {
-    intent: 'property_building_homes.squatting',
+    intent: 'property_buildings_homes.squatting',
     text: 'How do I report someone living in a vacant building?',
   }, {
-    intent: 'property_building_homes.squatting',
+    intent: 'property_buildings_homes.squatting',
     text: 'Someone is squatting in my building',
   }, {
-    intent: 'property_building_homes.squatting',
+    intent: 'property_buildings_homes.squatting',
     text: 'What do I do about squatters?',
   }, {
-    intent: 'property_building_homes.squatting',
+    intent: 'property_buildings_homes.squatting',
     text: 'There are a bunch of squatters next door',
   }, {
-    intent: 'property_building_homes.noise.neighbor',
+    intent: 'property_buildings_homes.noise.neighbor',
     text: 'How do I report a noisy neighbor?',
   }, {
-    intent: 'property_building_homes.noise.neighbor',
+    intent: 'property_buildings_homes.noise.neighbor',
     text: 'What can I do about noisy neighbors?',
   }, {
-    intent: 'property_building_homes.noise.neighbor',
+    intent: 'property_buildings_homes.noise.neighbor',
     text: 'My neighbor is being obnoxious',
   }, {
-    intent: 'property_building_homes.noise.neighbor',
+    intent: 'property_buildings_homes.noise.neighbor',
     text: 'My neighbors party is disturbing',
   }, {
-    intent: 'property_building_homes.noise.alarm',
+    intent: 'property_buildings_homes.noise.alarm',
     text: 'How do I report a noisy alarm?',
   }, {
-    intent: 'property_building_homes.noise.alarm',
+    intent: 'property_buildings_homes.noise.alarm',
     text: 'There is an alarm that wont stop',
   }, {
-    intent: 'property_building_homes.noise.alarm',
+    intent: 'property_buildings_homes.noise.alarm',
     text: 'My buildings alarm wont stop',
   }, {
-    intent: 'property_building_homes.noise.alarm',
+    intent: 'property_buildings_homes.noise.alarm',
     text: 'An alarm keeps ringing',
   },
   // Transportation
   {
     intent: 'transportation_streets_sidewalks.street',
-    text: '',
+    text: 'This street is cant be driven on',
   }, {
     intent: 'transportation_streets_sidewalks.street.pothole',
     text: 'How do I report a pothole?',
@@ -379,7 +379,7 @@ module.exports = [
     text: 'How do I report a broken, raised, or uneven sidewalk?',
   }, {
     intent: 'transportation_streets_sidewalks.curb',
-    text: '',
+    text: 'Report curb',
   }, {
     intent: 'transportation_streets_sidewalks.curb.ramp',
     text: 'How do I know if a curb cut is legal?',
@@ -391,7 +391,7 @@ module.exports = [
     text: 'The cut away part of the curb is broken',
   }, {
     intent: 'transportation_streets_sidewalks.sign',
-    text: '',
+    text: 'Report street sign',
   }, {
     intent: 'transportation_streets_sidewalks.sign.missing',
     text: 'A parking sign is missing',
@@ -424,7 +424,7 @@ module.exports = [
     text: 'We need a parking rules sign here',
   }, {
     intent: 'transportation_streets_sidewalks.signal',
-    text: '',
+    text: 'Report signal',
   }, {
     intent: 'transportation_streets_sidewalks.signal.always_on',
     text: 'Both the walk and do not walk are on',
@@ -442,10 +442,10 @@ module.exports = [
     text: "There needs to be a traffic light here. I've nearly been in an accident multiple times",
   }, {
     intent: 'transportation_streets_sidewalks.street_light',
-    text: '',
+    text: 'Report street light',
   }, {
     intent: 'transportation_streets_sidewalks.street_light.always_on',
-    text: '',
+    text: 'The street light is on throughout the day',
   }, {
     intent: 'transportation_streets_sidewalks.street_light.burnt_out',
     text: 'A street light is out, who do I tell?',
@@ -484,16 +484,16 @@ module.exports = [
     text: 'Theres a parked car blocking the street',
   }, {
     intent: 'transportation_streets_sidewalks.parking_violation.bus_zone',
-    text: '',
+    text: 'A car has been parked in the bus zone',
   }, {
     intent: 'transportation_streets_sidewalks.parking_violation.no_parking',
-    text: '',
+    text: 'A car is parked in a no parking zone',
   }, {
     intent: 'transportation_streets_sidewalks.parking_violation.emergency_zone',
     text: 'A car is parked in a fire zone',
   }, {
     intent: 'transportation_streets_sidewalks.parking_violation.expired_tags',
-    text: '',
+    text: 'This car has expired tags',
   }, {
     intent: 'transportation_streets_sidewalks.parking_violation.fire_hydrant',
     text: 'A truck parked in front of a fire hydrant',
@@ -502,16 +502,16 @@ module.exports = [
     text: 'Someone is taking up a handicap parking space',
   }, {
     intent: 'transportation_streets_sidewalks.parking_violation.loading_zone',
-    text: '',
+    text: 'A car is blocking the loading zone',
   }, {
     intent: 'transportation_streets_sidewalks.parking_violation.meter',
-    text: '',
+    text: 'The parking meter has expired',
   }, {
     intent: 'transportation_streets_sidewalks.parking_violation.school_zone',
     text: 'There is someone taking up a school zone',
   }, {
     intent: 'transportation_streets_sidewalks.parking_meter',
-    text: '',
+    text: 'Report parking meter',
   }, {
     intent: 'transportation_streets_sidewalks.parking_meter.broken',
     text: 'The parking meter is not working.',
@@ -538,7 +538,7 @@ module.exports = [
     text: 'Theres a loud jackhammer',
   }, {
     intent: 'transportation_streets_sidewalks.bicycle.racks',
-    text: '',
+    text: 'This bike rack is clogged up',
   }, {
     intent: 'transportation_streets_sidewalks.bicycle.lanes',
     text: 'How do I request a bike lane?',
@@ -553,7 +553,7 @@ module.exports = [
     text: 'There should be a bike lane on my street',
   }, {
     intent: 'transportation_streets_sidewalks.bicycle.sharing',
-    text: '',
+    text: 'The bike sharing machine isnt working',
   }, {
     intent: 'transportation_streets_sidewalks.bicycle.abandoned',
     text: 'Theres been a bike frame sitting here for weeks',
@@ -580,7 +580,7 @@ module.exports = [
     text: 'I just saw someone speed down my street',
   }, {
     intent: 'transportation_streets_sidewalks.vehicle.abandoned',
-    text: '',
+    text: 'Theres an abandoned car on the street',
   }, {
     intent: 'transportation_streets_sidewalks.utility.wire_danger',
     text: 'An electrical wire is down in the street',

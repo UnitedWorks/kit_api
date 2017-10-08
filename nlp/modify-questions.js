@@ -280,26 +280,21 @@ const updateOperations = [
   } else if (modification.delete) {
     return knex('knowledge_questions').select()
       .where({ label: modification.delete })
-      .then(model => Promise.all([
-        () => {
-            if (model && model.id) {
-              return knex.select().where({ question_id: model.id }).from('knowledge_question_stats').del()
-                .then(d => d)
-              }
-        },
-        () => {
-          if (model && model.id) {
-            return knex.select().where({ question_id: model.id }).from('knowledge_answers').del()
-              .then(d => d)
-            }
-        },
-      ]).then(() => {
-        return knex.select()
-          .where({ label: modification.delete })
-          .from('knowledge_questions')
-          .del()
-          .then(d => d);
-      }));
+      .then((model) => {
+        if (model && model[0] && model[0].id) {
+          const modelId = model[0].id;
+          knex.select('*').where({ question_id: modelId }).from('knowledge_question_stats').del()
+            .then(d => d);
+          return knex.select('*').where({ question_id: modelId }).from('knowledge_answers').del()
+            .then(() => {
+              return knex.select()
+                .where({ label: modification.delete })
+                .from('knowledge_questions')
+                .del()
+                .then(d => d);
+            });
+        }
+      });
   }
 });
 
