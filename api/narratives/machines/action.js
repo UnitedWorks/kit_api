@@ -57,7 +57,7 @@ export default {
       }
       const nlpData = await nlp.message(this.snapshot.input.payload.text).then(n => n);
       if (nlpData.entities.intent && nlpData.entities.intent[0].value === 'speech.escape') {
-        this.messagingClient.send('Ok! Let me know if theres something I can answer for you or forward to your local gov', replyTemplates.whatCanIAsk);
+        this.messagingClient.send('Ok! Let me know if there\'s something else I can answer or report for you.', replyTemplates.whatCanIAsk);
         this.delete('action');
         return this.getBaseState();
       }

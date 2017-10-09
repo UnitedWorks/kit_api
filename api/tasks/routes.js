@@ -6,7 +6,7 @@ const router = new Router();
 router.route('/')
   .get((req, res, next) => {
     try {
-      Task.where({ id: req.query.task_id }).fetch({ withRelated: ['organization'] })
+      Task.where({ id: req.query.task_id }).fetch({ withRelated: ['organization', 'shout_outs'] })
         .then((fetched) => {
           if (fetched) {
             const task = Object.assign({}, fetched.toJSON());

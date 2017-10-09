@@ -1,5 +1,6 @@
 import { bookshelf } from '../orm';
-import { Constituent, Representative, Organization } from '../accounts/models';
+import { Constituent, Organization } from '../accounts/models';
+import { ShoutOut } from '../shouts/models';
 
 export const Task = bookshelf.Model.extend({
   tableName: 'tasks',
@@ -10,4 +11,7 @@ export const Task = bookshelf.Model.extend({
   organization: function() {
     return this.belongsTo(Organization, 'organization_id');
   },
+  shout_outs: function() {
+    return this.hasMany(ShoutOut, 'task_id');
+  }
 });
