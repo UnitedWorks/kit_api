@@ -13,14 +13,16 @@ const SO = {};
 // Templates
 const notes = {
   type: 'text',
-  instruction: 'Anything else you want to mention?',
+  instruction: 'What else should we know?',
 };
 const private_property = {
   type: 'boolean',
   instruction: 'Is this located on private property?',
 };
 const location = {
+  type: 'location',
   required: true,
+  instruction: 'Where is this located?',
 };
 const image = {
   // required: true,
@@ -51,6 +53,7 @@ SO['environment_sanitation.tree'] = {
   params: {
     location,
     attachment: image,
+    notes,
   },
 };
 SO['environment_sanitation.tree.inspection'] = SO['environment_sanitation.tree'];
@@ -79,6 +82,7 @@ SO['environment_sanitation.dumping'] = {
       type: 'boolean',
       instruction: 'Is it hazardous?',
     },
+    notes,
   },
 };
 
@@ -153,6 +157,7 @@ SO['property_buildings_homes.housing_violation'] = {
   params: {
     location,
     email,
+    notes,
   },
 };
 SO['property_buildings_homes.housing_violation.heat'] = SO['property_buildings_homes.housing_violation'];
@@ -170,6 +175,7 @@ SO['property_buildings_homes.housing_assistance'] = {
   domain: 'housing_assistance',
   params: {
     public_housing,
+    notes,
   },
 };
 SO['property_buildings_homes.housing_assistance.rental'] = {};
@@ -197,6 +203,7 @@ SO['property_buildings_homes.construction'] = {
     //   validation: value => ['noise', 'off_hours', 'no_permit', 'safety'].includes(value),
     // },
     private_property,
+    notes,
   },
 };
 SO['property_buildings_homes.construction.noise'] = SO['property_buildings_homes.construction'];
@@ -219,6 +226,7 @@ SO['property_buildings_homes.graffiti'] = {
       type: 'boolean',
       instruction: 'Is it offensive?',
     },
+    notes,
   },
 };
 SO['property_buildings_homes.over_growth'] = {
@@ -228,6 +236,7 @@ SO['property_buildings_homes.over_growth'] = {
     location,
     attachment: image,
     vacant_lot,
+    notes,
   },
 };
 SO['property_buildings_homes.blight'] = {
@@ -237,6 +246,7 @@ SO['property_buildings_homes.blight'] = {
     location,
     attachment: image,
     vacant_lot,
+    notes,
   },
 };
 SO['property_buildings_homes.odor'] = {
@@ -244,6 +254,7 @@ SO['property_buildings_homes.odor'] = {
   domain: 'odor',
   params: {
     location,
+    notes,
   },
 };
 SO['property_buildings_homes.odor.gas'] = SO['property_buildings_homes.odor'];
@@ -254,6 +265,7 @@ SO['property_buildings_homes.mold'] = {
   params: {
     location,
     attachment: image,
+    notes,
   },
 };
 SO['property_buildings_homes.eviction'] = {};
@@ -262,6 +274,7 @@ SO['property_buildings_homes.noise'] = {
   domain: 'noise',
   params: {
     location,
+    notes,
   },
 };
 SO['property_buildings_homes.squatting'] = {};
@@ -273,6 +286,7 @@ SO['transportation_streets_sidewalks.street'] = {
   params: {
     location,
     attachment: image,
+    notes,
   },
 };
 SO['transportation_streets_sidewalks.street.pothole'] = SO['transportation_streets_sidewalks.street'];

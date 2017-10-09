@@ -34,34 +34,16 @@ export async function taskNotification(type, contacts, fields) {
   }
 }
 
-export async function createTask(type, params = {}, { contacts = [], organization_id, constituent_id }, meta, options = { notify: true }) {
-  const cleanedMeta = Object.assign({}, meta);
-  if (cleanedMeta.task) delete cleanedMeta.task;
-  if (cleanedMeta.see_click_fix) cleanedMeta.see_click_fix = await new SeeClickFixClient().report(params.location.location, params.details.text)
-    .then(scfIssue => scfIssue.id);
+export async function createTask(params = {}, { organization_id, constituent_id }, managed) {
+  // if (managed.see_click_fix) managed.see_click_fix = await new SeeClickFixClient()
+  //   .report(params.location.location, params.notes.text).then(scfIssue => scfIssue.id);
+  if (managed.see_click_fix) managed.see_click_fix = 9001;
   return Task.forge({
     status: 'pending',
-    type,
-    params,
     constituent_id,
     organization_id,
-    meta: cleanedMeta,
-  }).save(null, { method: 'insert' }).then((newTask) => {
-    if (options.notify) {
-      taskNotification('created', { knowledge_contacts: contacts }, {
-        subject: `🤖 New Task - ${TYPE_MAP[type]}`,
-        params,
-        task_id: newTask.id,
-      });
-    }
-    return Promise.all(contacts.map((contact) => {
-      return knex('tasks_knowledge_contacts')
-        .insert({
-          knowledge_contact_id: contact.id,
-          task_id: newTask.id,
-        });
-    })).then(joins => joins);
-  });
+    managed,
+  }).save(null, { method: 'insert' }).then(newTask => newTask);
 }
 
 export function updateTaskStatus(id, status) {
@@ -72,8 +54,8 @@ export function getConstituentTasks(id) {
   return Task.where({ constituent_id: id }).fetchAll().then((results) => {
     const refreshedTasks = [];
     results.toJSON().forEach((task) => {
-      if (Number(task.meta.see_click_fix) > 0 && task.status === PENDING) {
-        refreshedTasks.push(new SeeClickFixClient().syncTaskStatus(task.meta.see_click_fix).then((status) => {
+      if (Number(task.managed.see_click_fix) > 0 && task.status === PENDING) {
+        refreshedTasks.push(new SeeClickFixClient().syncTaskStatus(task.managed.see_click_fix).then((status) => {
           return { ...task, status };
         }));
       } else {

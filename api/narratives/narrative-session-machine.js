@@ -13,7 +13,7 @@ import PersonalityMachine from './machines/personality';
 import SearchMachine from './machines/search';
 import SetupMachine from './machines/setup';
 import SocialServicesMachine from './machines/social-services';
-import PromptMachine from './machines/prompt';
+import ActionMachine from './machines/action';
 import VotingMachine from './machines/voting';
 
 // Small Talk Machines
@@ -29,7 +29,7 @@ export const stateMachines = {
   eval: EvaluationMachine,
   health: HealthMachine,
   personality: PersonalityMachine,
-  prompt: PromptMachine,
+  action: ActionMachine,
   search: SearchMachine,
   setup: SetupMachine,
   smallTalk: SmallTalkMachine,

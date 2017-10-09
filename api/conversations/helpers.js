@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { NarrativeSession } from '../narratives/models';
 import { MessageEntry } from './models';
-import { broadcastPrompt } from '../prompts/helpers';
 import { geoCheck } from '../narratives/helpers';
 import Clients from './clients';
 import { i18n } from '../narratives/templates/messages';
@@ -40,9 +39,7 @@ export async function broadcastMessage(broadcast, organization) {
 }
 
 export function broadcastHelper(broadcast, organization) {
-  if (broadcast.prompt) {
-    return broadcastPrompt(broadcast.prompt);
-  } else if (broadcast.message) {
+  if (broadcast.message) {
     return broadcastMessage(broadcast, organization);
   }
   throw new Error('Unable to broadcast');

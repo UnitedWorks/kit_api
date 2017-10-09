@@ -3,11 +3,11 @@ import * as env from '../env';
 import { Representative } from '../accounts/models';
 import { KnowledgeAnswer, KnowledgeCategory, KnowledgeFacility, KnowledgeService,
   KnowledgeQuestion, KnowledgeContact, Location } from './models';
-import { upsertPrompt } from '../prompts/helpers';
 import geocoder from '../services/geocoder';
 import EmailService from '../services/email';
 import { runFeed } from '../feeds/helpers';
 import * as KNOWLEDGE_CONST from '../constants/knowledge-base';
+import { ShoutOutTrigger } from '../shouts/models';
 
 export const incrementTimesAsked = (questionId, orgId) => {
   if (!questionId || !orgId) return;
@@ -31,8 +31,7 @@ export async function getAnswers(params = {}, options = {}) {
     withRelated: [{
       answers: q => q.where('organization_id', params.organization_id).whereNotNull('approved_at'),
     }, 'category', 'answers.facility', 'answers.facility.location', 'answers.service',
-      'answers.service.location', 'answers.contact', 'answers.feed', 'answers.media',
-      'answers.prompt', 'answers.prompt.steps'],
+      'answers.service.location', 'answers.contact', 'answers.feed', 'answers.media'],
   }).then(d => d);
   if (!options.returnJSON) return data.get('answers');
   if (data == null) return {};
@@ -60,7 +59,7 @@ export async function getAnswers(params = {}, options = {}) {
           return flattenedArray;
         }),
       media: answerJSON.filter(a => a.media_id).map(a => a.media),
-      prompt: answerJSON.filter(a => a.prompt_id).map(a => a.prompt)[0],
+      actions: answerJSON.filter(a => a.actions).map(a => a.actions)[0],
     };
     const baseTextAnswer = answerJSON.filter(a => a.text != null);
     if (baseTextAnswer.length > 0) {
@@ -87,7 +86,8 @@ export async function searchKnowledgeEntities(params = {}, options = { returnJSO
   return options.returnJSON ? JSON.parse(JSON.stringify(results)) : results;
 }
 
-export const getQuestions = (params = {}) => {
+export const getQuestions = (params = {}, options = {}) => {
+  // Get Questions with Answers
   return KnowledgeQuestion.query((qb) => {
     qb.select(['knowledge_questions.id', 'knowledge_questions.question', 'knowledge_questions.label',
       'knowledge_questions.knowledge_category_id', 'knowledge_question_stats.times_asked'])
@@ -102,6 +102,27 @@ export const getQuestions = (params = {}) => {
       category: q => q,
       answers: q => q.where('organization_id', params.organization_id),
     },
+  }).then((questions) => {
+    // Append Trigger Configurations for Shoutouts
+    return ShoutOutTrigger.where({ organization_id: params.organization_id }).fetchAll()
+      .then((data) => {
+        const triggers = data.toJSON();
+        // Check if any triggers have been set. If none, just return questions
+        if (triggers.length === 0) return data.toJSON();
+        // Otherwise load up configs
+        return questions.toJSON().map((question) => {
+          if (question.answers) {
+            question.answers.map((answer) => {
+              if (answer.actions && answer.actions.shout_out) {
+                triggers.forEach((t) => {
+                  if (t.label === question.label) answer.actions.config = t.config;
+                });
+              }
+            });
+          }
+          return question;
+        });
+      });
   });
 };
 
@@ -233,7 +254,7 @@ export const deleteAnswer = (answerId) => {
 export const updateAnswer = (answer, options) => {
   if (((typeof answer.text === 'string' && answer.text.length === 0) || !answer.text)
     && !answer.knowledge_contact_id && !answer.knowledge_event_id && !answer.knowledge_facility_id
-    && !answer.knowledge_service_id && !answer.prompt) {
+    && !answer.knowledge_service_id) {
     return deleteAnswer(answer.id);
   }
   return KnowledgeAnswer.forge(answer).save(null, { method: 'update' })
@@ -559,40 +580,46 @@ export async function answerQuestion(organization, question, answers) {
   const answerInserts = [];
   const idHash = {};
   answers.forEach((answer) => {
-    // If non-prompt answer
-    if (!Object.keys(answer).includes('prompt')) {
-      // Make sure answer has valid values
-      if (Object.values(answer).length > 0 && ((answer.text && answer.text.length > 0) || !Object.keys(answer).includes('text'))) {
-        // Check each insert for duplicate
-        let answerDuplicate = false;
-        if (!idHash[Object.keys(answer)[0]]) {
-          idHash[Object.keys(answer)[0]] = [answer[Object.keys(answer)[0]]];
-        } else if (idHash[Object.keys(answer)[0]].includes(answer[Object.keys(answer)[0]])) {
-          answerDuplicate = true;
-        } else {
-          idHash[Object.keys(answer)[0]].push(answer[Object.keys(answer)[0]]);
-        }
-        if (!answerDuplicate) {
-          answerInserts.push(knex('knowledge_answers').insert({
-            ...answer,
-            organization_id: organization.id,
-            question_id: question.id,
-            approved_at: null,
-          }));
-        }
-      }
-    // If prompt answer
-    } else {
-      answerInserts.push(upsertPrompt({
-        ...answer.prompt,
-        name: answer.prompt.name || `${question.question} - ${Date(Date.now()).toString()}`,
-        organization_id: organization.id,
-      }).then(prompt => knex('knowledge_answers').insert({
-        prompt_id: prompt.id,
+    // Make sure answer has valid values
+    if (!Object.values(answer).length > 0) return;
+    // If Action
+    if (answer.actions) {
+      const cleanedActions = Object.assign({}, answer.actions);
+      const cleanedConfig = answer.actions.config;
+      delete cleanedActions.config;
+      answerInserts.push(knex('knowledge_answers').insert({
         organization_id: organization.id,
         question_id: question.id,
         approved_at: null,
-      })));
+        actions: cleanedActions,
+      }));
+      if (answer.actions.shout_out && cleanedConfig) {
+        answerInserts.push(knex('shout_out_triggers').where({ organization_id: organization.id, label: cleanedActions.shout_out }).del()
+          .then(() => knex('shout_out_triggers').insert({
+            organization_id: organization.id,
+            label: cleanedActions.shout_out,
+            config: cleanedConfig,
+          })));
+      }
+    // Otherwise
+    } else if ((answer.text && answer.text.length > 0) || !Object.keys(answer).includes('text')) {
+      // Check each insert for duplicate entity IDs
+      let answerDuplicate = false;
+      if (!idHash[Object.keys(answer)[0]]) {
+        idHash[Object.keys(answer)[0]] = [answer[Object.keys(answer)[0]]];
+      } else if (idHash[Object.keys(answer)[0]].includes(answer[Object.keys(answer)[0]])) {
+        answerDuplicate = true;
+      } else {
+        idHash[Object.keys(answer)[0]].push(answer[Object.keys(answer)[0]]);
+      }
+      if (!answerDuplicate) {
+        answerInserts.push(knex('knowledge_answers').insert({
+          ...answer,
+          organization_id: organization.id,
+          question_id: question.id,
+          approved_at: null,
+        }));
+      }
     }
   });
   // Send emails about new answers to admins

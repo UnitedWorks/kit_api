@@ -38,17 +38,10 @@ export const KnowledgeContact = bookshelf.Model.extend({
   },
 });
 
-export const KnowledgeFacilityType = bookshelf.Model.extend({
-  tableName: 'knowledge_facility_types',
-});
-
 export const KnowledgeFacility = bookshelf.Model.extend({
   tableName: 'knowledge_facilitys',
   category() {
     return this.belongsTo(KnowledgeCategory, 'knowledge_category_id');
-  },
-  type() {
-    return this.belongsTo(KnowledgeFacilityType, 'type_id');
   },
   location() {
     return this.belongsTo(Location, 'location_id');

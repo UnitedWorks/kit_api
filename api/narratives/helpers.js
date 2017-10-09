@@ -11,6 +11,7 @@ import Mixpanel from '../services/event-tracking';
 import * as env from '../env';
 import { shuffle } from '../utils';
 import { logger } from '../logger';
+import shoutOutLogic from '../shouts/logic';
 
 /* TODO(nicksahler): Declare in machine, automatically route */
 export function getBaseState(providerName, section) {
@@ -67,7 +68,7 @@ export async function fetchAnswers(intent, session) {
     session.messagingClient.addToQuene(randomPick(altQuestions, 4).map(a => a.question).join(' '));
     return session.messagingClient.runQuene().then(() => session.getBaseState());
   // If no answers, run fallback
-  } else if (!answers || (!answers.text && !answers.prompt && answers.facilities.length === 0 &&
+  } else if (!answers || (!answers.text && !answers.actions && answers.facilities.length === 0 &&
     answers.services.length === 0 && answers.contacts.length === 0 && answers.feeds.length === 0)) {
     const fallbackData = await getCategoryFallback([intent.split('.')[0]], session.get('organization').id).then(fbd => fbd);
     // See if we have fallback contacts
@@ -177,15 +178,15 @@ export async function fetchAnswers(intent, session) {
     session.messagingClient.addToQuene('There doesn\'t seem to an available service or facility for that date/time.');
   }
   return session.messagingClient.runQuene().then(() => {
-    // If we have a prompt, prompt user about it
-    if (answers.prompt && answers.prompt.steps.length > 0) {
-      const promptObj = {
-        ...answers.prompt,
-        name: answers.prompt.name || question.question,
-      };
-      if (answers.category) promptObj.category = answers.category;
-      session.set('prompt', promptObj);
-      return 'prompt.waiting_for_answer';
+    // If we have a shout out, run it
+    if (answers.actions && answers.actions.shout_out) {
+      const actionObj = shoutOutLogic.all[answers.actions.shout_out];
+      // If action matches, run it
+      if (actionObj) {
+        actionObj.shout_out = answers.actions.shout_out;
+        session.set('action', actionObj);
+        return 'action.waiting_for_response';
+      }
     }
     // Otherwise end user back at start
     return session.getBaseState();

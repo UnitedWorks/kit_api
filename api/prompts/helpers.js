@@ -102,39 +102,6 @@ export function deletePrompt({ id }) {
     }).catch(err => err);
 }
 
-export function broadcastPrompt(prompt = {}) {
-  if (!prompt.id) throw new Error('No Prompt ID provided');
-  return PromptModels.Prompt.where({ id: prompt.id }).fetch({ withRelated: ['steps'] })
-    .then((foundPrompt) => {
-      return NarrativeSession.where({ organization_id: foundPrompt.get('organization_id') })
-        .fetchAll({ withRelated: ['constituent', 'constituent.facebookEntry', 'constituent.smsEntry'] })
-        .then((sessions) => {
-          const message = `Hey there! Do you have a moment to help me with a quick prompt, "${foundPrompt.get('name')}"?`;
-          sessions.models.forEach((session) => {
-            // Set state to waiting for acceptance
-            session.save({
-              state_machine_name: 'prompt',
-              state_machine_current_state: 'waiting_for_acceptance',
-              data_store: Object.assign(session.get('data_store'), {
-                prompt: foundPrompt.toJSON(),
-              }),
-            }).then(() => {
-              // Send Message
-              if (session.related('constituent').get('facebook_id')) {
-                new Clients.FacebookMessengerClient({
-                  constituent: session.related('constituent').toJSON(),
-                }).send(message, sureNoThanksTemplates);
-              } else if (session.related('constituent').get('phone')) {
-                new Clients.TwilioSMSClient({
-                  constituent: session.related('constituent').toJSON(),
-                }).send(message, sureNoThanksTemplates);
-              }
-            });
-          });
-        }).catch(err => err);
-    }).catch(err => err);
-}
-
 export function savePromptResponses(steps, constituent) {
   const responsesToForge = [];
   steps.forEach((step) => {
