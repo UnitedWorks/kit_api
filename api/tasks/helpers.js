@@ -21,7 +21,7 @@ export async function taskNotification(type, contacts, fields) {
       emailSubject = '🤖 New Task!';
     }
     // Message
-    let emailMessage = `A new task has been made! <a href="${env.getDashboardRoot()}/interfaces/tasks/${fields.task_id}">View Online</a> <br/><br/>`;
+    let emailMessage = `A new task has been made! <a href="${env.getDashboardRoot()}/tasks/${fields.task_id}">View Online</a> <br/><br/>`;
     Object.keys(fields.params).forEach((key) => {
       if (fields.params[key].text) {
         emailMessage = emailMessage.concat(`<b>${key}</b> - ${fields.params[key].text}<br/>`);
@@ -29,7 +29,7 @@ export async function taskNotification(type, contacts, fields) {
         emailMessage = emailMessage.concat(`<b>${key}</b> - ${fields.params[key].location.display_name}<br/>`);
       }
     });
-    emailMessage = emailMessage.concat(`<br/><br/>Is it finished? <a href="${env.getDashboardRoot()}/interfaces/tasks/${fields.task_id}">Click here to mark it "Completed"</a>`);
+    emailMessage = emailMessage.concat(`<br/><br/>Is it finished? <a href="${env.getDashboardRoot()}/tasks/${fields.task_id}">Click here to mark it "Completed"</a>`);
     new EmailService().send(emailSubject, emailMessage, knowledgeContacts, {}, { email: 'task@email.kit.community', name: 'Hey Mayor!' });
   }
 }

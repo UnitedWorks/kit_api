@@ -87,6 +87,7 @@ export async function searchKnowledgeEntities(params = {}, options = { returnJSO
 }
 
 export const getQuestions = (params = {}, options = {}) => {
+  if (!params.organization_id) throw new Error('No Organization ID Provided');
   // Get Questions with Answers
   return KnowledgeQuestion.query((qb) => {
     qb.select(['knowledge_questions.id', 'knowledge_questions.question', 'knowledge_questions.label',
@@ -108,7 +109,7 @@ export const getQuestions = (params = {}, options = {}) => {
       .then((data) => {
         const triggers = data.toJSON();
         // Check if any triggers have been set. If none, just return questions
-        if (triggers.length === 0) return data.toJSON();
+        if (triggers.length === 0) return questions.toJSON();
         // Otherwise load up configs
         return questions.toJSON().map((question) => {
           if (question.answers) {
@@ -627,7 +628,7 @@ export async function answerQuestion(organization, question, answers) {
     .then(r => r.toJSON()).filter(r => r.email)
     .map(r => ({ email: r.email, name: r.name }));
   new EmailService().send(`🤖 Answer Needs Approval - "${question.question}"`,
-    `An employee has saved an answer for "${question.question}"! Please <a href="${env.getDashboardRoot()}/interfaces/answer?organization_id=${organization.id}&question_id=${question.id}" target="_blank">go approve it</a> so we can send it to constituents.<br/><br/>If you have questions, send <a href="mailto:mark@mayor.chat">us</a> an email!`,
+    `An employee has saved an answer for "${question.question}"! Please <a href="${env.getDashboardRoot()}/answer?organization_id=${organization.id}&question_id=${question.id}" target="_blank">go approve it</a> so we can send it to constituents.<br/><br/>If you have questions, send <a href="mailto:mark@mayor.chat">us</a> an email!`,
     approvalReps,
   );
   // Conclude

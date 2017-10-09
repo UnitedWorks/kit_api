@@ -35,7 +35,7 @@ async function twitterFeeds() {
   Object.keys(alertDeck).forEach((key) => {
     getCategoryFallback([KNOWLEDGE_CONST.GENERAL_LABEL], key).then((fb) => {
       new EmailService().send('🤖 Service Change Watcher',
-        `Some recent public updates mentioned cancellations/rescheduling. Please review <a href="${env.getDashboardRoot()}/interfaces/faq?organization_id=${key}" target="_blank">common service answers</a> or <a href="${env.getDashboardRoot()}/interfaces/broadcasting?organization_id=${key}" target="_blank">broadcast a message</a>:<br><br>${alertDeck[key].map(u => `<b>${u.text}</b> (<a href="${u.url}" target="_blank">${u.url})</a><br>`)}`,
+        `Some recent public updates mentioned cancellations/rescheduling. Please review <a href="${env.getDashboardRoot()}/faq?organization_id=${key}" target="_blank">common service answers</a> or <a href="${env.getDashboardRoot()}/broadcasting?organization_id=${key}" target="_blank">broadcast a message</a>:<br><br>${alertDeck[key].map(u => `<b>${u.text}</b> (<a href="${u.url}" target="_blank">${u.url})</a><br>`)}`,
         fb.representatives.map(r => ({ email: r.email, name: r.name })),
       );
     }).catch(err => logger.error(err));
