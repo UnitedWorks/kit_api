@@ -1,10 +1,11 @@
-import { knex } from '../orm';
-import { Task } from './models';
+import moment from 'moment';
 import * as env from '../env';
+import { Task } from './models';
 import { KnowledgeContact } from '../knowledge-base/models';
 import SeeClickFixClient from './clients/see-click-fix-client';
-import { TYPE_MAP, PENDING } from '../constants/tasks';
+import * as TASK_CONST from '../constants/tasks';
 import EmailService from '../services/email';
+import { messageConstituent } from '../conversations/helpers';
 
 export async function taskNotification(type, contacts, fields) {
   // Reformat Contacts for Sending
@@ -45,15 +46,26 @@ export async function createTask(params = {}, { organization_id, constituent_id 
   }).save(null, { method: 'insert' }).then(newTask => newTask);
 }
 
-export function updateTaskStatus(id, status) {
-  return Task.where({ id }).save({ status }, { method: 'update', patch: true });
+export function updateTaskStatus(id, status, config = { notify: true }) {
+  return Task.where({ id }).save({ status }, { method: 'update', patch: true }).then(() => {
+    return Task.where({ id }).fetch({ withRelated: ['shout_outs'] }).then((refreshedTask) => {
+      // If completed, notify Constituents Who Had Associated Shout Outs
+      if (config.notify && status === TASK_CONST.COMPLETED) {
+        refreshedTask.toJSON().shout_outs.forEach((shout) => {
+          messageConstituent(shout.constituent_id, `Your local government resolved an issue you raised on ${moment(shout.created_at).format('ddd, MMM Do YYYY')} (${shout.label.replace(/_/g, ' ').replace(/\./g, ' - ')})!`);
+        });
+      }
+      // Return Task
+      return refreshedTask.toJSON();
+    });
+  });
 }
 
 export function getConstituentTasks(id) {
   return Task.where({ constituent_id: id }).fetchAll().then((results) => {
     const refreshedTasks = [];
     results.toJSON().forEach((task) => {
-      if (Number(task.managed.see_click_fix) > 0 && task.status === PENDING) {
+      if (Number(task.managed.see_click_fix) > 0 && task.status === TASK_CONST.PENDING) {
         refreshedTasks.push(new SeeClickFixClient().syncTaskStatus(task.managed.see_click_fix).then((status) => {
           return { ...task, status };
         }));

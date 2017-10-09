@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { Constituent } from '../accounts/models';
 import { NarrativeSession } from '../narratives/models';
 import { MessageEntry } from './models';
 import { geoCheck } from '../narratives/helpers';
@@ -43,6 +44,12 @@ export function broadcastHelper(broadcast, organization) {
     return broadcastMessage(broadcast, organization);
   }
   throw new Error('Unable to broadcast');
+}
+
+export async function messageConstituent(constituentId, message) {
+  const con = await Constituent.where({ id: constituentId }).fetch({ withRelated: ['facebookEntry', 'smsEntry'] }).then(c => c.toJSON());
+  const client = getPreferredClient(con);
+  client.send(message);
 }
 
 export function createEntry(entry, organization, options = {}) {

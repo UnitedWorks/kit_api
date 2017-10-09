@@ -10,7 +10,6 @@ import * as elementTemplates from '../templates/elements';
 import * as replyTemplates from '../templates/quick-replies';
 import { i18n } from '../templates/messages';
 import * as ATTRIBUTES from '../../constants/attributes';
-import { TYPE_MAP } from '../../constants/tasks';
 import * as KNOWLEDGE_CONST from '../../constants/knowledge-base';
 
 export default {

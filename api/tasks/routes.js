@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { Task } from './models';
+import { updateTaskStatus } from './helpers';
 
 const router = new Router();
 
@@ -25,7 +26,7 @@ router.route('/')
     try {
       Task.where({ id: req.body.id }).save(req.body, { method: 'update', patch: true })
         .then((updated) => {
-          updated.refresh().then((refreshedTask) => {
+          updated.refresh({ withRelated: ['shout_outs'] }).then((refreshedTask) => {
             res.status(200).send({ task: refreshedTask.toJSON() });
           });
         }).catch(err => next(err));
@@ -33,5 +34,15 @@ router.route('/')
       next(e);
     }
   });
+
+router.post('/status', (req, res, next) => {
+  try {
+    updateTaskStatus(req.body.id, req.body.status).then((task) => {
+      res.status(200).send({ task });
+    }).catch(err => next(err));
+  } catch (e) {
+    next(e);
+  }
+});
 
 module.exports = router;
