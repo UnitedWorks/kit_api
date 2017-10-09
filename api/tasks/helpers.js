@@ -35,9 +35,8 @@ export async function taskNotification(type, contacts, fields) {
 }
 
 export async function createTask(params = {}, { organization_id, constituent_id }, managed) {
-  // if (managed.see_click_fix) managed.see_click_fix = await new SeeClickFixClient()
-  //   .report(params.location.location, params.notes.text).then(scfIssue => scfIssue.id);
-  if (managed.see_click_fix) managed.see_click_fix = 9001;
+  if (managed.see_click_fix) managed.see_click_fix = await new SeeClickFixClient()
+    .report(params.location.location, params.notes.text).then(scfIssue => scfIssue.id);
   return Task.forge({
     status: 'pending',
     constituent_id,

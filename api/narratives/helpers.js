@@ -12,6 +12,7 @@ import * as env from '../env';
 import { shuffle } from '../utils';
 import { logger } from '../logger';
 import shoutOutLogic from '../shouts/logic';
+import { paramsToPromptSteps } from '../shouts/helpers';
 
 /* TODO(nicksahler): Declare in machine, automatically route */
 export function getBaseState(providerName, section) {
@@ -181,6 +182,8 @@ export async function fetchAnswers(intent, session) {
     // If we have a shout out, run it
     if (answers.actions && answers.actions.shout_out) {
       const actionObj = shoutOutLogic.all[answers.actions.shout_out];
+      // Concert params to an array. Order isnt guarenteed to be preserved on obj
+      actionObj.params = paramsToPromptSteps(actionObj.params);
       // If action matches, run it
       if (actionObj) {
         actionObj.shout_out = answers.actions.shout_out;

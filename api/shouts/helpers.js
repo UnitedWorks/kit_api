@@ -24,3 +24,17 @@ export async function createShoutOut(label, params, config = {}) {
   }
   return newShoutOut;
 }
+
+export function paramsToPromptSteps(params) {
+  const stepsArray = [];
+  Object.keys(params).forEach((param) => {
+    stepsArray.push({ ...params[param], key: param });
+  });
+  return stepsArray;
+}
+
+export function promptStepsToParamValues(steps) {
+  const paramsObj = {};
+  steps.forEach(step => (paramsObj[step.key] = step.value));
+  return paramsObj;
+}
