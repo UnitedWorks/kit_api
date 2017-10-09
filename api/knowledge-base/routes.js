@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { logger } from '../logger';
-import { KnowledgeEvent, KnowledgeFacility, KnowledgeFacilityType, KnowledgeService } from './models';
+import { KnowledgeEvent, KnowledgeFacility, KnowledgeService } from './models';
 import { getAnswers, getCategories, getContacts, createContact, updateContact, deleteContact,
   getQuestions, makeAnswer, updateAnswer, deleteAnswer, deleteService, createFacility,
   updateFacility, deleteFacility, createService, updateService,
@@ -42,17 +42,6 @@ router.post('/categories/representatives', requireAuth, (req, res, next) => {
 });
 
 /**
- * Get facility types
- * @return {Array}
- */
-router.get('/facility-types', (req, res) => {
-  logger.info('Pinged: knowledge-base/facility-types');
-  KnowledgeFacilityType.fetchAll().then((typesArray) => {
-    res.status(200).send({ types: typesArray });
-  });
-});
-
-/**
  * Facilities Endpoint
  */
 router.route('/facilities')
@@ -63,7 +52,7 @@ router.route('/facilities')
   .get((req, res) => {
     const whereFilters = {};
     if (req.query.organization_id) whereFilters.organization_id = req.query.organization_id;
-    KnowledgeFacility.where(whereFilters).fetchAll({ withRelated: ['category', 'location', 'services', 'type'] })
+    KnowledgeFacility.where(whereFilters).fetchAll({ withRelated: ['category', 'location', 'services'] })
       .then((facilityArray) => {
         res.status(200).send({ facilities: facilityArray });
       });

@@ -146,7 +146,6 @@ export default {
 
           'education_employment.employment_job_training': 'employment.waiting_job_training',
 
-          'interaction.tasks.create': 'prompt.loading_prompt',
           'interaction.tasks.get': 'get_tasks',
 
           'search.knowledge_entity': 'search.knowledge_entity',
@@ -202,7 +201,7 @@ export default {
     return getConstituentTasks(this.snapshot.constituent.id).then((tasks) => {
       if (tasks.length > 0) {
         tasks.forEach((task) => {
-          const message = `#${task.id} - ${TYPE_MAP[task.type]} (${task.status})`;
+          const message = `#${task.id} - ${task.status}`;
           this.messagingClient.addToQuene(message);
         });
         return this.messagingClient.runQuene().then(() => 'start');

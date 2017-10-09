@@ -238,6 +238,37 @@ const updateOperations = [
   {
     delete: 'public_safety_law.document_marriage_union_license_timeline',
   },
+  // Shout Out Replacements
+  { delete: 'environment_sanitation.park_reservations' },
+  { delete: 'environment_sanitation.environment_waterway.report' },
+  { delete: 'health_medicine.food_conditions.report' },
+  { delete: 'health_medicine.animal_dead.report' },
+  { delete: 'property_buildings_homes.construction_noise.report' },
+  { delete: 'property_buildings_homes.illegal_driveway.report' },
+  { delete: 'property_buildings_homes.home_rental_violation.report' },
+  { delete: 'property_buildings_homes.home_sewage_backup.report' },
+  { delete: 'property_buildings_homes.property_mold' },
+  { delete: 'property_buildings_homes.neighbor_noise.report' },
+  { delete: 'property_buildings_homes.property_alarm.report' },
+  { delete: 'property_buildings_homes.odor.report' },
+  { delete: 'property_buildings_homes.overgrowth.report' },
+  { delete: 'property_buildings_homes.property_water_pressure.report' },
+  { delete: 'property_buildings_homes.property_maintenance.report' },
+  { delete: 'property_buildings_homes.squatting.report' },
+  { delete: 'transportation_streets_sidewalks.roadwork_noise.report' },
+  { delete: 'transportation_streets_sidewalks.parking.report' },
+  { delete: 'transportation_streets_sidewalks.street_sign_broken.report' },
+  { delete: 'transportation_streets_sidewalks.street_sign.request' },
+  { delete: 'transportation_streets_sidewalks.street_sign_change.report' },
+  { delete: 'transportation_streets_sidewalks.bike_lane.request' },
+  { delete: 'transportation_streets_sidewalks.street_light.report' },
+  { delete: 'transportation_streets_sidewalks.pothole.report' },
+  { delete: 'transportation_streets_sidewalks.vehicle_wrecklessness.report' },
+  { delete: 'transportation_streets_sidewalks.parking_meter.report' },
+  { delete: 'transportation_streets_sidewalks.sidewalk.report' },
+  { delete: 'transportation_streets_sidewalks.blocked_driveway.report' },
+  { delete: 'transportation_streets_sidewalks.blocked_street.report' },
+  { delete: 'transportation_streets_sidewalks.curb_cut.report' },
 ].map((modification) => {
   // Simply update the label
   if (modification.from && modification.to) {
@@ -249,26 +280,21 @@ const updateOperations = [
   } else if (modification.delete) {
     return knex('knowledge_questions').select()
       .where({ label: modification.delete })
-      .then(model => Promise.all([
-        () => {
-            if (model && model.id) {
-              return knex.select().where({ question_id: model.id }).from('knowledge_question_stats').del()
-                .then(d => d)
-              }
-        },
-        () => {
-          if (model && model.id) {
-            return knex.select().where({ question_id: model.id }).from('knowledge_answers').del()
-              .then(d => d)
-            }
-        },
-      ]).then(() => {
-        return knex.select()
-          .where({ label: modification.delete })
-          .from('knowledge_questions')
-          .del()
-          .then(d => d);
-      }));
+      .then((model) => {
+        if (model && model[0] && model[0].id) {
+          const modelId = model[0].id;
+          knex.select('*').where({ question_id: modelId }).from('knowledge_question_stats').del()
+            .then(d => d);
+          return knex.select('*').where({ question_id: modelId }).from('knowledge_answers').del()
+            .then(() => {
+              return knex.select()
+                .where({ label: modification.delete })
+                .from('knowledge_questions')
+                .del()
+                .then(d => d);
+            });
+        }
+      });
   }
 });
 

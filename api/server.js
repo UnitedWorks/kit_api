@@ -52,6 +52,7 @@ app.use('/integrations', require('./integrations/routes'));
 app.use('/knowledge', require('./knowledge-base/routes'));
 app.use('/media', require('./media/routes'));
 app.use('/prompts', require('./prompts/routes'));
+app.use('/shouts', require('./shouts/routes'));
 app.use('/tasks', require('./tasks/routes'));
 app.use('/feeds', require('./feeds/routes'));
 

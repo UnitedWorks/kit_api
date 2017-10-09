@@ -1,37 +1,5 @@
 module.exports = [
   {
-    "text": "How do I report noise from after-hours construction?",
-    "intent": "property_buildings_homes.construction_noise.report",
-    "entities": [
-      {
-        "start": 39,
-        "end": 51,
-        "value": "property_buildings_homes",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "This construction is noisy and it's late",
-    "intent": "property_buildings_homes.construction_noise.report",
-    "entities": []
-  },
-  {
-    "text": "There is really loud construction going on",
-    "intent": "property_buildings_homes.construction_noise.report",
-    "entities": []
-  },
-  {
-    "text": "I can't do anything because this construction is so loud",
-    "intent": "property_buildings_homes.construction_noise.report",
-    "entities": []
-  },
-  {
-    "text": "How do I report noisy construction?",
-    "intent": "property_buildings_homes.construction_noise.report",
-    "entities": []
-  },
-  {
     "text": "Can I smoke in public?",
     "intent": "property_buildings_homes.property_smoking_public",
     "entities": []
@@ -401,21 +369,6 @@ module.exports = [
     ]
   },
   {
-    "text": "How do I report an illegal renting?",
-    "intent": "property_buildings_homes.home_rental_violation.report",
-    "entities": []
-  },
-  {
-    "text": "How do I report an illegal rental of living space?",
-    "intent": "property_buildings_homes.home_rental_violation.report",
-    "entities": []
-  },
-  {
-    "text": "There are more people than allowed living in a house",
-    "intent": "property_buildings_homes.home_rental_violation.report",
-    "entities": []
-  },
-  {
     "text": "When selling a home, what forms or requirements are there?",
     "intent": "property_buildings_homes.home_selling_requirements",
     "entities": []
@@ -428,23 +381,6 @@ module.exports = [
   {
     "text": "What is required to sell a apartment?",
     "intent": "property_buildings_homes.home_selling_requirements",
-    "entities": []
-  },
-  {
-    "text": "What do I do if sewage is backing up in my basement?",
-    "intent": "property_buildings_homes.home_sewage_backup.report",
-    "entities": [
-      {
-        "start": 43,
-        "end": 51,
-        "value": "property_buildings_homes",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "Sewage is backing up into my basement",
-    "intent": "property_buildings_homes.home_sewage_backup.report",
     "entities": []
   },
   {
@@ -990,21 +926,6 @@ module.exports = [
     "entities": []
   },
   {
-    "text": "There's mold growing in my house",
-    "intent": "property_buildings_homes.property_mold",
-    "entities": []
-  },
-  {
-    "text": "How do I report mold?",
-    "intent": "property_buildings_homes.property_mold",
-    "entities": []
-  },
-  {
-    "text": "How do I report mold in my apartment?",
-    "intent": "property_buildings_homes.property_mold",
-    "entities": []
-  },
-  {
     "text": "I'd like to remove an old oil tank and install a new one. What do I need?",
     "intent": "property_buildings_homes.property_oil_tank_replacement",
     "entities": []
@@ -1231,21 +1152,6 @@ module.exports = [
     "entities": []
   },
   {
-    "text": "How do I report low water pressure in my apartment?",
-    "intent": "property_buildings_homes.property_water_pressure.report",
-    "entities": []
-  },
-  {
-    "text": "I think my water pressure is way too low. What do I do?",
-    "intent": "property_buildings_homes.property_water_pressure.report",
-    "entities": []
-  },
-  {
-    "text": "The water pressure seems low",
-    "intent": "property_buildings_homes.property_water_pressure.report",
-    "entities": []
-  },
-  {
     "text": "Who provides us with water?",
     "intent": "property_buildings_homes.property_water_supplier",
     "entities": []
@@ -1271,155 +1177,6 @@ module.exports = [
     "entities": []
   },
   {
-    "text": "How do I report an illegal driveway?",
-    "intent": "property_buildings_homes.illegal_driveway.report",
-    "entities": []
-  },
-  {
-    "text": "I want to report an illegal driveway",
-    "intent": "property_buildings_homes.illegal_driveway.report",
-    "entities": []
-  },
-  {
-    "text": "I dont think this driveway should be allowed",
-    "intent": "property_buildings_homes.illegal_driveway.report",
-    "entities": []
-  },
-  {
-    "text": "Is this driveway allowed?",
-    "intent": "property_buildings_homes.illegal_driveway.report",
-    "entities": []
-  },
-  {
-    "text": "Who should I call about graffiti?",
-    "intent": "property_buildings_homes.graffiti.report",
-    "entities": []
-  },
-  {
-    "text": "There's some graffiti on this wall",
-    "intent": "property_buildings_homes.graffiti.report",
-    "entities": [
-      {
-        "start": 13,
-        "end": 21,
-        "value": "property_buildings_homes",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "How do I report graffiti on a building?",
-    "intent": "property_buildings_homes.graffiti.report",
-    "entities": []
-  },
-  {
-    "text": "I found graffiti",
-    "intent": "property_buildings_homes.graffiti.report",
-    "entities": []
-  },
-  {
-    "text": "How do I report a noisy neighbor?",
-    "intent": "property_buildings_homes.neighbor_noise.report",
-    "entities": []
-  },
-  {
-    "text": "What can I do about noisy neighbors?",
-    "intent": "property_buildings_homes.neighbor_noise.report",
-    "entities": []
-  },
-  {
-    "text": "My neighbor is being obnoxious",
-    "intent": "property_buildings_homes.neighbor_noise.report",
-    "entities": []
-  },
-  {
-    "text": "My neighbors party is disturbing",
-    "intent": "property_buildings_homes.neighbor_noise.report",
-    "entities": []
-  },
-  {
-    "text": "How do I report a noisy alarm?",
-    "intent": "property_buildings_homes.property_alarm.report",
-    "entities": []
-  },
-  {
-    "text": "There is an alarm that wont stop",
-    "intent": "property_buildings_homes.property_alarm.report",
-    "entities": []
-  },
-  {
-    "text": "My buildings alarm wont stop",
-    "intent": "property_buildings_homes.property_alarm.report",
-    "entities": []
-  },
-  {
-    "text": "An alarm keeps ringing",
-    "intent": "property_buildings_homes.property_alarm.report",
-    "entities": []
-  },
-  {
-    "text": "How do I report a gas odor or leak?",
-    "intent": "property_buildings_homes.odor.report",
-    "entities": []
-  },
-  {
-    "text": "I smell something weird",
-    "intent": "property_buildings_homes.odor.report",
-    "entities": []
-  },
-  {
-    "text": "Theres a gas leak",
-    "intent": "property_buildings_homes.odor.report",
-    "entities": []
-  },
-  {
-    "text": "I think I smell gas leaking",
-    "intent": "property_buildings_homes.odor.report",
-    "entities": []
-  },
-  {
-    "text": "How do I report overgrown grass or weeds on private property?",
-    "intent": "property_buildings_homes.overgrowth.report",
-    "entities": []
-  },
-  {
-    "text": "My neighbor's lawn is overgrown",
-    "intent": "property_buildings_homes.overgrowth.report",
-    "entities": [
-      {
-        "start": 14,
-        "end": 18,
-        "value": "property_buildings_homes",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "My neighbors grass and weeds are out of control",
-    "intent": "property_buildings_homes.overgrowth.report",
-    "entities": []
-  },
-  {
-    "text": "How do I get my neighbor to take care of their grass and foilage",
-    "intent": "property_buildings_homes.overgrowth.report",
-    "entities": []
-  },
-  {
-    "text": "How do I report a maintenance problem in my apartment building?",
-    "intent": "property_buildings_homes.property_maintenance.report",
-    "entities": []
-  },
-  {
-    "text": "My apartment building is falling apart",
-    "intent": "property_buildings_homes.property_maintenance.report",
-    "entities": []
-  },
-  {
-    "text": "The landlord isn't taking care of the apartment building",
-    "intent": "property_buildings_homes.property_maintenance.report",
-    "entities": []
-  },
-  {
     "text": "How do I report a maintenance problem in my NYCHA building?",
     "intent": "property_buildings_homes.public_housing_maintenance.report",
     "entities": []
@@ -1432,40 +1189,6 @@ module.exports = [
   {
     "text": "My city apartment is falling apart",
     "intent": "property_buildings_homes.public_housing_maintenance.report",
-    "entities": []
-  },
-  {
-    "text": "How do I report someone living in a vacant building?",
-    "intent": "property_buildings_homes.squatting.report",
-    "entities": [
-      {
-        "start": 36,
-        "end": 42,
-        "value": "property_buildings_homes",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "Someone is squatting in my building",
-    "intent": "property_buildings_homes.squatting.report",
-    "entities": [
-      {
-        "start": 11,
-        "end": 20,
-        "value": "property_buildings_homes",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "What do I do about squatters?",
-    "intent": "property_buildings_homes.squatting.report",
-    "entities": []
-  },
-  {
-    "text": "There are a bunch of squatters next door",
-    "intent": "property_buildings_homes.squatting.report",
     "entities": []
   },
   {

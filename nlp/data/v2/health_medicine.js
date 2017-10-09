@@ -63,49 +63,6 @@ module.exports = [
     ]
   },
   {
-    "text": "How do I report a dead animal on the road?",
-    "intent": "health_medicine.animal_dead.report",
-    "entities": []
-  },
-  {
-    "text": "I found a dead animal",
-    "intent": "health_medicine.animal_dead.report",
-    "entities": []
-  },
-  {
-    "text": "Theres a dead deer on the side of the road",
-    "intent": "health_medicine.animal_dead.report",
-    "entities": []
-  },
-  {
-    "text": "I ate a resturaunt and got sick. What should I do?",
-    "intent": "health_medicine.food_conditions.report",
-    "entities": []
-  },
-  {
-    "text": "How do I report an unsafe condition in a restaurant?",
-    "intent": "health_medicine.food_conditions.report",
-    "entities": []
-  },
-  {
-    "text": "I just got food poisioning from a resturaunt",
-    "intent": "health_medicine.food_conditions.report",
-    "entities": [
-      {
-        "start": 11,
-        "end": 26,
-        "value": "health_medicine",
-        "entity": "category_keywords"
-      },
-      {
-        "start": 34,
-        "end": 44,
-        "value": "business_finance",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
     "text": "What vaccines should a child get?",
     "intent": "health_medicine.vacination_children",
     "entities": [
