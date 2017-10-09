@@ -3,7 +3,7 @@ import { createTask } from '../tasks/helpers';
 
 export async function createShoutOut(label, params, config = {}) {
   if (!label || !params) throw new Error('Missing Values');
-  const trigger = await ShoutOutTrigger.where({ organization_id: config.organization_id, label: 'property_building_homes.mold' }).fetch()
+  const trigger = await ShoutOutTrigger.where({ organization_id: config.organization_id, label }).fetch()
     .then(d => (d ? d.toJSON().config : null));
   // Create Shout Out?
   const newShoutOut = await ShoutOut.forge({
