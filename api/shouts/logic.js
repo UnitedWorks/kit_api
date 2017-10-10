@@ -52,7 +52,7 @@ SO['environment_sanitation.tree'] = {
   domain: 'tree',
   params: {
     location,
-    attachment: image,
+    attachments: image,
     notes,
   },
 };
@@ -77,7 +77,7 @@ SO['environment_sanitation.dumping'] = {
   domain: 'dumping',
   params: {
     location,
-    attachment: image,
+    attachments: image,
     hazardous: {
       type: 'boolean',
       instruction: 'Is it hazardous?',
@@ -220,7 +220,7 @@ SO['property_buildings_homes.graffiti'] = {
   domain: 'graffiti',
   params: {
     location,
-    attachment: image,
+    attachments: image,
     private_property,
     offensive: {
       type: 'boolean',
@@ -234,7 +234,7 @@ SO['property_buildings_homes.over_growth'] = {
   domain: 'over_growth',
   params: {
     location,
-    attachment: image,
+    attachments: image,
     vacant_lot,
     notes,
   },
@@ -244,7 +244,7 @@ SO['property_buildings_homes.blight'] = {
   domain: 'blight',
   params: {
     location,
-    attachment: image,
+    attachments: image,
     vacant_lot,
     notes,
   },
@@ -264,7 +264,7 @@ SO['property_buildings_homes.mold'] = {
   domain: 'mold',
   params: {
     location,
-    attachment: image,
+    attachments: image,
     notes,
   },
 };
@@ -285,7 +285,7 @@ SO['transportation_streets_sidewalks.street'] = {
   domain: 'street',
   params: {
     location,
-    attachment: image,
+    attachments: image,
     notes,
   },
 };
@@ -309,7 +309,7 @@ SO['transportation_streets_sidewalks.sign'] = {
   domain: 'sign',
   params: {
     location,
-    attachment: image,
+    attachments: image,
   },
 };
 SO['transportation_streets_sidewalks.sign.missing'] = SO['transportation_streets_sidewalks.sign'];
@@ -328,7 +328,7 @@ SO['transportation_streets_sidewalks.signal'] = {
   domain: 'signal',
   params: {
     location,
-    attachment: image,
+    attachments: image,
   },
 };
 SO['transportation_streets_sidewalks.signal.always_on'] = SO['transportation_streets_sidewalks.signal'];
@@ -347,7 +347,7 @@ SO['transportation_streets_sidewalks.street_light'] = {
   domain: 'street_light',
   params: {
     location,
-    attachment: image,
+    attachments: image,
   },
 };
 SO['transportation_streets_sidewalks.street_light.always_on'] = SO['transportation_streets_sidewalks.street_light'];
@@ -366,7 +366,7 @@ SO['transportation_streets_sidewalks.parking_violation'] = {
   domain: 'parking',
   params: {
     location,
-    attachment: image,
+    attachments: image,
   },
 };
 SO['transportation_streets_sidewalks.parking_violation.blocking'] = SO['transportation_streets_sidewalks.parking_violation'];
@@ -415,7 +415,7 @@ SO['transportation_streets_sidewalks.vehicle.idling'] = {
   domain: 'vehicle',
   params: {
     location,
-    attachment: image,
+    attachments: image,
     topic: { value: 'idling' },
   },
 };

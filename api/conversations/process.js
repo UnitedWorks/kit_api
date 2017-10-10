@@ -67,8 +67,8 @@ function normalizeInput(conversationClient, input) {
     if (newMessageObject.payload.attachments) {
       Promise.all(newMessageObject.payload.attachments.map((attachment) => {
         if (attachment.type !== 'location') {
-          return new AWSClient().copyExternalUrlToS3(attachment.payload.url).then((val)=>{
-            attachment.payload.url = url;
+          return new AWSClient().copyExternalUrlToS3(attachment.payload.url).then((val) => {
+            attachment.payload.url = val;
             return attachment;
           });
         }
@@ -170,7 +170,7 @@ function normalizeSessionsFromRequest(req, conversationClient) {
       } else {
         const_promise = new Constituent().save();
       }
-      
+
       return const_promise.then((constituent) => {
         return {
           constituent: constituent.toJSON(), // TODO(nicksahler): Handle anonymous constituent creation (possibility for spam)
