@@ -160,7 +160,7 @@ function normalizeSessionsFromRequest(req, conversationClient) {
     but not right now since this is not (in a way) async.
     Maybe allow a "callback" argument on this end
   */
-  } else if (conversationClient === interfaces.HTTP ) {
+  } else if (conversationClient === interfaces.HTTP) {
     return Organization.where({ id: req.query.organization_id }).fetch({ withRelated: ['location']}).then((org) => {
       let const_promise;
       if (req.query.constituent_id) {
