@@ -49,7 +49,7 @@ export default class SeeClickFix {
           refreshedStatus = COMPLETED;
         }
         knex('tasks')
-          .whereRaw("meta->>'see_click_fix'=?", scfId)
+          .whereRaw("managed->>'see_click_fix'=?", scfId)
           .update({ status: refreshedStatus })
           .returning('status')
           .then(res => resolve(JSON.parse(JSON.stringify(res[0]))))
