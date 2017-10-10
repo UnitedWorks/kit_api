@@ -1,10 +1,26 @@
 import moment from 'moment';
 import { getPlacesUrl } from '../../utils';
 
+export const illustrationUrls = {
+  asking: 'https://s3.amazonaws.com/youmustfight_kit/assets/conversation/asking.png',
+  business: 'https://s3.amazonaws.com/youmustfight_kit/assets/conversation/business.png',
+  help: 'https://s3.amazonaws.com/youmustfight_kit/assets/conversation/help.png',
+  navigating: 'https://s3.amazonaws.com/youmustfight_kit/assets/conversation/navigating.png',
+  renters: 'https://s3.amazonaws.com/youmustfight_kit/assets/conversation/renters.png',
+  report: 'https://s3.amazonaws.com/youmustfight_kit/assets/conversation/report.png',
+  neighborhood: 'https://s3.amazonaws.com/youmustfight_kit/assets/conversation/residents.png',
+  parents: 'https://s3.amazonaws.com/youmustfight_kit/assets/conversation/parents.png',
+  sanitation: 'https://s3.amazonaws.com/youmustfight_kit/assets/conversation/sanitation.png',
+  transit: 'https://s3.amazonaws.com/youmustfight_kit/assets/conversation/transit.png',
+  voting: 'https://s3.amazonaws.com/youmustfight_kit/assets/conversation/voting.png',
+  whatCanIAsk: 'https://s3.amazonaws.com/youmustfight_kit/assets/conversation/what-can-i-ask.png',
+  hand: 'https://s3.amazonaws.com/youmustfight_kit/assets/conversation/hand.png',
+};
+
 export const genericSanitation = {
-  title: 'The basics!',
-  subtitle: 'Schedule information and reminders about garbage and recycling!',
-  image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/18121443_233251170489974_389513167860373774_o.png?oh=5fdb797d78ed294fab4caeeca524e8dc&oe=598B0541',
+  title: 'Ask Schedule and Service Info',
+  subtitle: 'Get schedule information about garbage, recycling, and more!',
+  image_url: illustrationUrls.whatCanIAsk,
   buttons: [{
     type: 'postback',
     title: 'Garbage Schedule',
@@ -21,7 +37,7 @@ export const genericSanitation = {
 export const genericDocumentation = {
   title: 'Local Gov Services',
   subtitle: 'Common questions about constituent and business needs',
-  image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/16463485_187743068374118_731666577286732253_o.png?oh=34db605884afb6fa415694f76f7b8214&oe=59816331',
+  image_url: illustrationUrls.whatCanIAsk,
   buttons: [{
     type: 'postback',
     title: 'Get Birth Certificate',
@@ -38,7 +54,7 @@ export const genericDocumentation = {
 export const genericVotingAndElections = {
   title: 'Voting and Elections',
   subtitle: 'Ask about elections, voter ID laws, registration deadlines, and anything else to help you elect representatives!',
-  image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/16586922_193481711133587_230696876501689696_o.png?oh=00e2b4adcd61378777e5ce3801a44650&oe=59985D7E',
+  image_url: illustrationUrls.voting,
   buttons: [{
     type: 'postback',
     title: 'Upcoming Elections',
@@ -55,7 +71,7 @@ export const genericVotingAndElections = {
 export const genericBenefits = {
   title: 'Service Providers and Benefits',
   subtitle: 'Find out what state and federal benefits programs may be available for you and your family.',
-  image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/18056257_232842120530879_6922898701508692950_o.png?oh=1c387a889c56b387e8ca55b5c4b756af&oe=5994A489',
+  image_url: illustrationUrls.navigating,
   buttons: [{
     type: 'postback',
     title: 'Report Wage Theft',
@@ -72,7 +88,7 @@ export const genericBenefits = {
 export const genericAssistance = {
   title: 'Immediate Help',
   subtitle: 'Find immediate or short-term assistance if you are facing tough times.',
-  image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/18076480_232825243865900_3433821028911633831_o.png?oh=fcc2d52c34dfb837272ccda9b928de22&oe=59766CF9',
+  image_url: illustrationUrls.help,
   buttons: [{
     type: 'postback',
     title: 'Find Shelter',
@@ -87,17 +103,17 @@ export const genericAssistance = {
 };
 
 export const genericRenter = {
-  title: 'Tips for Renters',
-  subtitle: 'Find immediate or short-term assistance if you are facing tough times.',
-  image_url: 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/18595483_245617925919965_1771925793445361205_o.png?oh=c41f5dc53c6f8aae50ff6d932f2d3c2f&oe=59743919',
+  title: 'Neighborhood Feedback',
+  subtitle: 'Let us know how we can help your community!',
+  image_url: illustrationUrls.renters,
   buttons: [{
     type: 'postback',
-    title: 'Rental Assistance',
-    payload: 'Rental Assistance',
+    title: 'Report Noisy Neighbor',
+    payload: 'Report Noisy Neighbor',
   }, {
     type: 'postback',
-    title: 'Landlord Histories',
-    payload: 'Landlord Histories',
+    title: 'Report Litter',
+    payload: 'Report Litter',
   }, {
     type: 'element_share',
   }],
@@ -107,7 +123,7 @@ export const genericRenter = {
 export const genericNewResident = {
   title: 'Know Your Community!',
   subtitle: 'Learn what is going on around you and how to interact with local gov!',
-  image_url: 'https://scontent.xx.fbcdn.net/v/t31.0-8/18589000_245329029282188_201697997574538644_o.png?oh=3c0896d62bc013dc7a520cd8aef2ec7d&oe=59B0D211',
+  image_url: illustrationUrls.neighborhood,
   buttons: [{
     type: 'postback',
     title: 'Common Questions',
@@ -123,17 +139,51 @@ export const genericNewResident = {
 
 // Biker
 export const genericCommuter = {
-  title: 'Commuter & Biker Feedback',
-  subtitle: 'Push for better biking biking conditions and commute alerts',
-  image_url: 'https://scontent.fewr1-3.fna.fbcdn.net/v/t31.0-8/18814995_251679365313821_3512955472682371977_o.png?oh=972a17ce194fe9a53a82058aa2da2f72&oe=59A622A2',
+  title: 'Transportation Feedback',
+  subtitle: 'Report and request services around your community and in transit.',
+  image_url: illustrationUrls.transit,
   buttons: [{
     type: 'postback',
-    title: 'Request A Bike Lane',
-    payload: 'Request A Bike Lane',
+    title: 'Report Pothole',
+    payload: 'Report Pothole',
   }, {
     type: 'postback',
-    title: 'Report a Pothole',
-    payload: 'Report a Pothole',
+    title: 'Report Broken Streetlight',
+    payload: 'Report Broken Streetlight',
+  }, {
+    type: 'element_share',
+  }],
+};
+
+export const genericDirectory = {
+  title: 'Directory',
+  subtitle: 'Get hours and contact information for departments.',
+  image_url: illustrationUrls.asking,
+  buttons: [{
+    type: 'postback',
+    title: 'Is City Hall Open?',
+    payload: 'Is City Hall Open?',
+  }, {
+    type: 'postback',
+    title: 'Mayors Contact Info',
+    payload: 'Mayors Contact Info',
+  }, {
+    type: 'element_share',
+  }],
+};
+
+export const genericAdvert = {
+  title: 'About The bot',
+  subtitle: 'Learn more about this bot and what it does for local communities!',
+  image_url: illustrationUrls.hand,
+  buttons: [{
+    type: 'postback',
+    title: 'Who Made This?',
+    payload: 'Who Made This?',
+  }, {
+    type: 'web_url',
+    title: 'By Hey Mayor!',
+    url: 'https://mayor.chat',
   }, {
     type: 'element_share',
   }],
@@ -198,7 +248,7 @@ export const genericNewResidentServicesList = [{
 export const genericBusiness = {
   title: 'Local Business',
   subtitle: 'Get the right permits and government contract opportunities.',
-  image_url: 'https://scontent.xx.fbcdn.net/v/t31.0-8/18556650_245320545949703_5356655391224303171_o.png?oh=673830163e7d76ae394741b1b4abf040&oe=59B2618D',
+  image_url: illustrationUrls.business,
   buttons: [{
     type: 'postback',
     title: 'Get a Business License',
@@ -416,15 +466,15 @@ export function genericWelcome(bannerUrl, orgName) {
   return {
     title: `${orgName ? `Your ${orgName} Assistant` : 'Welcome!'}`,
     subtitle: 'Have a question? Reporting a problem? Let\'s chat!',
-    image_url: bannerUrl || 'https://scontent.xx.fbcdn.net/v/t31.0-8/18589000_245329029282188_201697997574538644_o.png?oh=3c0896d62bc013dc7a520cd8aef2ec7d&oe=59B0D211',
+    image_url: bannerUrl || illustrationUrls.transit,
     buttons: [{
       type: 'postback',
       title: 'What\'s a chatbot?',
       payload: 'What\'s a chatbot?',
     }, {
       type: 'postback',
-      title: 'What can I ask?',
-      payload: 'What Can I Ask?',
+      title: 'Upcoming Events',
+      payload: 'Upcoming Events',
     }, {
       type: 'element_share',
     }],

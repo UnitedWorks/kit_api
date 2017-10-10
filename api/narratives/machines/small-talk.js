@@ -10,7 +10,6 @@ import * as elementTemplates from '../templates/elements';
 import * as replyTemplates from '../templates/quick-replies';
 import { i18n } from '../templates/messages';
 import * as ATTRIBUTES from '../../constants/attributes';
-import { TYPE_MAP } from '../../constants/tasks';
 import * as KNOWLEDGE_CONST from '../../constants/knowledge-base';
 
 export default {
@@ -18,7 +17,7 @@ export default {
     async enter() {
       let botName;
       let firstName;
-      let pictureUrl = 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/16422989_187757401706018_5896478987148979475_o.png?oh=e1edeead1710b85f3d42e669685f3d59&oe=590603C2';
+      let pictureUrl = elementTemplates.illustrationUrls.neighborhood;
       if (this.snapshot.constituent.facebookEntry) {
         botName = this.snapshot.constituent.facebookEntry.intro_name ||
           this.snapshot.constituent.facebookEntry.name;
@@ -43,12 +42,12 @@ export default {
         templateType: 'generic',
         elements: [
           elementTemplates.genericWelcome(pictureUrl, this.get('organization').name),
-          elementTemplates.genericVotingAndElections,
           elementTemplates.genericSanitation,
+          elementTemplates.genericVotingAndElections,
           elementTemplates.genericCommuter,
-          elementTemplates.genericBusiness,
           elementTemplates.genericRenter,
-          elementTemplates.genericNewResident,
+          elementTemplates.genericDirectory,
+          elementTemplates.genericAdvert,
         ],
       };
       this.messagingClient.addToQuene(i18n('intro_hello', { firstName }));
