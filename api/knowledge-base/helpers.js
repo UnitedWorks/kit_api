@@ -52,7 +52,8 @@ export async function getAnswers(params = {}, options = {}) {
       facilities: answerJSON.filter(a => a.knowledge_facility_id).map(a => a.facility),
       services: answerJSON.filter(a => a.knowledge_service_id).map(a => a.service),
       contacts: answerJSON.filter(a => a.knowledge_contact_id).map(a => a.contact),
-      events: await Promise.all(answerJSON.filter(a => a.feed_id).map(answer => runFeed(answer.feed).then(found => found.events)))
+      events: await Promise.all(answerJSON.filter(a => a.feed_id)
+        .map(answer => runFeed(answer.feed).then(found => found.events)))
         .then((feed) => {
           let flattenedArray = [];
           feed.filter(f => f).forEach(f => (flattenedArray = flattenedArray.concat(...f)));
@@ -67,7 +68,7 @@ export async function getAnswers(params = {}, options = {}) {
     }
     return { question: questionJSON, answers: answerGrouped };
   }
-  return answerJSON;
+  return { question: questionJSON, answers: answerJSON };
 }
 
 export async function searchKnowledgeEntities(params = {}, options = { returnJSON: true, limit: 10 }) {

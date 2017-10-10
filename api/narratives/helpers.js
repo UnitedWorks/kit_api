@@ -69,8 +69,8 @@ export async function fetchAnswers(intent, session) {
     session.messagingClient.addToQuene(randomPick(altQuestions, 4).map(a => a.question).join(' '));
     return session.messagingClient.runQuene().then(() => session.getBaseState());
   // If no answers, run fallback
-  } else if (!answers || (!answers.text && !answers.actions && answers.facilities.length === 0 &&
-    answers.services.length === 0 && answers.contacts.length === 0 && answers.feeds.length === 0)) {
+  } else if (!answers || (!answers.text && !answers.actions && !answers.facilities &&
+    !answers.services && !answers.contacts && !answers.feeds)) {
     const fallbackData = await getCategoryFallback([intent.split('.')[0]], session.get('organization').id).then(fbd => fbd);
     // See if we have fallback contacts
     if (fallbackData.contacts.length === 0) {
