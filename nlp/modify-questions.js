@@ -269,6 +269,15 @@ const updateOperations = [
   { delete: 'transportation_streets_sidewalks.blocked_driveway.report' },
   { delete: 'transportation_streets_sidewalks.blocked_street.report' },
   { delete: 'transportation_streets_sidewalks.curb_cut.report' },
+  // New Batch
+  { delete: 'general.community_events' },
+  { delete: 'business_finance.business_vehicles.report' },
+  { delete: 'business_finance.business_tattoos.report' },
+  {
+    from: 'environment_sanitation.sanitation_syringes',
+    to: 'environment_sanitation.disposal.syringes',
+  },
+  { delete: 'property_buildings_homes.home_bed_bugs' },
 ].map((modification) => {
   // Simply update the label
   if (modification.from && modification.to) {

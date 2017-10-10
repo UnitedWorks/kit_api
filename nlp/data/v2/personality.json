@@ -1,0 +1,90 @@
+[
+  {
+    "text": "What are you?",
+    "intent": "personality.what_am_i"
+  },
+  {
+    "text": "what are you",
+    "intent": "personality.what_am_i"
+  },
+  {
+    "text": "What is this",
+    "intent": "personality.what_am_i"
+  },
+  {
+    "text": "chatbot?",
+    "intent": "personality.chatbot_curiosity"
+  },
+  {
+    "text": "What's a chatbot?",
+    "intent": "personality.chatbot_curiosity"
+  },
+  {
+    "text": "What is a chat bot?",
+    "intent": "personality.chatbot_curiosity"
+  },
+  {
+    "text": "Gov chatbots?!?",
+    "intent": "personality.chatbot_curiosity"
+  },
+  {
+    "text": "Ask Question",
+    "intent": "personality.has_question"
+  },
+  {
+    "text": "I have a question!",
+    "intent": "personality.has_question"
+  },
+  {
+    "text": "Who made you?",
+    "intent": "personality.makers"
+  },
+  {
+    "text": "Who made this?",
+    "intent": "personality.makers"
+  },
+  {
+    "text": "How did you get made?",
+    "intent": "personality.makers"
+  },
+  {
+    "text": "Who created you?",
+    "intent": "personality.makers"
+  },
+  {
+    "text": "how are you",
+    "intent": "personality.feeling"
+  },
+  {
+    "text": "How are you doing?",
+    "intent": "personality.feeling"
+  },
+  {
+    "text": "I'm doing great",
+    "intent": "personality.feeling.positive"
+  },
+  {
+    "text": "well!",
+    "intent": "personality.feeling.positive"
+  },
+  {
+    "text": ":)",
+    "intent": "personality.feeling.positive"
+  },
+  {
+    "text": "awful",
+    "intent": "personality.feeling.negative"
+  },
+  {
+    "text": "I'm feeling awful",
+    "intent": "personality.feeling.negative"
+  },
+  {
+    "text": "are you working?",
+    "intent": "personality.broken"
+  },
+  {
+    "text": "this is broken",
+    "intent": "personality.broken"
+  }
+]

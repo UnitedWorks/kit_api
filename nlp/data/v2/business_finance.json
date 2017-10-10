@@ -1,6 +1,31 @@
-module.exports = [
+[
+  {
+    "text": "What permit do I need to build a billboard?",
+    "intent": "business_finance.advertising_billboard_requirements",
+    "entities": []
+  },
+  {
+    "text": "I want to build a billboard. What do I need to do?",
+    "intent": "business_finance.advertising_billboard_requirements",
+    "entities": []
+  },
   {
     "text": "Am I allowed to knock on doors and hand out informational brochures?",
+    "intent": "business_finance.advertising_door_to_door",
+    "entities": []
+  },
+  {
+    "text": "Can I sell my product door to door?",
+    "intent": "business_finance.advertising_door_to_door",
+    "entities": []
+  },
+  {
+    "text": "Do I need to let the local government know about going door to door?",
+    "intent": "business_finance.advertising_door_to_door",
+    "entities": []
+  },
+  {
+    "text": "Do I need to tell someone if I want to sell door to door?",
     "intent": "business_finance.advertising_door_to_door",
     "entities": []
   },
@@ -17,28 +42,32 @@ module.exports = [
     ]
   },
   {
-    "text": "Can I sell my product door to door?",
-    "intent": "business_finance.advertising_door_to_door",
-    "entities": []
+    "text": "Is it ok to put a sign on someone's yard I'm doing work for?",
+    "intent": "business_finance.advertising_yard_signs",
+    "entities": [
+      {
+        "start": 36,
+        "end": 40,
+        "value": "property_buildings_homes",
+        "entity": "category_keywords"
+      }
+    ]
   },
   {
-    "text": "Do I need to tell someone if I want to sell door to door?",
-    "intent": "business_finance.advertising_door_to_door",
-    "entities": []
+    "text": "When can't I put a sign on a person's yard?",
+    "intent": "business_finance.advertising_yard_signs",
+    "entities": [
+      {
+        "start": 38,
+        "end": 42,
+        "value": "property_buildings_homes",
+        "entity": "category_keywords"
+      }
+    ]
   },
   {
-    "text": "Do I need to let the local government know about going door to door?",
-    "intent": "business_finance.advertising_door_to_door",
-    "entities": []
-  },
-  {
-    "text": "What permit do I need to build a billboard?",
-    "intent": "business_finance.advertising_billboard_requirements",
-    "entities": []
-  },
-  {
-    "text": "I want to build a billboard. What do I need to do?",
-    "intent": "business_finance.advertising_billboard_requirements",
+    "text": "Can I place a sign between the street and sidewalk?",
+    "intent": "business_finance.advertising_yard_signs",
     "entities": []
   },
   {
@@ -66,55 +95,57 @@ module.exports = [
     ]
   },
   {
-    "text": "Can I place a sign between the street and sidewalk?",
-    "intent": "business_finance.advertising_yard_signs",
+    "text": "How do I open a small business?",
+    "intent": "business_finance.business_assistance_small_business",
     "entities": []
   },
   {
-    "text": "Is it ok to put a sign on someone's yard I'm doing work for?",
-    "intent": "business_finance.advertising_yard_signs",
-    "entities": [
-      {
-        "start": 36,
-        "end": 40,
-        "value": "property_buildings_homes",
-        "entity": "category_keywords"
-      }
-    ]
+    "text": "Where can I find resources for small businesses?",
+    "intent": "business_finance.business_assistance_small_business",
+    "entities": []
   },
   {
-    "text": "When can't I put a sign on a person's yard?",
-    "intent": "business_finance.advertising_yard_signs",
-    "entities": [
-      {
-        "start": 38,
-        "end": 42,
-        "value": "property_buildings_homes",
-        "entity": "category_keywords"
-      }
-    ]
+    "text": "Can the city help my business?",
+    "intent": "business_finance.business_assistance_small_business",
+    "entities": []
   },
   {
-    "text": "What are construction workers required to list on their vehicles?",
-    "intent": "business_finance.business_vehicles_markings",
+    "text": "Can you help me with my business?",
+    "intent": "business_finance.business_assistance_small_business",
+    "entities": []
+  },
+  {
+    "text": "How do I get help starting or expanding my small business?",
+    "intent": "business_finance.business_assistance_small_business",
     "entities": [
       {
-        "start": 9,
-        "end": 29,
+        "start": 43,
+        "end": 57,
         "value": "business_finance",
         "entity": "category_keywords"
-      },
+      }
+    ]
+  },
+  {
+    "text": "how do i open a business",
+    "intent": "business_finance.business_assistance_small_business",
+    "entities": []
+  },
+  {
+    "text": "How does the town help small businesses?",
+    "intent": "business_finance.business_assistance_small_business",
+    "entities": [
       {
-        "start": 56,
-        "end": 64,
-        "value": "transportation_streets_sidewalks",
+        "start": 23,
+        "end": 39,
+        "value": "business_finance",
         "entity": "category_keywords"
       }
     ]
   },
   {
-    "text": "Do company vehicles need any special markings or signs?",
-    "intent": "business_finance.business_vehicles_markings",
+    "text": "Small business loans",
+    "intent": "business_finance.business_assistance_small_business",
     "entities": []
   },
   {
@@ -165,17 +196,17 @@ module.exports = [
     ]
   },
   {
+    "text": "I hired someone to fix my house and they totally screwed it up. Who do I tell?",
+    "intent": "business_finance.business_contractor_poor_work",
+    "entities": []
+  },
+  {
     "text": "A contractor did a poor job, who do I contact?",
     "intent": "business_finance.business_contractor_poor_work",
     "entities": []
   },
   {
     "text": "How do I report a contractor?",
-    "intent": "business_finance.business_contractor_poor_work",
-    "entities": []
-  },
-  {
-    "text": "I hired someone to fix my house and they totally screwed it up. Who do I tell?",
     "intent": "business_finance.business_contractor_poor_work",
     "entities": []
   },
@@ -192,24 +223,29 @@ module.exports = [
     ]
   },
   {
-    "text": "What do I need to run a food cart?",
-    "intent": "business_finance.business_food_cart_requirements",
-    "entities": []
-  },
-  {
     "text": "I'm looking to open a food cart. What do I need to do?",
     "intent": "business_finance.business_food_cart_requirements",
     "entities": []
   },
   {
-    "text": "I need a permit for my resturaunt",
-    "intent": "business_finance.business_food_service_permit",
-    "entities": [],
+    "text": "What do I need to run a food cart?",
+    "intent": "business_finance.business_food_cart_requirements",
+    "entities": []
   },
   {
     "text": "Food  Service  Permits",
     "intent": "business_finance.business_food_service_permit",
-    "entities": [],
+    "entities": []
+  },
+  {
+    "text": "I need a permit for my resturaunt",
+    "intent": "business_finance.business_food_service_permit",
+    "entities": []
+  },
+  {
+    "text": "I don't think this business is licensed",
+    "intent": "business_finance.business_licenses.check",
+    "entities": []
   },
   {
     "text": "How do I check if a business is licensed?",
@@ -227,8 +263,13 @@ module.exports = [
     "entities": []
   },
   {
-    "text": "I don't think this business is licensed",
-    "intent": "business_finance.business_licenses.check",
+    "text": "Get a Business License",
+    "intent": "business_finance.business_licenses.get",
+    "entities": []
+  },
+  {
+    "text": "How can i get a business license?",
+    "intent": "business_finance.business_licenses.get",
     "entities": []
   },
   {
@@ -242,11 +283,6 @@ module.exports = [
         "entity": "category_keywords"
       }
     ]
-  },
-  {
-    "text": "How can i get a business license?",
-    "intent": "business_finance.business_licenses.get",
-    "entities": []
   },
   {
     "text": "Where do I get a permit for my business?",
@@ -264,17 +300,22 @@ module.exports = [
     "entities": []
   },
   {
-    "text": "Get a Business License",
-    "intent": "business_finance.business_licenses.get",
+    "text": "How do I renew my restaurant permit?",
+    "intent": "business_finance.business_licenses_restaurant.renew",
     "entities": []
   },
   {
-    "text": "How late can a bar or club stay open?",
-    "intent": "business_finance.business_nightlife_hours",
+    "text": "Where do I renew my restaurant permit?",
+    "intent": "business_finance.business_licenses_restaurant.renew",
     "entities": []
   },
   {
     "text": "When do bars need to close by?",
+    "intent": "business_finance.business_nightlife_hours",
+    "entities": []
+  },
+  {
+    "text": "How late can a bar or club stay open?",
     "intent": "business_finance.business_nightlife_hours",
     "entities": []
   },
@@ -289,7 +330,12 @@ module.exports = [
     "entities": []
   },
   {
-    "text": "What are the rules for external restaurant exhaust duct placement?",
+    "text": "What license or permit do I need for a restaurant?",
+    "intent": "business_finance.business_requirements_restaurant",
+    "entities": []
+  },
+  {
+    "text": "Does it matter where I put a restaurant exhaust?",
     "intent": "business_finance.business_restaurant_duct_requirements",
     "entities": []
   },
@@ -299,23 +345,13 @@ module.exports = [
     "entities": []
   },
   {
-    "text": "Does it matter where I put a restaurant exhaust?",
+    "text": "What are the rules for external restaurant exhaust duct placement?",
     "intent": "business_finance.business_restaurant_duct_requirements",
     "entities": []
   },
   {
-    "text": "How do I renew my restaurant permit?",
-    "intent": "business_finance.business_licenses_restaurant.renew",
-    "entities": []
-  },
-  {
-    "text": "Where do I renew my restaurant permit?",
-    "intent": "business_finance.business_licenses_restaurant.renew",
-    "entities": []
-  },
-  {
-    "text": "What license or permit do I need for a restaurant?",
-    "intent": "business_finance.business_requirements_restaurant",
+    "text": "Can I put a sign up on my business?",
+    "intent": "business_finance.business_signage_rules",
     "entities": []
   },
   {
@@ -329,62 +365,12 @@ module.exports = [
     "entities": []
   },
   {
-    "text": "Can I put a sign up on my business?",
-    "intent": "business_finance.business_signage_rules",
-    "entities": []
+    "text": "permit to play street music",
+    "intent": "business_finance.business_street_musician_requirements"
   },
   {
-    "text": "How does the town help small businesses?",
-    "intent": "business_finance.business_assistance_small_business",
-    "entities": [
-      {
-        "start": 23,
-        "end": 39,
-        "value": "business_finance",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "Where can I find resources for small businesses?",
-    "intent": "business_finance.business_assistance_small_business",
-    "entities": []
-  },
-  {
-    "text": "Can the city help my business?",
-    "intent": "business_finance.business_assistance_small_business",
-    "entities": []
-  },
-  {
-    "text": "Can you help me with my business?",
-    "intent": "business_finance.business_assistance_small_business",
-    "entities": []
-  },
-  {
-    "text": "How do I get help starting or expanding my small business?",
-    "intent": "business_finance.business_assistance_small_business",
-    "entities": [
-      {
-        "start": 43,
-        "end": 57,
-        "value": "business_finance",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "how do i open a business",
-    "intent": "business_finance.business_assistance_small_business",
-    "entities": []
-  },
-  {
-    "text": "How do I open a small business?",
-    "intent": "business_finance.business_assistance_small_business",
-    "entities": []
-  },
-  {
-    "text": "Small business loans",
-    "intent": "business_finance.business_assistance_small_business",
+    "text": "where can I play music in public",
+    "intent": "business_finance.business_street_musician_requirements",
     "entities": []
   },
   {
@@ -403,22 +389,12 @@ module.exports = [
     "entities": []
   },
   {
-    "text": "where can I play music in public",
-    "intent": "business_finance.business_street_musician_requirements",
-    "entities": []
-  },
-  {
-    "text": "How do I apply for a license to sell items on the street?",
+    "text": "Can I sell things on the sidewalk?",
     "intent": "business_finance.business_street_vendor_requirements",
     "entities": []
   },
   {
     "text": "Do I need to do anything to sell on the sidewalk?",
-    "intent": "business_finance.business_street_vendor_requirements",
-    "entities": []
-  },
-  {
-    "text": "Can I sell things on the sidewalk?",
     "intent": "business_finance.business_street_vendor_requirements",
     "entities": []
   },
@@ -435,23 +411,8 @@ module.exports = [
     ]
   },
   {
-    "text": "How do I change my business name or address to correct my business tax records?",
-    "intent": "business_finance.business_tax_record_updating",
-    "entities": []
-  },
-  {
-    "text": "How do I change my business name?",
-    "intent": "business_finance.business_tax_record_updating",
-    "entities": []
-  },
-  {
-    "text": "My business is moving",
-    "intent": "business_finance.business_tax_record_updating",
-    "entities": []
-  },
-  {
-    "text": "I need to fix my business tax records",
-    "intent": "business_finance.business_tax_record_updating",
+    "text": "How do I apply for a license to sell items on the street?",
+    "intent": "business_finance.business_street_vendor_requirements",
     "entities": []
   },
   {
@@ -465,28 +426,44 @@ module.exports = [
     "entities": []
   },
   {
-    "text": "How do I report a commercial vehicle parked on residential property?",
-    "intent": "business_finance.business_vehicles.report",
+    "text": "How do I change my business name?",
+    "intent": "business_finance.business_tax_record_updating",
     "entities": []
   },
   {
-    "text": "This truck is blocking the entire road while unloading",
-    "intent": "business_finance.business_vehicles.report",
+    "text": "I need to fix my business tax records",
+    "intent": "business_finance.business_tax_record_updating",
     "entities": []
   },
   {
-    "text": "How does my company become one of your approved vendors?",
-    "intent": "business_finance.procurement_vendors_approved",
+    "text": "How do I change my business name or address to correct my business tax records?",
+    "intent": "business_finance.business_tax_record_updating",
     "entities": []
   },
   {
-    "text": "How do I apply to be an approved vendor?",
-    "intent": "business_finance.procurement_vendors_approved",
+    "text": "My business is moving",
+    "intent": "business_finance.business_tax_record_updating",
+    "entities": []
+  },
+  {
+    "text": "Do company vehicles need any special markings or signs?",
+    "intent": "business_finance.business_vehicles_markings",
+    "entities": []
+  },
+  {
+    "text": "What are construction workers required to list on their vehicles?",
+    "intent": "business_finance.business_vehicles_markings",
     "entities": [
       {
-        "start": 33,
-        "end": 39,
+        "start": 9,
+        "end": 29,
         "value": "business_finance",
+        "entity": "category_keywords"
+      },
+      {
+        "start": 56,
+        "end": 64,
+        "value": "transportation_streets_sidewalks",
         "entity": "category_keywords"
       }
     ]
@@ -507,5 +484,22 @@ module.exports = [
         "entity": "category_keywords"
       }
     ]
+  },
+  {
+    "text": "How does my company become one of your approved vendors?",
+    "intent": "business_finance.procurement_vendors_approved",
+    "entities": []
+  },
+  {
+    "text": "How do I apply to be an approved vendor?",
+    "intent": "business_finance.procurement_vendors_approved",
+    "entities": [
+      {
+        "start": 33,
+        "end": 39,
+        "value": "business_finance",
+        "entity": "category_keywords"
+      }
+    ]
   }
-];
+]

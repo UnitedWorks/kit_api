@@ -1,4 +1,4 @@
-module.exports = [
+[
   {
     "text": "Can I put signs around to advertise an event?",
     "intent": "general.advertising_general_plastering",
@@ -70,21 +70,6 @@ module.exports = [
     "entities": []
   },
   {
-    "text": "Where can I learn about city events?",
-    "intent": "general.community_events",
-    "entities": []
-  },
-  {
-    "text": "What events are going on?",
-    "intent": "general.community_events",
-    "entities": []
-  },
-  {
-    "text": "Whats happening in town today?",
-    "intent": "general.community_events",
-    "entities": []
-  },
-  {
     "text": "How do I get a membership to use community facilities?",
     "intent": "general.community_facilities_membership",
     "entities": []
@@ -150,4 +135,4 @@ module.exports = [
       }
     ]
   }
-];
+]

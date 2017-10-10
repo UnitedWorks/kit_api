@@ -1,4 +1,4 @@
-module.exports = [
+[
   {
     "text": "I'm Renting",
     "entities": [
@@ -53,4 +53,4 @@ module.exports = [
       }
     ]
   }
-];
+]

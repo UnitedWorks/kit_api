@@ -1,0 +1,62 @@
+[
+  {
+    "text": "I have a problem",
+    "intent": "interaction.tasks.create"
+  },
+  {
+    "text": "I have an issue",
+    "intent": "interaction.tasks.create"
+  },
+  {
+    "text": "challenge",
+    "intent": "interaction.tasks.create"
+  },
+  {
+    "text": "comment",
+    "intent": "interaction.tasks.create"
+  },
+  {
+    "text": "complaint",
+    "intent": "interaction.tasks.create"
+  },
+  {
+    "text": "issue",
+    "intent": "interaction.tasks.create"
+  },
+  {
+    "text": "problem",
+    "intent": "interaction.tasks.create"
+  },
+  {
+    "text": "request",
+    "intent": "interaction.tasks.create"
+  },
+  {
+    "text": "suggestion",
+    "intent": "interaction.tasks.create"
+  },
+  {
+    "text": "List my complaints",
+    "intent": "interaction.tasks.get"
+  },
+  {
+    "text": "List my requests",
+    "intent": "interaction.tasks.get"
+  },
+  {
+    "text": "View my complaints",
+    "intent": "interaction.tasks.get"
+  },
+  {
+    "text": "View my requests",
+    "intent": "interaction.tasks.get"
+  },
+  {
+    "text": "Whats the status of my requests?",
+    "intent": "interaction.tasks.get"
+  },
+  {
+    "text": "Has my complaint been taken care of?",
+    "intent": "interaction.tasks.get"
+  }
+]

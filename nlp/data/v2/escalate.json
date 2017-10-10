@@ -1,4 +1,4 @@
-module.exports = [
+[
   {
     "text": "I've been shot",
     "intent": "escalate.911",
@@ -39,4 +39,4 @@ module.exports = [
     "intent": "escalate.suicide",
     "entities": []
   }
-];
+]

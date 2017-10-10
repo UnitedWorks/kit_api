@@ -1,13 +1,11 @@
-module.exports = [
+[
   {
     "text": "Change my city",
-    "intent": "settings.locality.change",
-    "entities": []
+    "intent": "settings.locality.change"
   },
   {
     "text": "I want answers for a different city",
-    "intent": "settings.locality.change",
-    "entities": []
+    "intent": "settings.locality.change"
   },
   {
     "text": "I live at 11 Juniper Drive, Cedar Knolls NJ",
@@ -59,8 +57,7 @@ module.exports = [
   },
   {
     "text": "Change my default address",
-    "intent": "settings.default_location",
-    "entities": []
+    "intent": "settings.default_location"
   },
   {
     "text": "my home address is 55 duke street new brunswick nj",
@@ -76,8 +73,7 @@ module.exports = [
   },
   {
     "text": "my address is 616 W 184th street",
-    "intent": "settings.default_location",
-    "entities": []
+    "intent": "settings.default_location"
   },
   {
     "text": "I live at 221 S 5th Ave, Highland Park, NJ",
@@ -117,7 +113,6 @@ module.exports = [
   },
   {
     "text": "I dont live there",
-    "intent": "settings.default_location",
-    "entities": []
+    "intent": "settings.default_location"
   }
-];
+]
