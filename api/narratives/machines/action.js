@@ -69,6 +69,13 @@ export default {
           if (steps[i].type === PROMPT_CONSTANTS.TEXT) {
             steps[i].value = { text: this.snapshot.input.payload.text };
           // Handle Picture
+          } else if (steps[i].type === PROMPT_CONSTANTS.EMAIL) {
+            if (this.snapshot.input.payload.text.indexOf('@') > 0) {
+              steps[i].value = { text: this.snapshot.input.payload.text };
+            } else {
+              this.messagingClient.send('That doesn\'t seem to be a valid email.');
+            }
+          // Handle Picture
           } else if (steps[i].type === PROMPT_CONSTANTS.IMAGE) {
             if (this.snapshot.input.payload.attachments) {
               const attached = this.snapshot.input.payload.attachments;
