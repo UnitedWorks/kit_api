@@ -12,28 +12,23 @@
   },
   {
     "text": "What do I do with compost?",
-    "intent": "environment_sanitation.compost",
-    "entities": []
+    "intent": "environment_sanitation.compost"
   },
   {
     "text": "Can I compost?",
-    "intent": "environment_sanitation.compost",
-    "entities": []
+    "intent": "environment_sanitation.compost"
   },
   {
     "text": "Is composting allowed?",
-    "intent": "environment_sanitation.compost",
-    "entities": []
+    "intent": "environment_sanitation.compost"
   },
   {
     "text": "When do you collect compost?",
-    "intent": "environment_sanitation.compost.schedule",
-    "entities": []
+    "intent": "environment_sanitation.compost.schedule"
   },
   {
     "text": "I need to throw stuff out",
     "intent": "environment_sanitation.disposal",
-    "entities": [],
     "meta": {
       "vague": true
     }
@@ -41,7 +36,6 @@
   {
     "text": "tossing stuff out",
     "intent": "environment_sanitation.disposal",
-    "entities": [],
     "meta": {
       "vague": true
     }
@@ -60,23 +54,19 @@
   },
   {
     "text": "I want to thow out an air conditioner",
-    "intent": "environment_sanitation.disposal.appliance",
-    "entities": []
+    "intent": "environment_sanitation.disposal.appliance"
   },
   {
     "text": "I want to get rid of appliances",
-    "intent": "environment_sanitation.disposal.appliance",
-    "entities": []
+    "intent": "environment_sanitation.disposal.appliance"
   },
   {
     "text": "My air conditioner is broken",
-    "intent": "environment_sanitation.disposal.appliance",
-    "entities": []
+    "intent": "environment_sanitation.disposal.appliance"
   },
   {
     "text": "How do I get rid of an air conditioner?",
-    "intent": "environment_sanitation.disposal.appliance",
-    "entities": []
+    "intent": "environment_sanitation.disposal.appliance"
   },
   {
     "text": "How do I dispose of appliances?",
@@ -92,93 +82,75 @@
   },
   {
     "text": "What do I need to do about throwing out batteries",
-    "intent": "environment_sanitation.disposal.battery",
-    "entities": []
+    "intent": "environment_sanitation.disposal.battery"
   },
   {
     "text": "How do I dispose of batteries?",
-    "intent": "environment_sanitation.disposal.battery",
-    "entities": []
+    "intent": "environment_sanitation.disposal.battery"
   },
   {
     "text": "I need bulk pickup",
-    "intent": "environment_sanitation.disposal.bulk_pickup",
-    "entities": []
+    "intent": "environment_sanitation.disposal.bulk_pickup"
   },
   {
     "text": "How do I get bulk pickup?",
-    "intent": "environment_sanitation.disposal.bulk_pickup",
-    "entities": []
+    "intent": "environment_sanitation.disposal.bulk_pickup"
   },
   {
     "text": "How can I request bulk item pickup?",
-    "intent": "environment_sanitation.disposal.bulk_pickup",
-    "entities": []
+    "intent": "environment_sanitation.disposal.bulk_pickup"
   },
   {
     "text": "How do I dispose of a carpet?",
-    "intent": "environment_sanitation.disposal.carpet",
-    "entities": []
+    "intent": "environment_sanitation.disposal.carpet"
   },
   {
     "text": "How do I get rid of a carpet?",
-    "intent": "environment_sanitation.disposal.carpet",
-    "entities": []
+    "intent": "environment_sanitation.disposal.carpet"
   },
   {
     "text": "I need to throw out my carpet?",
-    "intent": "environment_sanitation.disposal.carpet",
-    "entities": []
+    "intent": "environment_sanitation.disposal.carpet"
   },
   {
     "text": "Where can I dispose of electronics?",
-    "intent": "environment_sanitation.disposal.electronics",
-    "entities": []
+    "intent": "environment_sanitation.disposal.electronics"
   },
   {
     "text": "I want to throw out my couch",
-    "intent": "environment_sanitation.disposal.furniture",
-    "entities": []
+    "intent": "environment_sanitation.disposal.furniture"
   },
   {
     "text": "How do I throw out my futon?",
-    "intent": "environment_sanitation.disposal.furniture",
-    "entities": []
+    "intent": "environment_sanitation.disposal.furniture"
   },
   {
     "text": "I need to get rid of my sofa?",
-    "intent": "environment_sanitation.disposal.furniture",
-    "entities": []
+    "intent": "environment_sanitation.disposal.furniture"
   },
   {
     "text": "How do I dispose of a lawn mower?",
-    "intent": "environment_sanitation.disposal.lawn_mower",
-    "entities": []
+    "intent": "environment_sanitation.disposal.lawn_mower"
   },
   {
     "text": "Do I brush leaves to the curb?",
-    "intent": "environment_sanitation.disposal.leaf",
-    "entities": []
+    "intent": "environment_sanitation.disposal.leaf"
   },
   {
     "text": "Do I need to bag my leaves?",
-    "intent": "environment_sanitation.disposal.leaf",
-    "entities": []
+    "intent": "environment_sanitation.disposal.leaf"
   },
   {
     "text": "What do I do about leaves?",
-    "intent": "environment_sanitation.disposal.leaf",
-    "entities": []
+    "intent": "environment_sanitation.disposal.leaf"
   },
   {
     "text": "How should leaves be handled?",
-    "intent": "environment_sanitation.disposal.leaf",
-    "entities": []
+    "intent": "environment_sanitation.disposal.leaf"
   },
   {
     "text": "How do I dispose of my mattress?",
-    "intent": "environment_sanitation.disposal.mattress",
-    "entities": []
+    "intent": "environment_sanitation.disposal.mattress"
   },
   {
     "text": "I'm trying to get rid of a big metal item?",
@@ -194,52 +166,43 @@
   },
   {
     "text": "How do I throw out a large metal item?",
-    "intent": "environment_sanitation.disposal.metal",
-    "entities": []
+    "intent": "environment_sanitation.disposal.metal"
   },
   {
     "text": "How do I throw out paint?",
-    "intent": "environment_sanitation.disposal.paint",
-    "entities": []
+    "intent": "environment_sanitation.disposal.paint"
   },
   {
     "text": "Where do I throw out paint?",
-    "intent": "environment_sanitation.disposal.paint",
-    "entities": []
+    "intent": "environment_sanitation.disposal.paint"
   },
   {
     "text": "How do I throw out a piano?",
-    "intent": "environment_sanitation.disposal.piano",
-    "entities": []
+    "intent": "environment_sanitation.disposal.piano"
   },
   {
     "text": "How do I get rid of a piano?",
-    "intent": "environment_sanitation.disposal.piano",
-    "entities": []
+    "intent": "environment_sanitation.disposal.piano"
   },
   {
     "text": "Where do I dispose used syringes?",
-    "intent": "environment_sanitation.disposal.syringes",
-    "entities": []
+    "intent": "environment_sanitation.disposal.syringes"
   },
   {
     "text": "Where do I bring syringes?",
-    "intent": "environment_sanitation.disposal.syringes",
-    "entities": []
+    "intent": "environment_sanitation.disposal.syringes"
   },
   {
     "text": "Where do I throw out used syringes??",
-    "intent": "environment_sanitation.disposal.syringes",
-    "entities": []
+    "intent": "environment_sanitation.disposal.syringes"
   },
   {
     "text": "i need to get rid of syringes",
-    "intent": "environment_sanitation.disposal.syringes",
-    "entities": []
+    "intent": "environment_sanitation.disposal.syringes"
   },
   {
     "text": "Do do you have any information about black bears?",
-    "intent": "environment_sanitation.environment_bear_info",
+    "intent": "environment_sanitation.bear.guide",
     "entities": [
       {
         "start": 43,
@@ -251,27 +214,15 @@
   },
   {
     "text": "What should I know about black bears?",
-    "intent": "environment_sanitation.environment_bear_info",
-    "entities": []
+    "intent": "environment_sanitation.bear.guide"
   },
   {
     "text": "Where do I find a mattress disposal bag?",
-    "intent": "environment_sanitation.mattress_disposal_bag",
-    "entities": []
-  },
-  {
-    "text": "There's a problem at the park",
-    "intent": "environment_sanitation.park.report",
-    "entities": []
-  },
-  {
-    "text": "I'm having an problem at the park",
-    "intent": "environment_sanitation.park.report",
-    "entities": []
+    "intent": "environment_sanitation.mattress_disposal_bag"
   },
   {
     "text": "Can I bring alcohol to the park?",
-    "intent": "environment_sanitation.park_alcohol",
+    "intent": "environment_sanitation.park.alcohol",
     "entities": [
       {
         "start": 27,
@@ -283,63 +234,42 @@
   },
   {
     "text": "Can I barbecue in the park?",
-    "intent": "environment_sanitation.park_barbecue",
-    "entities": []
+    "intent": "environment_sanitation.park.barbecue"
   },
   {
     "text": "Are grills allowed in the park?",
-    "intent": "environment_sanitation.park_barbecue",
-    "entities": []
+    "intent": "environment_sanitation.park.barbecue"
   },
   {
     "text": "Can dogs be at the park?",
-    "intent": "environment_sanitation.park_pets",
-    "entities": []
+    "intent": "environment_sanitation.park.pet"
   },
   {
     "text": "Am I allowed to bring a dog to a park?",
-    "intent": "environment_sanitation.park_pets",
-    "entities": []
+    "intent": "environment_sanitation.park.pet"
   },
   {
     "text": "Can I bring my dog to the park?",
-    "intent": "environment_sanitation.park_pets",
-    "entities": []
+    "intent": "environment_sanitation.park.pet"
   },
   {
     "text": "Is it ok to bring a dog to the park?",
-    "intent": "environment_sanitation.park_pets",
-    "entities": []
+    "intent": "environment_sanitation.park.pet"
   },
   {
     "text": "Can I smoke in the park?",
-    "intent": "environment_sanitation.park_smoking"
-  },
-  {
-    "text": "Can I smoke in the park?",
-    "intent": "environment_sanitation.park_smoking",
-    "entities": []
+    "intent": "environment_sanitation.park.smoking"
   },
   {
     "text": "recycle?",
     "intent": "environment_sanitation.recycling",
-    "entities": [],
-    "meta": {
-      "vague": true
-    }
-  },
-  {
-    "text": "Do we recycle?",
-    "intent": "environment_sanitation.recycling",
-    "entities": [],
     "meta": {
       "vague": true
     }
   },
   {
     "text": "Can I use a blue recycling bin instead of the standard ones?",
-    "intent": "environment_sanitation.recycling.bins",
-    "entities": []
+    "intent": "environment_sanitation.recycling.bins"
   },
   {
     "text": "Do I need special bins for recycling?",
@@ -355,17 +285,27 @@
   },
   {
     "text": "Where do I dispose of my recycling?",
-    "intent": "environment_sanitation.recycling.location",
-    "entities": []
+    "intent": "environment_sanitation.recycling.location"
   },
   {
     "text": "Where do I bring recycling?",
-    "intent": "environment_sanitation.recycling.location",
-    "entities": []
+    "intent": "environment_sanitation.recycling.location"
+  },
+  {
+    "text": "What plastics are recycable?",
+    "intent": "environment_sanitation.recycling.guide"
+  },
+  {
+    "text": "What do I recycle in Jersey city?",
+    "intent": "environment_sanitation.recycling.guide"
+  },
+  {
+    "text": "Can I recycle plastic #5 in Jersey City?",
+    "intent": "environment_sanitation.recycling.guide"
   },
   {
     "text": "Can recycling be mixed?",
-    "intent": "environment_sanitation.recycling.mix",
+    "intent": "environment_sanitation.recycling.guide",
     "entities": [
       {
         "start": 4,
@@ -377,101 +317,66 @@
   },
   {
     "text": "Does recycling need to be separated?",
-    "intent": "environment_sanitation.recycling.mix",
-    "entities": []
+    "intent": "environment_sanitation.recycling.guide"
   },
   {
     "text": "Is recycling next Wednesday?",
-    "intent": "environment_sanitation.recycling.schedule",
-    "entities": []
+    "intent": "environment_sanitation.recycling.schedule"
   },
   {
     "text": "Recycling Schedule",
-    "intent": "environment_sanitation.recycling.schedule",
-    "entities": []
+    "intent": "environment_sanitation.recycling.schedule"
   },
   {
     "text": "my recycling schedule",
-    "intent": "environment_sanitation.recycling.schedule",
-    "entities": []
+    "intent": "environment_sanitation.recycling.schedule"
   },
   {
     "text": "Is there recycling next week?",
-    "intent": "environment_sanitation.recycling.schedule",
-    "entities": []
+    "intent": "environment_sanitation.recycling.schedule"
   },
   {
     "text": "When is recycling next month?",
-    "intent": "environment_sanitation.recycling.schedule",
-    "entities": []
+    "intent": "environment_sanitation.recycling.schedule"
   },
   {
     "text": "When is recycling?",
-    "intent": "environment_sanitation.recycling.schedule",
-    "entities": []
+    "intent": "environment_sanitation.recycling.schedule"
   },
   {
     "text": "Which day is recycling?",
-    "intent": "environment_sanitation.recycling.schedule",
-    "entities": []
+    "intent": "environment_sanitation.recycling.schedule"
   },
   {
     "text": "What is the recycling schedule?",
-    "intent": "environment_sanitation.recycling.schedule",
-    "entities": []
-  },
-  {
-    "text": "This person isn't cleaning up after their dog",
-    "intent": "environment_sanitation.report_pet_cleanup",
-    "entities": []
-  },
-  {
-    "text": "How do I report someone who does not clean up after their dog?",
-    "intent": "environment_sanitation.report_pet_cleanup",
-    "entities": []
-  },
-  {
-    "text": "This owner is leaving dog poop",
-    "intent": "environment_sanitation.report_pet_cleanup",
-    "entities": []
-  },
-  {
-    "text": "How do I contact a wastewater treatment plant?",
-    "intent": "environment_sanitation.sanitation_wastewater_facility.contact",
-    "entities": []
+    "intent": "environment_sanitation.recycling.schedule"
   },
   {
     "text": "i have garbage",
     "intent": "environment_sanitation.trash",
-    "entities": [],
     "meta": {
       "vague": true
     }
   },
   {
     "text": "Where do I dispose of my garbage?",
-    "intent": "environment_sanitation.trash.location",
-    "entities": []
+    "intent": "environment_sanitation.trash.location"
   },
   {
     "text": "When is trash pickup?",
-    "intent": "environment_sanitation.trash.schedule",
-    "entities": []
+    "intent": "environment_sanitation.trash.schedule"
   },
   {
     "text": "What day is trash? ",
-    "intent": "environment_sanitation.trash.schedule",
-    "entities": []
+    "intent": "environment_sanitation.trash.schedule"
   },
   {
     "text": "my garbage schedule",
-    "intent": "environment_sanitation.trash.schedule",
-    "entities": []
+    "intent": "environment_sanitation.trash.schedule"
   },
   {
     "text": "Is there trash pickup next week?",
-    "intent": "environment_sanitation.trash.schedule",
-    "entities": []
+    "intent": "environment_sanitation.trash.schedule"
   },
   {
     "text": "Is garbage picked up tomorrow?",
@@ -499,22 +404,106 @@
   },
   {
     "text": "Is there garbage pickup next week?",
-    "intent": "environment_sanitation.trash.schedule",
-    "entities": []
+    "intent": "environment_sanitation.trash.schedule"
   },
   {
     "text": "Is trash pickup next Tuesday?",
-    "intent": "environment_sanitation.trash.schedule",
-    "entities": []
+    "intent": "environment_sanitation.trash.schedule"
   },
   {
     "text": "Garbage Schedule",
-    "intent": "environment_sanitation.trash.schedule",
-    "entities": []
+    "intent": "environment_sanitation.trash.schedule"
   },
   {
     "text": "What is the trash schedule?",
-    "intent": "environment_sanitation.trash.schedule",
-    "entities": []
+    "intent": "environment_sanitation.trash.schedule"
+  },
+  {
+    "intent": "environment_sanitation.tree.inspection",
+    "text": "The tree outside my house looks dead"
+  },
+  {
+    "intent": "environment_sanitation.tree.planting",
+    "text": "Can we get a new tree on the corner of George Street and College Ave?"
+  },
+  {
+    "intent": "environment_sanitation.tree.pruning",
+    "text": "A tree outside my house is touching an eletrical wire"
+  },
+  {
+    "intent": "environment_sanitation.tree.removal",
+    "text": "Can you remove a tree on my street?"
+  },
+  {
+    "intent": "environment_sanitation.trash.animal",
+    "text": "Rodents keep eating my garbage"
+  },
+  {
+    "intent": "environment_sanitation.trash.animal",
+    "text": "Animals keep eating my garbage"
+  },
+  {
+    "intent": "environment_sanitation.trash.animal",
+    "text": "How do I stop animals from eating my garbage?"
+  },
+  {
+    "intent": "environment_sanitation.trash.collection_missed",
+    "text": "My garbage wasnt picked up"
+  },
+  {
+    "intent": "environment_sanitation.recycling.collection_missed",
+    "text": "My recycling didnt get picked up this morning"
+  },
+  {
+    "intent": "environment_sanitation.litter",
+    "text": "The sidewalk outside my house is covered in trash"
+  },
+  {
+    "intent": "environment_sanitation.park.reservation",
+    "text": "Can I reserve a park or picnic area?"
+  },
+  {
+    "intent": "environment_sanitation.park.reservation",
+    "text": "How do I reserve a section at the park for a party?"
+  },
+  {
+    "intent": "environment_sanitation.park.reservation",
+    "text": "How do I reserve a park pavilion?"
+  },
+  {
+    "intent": "environment_sanitation.water.flooding",
+    "text": "My street is flooding"
+  },
+  {
+    "intent": "environment_sanitation.water.flooding",
+    "text": "The block is still underwater"
+  },
+  {
+    "intent": "environment_sanitation.water.quality",
+    "text": "It looks like theres oil on the water"
+  },
+  {
+    "intent": "environment_sanitation.water.quality",
+    "text": "How do I report a waterway that is an unusual color?"
+  },
+  {
+    "intent": "environment_sanitation.water.quality",
+    "text": "The river looks dirty"
+  },
+  {
+    "intent": "environment_sanitation.air.quality",
+    "text": "there's a thick smog"
+  },
+  {
+    "intent": "environment_sanitation.air.quality",
+    "text": "Our air isn't clean"
+  },
+  {
+    "intent": "environment_sanitation.dumping",
+    "text": "There is an RV dumping at Malipardis park"
+  },
+  {
+    "intent": "environment_sanitation.dumping",
+    "text": "Someone is dumping trash behind our house"
   }
 ]

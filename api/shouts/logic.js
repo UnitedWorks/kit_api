@@ -9,6 +9,8 @@
 // Actually, they're shout outs because in some cases you can't provide a permit (ex: upcoming development) meaning it will never be a task
 // TBD later though
 
+// Also we should take suggestions and vague "i need help" statments
+
 const SO = {};
 // Templates
 const notes = {
@@ -43,8 +45,7 @@ const public_housing = {
 };
 
 // Business
-SO['business_finance.appearance'] = {};
-SO['business_finance.complaint'] = {};
+SO['business_finance.business'] = {};
 
 // Environment
 SO['environment_sanitation.tree'] = {
@@ -423,13 +424,17 @@ SO['transportation_streets_sidewalks.vehicle.wreckless'] = {};
 SO['transportation_streets_sidewalks.vehicle.abandoned'] = {};
 SO['transportation_streets_sidewalks.utility.wire_danger'] = {};
 
+// Government, Civil Services
+SO['government_civil_services.vehicle.misuse'] = {};
+
+
+// Compile!
 const readySO = {};
 Object.keys(SO).forEach((key) => {
   if (Object.keys(SO[key]).length > 0) {
     readySO[key] = SO[key];
   }
 });
-
 module.exports = {
   all: SO,
   ready: readySO,
