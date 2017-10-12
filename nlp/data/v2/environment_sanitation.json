@@ -419,8 +419,40 @@
     "intent": "environment_sanitation.trash.schedule"
   },
   {
+    "text": "A tree is down",
+    "intent": "environment_sanitation.tree.down"
+  },
+  {
+    "text": "A tree is blocking the street",
+    "intent": "environment_sanitation.tree.down"
+  },
+  {
+    "text": "There is a tree down, how do I report it?",
+    "intent": "environment_sanitation.tree.down"
+  },
+  {
+    "text": "There's a tree down outside my house",
+    "intent": "environment_sanitation.tree.down"
+  },
+  {
     "intent": "environment_sanitation.tree.inspection",
     "text": "The tree outside my house looks dead"
+  },
+  {
+    "text": "I want to plant a tree. Anything I need to do?",
+    "intent": "environment_sanitation.tree.planting"
+  },
+  {
+    "text": "Do the landscapers need permission to plant trees?",
+    "intent": "environment_sanitation.tree.planting"
+  },
+  {
+    "text": "Can I just plant a tree?",
+    "intent": "environment_sanitation.tree.planting"
+  },
+  {
+    "text": "Is anything required to plant a tree?",
+    "intent": "environment_sanitation.tree.planting"
   },
   {
     "intent": "environment_sanitation.tree.planting",

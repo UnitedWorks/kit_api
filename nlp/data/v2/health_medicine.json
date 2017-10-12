@@ -1,57 +1,47 @@
 [
   {
     "text": "What should I do if a bat landed on me?",
-    "intent": "health_medicine.animal_bat_contact",
-    "entities": []
+    "intent": "health_medicine.animal.bat.touched"
   },
   {
     "text": "What should I do if a bat bit me?",
-    "intent": "health_medicine.animal_bat_contact",
-    "entities": []
+    "intent": "health_medicine.animal.bat.touched"
   },
   {
     "text": "There's a bat in my house",
-    "intent": "health_medicine.animal_bat_trapped",
-    "entities": []
+    "intent": "health_medicine.animal.bat.trapped"
   },
   {
     "text": "What should I do if a bat is in my house?",
-    "intent": "health_medicine.animal_bat_trapped",
-    "entities": []
+    "intent": "health_medicine.animal.bat.trapped"
   },
   {
     "text": "a bat is in the house",
-    "intent": "health_medicine.animal_bat_trapped",
-    "entities": []
+    "intent": "health_medicine.animal.bat.trapped"
   },
   {
     "text": "What animals usually have rabbies?",
-    "intent": "health_medicine.animal_rabbies_found",
-    "entities": []
+    "intent": "health_medicine.animal.rabbies.expect"
   },
   {
     "text": "What animals do I have to worry about having rabbies?",
-    "intent": "health_medicine.animal_rabbies_found",
-    "entities": []
-  },
-  {
-    "text": "Could my pet have been exposed to rabbies?",
-    "intent": "health_medicine.animal_rabbies_signs",
-    "entities": []
-  },
-  {
-    "text": "How do I know if my pet has rabies",
-    "intent": "health_medicine.animal_rabbies_signs",
-    "entities": []
+    "intent": "health_medicine.animal.rabbies.expect"
   },
   {
     "text": "What does a rabid animal look like?",
-    "intent": "health_medicine.animal_rabbies_signs",
-    "entities": []
+    "intent": "health_medicine.animal.rabbies"
+  },
+  {
+    "text": "Could my pet have been exposed to rabbies?",
+    "intent": "health_medicine.animal.rabbies"
+  },
+  {
+    "text": "How do I know if my pet has rabies",
+    "intent": "health_medicine.animal.rabbies"
   },
   {
     "text": "my pet might have rabbies",
-    "intent": "health_medicine.animal_rabbies_signs",
+    "intent": "health_medicine.animal.rabbies",
     "entities": [
       {
         "start": 18,
@@ -63,8 +53,7 @@
   },
   {
     "text": "open clinics nearby",
-    "intent": "health_medicine.clinics",
-    "entities": []
+    "intent": "health_medicine.clinics"
   },
   {
     "text": "I need a doctor",
@@ -80,13 +69,11 @@
   },
   {
     "text": "Where can I find a health clinic or basic medical care?",
-    "intent": "health_medicine.clinics",
-    "entities": []
+    "intent": "health_medicine.clinics"
   },
   {
     "text": "Where can I find free medical help",
-    "intent": "health_medicine.clinics",
-    "entities": []
+    "intent": "health_medicine.clinics"
   },
   {
     "text": "Open clinics",
@@ -102,22 +89,19 @@
   },
   {
     "text": "How can I get healthier?",
-    "intent": "health_medicine.health_guides",
-    "entities": []
+    "intent": "health_medicine.healthy_living.guide"
   },
   {
     "text": "How do I get guides to healthy living?",
-    "intent": "health_medicine.health_guides",
-    "entities": []
+    "intent": "health_medicine.healthy_living.guide"
   },
   {
     "text": "I want to be healthier",
-    "intent": "health_medicine.health_guides",
-    "entities": []
+    "intent": "health_medicine.healthy_living.guide"
   },
   {
     "text": "Who tests for HIV",
-    "intent": "health_medicine.health_std_testing",
+    "intent": "health_medicine.screening.std",
     "entities": [
       {
         "start": 14,
@@ -129,17 +113,15 @@
   },
   {
     "text": "How do I know if I have a STD",
-    "intent": "health_medicine.health_std_testing",
-    "entities": []
+    "intent": "health_medicine.screening.std"
   },
   {
     "text": "Where can I get confidential health screenings or testing for STDs?",
-    "intent": "health_medicine.health_std_testing",
-    "entities": []
+    "intent": "health_medicine.screening.std"
   },
   {
     "text": "Where do I get STD testing",
-    "intent": "health_medicine.health_std_testing",
+    "intent": "health_medicine.screening.std",
     "entities": [
       {
         "start": 15,
@@ -151,12 +133,11 @@
   },
   {
     "text": "how much is a TB test?",
-    "intent": "health_medicine.health_tb_testing",
-    "entities": []
+    "intent": "health_medicine.screening.tb"
   },
   {
     "text": "How much does TB testing cost at a City clinic or hospital?",
-    "intent": "health_medicine.health_tb_testing",
+    "intent": "health_medicine.screening.tb",
     "entities": [
       {
         "start": 14,
@@ -168,26 +149,23 @@
   },
   {
     "text": "Mosquito Spraying Schedule",
-    "intent": "health_medicine.mosquito_spraying_schedule",
-    "entities": []
+    "intent": "health_medicine.mosquito.spraying.schedule"
   },
   {
     "text": "when do you spray for mosquitos?",
-    "intent": "health_medicine.mosquito_spraying_schedule",
-    "entities": []
+    "intent": "health_medicine.mosquito.spraying.schedule"
   },
   {
     "text": "are you spraying mosquitos?",
-    "intent": "health_medicine.mosquito_spraying_schedule",
-    "entities": []
+    "intent": "health_medicine.mosquito.spraying.schedule"
   },
   {
     "text": "Are you spraying for mosquitos in Washington Heights?",
-    "intent": "health_medicine.mosquito_spraying_schedule"
+    "intent": "health_medicine.mosquito.spraying.schedule"
   },
   {
     "text": "How do I pay my ambulance bill?",
-    "intent": "health_medicine.payments_ambulance_inquiry",
+    "intent": "health_medicine.ambulance.payment",
     "entities": [
       {
         "start": 16,
@@ -199,7 +177,7 @@
   },
   {
     "text": "What is a recommended children's vacination schedule?",
-    "intent": "health_medicine.vacination_children",
+    "intent": "health_medicine.vaccination.child",
     "entities": [
       {
         "start": 33,
@@ -211,7 +189,7 @@
   },
   {
     "text": "What vaccines should a child get?",
-    "intent": "health_medicine.vacination_children",
+    "intent": "health_medicine.vaccination.child",
     "entities": [
       {
         "start": 5,
@@ -220,5 +198,103 @@
         "entity": "category_keywords"
       }
     ]
+  },
+  {
+    "intent": "health_medicine.unsanitary.business",
+    "text": "This store has rats all over",
+    "meta": {
+      "triggers_shout_out": true
+    }
+  },
+  {
+    "intent": "health_medicine.unsanitary.food_truck",
+    "text": "This food truck doesn't seem safe",
+    "meta": {
+      "triggers_shout_out": true
+    }
+  },
+  {
+    "intent": "health_medicine.unsanitary.housing",
+    "text": "This housing complex has garbage throughout",
+    "meta": {
+      "triggers_shout_out": true
+    }
+  },
+  {
+    "intent": "health_medicine.unsanitary.restaurant",
+    "text": "I ate a resturaunt and got sick. What should I do?",
+    "meta": {
+      "triggers_shout_out": true
+    }
+  },
+  {
+    "intent": "health_medicine.unsanitary.restaurant",
+    "text": "How do I report an unsafe condition in a restaurant?",
+    "meta": {
+      "triggers_shout_out": true
+    }
+  },
+  {
+    "intent": "health_medicine.unsanitary.restaurant",
+    "text": "I just got food poisioning from a resturaunt",
+    "meta": {
+      "triggers_shout_out": true
+    }
+  },
+  {
+    "intent": "health_medicine.standing_water",
+    "text": "Water on the street is getting swarmed with mosquitos",
+    "meta": {
+      "triggers_shout_out": true
+    }
+  },
+  {
+    "intent": "health_medicine.animal.dead",
+    "text": "How do I report a dead animal on the road?",
+    "meta": {
+      "triggers_shout_out": true
+    }
+  },
+  {
+    "intent": "health_medicine.animal.dead",
+    "text": "I found a dead animal",
+    "meta": {
+      "triggers_shout_out": true
+    }
+  },
+  {
+    "intent": "health_medicine.animal.dead",
+    "text": "Theres a dead deer on the side of the road",
+    "meta": {
+      "triggers_shout_out": true
+    }
+  },
+  {
+    "intent": "health_medicine.animal.excrement",
+    "text": "My neighbor isn't picking up after his dog",
+    "meta": {
+      "triggers_shout_out": true
+    }
+  },
+  {
+    "intent": "health_medicine.rodents",
+    "text": "There are rats eating my garbage",
+    "meta": {
+      "triggers_shout_out": true
+    }
+  },
+  {
+    "intent": "health_medicine.insects.bed_bugs",
+    "text": "Help I think I have bed bugs",
+    "meta": {
+      "triggers_shout_out": true
+    }
+  },
+  {
+    "intent": "health_medicine.insects.bees",
+    "text": "I think there is a hornets nest in the gutter",
+    "meta": {
+      "triggers_shout_out": true
+    }
   }
 ]

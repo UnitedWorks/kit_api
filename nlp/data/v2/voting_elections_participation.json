@@ -25,23 +25,23 @@
   },
   {
     "text": "How do I register as a democrat?",
-    "intent": "voting_elections_participation.affiliation.change"
+    "intent": "voting_elections_participation.affiliation.update"
   },
   {
     "text": "I want to register as a republican?",
-    "intent": "voting_elections_participation.affiliation.change"
+    "intent": "voting_elections_participation.affiliation.update"
   },
   {
     "text": "When do I have to register as an independent by?",
-    "intent": "voting_elections_participation.affiliation.change"
+    "intent": "voting_elections_participation.affiliation.update"
   },
   {
     "text": "How do I change my party affiliation?",
-    "intent": "voting_elections_participation.affiliation.change"
+    "intent": "voting_elections_participation.affiliation.update"
   },
   {
     "text": "I want to change my party",
-    "intent": "voting_elections_participation.affiliation.change"
+    "intent": "voting_elections_participation.affiliation.update"
   },
   {
     "text": "i need help with voting",
@@ -189,55 +189,55 @@
   },
   {
     "text": "Where are the polls?",
-    "intent": "voting_elections_participation.polls.find"
+    "intent": "voting_elections_participation.polls.search"
   },
   {
     "text": "poll location",
-    "intent": "voting_elections_participation.polls.find"
+    "intent": "voting_elections_participation.polls.search"
   },
   {
     "text": "why am i not being allowed to vote",
-    "intent": "voting_elections_participation.problem"
+    "intent": "voting_elections_participation.blocking"
   },
   {
     "text": "there are people blocking the polls,",
-    "intent": "voting_elections_participation.problem"
+    "intent": "voting_elections_participation.blocking"
   },
   {
     "text": "there are people blocking the polls",
-    "intent": "voting_elections_participation.problem"
+    "intent": "voting_elections_participation.blocking"
   },
   {
     "text": "the people at the polls said i couldnt vote even though i know im registered,",
-    "intent": "voting_elections_participation.problem"
+    "intent": "voting_elections_participation.blocking"
   },
   {
     "text": "someone is preventing me from voting at the polls",
-    "intent": "voting_elections_participation.problem"
+    "intent": "voting_elections_participation.blocking"
   },
   {
     "text": "im not being allowed to vote,",
-    "intent": "voting_elections_participation.problem"
+    "intent": "voting_elections_participation.blocking"
   },
   {
     "text": "im not being allowed to vote",
-    "intent": "voting_elections_participation.problem"
+    "intent": "voting_elections_participation.blocking"
   },
   {
     "text": "Im having an issue voting",
-    "intent": "voting_elections_participation.problem"
+    "intent": "voting_elections_participation.blocking"
   },
   {
     "text": "Problem at Polls",
-    "intent": "voting_elections_participation.problem"
+    "intent": "voting_elections_participation.blocking"
   },
   {
     "text": "the people at the polls said i couldnt vote even though i know im registered",
-    "intent": "voting_elections_participation.problem"
+    "intent": "voting_elections_participation.blocking"
   },
   {
     "text": "they wont let me vote",
-    "intent": "voting_elections_participation.problem"
+    "intent": "voting_elections_participation.blocking"
   },
   {
     "text": "I want to check my voter registration",
@@ -269,35 +269,35 @@
   },
   {
     "text": "Lets register to vote!",
-    "intent": "voting_elections_participation.registration.get"
+    "intent": "voting_elections_participation.registration.request"
   },
   {
     "text": "I want to vote",
-    "intent": "voting_elections_participation.registration.get"
+    "intent": "voting_elections_participation.registration.request"
   },
   {
     "text": "Get registered!",
-    "intent": "voting_elections_participation.registration.get"
+    "intent": "voting_elections_participation.registration.request"
   },
   {
     "text": "Can you register me to vote?",
-    "intent": "voting_elections_participation.registration.get"
+    "intent": "voting_elections_participation.registration.request"
   },
   {
     "text": "get registered to vote",
-    "intent": "voting_elections_participation.registration.get"
+    "intent": "voting_elections_participation.registration.request"
   },
   {
     "text": "Get registered to vote",
-    "intent": "voting_elections_participation.registration.get"
+    "intent": "voting_elections_participation.registration.request"
   },
   {
     "text": "How can I register to vote?",
-    "intent": "voting_elections_participation.registration.get"
+    "intent": "voting_elections_participation.registration.request"
   },
   {
     "text": "I want to register to vote",
-    "intent": "voting_elections_participation.registration.get"
+    "intent": "voting_elections_participation.registration.request"
   },
   {
     "text": "requesting a sample ballotv",

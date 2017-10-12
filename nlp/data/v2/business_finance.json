@@ -96,24 +96,21 @@
   },
   {
     "text": "Can I put signs around to advertise an event?",
-    "intent": "business_finance.advertising.general_plastering",
-    "entities": []
+    "intent": "business_finance.advertising.general_plastering"
   },
   {
     "text": "Can I put posters on telephone polls?",
-    "intent": "business_finance.advertising.general_plastering",
-    "entities": []
+    "intent": "business_finance.advertising.general_plastering"
   },
   {
     "text": "Where can I advertise my event?",
-    "intent": "business_finance.advertising.general_plastering",
-    "entities": []
+    "intent": "business_finance.advertising.general_plastering"
   },
   {
     "text": "small business",
     "intent": "business_finance.business",
     "meta": {
-      "vague": true,
+      "vague": true
     }
   },
   {
@@ -166,7 +163,7 @@
   },
   {
     "text": "How do I check if a business has a history of complaints?",
-    "intent": "business_finance.business.complaint_history",
+    "intent": "business_finance.history_records.complaint.business",
     "entities": [
       {
         "start": 20,
@@ -178,11 +175,11 @@
   },
   {
     "text": "Where can I get a history of complaints about a business?",
-    "intent": "business_finance.business.complaint_history"
+    "intent": "business_finance.history_records.complaint.business"
   },
   {
     "text": "Where can I get a business's work history?",
-    "intent": "business_finance.business.complaint_history",
+    "intent": "business_finance.history_records.complaint.business",
     "entities": [
       {
         "start": 18,
@@ -200,7 +197,7 @@
   },
   {
     "text": "How do I learn about a business's past performance?",
-    "intent": "business_finance.business.complaint_history",
+    "intent": "business_finance.history_records.complaint.business",
     "entities": [
       {
         "start": 34,
@@ -244,19 +241,19 @@
   },
   {
     "text": "How do I check if a business is licensed?",
-    "intent": "business_finance.permit_license_permission.check"
+    "intent": "business_finance.permit_license_permission.business.check"
   },
   {
     "text": "I don't think this business is licensed",
-    "intent": "business_finance.permit_license_permission.check"
+    "intent": "business_finance.permit_license_permission.business.check"
   },
   {
     "text": "Can you check if a business is licensed?",
-    "intent": "business_finance.permit_license_permission.check"
+    "intent": "business_finance.permit_license_permission.business.check"
   },
   {
     "text": "Check a contractor license",
-    "intent": "business_finance.permit_license_permission.check"
+    "intent": "business_finance.permit_license_permission.business.check"
   },
   {
     "text": "Get a Business License",
@@ -396,11 +393,11 @@
   },
   {
     "text": "Do company vehicles need any special markings or signs?",
-    "intent": "business_finance.regulation_requirements.business_vehicles_markings"
+    "intent": "business_finance.regulation_requirements.business.vehicle.markings"
   },
   {
     "text": "What are construction workers required to list on their vehicles?",
-    "intent": "business_finance.regulation_requirements.business_vehicles_markings",
+    "intent": "business_finance.regulation_requirements.business.vehicle.markings",
     "entities": [
       {
         "start": 9,

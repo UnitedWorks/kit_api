@@ -400,11 +400,11 @@
   },
   {
     "text": "When are taxes due?",
-    "intent": "government_civil_services.taxes.deadline"
+    "intent": "government_civil_services.taxes.deadlines"
   },
   {
     "text": "When do I need to file taxes by?",
-    "intent": "government_civil_services.taxes.deadline",
+    "intent": "government_civil_services.taxes.deadlines",
     "entities": [
       {
         "start": 18,
@@ -416,7 +416,7 @@
   },
   {
     "text": "Do I need to pay taxes soon?",
-    "intent": "government_civil_services.taxes.deadline"
+    "intent": "government_civil_services.taxes.deadlines"
   },
   {
     "text": "Where do I make a tax payment?",

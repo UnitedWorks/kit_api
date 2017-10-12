@@ -37,26 +37,26 @@
   },
   {
     "text": "List my complaints",
-    "intent": "interaction.tasks.get"
+    "intent": "interaction.tasks"
   },
   {
     "text": "List my requests",
-    "intent": "interaction.tasks.get"
+    "intent": "interaction.tasks"
   },
   {
     "text": "View my complaints",
-    "intent": "interaction.tasks.get"
+    "intent": "interaction.tasks"
   },
   {
     "text": "View my requests",
-    "intent": "interaction.tasks.get"
+    "intent": "interaction.tasks"
   },
   {
     "text": "Whats the status of my requests?",
-    "intent": "interaction.tasks.get"
+    "intent": "interaction.tasks"
   },
   {
     "text": "Has my complaint been taken care of?",
-    "intent": "interaction.tasks.get"
+    "intent": "interaction.tasks"
   }
 ]
