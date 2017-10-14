@@ -645,11 +645,11 @@
     "text": "How do I reserve a park pavilion?"
   },
   {
-    "intent": "environment_sanitation.water.flooding",
+    "intent": "environment_sanitation.water.flood",
     "text": "My street is flooding"
   },
   {
-    "intent": "environment_sanitation.water.flooding",
+    "intent": "environment_sanitation.water.flood",
     "text": "The block is still underwater"
   },
   {

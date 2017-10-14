@@ -320,7 +320,7 @@
   },
   {
     "text": "What is a Federal Tax Identification number?",
-    "intent": "government_civil_services.identification_federal_tax_id",
+    "intent": "government_civil_services.identification.federal_tax_id",
     "entities": [
       {
         "start": 10,

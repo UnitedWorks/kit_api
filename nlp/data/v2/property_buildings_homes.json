@@ -1187,7 +1187,7 @@
     "text": "There is a dispute with my lease"
   },
   {
-    "intent": "property_buildings_homes.contested.housing.rent_increase",
+    "intent": "property_buildings_homes.contested.housing.rent_control",
     "text": "My rent went up more than allowed"
   },
   {

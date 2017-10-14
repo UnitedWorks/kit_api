@@ -459,11 +459,11 @@
   },
   {
     "text": "How does my company become one of your approved vendors?",
-    "intent": "business_finance.procurement.approval"
+    "intent": "business_finance.procurement.approved"
   },
   {
     "text": "How do I apply to be an approved vendor?",
-    "intent": "business_finance.procurement.approval",
+    "intent": "business_finance.procurement.approved",
     "entities": [
       {
         "start": 33,

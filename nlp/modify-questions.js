@@ -41,7 +41,7 @@ const updateOperations = [
   { from: 'general.advertising_general_plastering', to: 'business_finance.advertising.general_plastering' },
   { from: 'business_finance.business_vehicles_markings', to: 'business_finance.regulation_requirements.business.vehicle.markings' },
   { from: 'business_finance.procurement_inquiry', to: 'business_finance.procurement.how_to' },
-  { from: 'business_finance.procurement_vendors_approved', to: 'business_finance.procurement.approval' },
+  { from: 'business_finance.procurement_vendors_approved', to: 'business_finance.procurement.approved' },
   { delete: 'business_finance.appearance' },
   { from: 'education_employment.education_college_info', to: 'education_employment.higher_education.guide' },
   { from: 'education_employment.employment_job_training', to: 'education_employment.employment.training' },
@@ -137,6 +137,7 @@ const updateOperations = [
   { from: 'property_buildings_homes.property_fire_inspection.cancel', to: 'property_buildings_homes.inspection.cancel.fire' },
   { from: 'property_buildings_homes.property_fire_inspection.request', to: 'property_buildings_homes.inspection.request.fire' },
   { from: 'property_buildings_homes.property_flood_zone', to: 'property_buildings_homes.district_zoning.flood' },
+  { from: 'environment_sanitation.water.flooding', to: 'environment_sanitation.water.flood' },
   { delete: 'property_buildings_homes.property_flood_zone.check' },
   { from: 'property_buildings_homes.property_historical_district.check', to: 'property_buildings_homes.district_zoning.historical' },
   { from: 'property_buildings_homes.property_infestation_history', to: 'property_buildings_homes.history_records.infestation' },
@@ -272,6 +273,7 @@ const updateOperations = [
   { from: 'transportation_streets_sidewalks.parking_violation.loading_zone', to: 'transportation_streets_sidewalks.violation.parking.loading_zone' },
   { from: 'transportation_streets_sidewalks.parking_violation.parking_meter', to: 'transportation_streets_sidewalks.violation.parking.parking_meter' },
   { from: 'transportation_streets_sidewalks.parking_violation.school_zone', to: 'transportation_streets_sidewalks.violation.parking.school_zone' },
+  { delete: 'property_buildings_homes.contested.housing.rent_increase' },
 ].map((modification) => {
   // Simply update the label
   if (modification.from && modification.to) {
