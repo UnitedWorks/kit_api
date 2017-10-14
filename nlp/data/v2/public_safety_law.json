@@ -265,19 +265,19 @@
   },
   {
     "text": "What do I need to bring with me to court?",
-    "intent": "public_safety_law.court.preparation"
+    "intent": "public_safety_law.court.guide"
   },
   {
     "text": "Whats needed for court?",
-    "intent": "public_safety_law.court.preparation"
+    "intent": "public_safety_law.court.guide"
   },
   {
     "text": "What should I bring to my trial?",
-    "intent": "public_safety_law.court.preparation"
+    "intent": "public_safety_law.court.guide"
   },
   {
     "text": "Do I need anything for my trial?",
-    "intent": "public_safety_law.court.preparation"
+    "intent": "public_safety_law.court.guide"
   },
   {
     "text": "How do I enter a plea before my court date?",

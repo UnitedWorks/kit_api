@@ -61,10 +61,6 @@
     "intent": "government_civil_services.council"
   },
   {
-    "text": "How do I get in touch with the council?",
-    "intent": "government_civil_services.council.contact"
-  },
-  {
     "text": "How to access the Council Agenda?",
     "intent": "government_civil_services.council.agenda"
   },

@@ -47,7 +47,7 @@ knex.select().from('knowledge_categorys').then((catRows) => {
           return knex('knowledge_questions').where({ label: row[0].label }).update({ vague: true }).returning('id');
         }
       }
-      if (row[0].vague === true) return knex('knowledge_questions').where({ label: row[0].label }).update({ vague: false });
+      if (row[0] && row[0].vague === true) return knex('knowledge_questions').where({ label: row[0].label }).update({ vague: false });
     }));
   });
 

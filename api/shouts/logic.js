@@ -89,6 +89,7 @@ SO['environment_sanitation.water.quality'] = {};
 SO['environment_sanitation.catch_basin'] = {};
 SO['environment_sanitation.catch_basin.repairs'] = {};
 SO['environment_sanitation.catch_basin.cleaning'] = {};
+SO['environment_sanitation.catch_basin.request'] = {};
 SO['environment_sanitation.dumping'] = {
   knowledge_category: 'environment_sanitation',
   domain: 'dumping',

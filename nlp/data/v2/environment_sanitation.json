@@ -101,10 +101,7 @@
   },
   {
     "text": "I need bulk pickup",
-    "intent": "environment_sanitation.disposal.bulk_pickup.request",
-    "meta": {
-      "vague": true
-    }
+    "intent": "environment_sanitation.disposal.bulk_pickup.request"
   },
   {
     "text": "I need bulk pickup",
@@ -553,7 +550,7 @@
     "text": "Who do I report a dead city tree to?"
   },
   {
-    "text": "I want to plant a tree. Anything I need to do?",
+    "text": "I want a tree planted. Anything I need to do?",
     "intent": "environment_sanitation.tree.planting"
   },
   {

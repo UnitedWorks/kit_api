@@ -443,11 +443,11 @@
   },
   {
     "text": "How can my business work with the city?",
-    "intent": "business_finance.procurement.how_to"
+    "intent": "business_finance.procurement.guide"
   },
   {
     "text": "How do I get a city contract?",
-    "intent": "business_finance.procurement.how_to",
+    "intent": "business_finance.procurement.guide",
     "entities": [
       {
         "start": 20,

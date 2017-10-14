@@ -334,15 +334,15 @@
   },
   {
     "text": "When selling a home, what forms or requirements are there?",
-    "intent": "property_buildings_homes.home.selling"
+    "intent": "property_buildings_homes.regulation_requirements.home.selling"
   },
   {
     "text": "What do I need to do when selling a home?",
-    "intent": "property_buildings_homes.home.selling"
+    "intent": "property_buildings_homes.regulation_requirements.home.selling"
   },
   {
     "text": "What is required to sell a apartment?",
-    "intent": "property_buildings_homes.home.selling"
+    "intent": "property_buildings_homes.regulation_requirements.home.selling"
   },
   {
     "text": "Can I smoke in the stairwell of my apartment building?",
@@ -807,8 +807,8 @@
     "intent": "property_buildings_homes.responsibility.heat"
   },
   {
-    "text": "Is working heating for apartments required?",
-    "intent": "When does my landlord have to turn my heat on?"
+    "text": "When does my landlord have to turn my heat on?",
+    "intent": "property_buildings_homes.responsibility.heat"
   },
   {
     "text": "Is a landlord required to provide heating?",

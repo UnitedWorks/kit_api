@@ -40,7 +40,7 @@ const updateOperations = [
   { delete: 'business_finance.business_tattoos.report' },
   { from: 'general.advertising_general_plastering', to: 'business_finance.advertising.general_plastering' },
   { from: 'business_finance.business_vehicles_markings', to: 'business_finance.regulation_requirements.business.vehicle.markings' },
-  { from: 'business_finance.procurement_inquiry', to: 'business_finance.procurement.how_to' },
+  { from: 'business_finance.procurement_inquiry', to: 'business_finance.procurement.guide' },
   { from: 'business_finance.procurement_vendors_approved', to: 'business_finance.procurement.approved' },
   { delete: 'business_finance.appearance' },
   { from: 'education_employment.education_college_info', to: 'education_employment.higher_education.guide' },
@@ -118,7 +118,7 @@ const updateOperations = [
   { from: 'property_buildings_homes.home_max_occupancy', to: 'property_buildings_homes.regulation_requirements.max_occupancy.home' },
   { from: 'property_buildings_homes.home_propane', to: 'property_buildings_homes.permit_license_permission.propane' },
   { from: 'property_buildings_homes.home_room_rental', to: 'property_buildings_homes.regulation_requirements.rental' },
-  { from: 'property_buildings_homes.home_selling_requirements', to: 'property_buildings_homes.home.selling' },
+  { from: 'property_buildings_homes.home_selling_requirements', to: 'property_buildings_homes.regulation_requirements.home.selling' },
   { from: 'property_buildings_homes.home_water_hardness', to: 'property_buildings_homes.water_hardness' },
   { from: 'property_buildings_homes.home_smoking', to: 'property_buildings_homes.regulation_requirements.smoking.housing' },
   { from: 'property_buildings_homes.inspection.request', to: 'property_buildings_homes.inspection.building.request' },
@@ -157,12 +157,12 @@ const updateOperations = [
   { from: 'property_buildings_homes.property_sprinkler_requirements', to: 'property_buildings_homes.regulation_requirements.sprinkler' },
   { from: 'property_buildings_homes.property_surrounding_owners.get', to: 'property_buildings_homes.property.search' },
   { from: 'property_buildings_homes.property_tenant_history', to: 'property_buildings_homes.history_records.complaint.tenant' },
-  { from: 'property_buildings_homes.property_tree_planting', to: 'environment_sanitation.tree.planting' },
+  { delete: 'property_buildings_homes.property_tree_planting' },
   { from: 'property_buildings_homes.property_tree_overhang', to: 'property_buildings_homes.regulation_requirements.tree.overhang' },
   { from: 'property_buildings_homes.property_tree_public_private', to: 'property_buildings_homes.map.tree' }, // Update sentence: How do I know whos responsible for a tree?
   { from: 'property_buildings_homes.property_water_supplier', to: 'property_buildings_homes.water_supplier' },
   { from: 'property_buildings_homes.property_zoning.check', to: 'property_buildings_homes.district_zoning.lookup' },
-  { from: 'property_buildings_homes.public_housing_maintenance.report', to: 'property_buildings_homes.violation.repairs.housing.public' }, // Created a shout for this
+  { from: 'property_buildings_homes.public_housing_maintenance.report', to: 'property_buildings_homes.violation.housing.repairs.public' }, // Created a shout for this
   { from: 'public_safety_law.corrections_holding.search', to: 'public_safety_law.corrections.holdings.search' },
   { from: 'public_safety_law.emergencies_shelter', to: 'public_safety_law.emergency.shelter' },
   { from: 'public_safety_law.event_requirements', to: 'public_safety_law.event' },
@@ -171,7 +171,7 @@ const updateOperations = [
   { from: 'public_safety_law.hate_crime.report', to: 'public_safety_law.hate_crime' },
   { from: 'public_safety_law.identity_theft.report', to: 'public_safety_law.identity_theft' },
   { from: 'public_safety_law.law_court_date', to: 'public_safety_law.court.date' },
-  { from: 'public_safety_law.law_court_documents', to: 'public_safety_law.court.preparation' },
+  { from: 'public_safety_law.law_court_documents', to: 'public_safety_law.court.guide' },
   { from: 'public_safety_law.law_court_plea_early', to: 'public_safety_law.court.plea' },
   { from: 'public_safety_law.law_restraining_order', to: 'public_safety_law.restraining_order' },
   { from: 'public_safety_law.missing_person.report', to: 'public_safety_law.missing_person' },
@@ -239,7 +239,7 @@ const updateOperations = [
   { from: 'transportation_streets_sidewalks.vehicle.wreckless', to: 'transportation_streets_sidewalks.vehicle.reckless' },
   { from: 'health_medicine.animal.rabid' },
   { from: 'social_services.human_traffiking', to: 'social_services.human_trafficking' },
-  { from: 'environment_sanitation.disposal.bulk_pickup', to: 'environment_sanitation.disposal.bulk_pickup.request' },
+  { delete: 'environment_sanitation.disposal.bulk_pickup' },
   { from: 'property_buildings_homes.housing_violation.heat', to: 'property_buildings_homes.violation.housing.heat' },
   { from: 'property_buildings_homes.housing_violation.hot_water', to: 'property_buildings_homes.violation.housing.hot_water' },
   { from: 'property_buildings_homes.housing_violation.repairs', to: 'property_buildings_homes.violation.housing.repairs' },
@@ -274,12 +274,19 @@ const updateOperations = [
   { from: 'transportation_streets_sidewalks.parking_violation.parking_meter', to: 'transportation_streets_sidewalks.violation.parking.parking_meter' },
   { from: 'transportation_streets_sidewalks.parking_violation.school_zone', to: 'transportation_streets_sidewalks.violation.parking.school_zone' },
   { delete: 'property_buildings_homes.contested.housing.rent_increase' },
+  { delete: 'business_finance.business_tax_record_updating' },
+  { delete: 'government_civil_services.council.contact' },
+  { delete: 'government_civil_services.identification_federal_tax_id' },
+  { delete: 'transportation_streets_sidewalks.parking.residential_permit_request' },
+  { delete: 'transportation_streets_sidewalks.parking_violation.meter' },
+  { from: 'business_finance.procurement.how_to', to: 'business_finance.procurement.guide' },
+  { delete: 'property_buildings_homes.district' },
 ].map((modification) => {
   // Simply update the label
   if (modification.from && modification.to) {
     return knex('knowledge_questions')
       .where({ label: modification.from })
-      .update({ label: modification.to })
+      .update({ label: modification.to, updated_at: knex.raw('now()') })
       .then(r => r);
   // Delete Associated Data/Answers in addition to Question
   } else if (modification.delete) {
