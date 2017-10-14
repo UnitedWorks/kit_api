@@ -102,6 +102,14 @@
     ]
   },
   {
+    "text": "How do I know what jobs are available?",
+    "intent": "education_employment.employment.search"
+  },
+  {
+    "text": "How do I apply for a position?",
+    "intent": "education_employment.employment.search"
+  },
+  {
     "text": "Help me get a job",
     "intent": "education_employment.employment.search"
   },
@@ -124,6 +132,26 @@
   {
     "text": "I need a job",
     "intent": "education_employment.employment.search"
+  },
+  {
+    "text": "I want to be a Police Officer. How do I get started?",
+    "intent": "education_employment.employment.police_department"
+  },
+  {
+    "text": "How do I join the police force?",
+    "intent": "education_employment.employment.police_department"
+  },
+  {
+    "text": "How do I become a member of the Fire Department?",
+    "intent": "education_employment.employment.fire_department"
+  },
+  {
+    "text": "I'm interested in becoming a volunteer fire fighter, how do I apply?",
+    "intent": "education_employment.employment.fire_department"
+  },
+  {
+    "text": "When and where do I register my child for school?",
+    "intent": "education_employment.public_schools.registration"
   },
   {
     "text": "What schools are in my area?",

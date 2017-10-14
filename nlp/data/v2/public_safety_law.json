@@ -1,5 +1,17 @@
 [
   {
+    "text": "How do I find out if there is a warrant for my arrest?",
+    "intent": "public_safety_law.warrant.check"
+  },
+  {
+    "text": "I have a warrant for my arrest, what should I do?",
+    "intent": "public_safety_law.warrant.guide"
+  },
+  {
+    "text": "I think I may have a warrant, what do I do now?",
+    "intent": "public_safety_law.warrant.guide"
+  },
+  {
     "text": "How do I find someone who was recently arrested?",
     "intent": "public_safety_law.corrections.holdings.search",
     "entities": [
@@ -49,6 +61,10 @@
   },
   {
     "text": "My friend was arrested. Where is he?",
+    "intent": "public_safety_law.corrections.holdings.search"
+  },
+  {
+    "text": "I’m looking for a relative.  How can I find out if they are in the Chula Vista jail?",
     "intent": "public_safety_law.corrections.holdings.search"
   },
   {
@@ -280,6 +296,10 @@
     "intent": "public_safety_law.court.plea"
   },
   {
+    "text": "Where and how can I get a restraining order?",
+    "intent": "public_safety_law.restraining_order"
+  },
+  {
     "text": "How do I keep someone away from me",
     "intent": "public_safety_law.restraining_order"
   },
@@ -376,6 +396,10 @@
     "intent": "public_safety_law.regulation_requirements.public_assembly"
   },
   {
+    "text": "What is a Public Assembly permit?",
+    "intent": "public_safety_law.regulation_requirements.public_assembly"
+  },
+  {
     "text": "Do I need a permit to protest?",
     "intent": "public_safety_law.regulation_requirements.public_assembly"
   },
@@ -424,7 +448,19 @@
     "intent": "public_safety_law.police_report.request"
   },
   {
+    "text": "How do I get a crime report?",
+    "intent": "public_safety_law.police_report.request"
+  },
+  {
     "text": "How can I get a copy of a police report?",
+    "intent": "public_safety_law.police_report.request"
+  },
+  {
+    "text": "How do I file a police report?",
+    "intent": "public_safety_law.police_report.request"
+  },
+  {
+    "text": "How do I obtain a copy of a police or accident report?",
     "intent": "public_safety_law.police_report.request"
   },
   {
@@ -486,5 +522,41 @@
         "entity": "category_keywords"
       }
     ]
+  },
+  {
+    "text": "I’m interested in law enforcement and want to do a ride along. How do I set that up?",
+    "intent": "public_safety_law.ride_along"
+  },
+  {
+    "text": "I'm a college student majoring in criminal justice.  Is there a way I could ride along with an officer one night?",
+    "intent": "public_safety_law.ride_along"
+  },
+  {
+    "text": "How do I make a complaint about an officer?",
+    "intent": "public_safety_law.officer.report"
+  },
+  {
+    "text": "I want to report an officer",
+    "intent": "public_safety_law.officer.report"
+  },
+  {
+    "text": "How do I obtain a rescue report?",
+    "intent": "public_safety_law.rescue_report.request"
+  },
+  {
+    "text": "How do I request a tour of the Police Facility for my group/class/kids?",
+    "intent": "public_safety_law.police_department.tour"
+  },
+  {
+    "text": "I am on the PTA and would like to schedule a tour of the PD for the 4th grade, how do I go about doing that?",
+    "intent": "public_safety_law.police_department.tour"
+  },
+  {
+    "text": "My car was broken into or vandalized. What do I do?",
+    "intent": "public_safety_law.vehicle.vandalized"
+  },
+  {
+    "text": "My car was vandalized",
+    "intent": "public_safety_law.vehicle.vandalized"
   }
 ]

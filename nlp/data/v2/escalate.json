@@ -1,42 +1,34 @@
 [
   {
     "text": "I've been shot",
-    "intent": "escalate.911",
-    "entities": []
+    "intent": "escalate.911"
   },
   {
     "text": "someones robbing me",
-    "intent": "escalate.911",
-    "entities": []
+    "intent": "escalate.911"
   },
   {
     "text": "soemone broke in my house",
-    "intent": "escalate.911",
-    "entities": []
+    "intent": "escalate.911"
   },
   {
     "text": "help",
-    "intent": "escalate.911",
-    "entities": []
+    "intent": "escalate.911"
   },
   {
     "text": "police",
-    "intent": "escalate.911",
-    "entities": []
+    "intent": "escalate.911"
   },
   {
     "text": "I want to die",
-    "intent": "escalate.suicide",
-    "entities": []
+    "intent": "escalate.suicide"
   },
   {
     "text": "I think I'll kill myself",
-    "intent": "escalate.suicide",
-    "entities": []
+    "intent": "escalate.suicide"
   },
   {
     "text": "Fuck it all",
-    "intent": "escalate.suicide",
-    "entities": []
+    "intent": "escalate.suicide"
   }
 ]

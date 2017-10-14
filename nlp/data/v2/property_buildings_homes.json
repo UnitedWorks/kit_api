@@ -63,18 +63,20 @@
     "intent": "property_buildings_homes.housing_quality_standards_report.request"
   },
   {
+    "text": "How can I obtain a copy of a plan of my property",
+    "intent": "property_buildings_homes.property_plan.request"
+  },
+  {
+    "text": "I need a map of my property",
+    "intent": "property_buildings_homes.property_plan.request"
+  },
+  {
     "text": "How do I report hoarding that creates a fire hazard?",
-    "intent": "property_buildings_homes.fire_hazard",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "intent": "property_buildings_homes.fire_hazard"
   },
   {
     "text": "I think there's a fire hazard",
-    "intent": "property_buildings_homes.fire_hazard",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "intent": "property_buildings_homes.fire_hazard"
   },
   {
     "text": "Do I have to pay for exterminating bed bugs?",
@@ -139,11 +141,31 @@
     "intent": "property_buildings_homes.modification.driveway"
   },
   {
+    "text": "Can I put a driveway on my property?",
+    "intent": "property_buildings_homes.driveway"
+  },
+  {
+    "text": "How can I locate my property line?",
+    "intent": "property_buildings_homes.property_line"
+  },
+  {
+    "text": "How do I know where my property lines are?",
+    "intent": "property_buildings_homes.property_line"
+  },
+  {
+    "text": "What rules and permits exist regarding residential fences?",
+    "intent": "property_buildings_homes.fences"
+  },
+  {
     "text": "What matters about fences?",
     "intent": "property_buildings_homes.fences"
   },
   {
-    "text": "What rules and permits exist regarding residential fences?",
+    "text": "Does the town have a policy about fences?",
+    "intent": "property_buildings_homes.fences"
+  },
+  {
+    "text": "Can I put a fence on my property?",
     "intent": "property_buildings_homes.fences"
   },
   {
@@ -193,6 +215,18 @@
         "entity": "category_keywords"
       }
     ]
+  },
+  {
+    "text": "Is outdoor burning, like a campfire for firepit, allowed?",
+    "intent": "property_buildings_homes.permit_license_permission.outdoor_burning"
+  },
+  {
+    "text": "Can we have a backyard campfire?",
+    "intent": "property_buildings_homes.permit_license_permission.outdoor_burning"
+  },
+  {
+    "text": "Are firepits permitted in the city of New Haven?",
+    "intent": "property_buildings_homes.permit_license_permission.outdoor_burning"
   },
   {
     "text": "When do I need to tell the city about my light changes?",
@@ -614,17 +648,23 @@
   },
   {
     "text": "What district am I in?",
-    "intent": "property_buildings_homes.district_zoning",
-    "meta": {
-      "vague": true
-    }
+    "intent": "property_buildings_homes.district_zoning"
   },
   {
     "text": "Whats my district?",
-    "intent": "property_buildings_homes.district_zoning",
-    "meta": {
-      "vague": true
-    }
+    "intent": "property_buildings_homes.district_zoning"
+  },
+  {
+    "text": "Whats zone is my property in?",
+    "intent": "property_buildings_homes.district_zoning"
+  },
+  {
+    "text": "Is the zoning map on-line?",
+    "intent": "property_buildings_homes.district_zoning"
+  },
+  {
+    "text": "Is my property in the flood plain?",
+    "intent": "property_buildings_homes.district_zoning.flood"
   },
   {
     "text": "Where are the flood zones?",
@@ -657,6 +697,14 @@
   {
     "text": "Am I in a flood zone?",
     "intent": "property_buildings_homes.district_zoning.flood"
+  },
+  {
+    "text": "What political districts am I in?",
+    "intent": "property_buildings_homes.district_zoning.political"
+  },
+  {
+    "text": "What Council District do I live in?",
+    "intent": "property_buildings_homes.district_zoning.political"
   },
   {
     "text": "Does my house fall in a historical district?",
@@ -739,12 +787,8 @@
     "intent": "property_buildings_homes.responsibility.air_conditioning"
   },
   {
-    "text": "Is working heating for apartments required?",
-    "intent": "property_buildings_homes.responsibility.heating"
-  },
-  {
     "text": "Is heating supposed to be provided by a landlord?",
-    "intent": "property_buildings_homes.responsibility.heating",
+    "intent": "property_buildings_homes.responsibility.heat",
     "entities": [
       {
         "start": 3,
@@ -755,8 +799,20 @@
     ]
   },
   {
+    "text": "Is working heating for apartments required?",
+    "intent": "property_buildings_homes.responsibility.heat"
+  },
+  {
+    "text": "In CT, is a landlord required to provide functioning, tenant-adjustable HEAT in an apartment year-round?",
+    "intent": "property_buildings_homes.responsibility.heat"
+  },
+  {
+    "text": "Is working heating for apartments required?",
+    "intent": "When does my landlord have to turn my heat on?"
+  },
+  {
     "text": "Is a landlord required to provide heating?",
-    "intent": "property_buildings_homes.responsibility.heating"
+    "intent": "property_buildings_homes.responsibility.heat"
   },
   {
     "text": "What do I need to do to have livestock on my property?",
@@ -768,6 +824,10 @@
   },
   {
     "text": "Can I have a chicken coop?",
+    "intent": "property_buildings_homes.livestock.chickens"
+  },
+  {
+    "text": "Can I raise chickens in my yard?",
     "intent": "property_buildings_homes.livestock.chickens"
   },
   {
@@ -785,6 +845,10 @@
   {
     "text": "I own two lots side by side. Can I put these lots together to make a bigger building?",
     "intent": "property_buildings_homes.lot_merge"
+  },
+  {
+    "text": "Can I subdivide my property?",
+    "intent": "property_buildings_homes.lot_split"
   },
   {
     "text": "Does the local government have records of underground oil tank removal and decommisioning?",
@@ -833,6 +897,10 @@
   {
     "text": "Need signing off my building permit",
     "intent": "property_buildings_homes.permit_license_permission.sign_off.building"
+  },
+  {
+    "text": "What kind of permit do I need to perform roof maintenance?",
+    "intent": "property_buildings_homes.regulation_requirements.roof"
   },
   {
     "text": "What is the required height for railings on a rooftop terrace?",
@@ -899,6 +967,22 @@
     "intent": "property_buildings_homes.permit_license_permission.shed"
   },
   {
+    "text": "Where can I get a dock permit?",
+    "intent": "property_buildings_homes.permit_license_permission.dock"
+  },
+  {
+    "text": "Do I need a permit for a floating dock?",
+    "intent": "property_buildings_homes.permit_license_permission.dock"
+  },
+  {
+    "text": "Do you need a permit to have a garage sale?",
+    "intent": "property_buildings_homes.permit_license_permission.garage_sale"
+  },
+  {
+    "text": "Do we need a permit for a yard sale ?",
+    "intent": "property_buildings_homes.permit_license_permission.garage_sale"
+  },
+  {
     "text": "Can I smoke in public?",
     "intent": "property_buildings_homes.regulation_requirements.smoking.public_space"
   },
@@ -953,6 +1037,10 @@
   {
     "text": "How can I get a tenants history of complaints?",
     "intent": "property_buildings_homes.history_records.complaint.tenant"
+  },
+  {
+    "text": "As a tenant do I have any rights?",
+    "intent": "property_buildings_homes.tenant.rights"
   },
   {
     "text": "A tree hangs over my property",
@@ -1028,353 +1116,215 @@
   },
   {
     "intent": "property_buildings_homes.accessibility.ramp",
-    "text": "The building isnt wheelchair accessible",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "The building isnt wheelchair accessible"
   },
   {
     "intent": "property_buildings_homes.accessibility.elevator.broken",
-    "text": "My buildings elevator is broken",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "My buildings elevator is broken"
   },
   {
     "intent": "property_buildings_homes.accessibility.escalator.broken",
-    "text": "the escalator to the subway has been broken for over a week",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "the escalator to the subway has been broken for over a week"
   },
   {
-    "intent": "property_buildings_homes.housing_violation.heat",
-    "text": "i dont have heat",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "intent": "property_buildings_homes.violation.housing.heat",
+    "text": "i dont have heat"
   },
   {
-    "intent": "property_buildings_homes.housing_violation.hot_water",
-    "text": "We don't have any hot water in our apartment",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "intent": "property_buildings_homes.violation.housing.hot_water",
+    "text": "We don't have any hot water in our apartment"
   },
   {
-    "intent": "property_buildings_homes.housing_violation.repairs",
-    "text": "How do I report a maintenance problem in my apartment building?",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "intent": "property_buildings_homes.violation.housing.repairs",
+    "text": "How do I report a maintenance problem in my apartment building?"
   },
   {
-    "intent": "property_buildings_homes.housing_violation.repairs",
-    "text": "My apartment building is falling apart",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "intent": "property_buildings_homes.violation.housing.repairs",
+    "text": "My apartment building is falling apart"
   },
   {
-    "intent": "property_buildings_homes.housing_violation.repairs",
-    "text": "The landlord isn't taking care of the apartment building",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "intent": "property_buildings_homes.violation.housing.repairs",
+    "text": "The landlord isn't taking care of the apartment building"
   },
   {
     "text": "My city apartment is falling apart",
-    "intent": "property_buildings_homes.housing_violation.repairs.housing.public",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "intent": "property_buildings_homes.violation.housing.repairs.public"
   },
   {
     "text": "How do I report a maintenance problem in my NYCHA building?",
-    "intent": "property_buildings_homes.housing_violation.repairs.housing.public",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "intent": "property_buildings_homes.violation.housing.repairs.public"
   },
   {
     "text": "The city isn't taking care of my building",
-    "intent": "property_buildings_homes.housing_violation.repairs.housing.public",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "intent": "property_buildings_homes.violation.housing.repairs.public"
   },
   {
-    "intent": "property_buildings_homes.housing_violation.tree_damage",
-    "text": "A fallen tree took out our gutter",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "intent": "property_buildings_homes.violation.housing.tree_damage",
+    "text": "A fallen tree took out our gutter"
   },
   {
-    "intent": "property_buildings_homes.housing_violation.illegal_apartments",
-    "text": "How do I report an illegal renting?",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "intent": "property_buildings_homes.violation.housing.illegal_apartments",
+    "text": "How do I report an illegal renting?"
   },
   {
-    "intent": "property_buildings_homes.housing_violation.illegal_apartments",
-    "text": "How do I report an illegal rental of living space?",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "intent": "property_buildings_homes.violation.housing.illegal_apartments",
+    "text": "How do I report an illegal rental of living space?"
   },
   {
-    "intent": "property_buildings_homes.housing_violation.illegal_apartments",
-    "text": "There are more people than allowed living in a house",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "intent": "property_buildings_homes.violation.housing.illegal_apartments",
+    "text": "There are more people than allowed living in a house"
   },
   {
-    "intent": "property_buildings_homes.housing_assistance",
-    "text": "I need housing assistance",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "intent": "property_buildings_homes.contested.housing.landlord",
+    "text": "My landlord is terrible"
   },
   {
-    "intent": "property_buildings_homes.housing_assistance.rental",
-    "text": "How do I find out about rental assistance?",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "intent": "property_buildings_homes.contested.housing.tenant",
+    "text": "The apartment next to me is terrible"
   },
   {
-    "intent": "property_buildings_homes.housing_assistance.section_8",
-    "text": "How do I find out more about section 8?",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "intent": "property_buildings_homes.contested.housing.lease",
+    "text": "There is a dispute with my lease"
   },
   {
-    "intent": "property_buildings_homes.housing_assistance.emergency_housing",
-    "text": "I need housing for the night",
-    "meta": {
-      "triggers_shout_out": true
-    }
-  },
-  {
-    "intent": "property_buildings_homes.housing_dispute.landlord",
-    "text": "My landlord is terrible",
-    "meta": {
-      "triggers_shout_out": true
-    }
-  },
-  {
-    "intent": "property_buildings_homes.housing_dispute.tenant",
-    "text": "The apartment next to me is terrible",
-    "meta": {
-      "triggers_shout_out": true
-    }
-  },
-  {
-    "intent": "property_buildings_homes.housing_dispute.lease",
-    "text": "There is a dispute with my lease",
-    "meta": {
-      "triggers_shout_out": true
-    }
-  },
-  {
-    "intent": "property_buildings_homes.housing_dispute.rent_increase",
-    "text": "My rent went up more than allowed",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "intent": "property_buildings_homes.contested.housing.rent_increase",
+    "text": "My rent went up more than allowed"
   },
   {
     "intent": "property_buildings_homes.sewage.backup",
-    "text": "What do I do if sewage is backing up in my basement?",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "What do I do if sewage is backing up in my basement?"
   },
   {
     "intent": "property_buildings_homes.sewage.backup",
-    "text": "Sewage is backing up into my basement",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "Sewage is backing up into my basement"
+  },
+  {
+    "intent": "property_buildings_homes.sewage.backup",
+    "text": "How do I resolve a sewer backup?"
   },
   {
     "intent": "property_buildings_homes.water.pressure",
-    "text": "How do I report low water pressure in my apartment?",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "How do I report low water pressure in my apartment?"
   },
   {
     "intent": "property_buildings_homes.water.pressure",
-    "text": "I think my water pressure is way too low. What do I do?",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "I think my water pressure is way too low. What do I do?"
   },
   {
     "intent": "property_buildings_homes.water.pressure",
-    "text": "The water pressure seems low",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "The water pressure seems low"
+  },
+  {
+    "intent": "property_buildings_homes.water.pressure",
+    "text": "How do I report Low Water Pressure?"
   },
   {
     "intent": "property_buildings_homes.water.quality",
-    "text": "our water is brown",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "our water is brown"
+  },
+  {
+    "intent": "property_buildings_homes.water.quality",
+    "text": "Why is the water brown?"
   },
   {
     "intent": "property_buildings_homes.water.leak",
-    "text": "There's been a leak in our ceiling that keeps coming back",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "There's been a leak in our ceiling that keeps coming back"
   },
   {
     "intent": "property_buildings_homes.water.main_break",
-    "text": "I think a water main broke",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "I think a water main broke"
+  },
+  {
+    "intent": "property_buildings_homes.water.main_break",
+    "text": "How do I report a Water Main Break?"
   },
   {
     "intent": "property_buildings_homes.construction.noise",
-    "text": "How do I report noise from after-hours construction?",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "How do I report noise from after-hours construction?"
   },
   {
     "intent": "property_buildings_homes.construction.noise",
-    "text": "This construction is noisy and it's late",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "This construction is noisy and it's late"
   },
   {
     "intent": "property_buildings_homes.construction.noise",
-    "text": "There is really loud construction going on",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "There is really loud construction going on"
   },
   {
     "intent": "property_buildings_homes.construction.noise",
-    "text": "I can't do anything because this construction is so loud",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "I can't do anything because this construction is so loud"
   },
   {
     "intent": "property_buildings_homes.construction.noise",
-    "text": "How do I report noisy construction?",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "How do I report noisy construction?"
   },
   {
     "intent": "property_buildings_homes.construction.off_hours",
-    "text": "Is construction allowed to take place this late?",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "Is construction allowed to take place this late?"
   },
   {
     "intent": "property_buildings_homes.construction.no_permit",
-    "text": "I don't think this construction crew has a permit",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "I don't think this construction crew has a permit"
   },
   {
     "intent": "property_buildings_homes.construction.safety",
-    "text": "This construction crew isnt operating in a safe manner",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "This construction crew isnt operating in a safe manner"
   },
   {
     "intent": "property_buildings_homes.graffiti",
-    "text": "Who should I call about graffiti?",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "Who should I call about graffiti?"
   },
   {
     "intent": "property_buildings_homes.graffiti",
-    "text": "There's some graffiti on this wall",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "There's some graffiti on this wall"
   },
   {
     "intent": "property_buildings_homes.graffiti",
-    "text": "How do I report graffiti on a building?",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "How do I report graffiti on a building?"
   },
   {
     "intent": "property_buildings_homes.graffiti",
-    "text": "I found graffiti",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "I found graffiti"
+  },
+  {
+    "intent": "property_buildings_homes.graffiti",
+    "text": "There is graffiti in a park what is the process for having it removed?"
   },
   {
     "intent": "property_buildings_homes.over_growth",
-    "text": "How do I report overgrown grass or weeds on private property?",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "How do I report overgrown grass or weeds on private property?"
   },
   {
     "intent": "property_buildings_homes.over_growth",
-    "text": "My neighbor's lawn is overgrown",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "My neighbor's lawn is overgrown"
   },
   {
     "intent": "property_buildings_homes.over_growth",
-    "text": "My neighbors grass and weeds are out of control",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "My neighbors grass and weeds are out of control"
   },
   {
     "intent": "property_buildings_homes.over_growth",
-    "text": "How do I get my neighbor to take care of their grass and foilage",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "How do I get my neighbor to take care of their grass and foilage"
   },
   {
     "intent": "property_buildings_homes.blight",
-    "text": "the buildings on Wadsworth are falling apart",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "Where do I report blight conditions or unkempt lawns/property?"
+  },
+  {
+    "intent": "property_buildings_homes.blight",
+    "text": "the buildings on Wadsworth are falling apart"
+  },
+  {
+    "intent": "property_buildings_homes.blight",
+    "text": "where do i call to report a neighbors yard broken down privacy fence for over a year, overgrown weeds, leaves, trash, mice , wont clean up."
   },
   {
     "intent": "property_buildings_homes.odor",
-    "text": "How do I report a gas odor or leak?",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "How do I report a gas odor or leak?"
   },
   {
     "intent": "property_buildings_homes.odor",
-    "text": "I smell something weird",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "I smell something weird"
   },
   {
     "text": "Theres a weird smell in the air",
@@ -1382,128 +1332,94 @@
   },
   {
     "intent": "property_buildings_homes.odor.gas",
-    "text": "Theres a gas leak",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "Theres a gas leak"
   },
   {
     "intent": "property_buildings_homes.odor.gas",
-    "text": "I think I smell gas leaking",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "I think I smell gas leaking"
   },
   {
     "intent": "property_buildings_homes.mold",
-    "text": "There's mold growing in my house",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "There's mold growing in my house"
   },
   {
     "intent": "property_buildings_homes.mold",
-    "text": "How do I report mold?",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "How do I report mold?"
   },
   {
     "intent": "property_buildings_homes.mold",
-    "text": "How do I report mold in my apartment?",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "How do I report mold in my apartment?"
   },
   {
     "intent": "property_buildings_homes.eviction",
-    "text": "I'm getting evicted from my home without any warning",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "I received an eviction. what should I do?"
+  },
+  {
+    "intent": "property_buildings_homes.eviction",
+    "text": "I'm getting evicted from my home without any warning"
   },
   {
     "intent": "property_buildings_homes.squatting",
-    "text": "How do I report someone living in a vacant building?",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "How do I report someone living in a vacant building?"
   },
   {
     "intent": "property_buildings_homes.squatting",
-    "text": "Someone is squatting in my building",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "Someone is squatting in my building"
   },
   {
     "intent": "property_buildings_homes.squatting",
-    "text": "What do I do about squatters?",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "What do I do about squatters?"
   },
   {
     "intent": "property_buildings_homes.squatting",
-    "text": "There are a bunch of squatters next door",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "There are a bunch of squatters next door"
   },
   {
     "intent": "property_buildings_homes.noise.neighbor",
-    "text": "How do I report a noisy neighbor?",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "How do I report a noisy neighbor?"
   },
   {
     "intent": "property_buildings_homes.noise.neighbor",
-    "text": "What can I do about noisy neighbors?",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "What can I do about noisy neighbors?"
   },
   {
     "intent": "property_buildings_homes.noise.neighbor",
-    "text": "My neighbor is being obnoxious",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "My neighbor is being obnoxious"
   },
   {
     "intent": "property_buildings_homes.noise.neighbor",
-    "text": "My neighbors party is disturbing",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "My neighbors party is disturbing"
+  },
+  {
+    "intent": "property_buildings_homes.noise.neighbor",
+    "text": "I have a complaint about loud music."
   },
   {
     "intent": "property_buildings_homes.noise.alarm",
-    "text": "How do I report a noisy alarm?",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "How do I report a noisy alarm?"
   },
   {
     "intent": "property_buildings_homes.noise.alarm",
-    "text": "There is an alarm that wont stop",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "There is an alarm that wont stop"
   },
   {
     "intent": "property_buildings_homes.noise.alarm",
-    "text": "My buildings alarm wont stop",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "My buildings alarm wont stop"
   },
   {
     "intent": "property_buildings_homes.noise.alarm",
-    "text": "An alarm keeps ringing",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "An alarm keeps ringing"
+  },
+  {
+    "intent": "property_buildings_homes.water_meter.guide",
+    "text": "How do I get a final water meter reading?"
+  },
+  {
+    "intent": "property_buildings_homes.water_meter",
+    "text": "My water meter must be broken, the reading is too high."
+  },
+  {
+    "intent": "property_buildings_homes.water_meter",
+    "text": "How do I report my meter box is full of water?"
   }
 ]

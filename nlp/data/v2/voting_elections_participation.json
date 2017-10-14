@@ -12,6 +12,10 @@
     "intent": "voting_elections_participation.absentee_ballot"
   },
   {
+    "text": "What do I do if I won't be in the state of Rhode Island on Election Day?",
+    "intent": "voting_elections_participation.absentee_ballot"
+  },
+  {
     "text": "How do I cast an absentee ballot",
     "intent": "voting_elections_participation.absentee_ballot"
   },
@@ -21,6 +25,10 @@
   },
   {
     "text": "Can I request an absentee ballot",
+    "intent": "voting_elections_participation.absentee_ballot"
+  },
+  {
+    "text": "How do I obtain an absentee ballot?",
     "intent": "voting_elections_participation.absentee_ballot"
   },
   {
@@ -80,11 +88,19 @@
     "intent": "voting_elections_participation.deadlines"
   },
   {
+    "text": "When is the voter registration deadline for the November 2012 election",
+    "intent": "voting_elections_participation.deadlines"
+  },
+  {
     "text": "When is the last day I can register to vote?",
     "intent": "voting_elections_participation.deadlines"
   },
   {
     "text": "How do I vote early?",
+    "intent": "voting_elections_participation.early"
+  },
+  {
+    "text": "How do I vote early in New Haven?",
     "intent": "voting_elections_participation.early"
   },
   {
@@ -101,6 +117,10 @@
   },
   {
     "text": "what upcoming elections are there?",
+    "intent": "voting_elections_participation.elections"
+  },
+  {
+    "text": "When is the 2013 Democratic Primary?",
     "intent": "voting_elections_participation.elections"
   },
   {
@@ -192,6 +212,10 @@
     "intent": "voting_elections_participation.polls.search"
   },
   {
+    "text": "Where do I go to vote?",
+    "intent": "voting_elections_participation.polls.search"
+  },
+  {
     "text": "poll location",
     "intent": "voting_elections_participation.polls.search"
   },
@@ -272,6 +296,18 @@
     "intent": "voting_elections_participation.registration.request"
   },
   {
+    "text": "Can I register to vote on-line?",
+    "intent": "voting_elections_participation.registration.request"
+  },
+  {
+    "text": "Where or how do I register to vote?",
+    "intent": "voting_elections_participation.registration.request"
+  },
+  {
+    "text": "How do I register to vote (where do I get a voter registration form)?",
+    "intent": "voting_elections_participation.registration.request"
+  },
+  {
     "text": "I want to vote",
     "intent": "voting_elections_participation.registration.request"
   },
@@ -304,6 +340,10 @@
     "intent": "voting_elections_participation.sample_ballot"
   },
   {
+    "text": "Where can I get a sample ballot for the 2012 election?",
+    "intent": "voting_elections_participation.sample_ballot"
+  },
+  {
     "text": "requesting a sample ballot",
     "intent": "voting_elections_participation.sample_ballot"
   },
@@ -318,5 +358,41 @@
   {
     "text": "Where can i get a sample ballot",
     "intent": "voting_elections_participation.sample_ballot"
+  },
+  {
+    "text": "Where can I find info about the candidates?",
+    "intent": "voting_elections_participation.candidates"
+  },
+  {
+    "text": "Where can I find information about candidates for the November 6, 2012 election?",
+    "intent": "voting_elections_participation.candidates"
+  },
+  {
+    "text": "Who are my representatives?",
+    "intent": "voting_elections_participation.representatives"
+  },
+  {
+    "text": "Representatives and Senators?",
+    "intent": "voting_elections_participation.representatives"
+  },
+  {
+    "text": "Who is my Council member?",
+    "intent": "voting_elections_participation.representatives"
+  },
+  {
+    "text": "How do I run for local office?",
+    "intent": "voting_elections_participation.public_office"
+  },
+  {
+    "text": "How can I be on a Village Commission?",
+    "intent": "voting_elections_participation.public_office"
+  },
+  {
+    "text": "How do I run for town committee?",
+    "intent": "voting_elections_participation.public_office"
+  },
+  {
+    "text": "Can I be on city council?",
+    "intent": "voting_elections_participation.public_office"
   }
 ]

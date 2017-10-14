@@ -12,6 +12,18 @@
     "intent": "social_services.abuse.child"
   },
   {
+    "text": "Where can I report child abuse?",
+    "intent": "social_services.abuse.child"
+  },
+  {
+    "text": "Where can I report elder abuse?",
+    "intent": "social_services.abuse.elder"
+  },
+  {
+    "text": "Who do we contact if there is a safety concern about the well-being and living conditions of an elderly neighbor?",
+    "intent": "social_services.elder.safety"
+  },
+  {
     "text": "How do I get help if I am in an abusive relationship?",
     "intent": "social_services.abuse.relationship",
     "entities": [
@@ -98,6 +110,14 @@
   {
     "text": "I cant pay my bills",
     "intent": "social_services.assistance.debt"
+  },
+  {
+    "text": "What services are available to persons with disabilities?",
+    "intent": "social_services.assistance.disabilities"
+  },
+  {
+    "text": "How do I find out more information about services available to persons with disabilities?",
+    "intent": "social_services.assistance.disabilities"
   },
   {
     "text": "I need help getting over drugs",
@@ -272,6 +292,13 @@
     "intent": "social_services.assistance"
   },
   {
+    "intent": "social_services.assistance",
+    "text": "I need housing assistance",
+    "meta": {
+      "vague": true
+    }
+  },
+  {
     "text": "I need help making rent",
     "intent": "social_services.assistance.rent"
   },
@@ -280,11 +307,23 @@
     "intent": "social_services.assistance.rent"
   },
   {
+    "text": "Can the City help me with my rent?",
+    "intent": "social_services.assistance.rent"
+  },
+  {
     "text": "I can't pay my rent",
     "intent": "social_services.assistance.rent"
   },
   {
-    "text": "Where is there rent control?",
+    "intent": "social_services.assistance.rent",
+    "text": "How do I find out about rental assistance?"
+  },
+  {
+    "intent": "social_services.assistance.rent",
+    "text": "How do I find out more about section 8?"
+  },
+  {
+    "text": "Where are rent control units?",
     "intent": "social_services.rent_control"
   },
   {
@@ -301,11 +340,11 @@
   },
   {
     "text": "How does rent control work?",
-    "intent": "social_services.rent_control"
+    "intent": "social_services.rent_control.guide"
   },
   {
     "text": "What is rent control?",
-    "intent": "social_services.rent_control"
+    "intent": "social_services.rent_control.guide"
   },
   {
     "text": "Im having a problem with a shelter",
@@ -326,6 +365,10 @@
   {
     "text": "Where can I find a homeless shelter?",
     "intent": "social_services.shelter"
+  },
+  {
+    "intent": "social_services.shelter",
+    "text": "I need housing for the night"
   },
   {
     "text": "Can I get a list of homeless shelter locations and phone numbers?",

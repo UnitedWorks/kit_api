@@ -45,27 +45,39 @@
   },
   {
     "text": "How do I get a membership to use community facilities?",
-    "intent": "general.membership.public_facilities"
+    "intent": "general.join.public_facilities"
   },
   {
     "text": "Do I need membership for public pools?",
-    "intent": "general.membership.public_facilities"
+    "intent": "general.join.public_facilities"
   },
   {
     "text": "I want to use community facilities",
-    "intent": "general.membership.public_facilities"
+    "intent": "general.join.public_facilities"
   },
   {
     "text": "How can I use the town pool?",
-    "intent": "general.membership.public_facilities"
+    "intent": "general.join.public_facilities"
   },
   {
     "text": "How can I gain access to the library?",
-    "intent": "general.membership.library"
+    "intent": "general.join.library"
   },
   {
     "text": "Am I allowed to use the public library",
-    "intent": "general.membership.library"
+    "intent": "general.join.library"
+  },
+  {
+    "text": "How do I apply for a library card?",
+    "intent": "general.join.library"
+  },
+  {
+    "text": "Where can I obtain sandbags?",
+    "intent": "general.emergency.sand_bags"
+  },
+  {
+    "text": "It is raining and I am worried about rain water getting into my home. Does the County provide sandbags to residents in the unincorporated areas of San Mateo County?",
+    "intent": "general.emergency.sand_bags"
   },
   {
     "text": "Is there public wifi?",
@@ -118,5 +130,17 @@
         "entity": "category_keywords"
       }
     ]
+  },
+  {
+    "text": "is there a suggestion box",
+    "intent": "general.suggestion"
+  },
+  {
+    "text": "I have a suggestion",
+    "intent": "general.suggestion"
+  },
+  {
+    "text": "I have an idea",
+    "intent": "general.suggestion"
   }
 ]

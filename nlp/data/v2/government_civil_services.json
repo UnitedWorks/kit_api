@@ -65,8 +65,12 @@
     "intent": "government_civil_services.council.contact"
   },
   {
+    "text": "How to access the Council Agenda?",
+    "intent": "government_civil_services.council.agenda"
+  },
+  {
     "text": "What is the council's agenda?",
-    "intent": "government_civil_services.council.contact",
+    "intent": "government_civil_services.council.agenda",
     "entities": [
       {
         "start": 12,
@@ -114,6 +118,14 @@
   },
   {
     "text": "Need a copy of my birth certificate",
+    "intent": "government_civil_services.birth_certificate.request"
+  },
+  {
+    "text": "Where can I get a copy of a birth certificate?",
+    "intent": "government_civil_services.birth_certificate.request"
+  },
+  {
+    "text": "Obtain a copy of a birth record?",
     "intent": "government_civil_services.birth_certificate.request"
   },
   {
@@ -184,6 +196,10 @@
   },
   {
     "text": "Need my fingerprints done",
+    "intent": "government_civil_services.finger_printing"
+  },
+  {
+    "text": "I need to be fingerprinted. When can I do this?",
     "intent": "government_civil_services.finger_printing"
   },
   {
@@ -263,11 +279,19 @@
     "intent": "government_civil_services.marriage_civil_union_license.arrival"
   },
   {
+    "text": "How do I get a divorce?",
+    "intent": "government_civil_services.divorce.request"
+  },
+  {
     "text": "How do I apply for or renew a dog license?",
     "intent": "government_civil_services.pet_license"
   },
   {
     "text": "Do I need a license for my pet?",
+    "intent": "government_civil_services.pet_license"
+  },
+  {
+    "text": "How and where do I register my dog?",
     "intent": "government_civil_services.pet_license"
   },
   {
@@ -339,6 +363,10 @@
     ]
   },
   {
+    "text": "Is there an ID for senior citizens?",
+    "intent": "government_civil_services.identification.senior_citizen_id"
+  },
+  {
     "text": "Do seniors need to register for anything?",
     "intent": "government_civil_services.identification.senior_citizen_id"
   },
@@ -355,10 +383,6 @@
     ]
   },
   {
-    "text": "Is there an ID for senior citizens?",
-    "intent": "government_civil_services.identification.senior_citizen_id"
-  },
-  {
     "text": "How do I get a Senior Citizens ID card?",
     "intent": "government_civil_services.identification.senior_citizen_id"
   },
@@ -372,34 +396,46 @@
   },
   {
     "text": "What is the mayor working on?",
-    "intent": "government_civil_services.mayor.agenda"
+    "intent": "government_civil_services.agenda"
   },
   {
     "text": "What is the mayor's agenda?",
-    "intent": "government_civil_services.mayor.agenda"
+    "intent": "government_civil_services.agenda"
   },
   {
     "text": "Is anyone in your office bi-lingual?",
-    "intent": "government_civil_services.language_access"
+    "intent": "government_civil_services.language.accessibility"
   },
   {
     "text": "Can you speak Spanish?",
-    "intent": "government_civil_services.language_access"
+    "intent": "government_civil_services.language.accessibility"
   },
   {
     "text": "Are there Spanish speakers in your office?",
-    "intent": "government_civil_services.language_access"
+    "intent": "government_civil_services.language.accessibility"
   },
   {
     "text": "I need help in Spanish",
-    "intent": "government_civil_services.language_access"
+    "intent": "government_civil_services.language.accessibility"
   },
   {
     "text": "Does anyone in your office speak Spanish?",
-    "intent": "government_civil_services.language_access"
+    "intent": "government_civil_services.language.accessibility"
+  },
+  {
+    "text": "Who should I call if I have a question about my taxes?",
+    "intent": "government_civil_services.taxes"
+  },
+  {
+    "text": "When should I expect a tax bill?",
+    "intent": "government_civil_services.schedule"
   },
   {
     "text": "When are taxes due?",
+    "intent": "government_civil_services.taxes.deadlines"
+  },
+  {
+    "text": "What are the tax payment due dates?",
     "intent": "government_civil_services.taxes.deadlines"
   },
   {
@@ -451,11 +487,31 @@
     "intent": "government_civil_services.taxes.senior_discount"
   },
   {
+    "text": "How is property tax calculated?",
+    "intent": "government_civil_services.taxes.property"
+  },
+  {
     "text": "Is there a website for tax payment?",
     "intent": "government_civil_services.taxes.website"
   },
   {
     "text": "Can I pay taxes online?",
     "intent": "government_civil_services.taxes.website"
+  },
+  {
+    "text": "How do I file a claim against the City?",
+    "intent": "government_civil_services.claim"
+  },
+  {
+    "text": "How do I handle property damage issues related to City operations?",
+    "intent": "government_civil_services.claim"
+  },
+  {
+    "text": "How do I submit an open records request?",
+    "intent": "government_civil_services.opra"
+  },
+  {
+    "text": "I need to make an OPRA request",
+    "intent": "government_civil_services.opra"
   }
 ]

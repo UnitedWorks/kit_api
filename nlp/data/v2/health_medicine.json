@@ -1,5 +1,9 @@
 [
   {
+    "text": "Who should I call regarding a raccoon or other wildlife issue?",
+    "intent": "health_medicine.animal"
+  },
+  {
     "text": "What should I do if a bat landed on me?",
     "intent": "health_medicine.animal.bat.touched"
   },
@@ -21,11 +25,11 @@
   },
   {
     "text": "What animals usually have rabbies?",
-    "intent": "health_medicine.animal.rabbies.expect"
+    "intent": "health_medicine.animal.rabbies.guide"
   },
   {
     "text": "What animals do I have to worry about having rabbies?",
-    "intent": "health_medicine.animal.rabbies.expect"
+    "intent": "health_medicine.animal.rabbies.guide"
   },
   {
     "text": "What does a rabid animal look like?",
@@ -100,6 +104,14 @@
     "intent": "health_medicine.healthy_living.guide"
   },
   {
+    "text": "How does one obtain school immunization records?",
+    "intent": "health_medicine.history_records.immunization"
+  },
+  {
+    "text": "I need my immunization record?",
+    "intent": "health_medicine.history_records.immunization"
+  },
+  {
     "text": "Who tests for HIV",
     "intent": "health_medicine.screening.std",
     "entities": [
@@ -164,6 +176,10 @@
     "intent": "health_medicine.mosquito.spraying.schedule"
   },
   {
+    "text": "Will Hartsville be spraying for mosquitos?",
+    "intent": "health_medicine.mosquito.spraying.schedule"
+  },
+  {
     "text": "How do I pay my ambulance bill?",
     "intent": "health_medicine.ambulance.payment",
     "entities": [
@@ -201,100 +217,66 @@
   },
   {
     "intent": "health_medicine.unsanitary.business",
-    "text": "This store has rats all over",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "This store has rats all over"
   },
   {
     "intent": "health_medicine.unsanitary.food_truck",
-    "text": "This food truck doesn't seem safe",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "This food truck doesn't seem safe"
   },
   {
     "intent": "health_medicine.unsanitary.housing",
-    "text": "This housing complex has garbage throughout",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "This housing complex has garbage throughout"
   },
   {
     "intent": "health_medicine.unsanitary.restaurant",
-    "text": "I ate a resturaunt and got sick. What should I do?",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "I ate a resturaunt and got sick. What should I do?"
   },
   {
     "intent": "health_medicine.unsanitary.restaurant",
-    "text": "How do I report an unsafe condition in a restaurant?",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "A restaurant or other type of food service is unsanitary. I became sick after eating food from this restaurant."
   },
   {
     "intent": "health_medicine.unsanitary.restaurant",
-    "text": "I just got food poisioning from a resturaunt",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "How do I report an unsafe condition in a restaurant?"
+  },
+  {
+    "intent": "health_medicine.unsanitary.restaurant",
+    "text": "I just got food poisioning from a resturaunt"
   },
   {
     "intent": "health_medicine.standing_water",
-    "text": "Water on the street is getting swarmed with mosquitos",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "Water on the street is getting swarmed with mosquitos"
   },
   {
     "intent": "health_medicine.animal.dead",
-    "text": "How do I report a dead animal on the road?",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "How do I report a dead animal on the road?"
   },
   {
     "intent": "health_medicine.animal.dead",
-    "text": "I found a dead animal",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "I found a dead animal"
   },
   {
     "intent": "health_medicine.animal.dead",
-    "text": "Theres a dead deer on the side of the road",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "Theres a dead deer on the side of the road"
+  },
+  {
+    "intent": "health_medicine.animal.dead",
+    "text": "Who do I report a dead animal on public property to?"
   },
   {
     "intent": "health_medicine.animal.excrement",
-    "text": "My neighbor isn't picking up after his dog",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "My neighbor isn't picking up after his dog"
   },
   {
     "intent": "health_medicine.rodents",
-    "text": "There are rats eating my garbage",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "There are rats eating my garbage"
   },
   {
     "intent": "health_medicine.insects.bed_bugs",
-    "text": "Help I think I have bed bugs",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "Help I think I have bed bugs"
   },
   {
     "intent": "health_medicine.insects.bees",
-    "text": "I think there is a hornets nest in the gutter",
-    "meta": {
-      "triggers_shout_out": true
-    }
+    "text": "I think there is a hornets nest in the gutter"
   }
 ]

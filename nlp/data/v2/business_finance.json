@@ -115,23 +115,43 @@
   },
   {
     "text": "How do I open a small business?",
-    "intent": "business_finance.business.start"
+    "intent": "business_finance.business.guide"
+  },
+  {
+    "text": "I'm thinking of opening a small business in NH. What do I need to do first?",
+    "intent": "business_finance.business.guide"
   },
   {
     "text": "Where can I find resources for small businesses?",
-    "intent": "business_finance.business.start"
+    "intent": "business_finance.business.guide"
+  },
+  {
+    "text": "how do i open a business",
+    "intent": "business_finance.business.guide"
   },
   {
     "text": "Can the city help my business?",
-    "intent": "business_finance.business.assistance"
+    "intent": "business_finance.business"
+  },
+  {
+    "text": "Where can I receive help drafting a business plan?",
+    "intent": "business_finance.business.training"
+  },
+  {
+    "text": "I am interested in starting a business--where can I learn the fundamentals?",
+    "intent": "business_finance.business.training"
+  },
+  {
+    "text": "I want to start a business but I don't know what licenses I need?",
+    "intent": "business_finance.permit_license_permission.business"
   },
   {
     "text": "Can you help me with my business?",
-    "intent": "business_finance.business.assistance"
+    "intent": "business_finance.business"
   },
   {
     "text": "How do I get help starting or expanding my small business?",
-    "intent": "business_finance.business.assistance",
+    "intent": "business_finance.business.guide",
     "entities": [
       {
         "start": 43,
@@ -142,12 +162,8 @@
     ]
   },
   {
-    "text": "how do i open a business",
-    "intent": "business_finance.business.start"
-  },
-  {
     "text": "How does the town help small businesses?",
-    "intent": "business_finance.business.assistance",
+    "intent": "business_finance.business",
     "entities": [
       {
         "start": 23,
@@ -156,6 +172,14 @@
         "entity": "category_keywords"
       }
     ]
+  },
+  {
+    "text": "Where can I find money or loans to start a business?",
+    "intent": "business_finance.business.loans"
+  },
+  {
+    "text": "Where can I find a loan for my business if my credit score is low?",
+    "intent": "business_finance.business.loans"
   },
   {
     "text": "Small business loans",
@@ -305,6 +329,10 @@
   },
   {
     "text": "Do I charge extra for plastic bags?",
+    "intent": "business_finance.regulation_requirements.plastic_bags"
+  },
+  {
+    "text": "I live in the Princeton Township and I was wondering if Princeton is considering a ban or charge for plastic bags.",
     "intent": "business_finance.regulation_requirements.plastic_bags"
   },
   {
