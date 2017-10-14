@@ -110,7 +110,7 @@ SO['health_medicine.unsanitary.food_truck'] = {};
 SO['health_medicine.unsanitary.housing'] = {};
 SO['health_medicine.unsanitary.resturaunt'] = {};
 SO['health_medicine.standing_water'] = {};
-SO['health_medicine.animal.rabid'] = {
+SO['health_medicine.animal.rabbies'] = {
   knowledge_category: 'health_medicine',
   domain: 'animal',
   params: {

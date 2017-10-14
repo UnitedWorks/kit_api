@@ -121,7 +121,7 @@
   },
   {
     "text": "What are items acceptable for Bulk pickup?",
-    "intent": "environment_sanitation.disposal.bulk_pickup"
+    "intent": "environment_sanitation.disposal.bulk_pickup.guide"
   },
   {
     "text": "How do I dispose of a carpet?",
