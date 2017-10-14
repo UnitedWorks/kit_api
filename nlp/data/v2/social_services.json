@@ -1,19 +1,31 @@
 [
   {
     "text": "I know a child who I think is being beaten",
-    "intent": "social_services.abuse_child"
+    "intent": "social_services.abuse.child"
   },
   {
     "text": "What should I do if I think someone is abusing a child?",
-    "intent": "social_services.abuse_child"
+    "intent": "social_services.abuse.child"
   },
   {
     "text": "Theres a child being abused",
-    "intent": "social_services.abuse_child"
+    "intent": "social_services.abuse.child"
+  },
+  {
+    "text": "Where can I report child abuse?",
+    "intent": "social_services.abuse.child"
+  },
+  {
+    "text": "Where can I report elder abuse?",
+    "intent": "social_services.abuse.elder"
+  },
+  {
+    "text": "Who do we contact if there is a safety concern about the well-being and living conditions of an elderly neighbor?",
+    "intent": "social_services.elder.safety"
   },
   {
     "text": "How do I get help if I am in an abusive relationship?",
-    "intent": "social_services.abuse_relationship",
+    "intent": "social_services.abuse.relationship",
     "entities": [
       {
         "start": 32,
@@ -25,7 +37,7 @@
   },
   {
     "text": "My boyfriend is beating me",
-    "intent": "social_services.abuse_relationship",
+    "intent": "social_services.abuse.relationship",
     "entities": [
       {
         "start": 16,
@@ -37,19 +49,19 @@
   },
   {
     "text": "My girlfried is abusing me",
-    "intent": "social_services.abuse_relationship"
+    "intent": "social_services.abuse.relationship"
   },
   {
     "text": "I'm being abused",
-    "intent": "social_services.abuse_relationship"
+    "intent": "social_services.abuse.relationship"
   },
   {
     "text": "What do I do after I find out I'm eligible for child care payment assistance?",
-    "intent": "social_services.child_care_payments"
+    "intent": "social_services.child_care.payment"
   },
   {
     "text": "I need help paying child care",
-    "intent": "social_services.child_care_payments",
+    "intent": "social_services.child_care.payment",
     "entities": [
       {
         "start": 19,
@@ -61,23 +73,23 @@
   },
   {
     "text": "Am I eligible for child care payment assistance?",
-    "intent": "social_services.child_care_payments"
+    "intent": "social_services.child_care.payment"
   },
   {
     "text": "I need help managing finances",
-    "intent": "social_services.credit_assistance"
+    "intent": "social_services.assistance.credit"
   },
   {
     "text": "How do I get help with money management or credit counseling?",
-    "intent": "social_services.credit_assistance"
+    "intent": "social_services.assistance.credit"
   },
   {
     "text": "I need help with my credit",
-    "intent": "social_services.credit_assistance"
+    "intent": "social_services.assistance.credit"
   },
   {
     "text": "I have too much debt",
-    "intent": "social_services.debt_assistance",
+    "intent": "social_services.assistance.debt",
     "entities": [
       {
         "start": 16,
@@ -89,15 +101,23 @@
   },
   {
     "text": "How do I get help with debt?",
-    "intent": "social_services.debt_assistance"
+    "intent": "social_services.assistance.debt"
   },
   {
     "text": "I cant get out of debt",
-    "intent": "social_services.debt_assistance"
+    "intent": "social_services.assistance.debt"
   },
   {
     "text": "I cant pay my bills",
-    "intent": "social_services.debt_assistance"
+    "intent": "social_services.assistance.debt"
+  },
+  {
+    "text": "What services are available to persons with disabilities?",
+    "intent": "social_services.assistance.disabilities"
+  },
+  {
+    "text": "How do I find out more information about services available to persons with disabilities?",
+    "intent": "social_services.assistance.disabilities"
   },
   {
     "text": "I need help getting over drugs",
@@ -117,27 +137,27 @@
   },
   {
     "text": "How do I get help for someone addicted to drugs?",
-    "intent": "social_services.drug_use"
+    "intent": "social_services.assistance.drug"
   },
   {
     "text": "How do I report someone using drugs?",
-    "intent": "social_services.drug_use"
+    "intent": "social_services.assistance.drug"
   },
   {
     "text": "I think my friend is addicted to drugs.",
-    "intent": "social_services.drug_use"
+    "intent": "social_services.assistance.drug"
   },
   {
     "text": "my roommate is becoming an addict",
-    "intent": "social_services.drug_use"
+    "intent": "social_services.assistance.drug"
   },
   {
     "text": "What do I do if I think my child is drinking or doing drugs?",
-    "intent": "social_services.drug_use_child"
+    "intent": "social_services.assistance.drug.child"
   },
   {
     "text": "I think my son is addicted to drugs",
-    "intent": "social_services.drug_use_child",
+    "intent": "social_services.assistance.drug.child",
     "entities": [
       {
         "start": 18,
@@ -149,7 +169,7 @@
   },
   {
     "text": "My daughter is becoming an addict",
-    "intent": "social_services.drug_use_child",
+    "intent": "social_services.assistance.drug.child",
     "entities": [
       {
         "start": 27,
@@ -161,31 +181,31 @@
   },
   {
     "text": "Where can I go for food assistance?",
-    "intent": "social_services.food_assistance"
+    "intent": "social_services.assistance.food"
   },
   {
     "text": "I need help getting food",
-    "intent": "social_services.food_assistance"
+    "intent": "social_services.assistance.food"
   },
   {
     "text": "I can't afford food",
-    "intent": "social_services.food_assistance"
+    "intent": "social_services.assistance.food"
   },
   {
     "text": "How do I get help paying for a funeral?",
-    "intent": "social_services.funeral_assistance"
+    "intent": "social_services.assistance.funeral"
   },
   {
     "text": "I can't pay for my brothers funeral",
-    "intent": "social_services.funeral_assistance"
+    "intent": "social_services.assistance.funeral"
   },
   {
     "text": "I need money for a funeral",
-    "intent": "social_services.funeral_assistance"
+    "intent": "social_services.assistance.funeral"
   },
   {
     "text": "What should I do to help someone who I think is being trafficked?",
-    "intent": "social_services.human_traffiking",
+    "intent": "social_services.human_trafficking",
     "entities": [
       {
         "start": 53,
@@ -197,7 +217,7 @@
   },
   {
     "text": "What should I do if I think someone is trafficking humans?",
-    "intent": "social_services.human_traffiking",
+    "intent": "social_services.human_trafficking",
     "entities": [
       {
         "start": 39,
@@ -209,11 +229,11 @@
   },
   {
     "text": "I think theres a woman being held against her will",
-    "intent": "social_services.human_traffiking"
+    "intent": "social_services.human_trafficking"
   },
   {
     "text": "I think theres human trafficing",
-    "intent": "social_services.human_traffiking"
+    "intent": "social_services.human_trafficking"
   },
   {
     "text": "Find a  Washroom",
@@ -253,7 +273,7 @@
   },
   {
     "text": "How do I apply for public assistance?",
-    "intent": "social_services.public_assistance",
+    "intent": "social_services.assistance",
     "entities": [
       {
         "start": 19,
@@ -265,26 +285,45 @@
   },
   {
     "text": "What is public assistance",
-    "intent": "social_services.public_assistance"
+    "intent": "social_services.assistance"
   },
   {
     "text": "What assistance does the city provide?",
-    "intent": "social_services.public_assistance"
+    "intent": "social_services.assistance"
+  },
+  {
+    "intent": "social_services.assistance",
+    "text": "I need housing assistance",
+    "meta": {
+      "vague": true
+    }
   },
   {
     "text": "I need help making rent",
-    "intent": "social_services.rent_assistance"
+    "intent": "social_services.assistance.rent"
   },
   {
     "text": "Can I receive rental assistance?",
-    "intent": "social_services.rent_assistance"
+    "intent": "social_services.assistance.rent"
+  },
+  {
+    "text": "Can the City help me with my rent?",
+    "intent": "social_services.assistance.rent"
   },
   {
     "text": "I can't pay my rent",
-    "intent": "social_services.rent_assistance"
+    "intent": "social_services.assistance.rent"
   },
   {
-    "text": "Where is there rent control?",
+    "intent": "social_services.assistance.rent",
+    "text": "How do I find out about rental assistance?"
+  },
+  {
+    "intent": "social_services.assistance.rent",
+    "text": "How do I find out more about section 8?"
+  },
+  {
+    "text": "Where are rent control units?",
     "intent": "social_services.rent_control"
   },
   {
@@ -301,11 +340,11 @@
   },
   {
     "text": "How does rent control work?",
-    "intent": "social_services.rent_control"
+    "intent": "social_services.rent_control.guide"
   },
   {
     "text": "What is rent control?",
-    "intent": "social_services.rent_control"
+    "intent": "social_services.rent_control.guide"
   },
   {
     "text": "Im having a problem with a shelter",
@@ -325,26 +364,30 @@
   },
   {
     "text": "Where can I find a homeless shelter?",
-    "intent": "social_services.shelters"
+    "intent": "social_services.shelter"
+  },
+  {
+    "intent": "social_services.shelter",
+    "text": "I need housing for the night"
   },
   {
     "text": "Can I get a list of homeless shelter locations and phone numbers?",
-    "intent": "social_services.shelters"
+    "intent": "social_services.shelter"
   },
   {
     "text": "I need a place to sleep",
-    "intent": "social_services.shelters"
+    "intent": "social_services.shelter"
   },
   {
     "text": "My kid is having trouble speaking",
-    "intent": "social_services.speech_therapy_children"
+    "intent": "social_services.speech_therapy.child"
   },
   {
     "text": "How do I get speech therapy for my child?",
-    "intent": "social_services.speech_therapy_children"
+    "intent": "social_services.speech_therapy.child"
   },
   {
     "text": "How do I get rid of my child's lisp",
-    "intent": "social_services.speech_therapy_children"
+    "intent": "social_services.speech_therapy.child"
   }
 ]

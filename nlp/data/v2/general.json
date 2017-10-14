@@ -1,103 +1,99 @@
 [
   {
-    "text": "Can I put signs around to advertise an event?",
-    "intent": "general.advertising_general_plastering",
-    "entities": []
-  },
-  {
-    "text": "Can I put posters on telephone polls?",
-    "intent": "general.advertising_general_plastering",
-    "entities": []
-  },
-  {
-    "text": "Where can I advertise my event?",
-    "intent": "general.advertising_general_plastering",
-    "entities": []
-  },
-  {
     "text": "How do I get notifications from the town?",
-    "intent": "general.communication_notifications.get",
-    "entities": []
+    "intent": "general.notifications"
   },
   {
     "text": "Can I get updates from the town?",
-    "intent": "general.communication_notifications.get",
-    "entities": []
+    "intent": "general.notifications"
   },
   {
     "text": "Does the city send updates?",
-    "intent": "general.communication_notifications.get",
-    "entities": []
+    "intent": "general.notifications"
   },
   {
     "text": "How do I get email notifications?",
-    "intent": "general.communication_notifications.get",
-    "entities": []
+    "intent": "general.notifications"
   },
   {
     "text": "How do I get SMS notifications?",
-    "intent": "general.communication_notifications.get",
-    "entities": []
+    "intent": "general.notifications"
   },
   {
     "text": "How can I get notified of emergencies?",
-    "intent": "general.communication_notifications_emergencies.get",
-    "entities": []
+    "intent": "general.notifications.emergency.subscribe"
   },
   {
     "text": "I want emergency updates",
-    "intent": "general.communication_notifications_emergencies.get",
-    "entities": []
+    "intent": "general.notifications.emergency.subscribe"
   },
   {
     "text": "Tell me about emergencies when they happen",
-    "intent": "general.communication_notifications_emergencies.get",
-    "entities": []
+    "intent": "general.notifications.emergency.subscribe"
   },
   {
     "text": "How do I update my phone number on the emergency call list?",
-    "intent": "general.communication_notifications_emergencies.update",
-    "entities": []
+    "intent": "general.notifications.emergency.update"
   },
   {
     "text": "I need to update my emergency info",
-    "intent": "general.communication_notifications_emergencies.update",
-    "entities": []
+    "intent": "general.notifications.emergency.update"
   },
   {
     "text": "Where do I update my emergency contact info",
-    "intent": "general.communication_notifications_emergencies.update",
-    "entities": []
+    "intent": "general.notifications.emergency.update"
   },
   {
     "text": "How do I get a membership to use community facilities?",
-    "intent": "general.community_facilities_membership",
-    "entities": []
+    "intent": "general.join.public_facilities"
   },
   {
-    "text": "Do I need membership for community pools?",
-    "intent": "general.community_facilities_membership",
-    "entities": []
+    "text": "Do I need membership for public pools?",
+    "intent": "general.join.public_facilities"
   },
   {
     "text": "I want to use community facilities",
-    "intent": "general.community_facilities_membership.get",
-    "entities": []
+    "intent": "general.join.public_facilities"
   },
   {
     "text": "How can I use the town pool?",
-    "intent": "general.community_facilities_membership.get",
-    "entities": []
+    "intent": "general.join.public_facilities"
+  },
+  {
+    "text": "How can I gain access to the library?",
+    "intent": "general.join.library"
+  },
+  {
+    "text": "Am I allowed to use the public library",
+    "intent": "general.join.library"
+  },
+  {
+    "text": "How do I apply for a library card?",
+    "intent": "general.join.library"
+  },
+  {
+    "text": "Where can I obtain sandbags?",
+    "intent": "general.emergency.sand_bags"
+  },
+  {
+    "text": "It is raining and I am worried about rain water getting into my home. Does the County provide sandbags to residents in the unincorporated areas of San Mateo County?",
+    "intent": "general.emergency.sand_bags"
   },
   {
     "text": "Is there public wifi?",
-    "intent": "general.wifi_public",
-    "entities": []
+    "intent": "general.wifi.public"
   },
   {
     "text": "Where can I find wifi?",
-    "intent": "general.wifi_public",
-    "entities": []
+    "intent": "general.wifi.public"
+  },
+  {
+    "text": "Do you have wifi?",
+    "intent": "general.wifi.municipal"
+  },
+  {
+    "text": "Is wifi available in municipal buildings?",
+    "intent": "general.wifi.municipal"
   },
   {
     "text": "What do I need to know about Pokemon Go?",
@@ -134,5 +130,17 @@
         "entity": "category_keywords"
       }
     ]
+  },
+  {
+    "text": "is there a suggestion box",
+    "intent": "general.suggestion"
+  },
+  {
+    "text": "I have a suggestion",
+    "intent": "general.suggestion"
+  },
+  {
+    "text": "I have an idea",
+    "intent": "general.suggestion"
   }
 ]

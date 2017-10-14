@@ -1,11 +1,11 @@
 [
   {
     "text": "Change my city",
-    "intent": "settings.locality.change"
+    "intent": "settings.locality.update"
   },
   {
     "text": "I want answers for a different city",
-    "intent": "settings.locality.change"
+    "intent": "settings.locality.update"
   },
   {
     "text": "I live at 11 Juniper Drive, Cedar Knolls NJ",

@@ -23,17 +23,15 @@
   },
   {
     "text": "Where can I find info about the city colleges?",
-    "intent": "education_employment.education_college_info",
-    "entities": []
+    "intent": "education_employment.higher_education.guide"
   },
   {
     "text": "Give me info about the city colleges?",
-    "intent": "education_employment.education_college_info",
-    "entities": []
+    "intent": "education_employment.higher_education.guide"
   },
   {
     "text": "How do I get information about city colleges and universities?",
-    "intent": "education_employment.education_college_info",
+    "intent": "education_employment.higher_education.guide",
     "entities": [
       {
         "start": 36,
@@ -51,7 +49,7 @@
   },
   {
     "text": "Do you offer job training?",
-    "intent": "education_employment.employment_job_training",
+    "intent": "education_employment.employment.training",
     "entities": [
       {
         "start": 13,
@@ -63,7 +61,7 @@
   },
   {
     "text": "Where can I get job training?",
-    "intent": "education_employment.employment_job_training",
+    "intent": "education_employment.employment.training",
     "entities": [
       {
         "start": 16,
@@ -75,7 +73,7 @@
   },
   {
     "text": "Where can I learn new skills?",
-    "intent": "education_employment.employment_job_training",
+    "intent": "education_employment.employment.training",
     "entities": [
       {
         "start": 22,
@@ -87,7 +85,7 @@
   },
   {
     "text": "Need job retraining",
-    "intent": "education_employment.employment_job_training",
+    "intent": "education_employment.employment.training",
     "entities": [
       {
         "start": 5,
@@ -104,18 +102,24 @@
     ]
   },
   {
+    "text": "How do I know what jobs are available?",
+    "intent": "education_employment.employment.search"
+  },
+  {
+    "text": "How do I apply for a position?",
+    "intent": "education_employment.employment.search"
+  },
+  {
     "text": "Help me get a job",
-    "intent": "education_employment.employment_search",
-    "entities": []
+    "intent": "education_employment.employment.search"
   },
   {
     "text": "How do I get a job?",
-    "intent": "education_employment.employment_search",
-    "entities": []
+    "intent": "education_employment.employment.search"
   },
   {
     "text": "How do I get help finding a job?",
-    "intent": "education_employment.employment_search",
+    "intent": "education_employment.employment.search",
     "entities": [
       {
         "start": 28,
@@ -127,18 +131,35 @@
   },
   {
     "text": "I need a job",
-    "intent": "education_employment.employment_search",
-    "entities": []
+    "intent": "education_employment.employment.search"
+  },
+  {
+    "text": "I want to be a Police Officer. How do I get started?",
+    "intent": "education_employment.employment.police_department"
+  },
+  {
+    "text": "How do I join the police force?",
+    "intent": "education_employment.employment.police_department"
+  },
+  {
+    "text": "How do I become a member of the Fire Department?",
+    "intent": "education_employment.employment.fire_department"
+  },
+  {
+    "text": "I'm interested in becoming a volunteer fire fighter, how do I apply?",
+    "intent": "education_employment.employment.fire_department"
+  },
+  {
+    "text": "When and where do I register my child for school?",
+    "intent": "education_employment.public_schools.registration"
   },
   {
     "text": "What schools are in my area?",
-    "intent": "education_employment.public_schools.list",
-    "entities": []
+    "intent": "education_employment.public_schools.list"
   },
   {
     "text": "What are all the public schools?",
-    "intent": "education_employment.public_schools.list",
-    "entities": []
+    "intent": "education_employment.public_schools.list"
   },
   {
     "text": "Where can I send my kid to school?",
@@ -154,18 +175,15 @@
   },
   {
     "text": "are schools closed?",
-    "intent": "education_employment.public_schools.status",
-    "entities": []
+    "intent": "education_employment.public_schools.status"
   },
   {
     "text": "Is school in session today?",
-    "intent": "education_employment.public_schools.status",
-    "entities": []
+    "intent": "education_employment.public_schools.status"
   },
   {
     "text": "Are schools open?",
-    "intent": "education_employment.public_schools.status",
-    "entities": []
+    "intent": "education_employment.public_schools.status"
   },
   {
     "text": "Are schools open this week?",
@@ -173,47 +191,39 @@
   },
   {
     "text": "How do I transfer my child to a new school?",
-    "intent": "education_employment.public_schools.transfer",
-    "entities": []
+    "intent": "education_employment.public_schools.transfer"
   },
   {
     "text": "Can I transfer my kid to another school?",
-    "intent": "education_employment.public_schools.transfer",
-    "entities": []
+    "intent": "education_employment.public_schools.transfer"
   },
   {
     "text": "I want to put my kid in a new school",
-    "intent": "education_employment.public_schools.transfer",
-    "entities": []
+    "intent": "education_employment.public_schools.transfer"
   },
   {
     "text": "We're moving so my kid needs to change schools",
-    "intent": "education_employment.public_schools.transfer",
-    "entities": []
+    "intent": "education_employment.public_schools.transfer"
   },
   {
     "text": "Can I get an update on my kid's school transfer?",
-    "intent": "education_employment.public_schools.transfer_status",
-    "entities": []
+    "intent": "education_employment.public_schools.transfer.status"
   },
   {
     "text": "How do I check the status of my school transfer?",
-    "intent": "education_employment.public_schools.transfer_status",
-    "entities": []
+    "intent": "education_employment.public_schools.transfer.status"
   },
   {
     "text": "When is summer vacation for public schools?",
-    "intent": "education_employment.schools_vacation_schedule",
-    "entities": []
+    "intent": "education_employment.public_schools.vacation.schedule"
   },
   {
     "text": "When are schools off for the summer?",
-    "intent": "education_employment.schools_vacation_schedule",
-    "entities": []
+    "intent": "education_employment.public_schools.vacation.schedule"
   },
   {
     "text": "I'm not getting paid",
-    "intent": "education_employment.wage_theft",
+    "intent": "education_employment.employment.wage_theft",
     "entities": [
       {
         "start": 16,
@@ -225,12 +235,11 @@
   },
   {
     "text": "My boss hasn't paid me at all the past two weeks",
-    "intent": "education_employment.wage_theft",
-    "entities": []
+    "intent": "education_employment.employment.wage_theft"
   },
   {
     "text": "I've experienced wage theft by not being paid for overtime. What can I do?",
-    "intent": "education_employment.wage_theft",
+    "intent": "education_employment.employment.wage_theft",
     "entities": [
       {
         "start": 50,

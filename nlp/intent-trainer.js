@@ -39,7 +39,7 @@ axios.request({
     if (intentA > intentB) return 1;
     return 0;
   });
-  const finalJSON = JSON.stringify(categoryData);
+  const finalJSON = JSON.stringify(categoryData, null, '\t');
   fs.writeFile(`${categoryDataPath}.json`, finalJSON, 'utf8', () => { console.log(`File Written: ${categoryDataPath}.json`); });
 }).catch((err) => {
   // Otherwise throw error!

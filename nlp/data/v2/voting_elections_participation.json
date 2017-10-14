@@ -1,0 +1,398 @@
+[
+  {
+    "text": "I can't make it to the election, can I still vote?",
+    "intent": "voting_elections_participation.absentee_ballot"
+  },
+  {
+    "text": "How do I submit an absentee vote?",
+    "intent": "voting_elections_participation.absentee_ballot"
+  },
+  {
+    "text": "How do I do an absentee vote?",
+    "intent": "voting_elections_participation.absentee_ballot"
+  },
+  {
+    "text": "What do I do if I won't be in the state of Rhode Island on Election Day?",
+    "intent": "voting_elections_participation.absentee_ballot"
+  },
+  {
+    "text": "How do I cast an absentee ballot",
+    "intent": "voting_elections_participation.absentee_ballot"
+  },
+  {
+    "text": "Can I request an absentee ballot?",
+    "intent": "voting_elections_participation.absentee_ballot"
+  },
+  {
+    "text": "Can I request an absentee ballot",
+    "intent": "voting_elections_participation.absentee_ballot"
+  },
+  {
+    "text": "How do I obtain an absentee ballot?",
+    "intent": "voting_elections_participation.absentee_ballot"
+  },
+  {
+    "text": "How do I register as a democrat?",
+    "intent": "voting_elections_participation.affiliation.update"
+  },
+  {
+    "text": "I want to register as a republican?",
+    "intent": "voting_elections_participation.affiliation.update"
+  },
+  {
+    "text": "When do I have to register as an independent by?",
+    "intent": "voting_elections_participation.affiliation.update"
+  },
+  {
+    "text": "How do I change my party affiliation?",
+    "intent": "voting_elections_participation.affiliation.update"
+  },
+  {
+    "text": "I want to change my party",
+    "intent": "voting_elections_participation.affiliation.update"
+  },
+  {
+    "text": "i need help with voting",
+    "intent": "voting_elections_participation.assistance"
+  },
+  {
+    "text": "help me with voting",
+    "intent": "voting_elections_participation.assistance"
+  },
+  {
+    "text": "im confused about voting, please help",
+    "intent": "voting_elections_participation.assistance"
+  },
+  {
+    "text": "Voting FAQ",
+    "intent": "voting_elections_participation.assistance"
+  },
+  {
+    "text": "I dont know how to vote",
+    "intent": "voting_elections_participation.assistance"
+  },
+  {
+    "text": "How can you help me with voting?",
+    "intent": "voting_elections_participation.assistance"
+  },
+  {
+    "text": "Help me with voting",
+    "intent": "voting_elections_participation.assistance"
+  },
+  {
+    "text": "When does voter registration end?",
+    "intent": "voting_elections_participation.deadlines"
+  },
+  {
+    "text": "When do I need to register to vote by?",
+    "intent": "voting_elections_participation.deadlines"
+  },
+  {
+    "text": "When is the voter registration deadline for the November 2012 election",
+    "intent": "voting_elections_participation.deadlines"
+  },
+  {
+    "text": "When is the last day I can register to vote?",
+    "intent": "voting_elections_participation.deadlines"
+  },
+  {
+    "text": "How do I vote early?",
+    "intent": "voting_elections_participation.early"
+  },
+  {
+    "text": "How do I vote early in New Haven?",
+    "intent": "voting_elections_participation.early"
+  },
+  {
+    "text": "Can I vote early?",
+    "intent": "voting_elections_participation.early"
+  },
+  {
+    "text": "When is the next vote?",
+    "intent": "voting_elections_participation.elections"
+  },
+  {
+    "text": "When's the next election",
+    "intent": "voting_elections_participation.elections"
+  },
+  {
+    "text": "what upcoming elections are there?",
+    "intent": "voting_elections_participation.elections"
+  },
+  {
+    "text": "When is the 2013 Democratic Primary?",
+    "intent": "voting_elections_participation.elections"
+  },
+  {
+    "text": "When is the election?",
+    "intent": "voting_elections_participation.elections"
+  },
+  {
+    "text": "When is my next election?",
+    "intent": "voting_elections_participation.elections"
+  },
+  {
+    "text": "What is the next election?",
+    "intent": "voting_elections_participation.elections"
+  },
+  {
+    "text": "My upcoming elections",
+    "intent": "voting_elections_participation.elections"
+  },
+  {
+    "text": "Upcoming Elections",
+    "intent": "voting_elections_participation.elections"
+  },
+  {
+    "text": "upcoming elections?",
+    "intent": "voting_elections_participation.elections"
+  },
+  {
+    "text": "Is someone with a felony allowed to vote?",
+    "intent": "voting_elections_participation.eligibility"
+  },
+  {
+    "text": "Who is allowed to vote?",
+    "intent": "voting_elections_participation.eligibility"
+  },
+  {
+    "text": "Can I vote?",
+    "intent": "voting_elections_participation.eligibility"
+  },
+  {
+    "text": "Am I eligible to vote?",
+    "intent": "voting_elections_participation.eligibility"
+  },
+  {
+    "text": "what prevents someone from voting",
+    "intent": "voting_elections_participation.eligibility"
+  },
+  {
+    "text": "Voting ID requirements",
+    "intent": "voting_elections_participation.identification"
+  },
+  {
+    "text": "Voter id",
+    "intent": "voting_elections_participation.identification"
+  },
+  {
+    "text": "Voting ID laws",
+    "intent": "voting_elections_participation.identification"
+  },
+  {
+    "text": "what ID is needed to register to vote?,",
+    "intent": "voting_elections_participation.identification"
+  },
+  {
+    "text": "what ID is needed to register to vote?",
+    "intent": "voting_elections_participation.identification"
+  },
+  {
+    "text": "What id do I need to bring to the polls?,",
+    "intent": "voting_elections_participation.identification"
+  },
+  {
+    "text": "What id do I need to bring to the polls?",
+    "intent": "voting_elections_participation.identification"
+  },
+  {
+    "text": "What do I need to register to vote?,",
+    "intent": "voting_elections_participation.identification"
+  },
+  {
+    "text": "What do I need to register to vote?",
+    "intent": "voting_elections_participation.identification"
+  },
+  {
+    "text": "What ID is needed to vote?",
+    "intent": "voting_elections_participation.identification"
+  },
+  {
+    "text": "Where are the polls?",
+    "intent": "voting_elections_participation.polls.search"
+  },
+  {
+    "text": "Where do I go to vote?",
+    "intent": "voting_elections_participation.polls.search"
+  },
+  {
+    "text": "poll location",
+    "intent": "voting_elections_participation.polls.search"
+  },
+  {
+    "text": "why am i not being allowed to vote",
+    "intent": "voting_elections_participation.blocking"
+  },
+  {
+    "text": "there are people blocking the polls,",
+    "intent": "voting_elections_participation.blocking"
+  },
+  {
+    "text": "there are people blocking the polls",
+    "intent": "voting_elections_participation.blocking"
+  },
+  {
+    "text": "the people at the polls said i couldnt vote even though i know im registered,",
+    "intent": "voting_elections_participation.blocking"
+  },
+  {
+    "text": "someone is preventing me from voting at the polls",
+    "intent": "voting_elections_participation.blocking"
+  },
+  {
+    "text": "im not being allowed to vote,",
+    "intent": "voting_elections_participation.blocking"
+  },
+  {
+    "text": "im not being allowed to vote",
+    "intent": "voting_elections_participation.blocking"
+  },
+  {
+    "text": "Im having an issue voting",
+    "intent": "voting_elections_participation.blocking"
+  },
+  {
+    "text": "Problem at Polls",
+    "intent": "voting_elections_participation.blocking"
+  },
+  {
+    "text": "the people at the polls said i couldnt vote even though i know im registered",
+    "intent": "voting_elections_participation.blocking"
+  },
+  {
+    "text": "they wont let me vote",
+    "intent": "voting_elections_participation.blocking"
+  },
+  {
+    "text": "I want to check my voter registration",
+    "intent": "voting_elections_participation.registration.check"
+  },
+  {
+    "text": "am i registered to vote",
+    "intent": "voting_elections_participation.registration.check"
+  },
+  {
+    "text": "check registration",
+    "intent": "voting_elections_participation.registration.check"
+  },
+  {
+    "text": "check voter registration",
+    "intent": "voting_elections_participation.registration.check"
+  },
+  {
+    "text": "Check my voter registration",
+    "intent": "voting_elections_participation.registration.check"
+  },
+  {
+    "text": "Am I registered to vote?",
+    "intent": "voting_elections_participation.registration.check"
+  },
+  {
+    "text": "Can you check if I'm registered to vote",
+    "intent": "voting_elections_participation.registration.check"
+  },
+  {
+    "text": "Lets register to vote!",
+    "intent": "voting_elections_participation.registration.request"
+  },
+  {
+    "text": "Can I register to vote on-line?",
+    "intent": "voting_elections_participation.registration.request"
+  },
+  {
+    "text": "Where or how do I register to vote?",
+    "intent": "voting_elections_participation.registration.request"
+  },
+  {
+    "text": "How do I register to vote (where do I get a voter registration form)?",
+    "intent": "voting_elections_participation.registration.request"
+  },
+  {
+    "text": "I want to vote",
+    "intent": "voting_elections_participation.registration.request"
+  },
+  {
+    "text": "Get registered!",
+    "intent": "voting_elections_participation.registration.request"
+  },
+  {
+    "text": "Can you register me to vote?",
+    "intent": "voting_elections_participation.registration.request"
+  },
+  {
+    "text": "get registered to vote",
+    "intent": "voting_elections_participation.registration.request"
+  },
+  {
+    "text": "Get registered to vote",
+    "intent": "voting_elections_participation.registration.request"
+  },
+  {
+    "text": "How can I register to vote?",
+    "intent": "voting_elections_participation.registration.request"
+  },
+  {
+    "text": "I want to register to vote",
+    "intent": "voting_elections_participation.registration.request"
+  },
+  {
+    "text": "requesting a sample ballotv",
+    "intent": "voting_elections_participation.sample_ballot"
+  },
+  {
+    "text": "Where can I get a sample ballot for the 2012 election?",
+    "intent": "voting_elections_participation.sample_ballot"
+  },
+  {
+    "text": "requesting a sample ballot",
+    "intent": "voting_elections_participation.sample_ballot"
+  },
+  {
+    "text": "Is there a sample ballot I can download?",
+    "intent": "voting_elections_participation.sample_ballot"
+  },
+  {
+    "text": "How can i get a sample ballot",
+    "intent": "voting_elections_participation.sample_ballot"
+  },
+  {
+    "text": "Where can i get a sample ballot",
+    "intent": "voting_elections_participation.sample_ballot"
+  },
+  {
+    "text": "Where can I find info about the candidates?",
+    "intent": "voting_elections_participation.candidates"
+  },
+  {
+    "text": "Where can I find information about candidates for the November 6, 2012 election?",
+    "intent": "voting_elections_participation.candidates"
+  },
+  {
+    "text": "Who are my representatives?",
+    "intent": "voting_elections_participation.representatives"
+  },
+  {
+    "text": "Representatives and Senators?",
+    "intent": "voting_elections_participation.representatives"
+  },
+  {
+    "text": "Who is my Council member?",
+    "intent": "voting_elections_participation.representatives"
+  },
+  {
+    "text": "How do I run for local office?",
+    "intent": "voting_elections_participation.public_office"
+  },
+  {
+    "text": "How can I be on a Village Commission?",
+    "intent": "voting_elections_participation.public_office"
+  },
+  {
+    "text": "How do I run for town committee?",
+    "intent": "voting_elections_participation.public_office"
+  },
+  {
+    "text": "Can I be on city council?",
+    "intent": "voting_elections_participation.public_office"
+  }
+]
