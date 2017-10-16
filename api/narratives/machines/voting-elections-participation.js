@@ -5,8 +5,8 @@ import { i18n } from '../templates/messages';
 import * as ELEMENT_TEMPLATES from '../templates/assets';
 
 export default {
-  votingDeadlines() {
-    if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting.votingDeadlines');
+  deadlines() {
+    if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting_elections_participation.deadlines');
     return new VotingClient({ location: this.get('location') }).getElections().then((elections) => {
       this.messagingClient.addToQuene(i18n('us_vote_attribution'));
       if (elections.length === 0) {
@@ -27,8 +27,8 @@ export default {
     });
   },
 
-  electionSchedule() {
-    if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting.electionSchedule');
+  elections() {
+    if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting_elections_participation.elections');
     this.messagingClient.send('Hmmm, let me go grab the calendar!');
     return new VotingClient({ location: this.get('location') }).getElections().then((elections) => {
       this.messagingClient.addToQuene(i18n('us_vote_attribution'));
@@ -74,7 +74,7 @@ export default {
     });
   },
 
-  pollInfo() {
+  polls_search() {
     const votingClientInstance = new VotingClient({ location: this.get('location') });
     return Promise.all([
       votingClientInstance.getGeneralStateInfo(),
@@ -111,8 +111,8 @@ export default {
     });
   },
 
-  voterRegistrationCheck() {
-    if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting.voterRegistrationCheck');
+  registration_check() {
+    if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting_elections_participation.registration_check');
     const quickActions = [];
     return new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
       this.messagingClient.addToQuene(i18n('us_vote_attribution'));
@@ -137,8 +137,8 @@ export default {
     });
   },
 
-  voterRegistrationGet() {
-    if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting.voterRegistrationGet');
+  registration_request() {
+    if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting_elections_participation.registration_get');
     this.messagingClient.addToQuene('Let\'s get you registered!');
     const votingClientInstance = new VotingClient({ location: this.get('location') });
     return Promise.all([
@@ -193,12 +193,12 @@ export default {
         elements,
       });
       this.messagingClient.runQuene();
-      return this.checkMultiRedirect('voterRegistrationGet', this.getBaseState());
+      return this.checkMultiRedirect('registration_get', this.getBaseState());
     });
   },
 
-  sampleBallot() {
-    if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting.sampleBallot');
+  sample_ballot() {
+    if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting_elections_participation.sample_ballot');
     return new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
       this.messagingClient.addToQuene(i18n('us_vote_attribution'));
       info.lookup_tools.forEach((tool) => {
@@ -211,8 +211,8 @@ export default {
     });
   },
 
-  absenteeVote() {
-    if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting.absenteeVote');
+  absentee_ballot() {
+    if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting_elections_participation.absentee_ballot');
     return new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
       const absenteeVotingDetails = VotingClient.extractAbsenteeVoteDetails(
         info.voting_general_info);
@@ -227,8 +227,8 @@ export default {
     });
   },
 
-  earlyVoting() {
-    if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting.earlyVoting');
+  early() {
+    if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting_elections_participation.early');
     return new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
       const earlyVotingDetails = VotingClient.extractEarlyVotingDetails(
         info.voting_general_info);
@@ -243,8 +243,8 @@ export default {
     });
   },
 
-  voterIdRequirements() {
-    if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting.voterIdRequirements');
+  identification() {
+    if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting_elections_participation.identification');
     return new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
       this.messagingClient.addToQuene(i18n('us_vote_attribution'));
       // Identification
@@ -266,8 +266,8 @@ export default {
     });
   },
 
-  stateVotingRules() {
-    if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting.stateVotingRules');
+  eligibility() {
+    if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting_elections_participation.eligibility');
     return new VotingClient({ location: this.get('location') }).getGeneralStateInfo().then((info) => {
       this.messagingClient.addToQuene(i18n('us_vote_attribution'));
       // Eligibility
@@ -289,8 +289,8 @@ export default {
     });
   },
 
-  voterProblem() {
-    if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting.voterProblem');
+  blocking() {
+    if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting_elections_participation.blocking');
     return new VotingClient({ location: this.get('location') }).getLocalElectionOffice().then((info) => {
       this.messagingClient.addToQuene(i18n('us_vote_attribution'));
       if (info && info.office) {
@@ -343,8 +343,8 @@ export default {
     });
   },
 
-  voterAssistance() {
-    if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting.voterAssistance');
+  assistance() {
+    if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'voting_elections_participation.assistance');
     const votingClientInstance = new VotingClient({ location: this.get('location') });
     return Promise.all([
       votingClientInstance.getGeneralStateInfo(),

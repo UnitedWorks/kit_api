@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { logger } from '../../logger';
 import { nlp } from '../../services/nlp';
 import { getConstituentTasks } from '../../tasks/helpers';
@@ -6,7 +5,6 @@ import SlackService from '../../services/slack';
 import { EventTracker } from '../../services/event-tracking';
 import { fetchAnswers, randomPick } from '../helpers';
 import { getCategoryFallback } from '../../knowledge-base/helpers';
-import { ILLUSTRATION_URLS } from '../templates/assets';
 import * as elementTemplates from '../templates/elements';
 import * as replyTemplates from '../templates/quick-replies';
 import { i18n } from '../templates/messages';
@@ -73,18 +71,18 @@ export default {
 
           // benefits_internet: 'benefits-internet.init',
 
-          'voting.deadlines': 'voting.votingDeadlines',
-          'voting.elections': 'voting.electionSchedule',
-          'voting.registration.get': 'voting.voterRegistrationGet',
-          'voting.registration.check': 'voting.voterRegistrationCheck',
-          'voting.polls.find': 'voting.pollInfo',
-          'voting.id': 'voting.voterIdRequirements',
-          'voting.eligibility': 'voting.stateVotingRules',
-          'voting.sample_ballot': 'voting.sampleBallot',
-          'voting.absentee_ballot': 'voting.absenteeVote',
-          'voting.early': 'voting.earlyVoting',
-          'voting.problem': 'voting.voterProblem',
-          'voting.assistance': 'voting.voterAssistance',
+          'voting_elections_participation.absentee_ballot': 'voting_elections_participation.absentee_ballot',
+          'voting_elections_participation.deadlines': 'voting_elections_participation.deadlines',
+          'voting_elections_participation.elections': 'voting_elections_participation.elections',
+          'voting_elections_participation.registration.request': 'voting_elections_participation.registration_request',
+          'voting_elections_participation.registration.check': 'voting_elections_participation.registration_check',
+          'voting_elections_participation.polls.search': 'voting_elections_participation.polls_search',
+          'voting_elections_participation.identification': 'voting_elections_participation.identification',
+          'voting_elections_participation.eligibility': 'voting_elections_participation.eligibility',
+          'voting_elections_participation.sample_ballot': 'voting_elections_participation.sample_ballot',
+          'voting_elections_participation.early': 'voting_elections_participation.early',
+          'voting_elections_participation.blocking': 'voting_elections_participation.blocking',
+          'voting_elections_participation.assistance': 'voting_elections_participation.assistance',
 
           'social_services.shelters': 'socialServices.waiting_shelter_search',
           'social_services.food_assistance': 'socialServices.waiting_food_search',

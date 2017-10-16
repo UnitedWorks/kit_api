@@ -13,7 +13,7 @@ import SearchMachine from './machines/search';
 import SetupMachine from './machines/setup';
 import SocialServicesMachine from './machines/social-services';
 import ActionMachine from './machines/action';
-import VotingMachine from './machines/voting';
+import VotingElectionsParticipationMachine from './machines/voting-elections-participation';
 
 // Small Talk Machines
 import SmallTalkMachine from './machines/small-talk';
@@ -34,7 +34,7 @@ export const stateMachines = {
   smallTalk: SmallTalkMachine,
   socialServices: SocialServicesMachine,
   usVoteFoundation: USVoteFoundationMachine,
-  voting: VotingMachine,
+  voting_elections_participation: VotingElectionsParticipationMachine,
 };
 
 const RESPONSE_TIMEOUT_MS = 8.64e+7;

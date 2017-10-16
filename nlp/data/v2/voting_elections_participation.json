@@ -20,14 +20,6 @@
     "intent": "voting_elections_participation.absentee_ballot"
   },
   {
-    "text": "Can I request an absentee ballot?",
-    "intent": "voting_elections_participation.absentee_ballot"
-  },
-  {
-    "text": "Can I request an absentee ballot",
-    "intent": "voting_elections_participation.absentee_ballot"
-  },
-  {
     "text": "How do I obtain an absentee ballot?",
     "intent": "voting_elections_participation.absentee_ballot"
   },
