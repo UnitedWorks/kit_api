@@ -1,26 +1,11 @@
 import moment from 'moment';
 import { getPlacesUrl } from '../../utils';
-
-export const illustrationUrls = {
-  asking: 'https://s3.amazonaws.com/youmustfight_kit/assets/conversation/asking.png',
-  business: 'https://s3.amazonaws.com/youmustfight_kit/assets/conversation/business.png',
-  help: 'https://s3.amazonaws.com/youmustfight_kit/assets/conversation/help.png',
-  navigating: 'https://s3.amazonaws.com/youmustfight_kit/assets/conversation/navigating.png',
-  renters: 'https://s3.amazonaws.com/youmustfight_kit/assets/conversation/renters.png',
-  report: 'https://s3.amazonaws.com/youmustfight_kit/assets/conversation/report.png',
-  neighborhood: 'https://s3.amazonaws.com/youmustfight_kit/assets/conversation/residents.png',
-  parents: 'https://s3.amazonaws.com/youmustfight_kit/assets/conversation/parents.png',
-  sanitation: 'https://s3.amazonaws.com/youmustfight_kit/assets/conversation/sanitation.png',
-  transit: 'https://s3.amazonaws.com/youmustfight_kit/assets/conversation/transit.png',
-  voting: 'https://s3.amazonaws.com/youmustfight_kit/assets/conversation/voting.png',
-  whatCanIAsk: 'https://s3.amazonaws.com/youmustfight_kit/assets/conversation/what-can-i-ask.png',
-  hand: 'https://s3.amazonaws.com/youmustfight_kit/assets/conversation/hand.png',
-};
+import { ILLUSTRATION_URLS } from './assets';
 
 export const genericSanitation = {
   title: 'Ask Schedule and Service Info',
   subtitle: 'Get schedule information about garbage, recycling, and more!',
-  image_url: illustrationUrls.whatCanIAsk,
+  image_url: ILLUSTRATION_URLS.events,
   buttons: [{
     type: 'postback',
     title: 'Garbage Schedule',
@@ -37,7 +22,7 @@ export const genericSanitation = {
 export const genericDocumentation = {
   title: 'Local Gov Services',
   subtitle: 'Common questions about constituent and business needs',
-  image_url: illustrationUrls.whatCanIAsk,
+  image_url: ILLUSTRATION_URLS.whatCanIAsk,
   buttons: [{
     type: 'postback',
     title: 'Get Birth Certificate',
@@ -54,7 +39,7 @@ export const genericDocumentation = {
 export const genericVotingAndElections = {
   title: 'Voting and Elections',
   subtitle: 'Ask about elections, voter ID laws, registration deadlines, and anything else to help you elect representatives!',
-  image_url: illustrationUrls.voting,
+  image_url: ILLUSTRATION_URLS.voting,
   buttons: [{
     type: 'postback',
     title: 'Upcoming Elections',
@@ -71,7 +56,7 @@ export const genericVotingAndElections = {
 export const genericBenefits = {
   title: 'Service Providers and Benefits',
   subtitle: 'Find out what state and federal benefits programs may be available for you and your family.',
-  image_url: illustrationUrls.navigating,
+  image_url: ILLUSTRATION_URLS.navigating,
   buttons: [{
     type: 'postback',
     title: 'Report Wage Theft',
@@ -88,7 +73,7 @@ export const genericBenefits = {
 export const genericAssistance = {
   title: 'Immediate Help',
   subtitle: 'Find immediate or short-term assistance if you are facing tough times.',
-  image_url: illustrationUrls.help,
+  image_url: ILLUSTRATION_URLS.help,
   buttons: [{
     type: 'postback',
     title: 'Find Shelter',
@@ -103,17 +88,17 @@ export const genericAssistance = {
 };
 
 export const genericRenter = {
-  title: 'Neighborhood Feedback',
+  title: 'Know the Neighborhood',
   subtitle: 'Let us know how we can help your community!',
-  image_url: illustrationUrls.renters,
+  image_url: ILLUSTRATION_URLS.renters,
   buttons: [{
     type: 'postback',
-    title: 'Report Noisy Neighbor',
-    payload: 'Report Noisy Neighbor',
+    title: 'Request Street light',
+    payload: 'Request street light',
   }, {
     type: 'postback',
-    title: 'Report Litter',
-    payload: 'Report Litter',
+    title: 'Report Graffiti',
+    payload: 'Report graffiti',
   }, {
     type: 'element_share',
   }],
@@ -123,7 +108,7 @@ export const genericRenter = {
 export const genericNewResident = {
   title: 'Know Your Community!',
   subtitle: 'Learn what is going on around you and how to interact with local gov!',
-  image_url: illustrationUrls.neighborhood,
+  image_url: ILLUSTRATION_URLS.neighborhood,
   buttons: [{
     type: 'postback',
     title: 'Common Questions',
@@ -141,15 +126,15 @@ export const genericNewResident = {
 export const genericCommuter = {
   title: 'Transportation Feedback',
   subtitle: 'Report and request services around your community and in transit.',
-  image_url: illustrationUrls.transit,
+  image_url: ILLUSTRATION_URLS.transit,
   buttons: [{
     type: 'postback',
-    title: 'Report Pothole',
-    payload: 'Report Pothole',
+    title: 'Driveway blocked',
+    payload: 'Driveway blocked',
   }, {
     type: 'postback',
-    title: 'Report Broken Streetlight',
-    payload: 'Report Broken Streetlight',
+    title: 'Request bikelane',
+    payload: 'Request bikelane',
   }, {
     type: 'element_share',
   }],
@@ -158,7 +143,7 @@ export const genericCommuter = {
 export const genericDirectory = {
   title: 'Directory',
   subtitle: 'Get hours and contact information for departments.',
-  image_url: illustrationUrls.asking,
+  image_url: ILLUSTRATION_URLS.asking,
   buttons: [{
     type: 'postback',
     title: 'Is City Hall Open?',
@@ -172,18 +157,35 @@ export const genericDirectory = {
   }],
 };
 
-export const genericAdvert = {
-  title: 'About The bot',
-  subtitle: 'Learn more about this bot and what it does for local communities!',
-  image_url: illustrationUrls.hand,
+export const genericEvents = {
+  title: 'Events',
+  subtitle: 'Find out about upcoming town celebrations, council meetings, and other official events!',
+  image_url: ILLUSTRATION_URLS.parents,
   buttons: [{
+    type: 'postback',
+    title: 'Upcoming Events',
+    payload: 'Upcoming Events',
+  }, {
+    type: 'postback',
+    title: 'Next Council Meeting',
+    payload: 'Next Council Meeting',
+  }, {
+    type: 'element_share',
+  }],
+};
+
+export const genericAdvert = {
+  title: 'About The Chatbot',
+  subtitle: 'Learn more about this bot and what it does for local communities!',
+  image_url: ILLUSTRATION_URLS.neighborhood,
+  buttons: [{
+    type: 'postback',
+    title: 'What\'s a chatbot?',
+    payload: 'What\'s a chatbot?',
+  }, {
     type: 'postback',
     title: 'Who Made This?',
     payload: 'Who Made This?',
-  }, {
-    type: 'web_url',
-    title: 'By Hey Mayor!',
-    url: 'https://mayor.chat',
   }, {
     type: 'element_share',
   }],
@@ -235,28 +237,19 @@ export const genericNewResidentFAQList = [{
   }],
 }];
 
-export const genericNewResidentServicesList = [{
-  title: 'Local Business',
-  buttons: [{
-    type: 'postback',
-    title: 'Request a Service',
-    payload: 'Request A Service',
-  }],
-}];
-
 // Big Business Owner Tiles
 export const genericBusiness = {
-  title: 'Local Business',
-  subtitle: 'Get the right permits and government contract opportunities.',
-  image_url: illustrationUrls.business,
+  title: 'Business & Employment',
+  subtitle: 'Get your business off the ground or land a new job!',
+  image_url: ILLUSTRATION_URLS.business,
   buttons: [{
     type: 'postback',
-    title: 'Get a Business License',
-    payload: 'How do I get a business or merchants license?',
+    title: 'Job Openings',
+    payload: 'Job Openings',
   }, {
     type: 'postback',
-    title: 'Permits, Licenses, ...',
-    payload: 'FREQ_BUSINESS_REQUIREMENTS_LIST',
+    title: 'Start a Business',
+    payload: 'Start a Business',
   }, {
     type: 'element_share',
   }],
@@ -464,9 +457,9 @@ export function genericEvent(event) {
 
 export function genericWelcome(bannerUrl, orgName) {
   return {
-    title: `${orgName ? `Your ${orgName} Assistant` : 'Welcome!'}`,
+    title: `${orgName ? `Hey ${orgName}!` : 'Welcome!'}`,
     subtitle: 'Have a question? Reporting a problem? Let\'s chat!',
-    image_url: bannerUrl || illustrationUrls.transit,
+    image_url: bannerUrl || ILLUSTRATION_URLS.transit,
     buttons: [{
       type: 'postback',
       title: 'What\'s a chatbot?',

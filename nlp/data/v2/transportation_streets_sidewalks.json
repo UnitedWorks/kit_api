@@ -1,1034 +1,1050 @@
 [
-  {
-    "text": "Is there a parking meter or sign map?",
-    "intent": "transportation_streets_sidewalks.map",
-    "meta": {
-      "vague": true
-    }
-  },
-  {
-    "text": "Can I get a map of parking meters?",
-    "intent": "transportation_streets_sidewalks.map.parking_meter"
-  },
-  {
-    "text": "Can I get a map of street signs?",
-    "intent": "transportation_streets_sidewalks.map.sign"
-  },
-  {
-    "text": "Where can I find information on parking?",
-    "intent": "transportation_streets_sidewalks.parking",
-    "meta": {
-      "vague": true
-    }
-  },
-  {
-    "text": "parking info",
-    "intent": "transportation_streets_sidewalks.parking",
-    "meta": {
-      "vague": true
-    }
-  },
-  {
-    "text": "parking rules",
-    "intent": "transportation_streets_sidewalks.parking",
-    "meta": {
-      "vague": true
-    }
-  },
-  {
-    "text": "what are the parking rules?",
-    "intent": "transportation_streets_sidewalks.parking",
-    "meta": {
-      "vague": true
-    }
-  },
-  {
-    "text": "parking",
-    "intent": "transportation_streets_sidewalks.parking",
-    "meta": {
-      "vague": true
-    }
-  },
-  {
-    "text": "Is there altnerate side parking here?",
-    "intent": "transportation_streets_sidewalks.parking.asp.check"
-  },
-  {
-    "text": "How can I check the ASP rules for a specific parking spot?",
-    "intent": "transportation_streets_sidewalks.parking.asp.check"
-  },
-  {
-    "text": "What are the ASP rules where I am?",
-    "intent": "transportation_streets_sidewalks.parking.asp.check"
-  },
-  {
-    "text": "Can I double park when alternate side parking is happening?",
-    "intent": "transportation_streets_sidewalks.parking.asp.double"
-  },
-  {
-    "text": "Is double parking allowed when theres alternate side parking?",
-    "intent": "transportation_streets_sidewalks.parking.asp.double"
-  },
-  {
-    "text": "Can I double park when ASP is in effect?",
-    "intent": "transportation_streets_sidewalks.parking.asp.double"
-  },
-  {
-    "text": "What do I need to know about altnerate side parking?",
-    "intent": "transportation_streets_sidewalks.parking.asp.guide"
-  },
-  {
-    "text": "Is there an ASP street map?",
-    "intent": "transportation_streets_sidewalks.map.asp",
-    "entities": [
-      {
-        "start": 12,
-        "end": 15,
-        "value": "transportation_streets_sidewalks",
-        "entity": "category_keywords"
-      },
-      {
-        "start": 16,
-        "end": 22,
-        "value": "transportation_streets_sidewalks",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "When does the street cleaner come?",
-    "intent": "transportation_streets_sidewalks.parking.asp.schedule",
-    "entities": [
-      {
-        "start": 14,
-        "end": 28,
-        "value": "transportation_streets_sidewalks",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "When is street cleaning?",
-    "intent": "transportation_streets_sidewalks.parking.asp.schedule",
-    "entities": [
-      {
-        "start": 8,
-        "end": 23,
-        "value": "transportation_streets_sidewalks",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "when is street cleaning",
-    "intent": "transportation_streets_sidewalks.parking.asp.schedule"
-  },
-  {
-    "text": "When is alternate side parking?",
-    "intent": "transportation_streets_sidewalks.parking.asp.schedule",
-    "entities": [
-      {
-        "start": 8,
-        "end": 30,
-        "value": "transportation_streets_sidewalks",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "Street cleaning schedule?",
-    "intent": "transportation_streets_sidewalks.parking.asp.schedule",
-    "entities": [
-      {
-        "start": 0,
-        "end": 15,
-        "value": "transportation_streets_sidewalks",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "is alternate side parking tomorrow?",
-    "intent": "transportation_streets_sidewalks.parking.asp.schedule"
-  },
-  {
-    "text": "Is alternate side parking in effect?",
-    "intent": "transportation_streets_sidewalks.parking.asp.schedule"
-  },
-  {
-    "text": "How will I know when my street will be swept?",
-    "intent": "transportation_streets_sidewalks.parking.asp.schedule"
-  },
-  {
-    "text": "when do I need to move my car?",
-    "intent": "transportation_streets_sidewalks.parking.asp.schedule",
-    "entities": [
-      {
-        "start": 26,
-        "end": 29,
-        "value": "transportation_streets_sidewalks",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "when is street sweeping",
-    "intent": "transportation_streets_sidewalks.parking.asp.schedule",
-    "entities": [
-      {
-        "start": 8,
-        "end": 23,
-        "value": "transportation_streets_sidewalks",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "Can I park after a street sweeper has passed?",
-    "intent": "transportation_streets_sidewalks.parking.asp.duration"
-  },
-  {
-    "text": "The street sweeper has passed, can I park there now?",
-    "intent": "transportation_streets_sidewalks.parking.asp.duration"
-  },
-  {
-    "text": "Can I park when ASP is in effect and the street sweeper has passed or is late?",
-    "intent": "transportation_streets_sidewalks.parking.asp.duration",
-    "entities": [
-      {
-        "start": 41,
-        "end": 55,
-        "value": "transportation_streets_sidewalks",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "does alternate side parking matter on weekends?",
-    "intent": "transportation_streets_sidewalks.parking.asp.weekends"
-  },
-  {
-    "text": "Can I park overnight on weekends?",
-    "intent": "transportation_streets_sidewalks.parking.asp.weekends"
-  },
-  {
-    "text": "Is ASP in effect on weekends?",
-    "intent": "transportation_streets_sidewalks.parking.asp.weekends"
-  },
-  {
-    "text": "I need a parking disability sticker",
-    "intent": "transportation_streets_sidewalks.parking.permit_license_permission.disability_parking"
-  },
-  {
-    "text": "What is the application approval process for a Parking Permit for People with Disabilities?",
-    "intent": "transportation_streets_sidewalks.parking.permit_license_permission.disability_parking"
-  },
-  {
-    "text": "I'm disabled. How do I get a special permit?",
-    "intent": "transportation_streets_sidewalks.parking.permit_license_permission.disability_parking"
-  },
-  {
-    "text": "How can I get a disability sticker for parking?",
-    "intent": "transportation_streets_sidewalks.parking.permit_license_permission.disability_parking"
-  },
-  {
-    "text": "How do I renew my Parking Permit For People With Disabilities?",
-    "intent": "transportation_streets_sidewalks.parking.permit_license_permission.disability_parking"
-  },
-  {
-    "text": "What time do I have to move my car by?",
-    "intent": "transportation_streets_sidewalks.parking.overnight"
-  },
-  {
-    "text": "What are the rules for short term overnight parking?",
-    "intent": "transportation_streets_sidewalks.parking.overnight"
-  },
-  {
-    "text": "Is overnight street parking legal in residential neighborhoods?",
-    "intent": "transportation_streets_sidewalks.parking.overnight"
-  },
-  {
-    "text": "Can I park overnight?",
-    "intent": "transportation_streets_sidewalks.parking.overnight"
-  },
-  {
-    "text": "When do I have to move my car in the morning?",
-    "intent": "transportation_streets_sidewalks.parking.overnight"
-  },
-  {
-    "text": "how do i get a parking permit",
-    "intent": "transportation_streets_sidewalks.parking.permit_license_permission.residential_parking"
-  },
-  {
-    "text": "How many parking permits are allowed per house hold?",
-    "intent": "transportation_streets_sidewalks.parking.permit_license_permission.residential_parking.limit"
-  },
-  {
-    "text": "i need a parking permit",
-    "intent": "transportation_streets_sidewalks.parking.permit_license_permission.residential_parking"
-  },
-  {
-    "text": "How do I get a residential parking permit?",
-    "intent": "transportation_streets_sidewalks.parking.permit_license_permission.residential_parking"
-  },
-  {
-    "text": "Can I park in a school zone?",
-    "intent": "transportation_streets_sidewalks.parking.school_zone"
-  },
-  {
-    "text": "What are parking regulations in a school zone?",
-    "intent": "transportation_streets_sidewalks.parking.school_zone"
-  },
-  {
-    "text": "How long can I be parked on the street?",
-    "intent": "transportation_streets_sidewalks.parking.time_limit"
-  },
-  {
-    "text": "How long can a car be parked on the street?",
-    "intent": "transportation_streets_sidewalks.parking.time_limit",
-    "entities": [
-      {
-        "start": 22,
-        "end": 28,
-        "value": "transportation_streets_sidewalks",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "How long can I leave my car on the street?",
-    "intent": "transportation_streets_sidewalks.parking.time_limit"
-  },
-  {
-    "text": "How much is left on my parking card",
-    "intent": "transportation_streets_sidewalks.parking_card.balance"
-  },
-  {
-    "text": "parking card balance",
-    "intent": "transportation_streets_sidewalks.parking_card.balance"
-  },
-  {
-    "text": "How much money is left on my parking card?",
-    "intent": "transportation_streets_sidewalks.parking_card.balance",
-    "entities": [
-      {
-        "start": 29,
-        "end": 36,
-        "value": "transportation_streets_sidewalks",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "My parking card isnt working",
-    "intent": "transportation_streets_sidewalks.parking_card.problem"
-  },
-  {
-    "text": "What do I do if my parking card isn't working?",
-    "intent": "transportation_streets_sidewalks.parking_card.problem"
-  },
-  {
-    "text": "My street needs to be plowed",
-    "intent": "transportation_streets_sidewalks.plowing"
-  },
-  {
-    "text": "How do I report my street not being plowed?",
-    "intent": "transportation_streets_sidewalks.plowing"
-  },
-  {
-    "text": "Whens my street getting plowed",
-    "intent": "transportation_streets_sidewalks.plowing.schedule"
-  },
-  {
-    "text": "When does the snow plow come?",
-    "intent": "transportation_streets_sidewalks.plowing.schedule",
-    "entities": [
-      {
-        "start": 14,
-        "end": 23,
-        "value": "transportation_streets_sidewalks",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "How often do snow plows come by?",
-    "intent": "transportation_streets_sidewalks.plowing.schedule"
-  },
-  {
-    "text": "My street hasn't been plowed yet",
-    "intent": "transportation_streets_sidewalks.plowing.schedule"
-  },
-  {
-    "text": "When will you plow my street?",
-    "intent": "transportation_streets_sidewalks.plowing.schedule",
-    "entities": [
-      {
-        "start": 14,
-        "end": 18,
-        "value": "transportation_streets_sidewalks",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "What road projects are going on?",
-    "intent": "transportation_streets_sidewalks.road_work"
-  },
-  {
-    "text": "What road work is being done?",
-    "intent": "transportation_streets_sidewalks.road_work"
-  },
-  {
-    "text": "What roads are being paved?",
-    "intent": "transportation_streets_sidewalks.road_work"
-  },
-  {
-    "text": "Can residents access a street when its being paved?",
-    "intent": "transportation_streets_sidewalks.road_work.accessibility"
-  },
-  {
-    "text": "When my street is paved, will I be able to access my property?",
-    "intent": "transportation_streets_sidewalks.road_work.accessibility"
-  },
-  {
-    "text": "How do I get to my driveway when the streets being paved?",
-    "intent": "transportation_streets_sidewalks.road_work.accessibility"
-  },
-  {
-    "text": "When will they finish paving my street?",
-    "intent": "transportation_streets_sidewalks.road_work.status",
-    "entities": [
-      {
-        "start": 22,
-        "end": 28,
-        "value": "transportation_streets_sidewalks",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "When will they be done fixing the road?",
-    "intent": "transportation_streets_sidewalks.road_work.status"
-  },
-  {
-    "text": "How do I get updates on road work on my street?",
-    "intent": "transportation_streets_sidewalks.road_work.status"
-  },
-  {
-    "text": "How do I get information on the city's street paving schedule ?",
-    "intent": "transportation_streets_sidewalks.paving.schedule"
-  },
-  {
-    "text": "I forgot my purse in a taxi",
-    "intent": "transportation_streets_sidewalks.taxi.belongings"
-  },
-  {
-    "text": "How do I find an item I lost in a taxi if I have the medallion number?",
-    "intent": "transportation_streets_sidewalks.taxi.belongings"
-  },
-  {
-    "text": "How do I find an item I lost in a taxi if I don't have the medallion number?",
-    "intent": "transportation_streets_sidewalks.taxi.belongings"
-  },
-  {
-    "text": "I left my wallet in a taxi",
-    "intent": "transportation_streets_sidewalks.taxi.belongings",
-    "entities": [
-      {
-        "start": 22,
-        "end": 26,
-        "value": "transportation_streets_sidewalks",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "Is there a lost and found for taxis?",
-    "intent": "transportation_streets_sidewalks.taxi.belongings"
-  },
-  {
-    "text": "How many passengers are allowed in a taxi?",
-    "intent": "transportation_streets_sidewalks.taxi.max_occupancy"
-  },
-  {
-    "text": "How many people can a taxi have?",
-    "intent": "transportation_streets_sidewalks.taxi.max_occupancy"
-  },
-  {
-    "text": "How do I appeal a parking ticket judgment and penalty?",
-    "intent": "transportation_streets_sidewalks.ticket.traffic.contested"
-  },
-  {
-    "text": "Where do I go to pay a parking ticket? Where do I go to contest a parking ticket?",
-    "intent": "transportation_streets_sidewalks.ticket.traffic.contested"
-  },
-  {
-    "text": "What if I feel like the ticket was issued unjustly?",
-    "intent": "transportation_streets_sidewalks.ticket.contested"
-  },
-  {
-    "text": "I didn't do anything to get this ticket",
-    "intent": "transportation_streets_sidewalks.ticket.contested"
-  },
-  {
-    "text": "This parking ticket is wrong",
-    "intent": "transportation_streets_sidewalks.ticket.traffic.contested",
-    "entities": [
-      {
-        "start": 5,
-        "end": 19,
-        "value": "transportation_streets_sidewalks",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "Can and how do I contest a ticket?",
-    "intent": "transportation_streets_sidewalks.ticket.contested"
-  },
-  {
-    "text": "How do I fight a parking ticket?",
-    "intent": "transportation_streets_sidewalks.ticket.traffic.contested"
-  },
-  {
-    "text": "When do I hear back about my traffic ticket hearing?",
-    "intent": "transportation_streets_sidewalks.ticket.traffic.contested.arrival",
-    "entities": [
-      {
-        "start": 29,
-        "end": 43,
-        "value": "transportation_streets_sidewalks",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "How long until I'm told whether my ticket was overturned?",
-    "intent": "transportation_streets_sidewalks.ticket.contested.arrival"
-  },
-  {
-    "text": "How long does it take to hear back on a parking ticket hearing?",
-    "intent": "transportation_streets_sidewalks.ticket.traffic.contested.arrival"
-  },
-  {
-    "text": "How long does it take to get a decision from an online hearing for a parking ticket?",
-    "intent": "transportation_streets_sidewalks.ticket.traffic.contested.arrival"
-  },
-  {
-    "text": "I lost my traffic ticket. What do I do?",
-    "intent": "transportation_streets_sidewalks.ticket.traffic.lost"
-  },
-  {
-    "text": "What should I do if I lost my ticket?",
-    "intent": "transportation_streets_sidewalks.ticket.traffic.lost"
-  },
-  {
-    "text": "How do I pay my parking ticket?",
-    "intent": "transportation_streets_sidewalks.ticket.traffic.payment"
-  },
-  {
-    "text": "Can you pay parking tickets online?",
-    "intent": "transportation_streets_sidewalks.ticket.traffic.payment"
-  },
-  {
-    "text": "Where do I pay parking tickets?",
-    "intent": "transportation_streets_sidewalks.ticket.traffic.payment"
-  },
-  {
-    "text": "Can I pay my parking ticket online?",
-    "intent": "transportation_streets_sidewalks.ticket.traffic.payment"
-  },
-  {
-    "text": "How do I pay a parking ticket?",
-    "intent": "transportation_streets_sidewalks.ticket.traffic.payment"
-  },
-  {
-    "text": "How can I pay for my ticket?",
-    "intent": "transportation_streets_sidewalks.ticket.payment"
-  },
-  {
-    "text": "I can't find my ticket",
-    "intent": "transportation_streets_sidewalks.ticket.lost"
-  },
-  {
-    "text": "I just got into an accident",
-    "intent": "transportation_streets_sidewalks.vehicle.accident"
-  },
-  {
-    "text": "Someone just hit my car",
-    "intent": "transportation_streets_sidewalks.vehicle.accident"
-  },
-  {
-    "text": "My car just got hit",
-    "intent": "transportation_streets_sidewalks.vehicle.accident"
-  },
-  {
-    "text": "If I'm in a traffic accident, what should I do?",
-    "intent": "transportation_streets_sidewalks.vehicle.accident"
-  },
-  {
-    "text": "I just saw an accident, what should I do?",
-    "intent": "transportation_streets_sidewalks.vehicle.witness"
-  },
-  {
-    "text": "Someone just got hit by a car",
-    "intent": "transportation_streets_sidewalks.vehicle.witness"
-  },
-  {
-    "text": "What do I when I see a traffic accident?",
-    "intent": "transportation_streets_sidewalks.vehicle.witness",
-    "entities": [
-      {
-        "start": 23,
-        "end": 39,
-        "value": "transportation_streets_sidewalks",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "How do I find my towed vehicle?",
-    "intent": "transportation_streets_sidewalks.vehicle.towed"
-  },
-  {
-    "text": "My car was impounded.  How can I get it back?",
-    "intent": "transportation_streets_sidewalks.vehicle.towed"
-  },
-  {
-    "text": "Was my vehicle towed?",
-    "intent": "transportation_streets_sidewalks.vehicle.towed",
-    "entities": [
-      {
-        "start": 15,
-        "end": 20,
-        "value": "transportation_streets_sidewalks",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "Did my vehicle get towed?",
-    "intent": "transportation_streets_sidewalks.vehicle.towed"
-  },
-  {
-    "text": "My car has vanished. What do I do?",
-    "intent": "transportation_streets_sidewalks.vehicle.towed"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.street",
-    "text": "This street is cant be driven on"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.street.pothole",
-    "text": "How do I report a pothole?"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.street.pothole",
-    "text": "There is a huge pothole here"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.street.pothole",
-    "text": "I just hit a pothole"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.street.pothole",
-    "text": "Can you come fix this pothole?"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.street.pothole",
-    "text": "pothole"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.street.manhole",
-    "text": "There's a manhole cover loose"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.street.fire_hydrant",
-    "text": "A fire hydrant is spraying water wildly all over the street"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.street.fire_hydrant",
-    "text": "How do I report a Leaking/Damaged Fire Hydrant?"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.street.blocking",
-    "text": "How do I report a basketball hoop blocking a street?"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.driveway",
-    "text": "How do I report an illegal driveway?"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.driveway",
-    "text": "I want to report an illegal driveway"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.driveway",
-    "text": "I dont think this driveway should be allowed"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.driveway",
-    "text": "Is this driveway allowed?"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.sidewalk",
-    "text": "How do I request a sidewalk inspection to remove a violation?"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.sidewalk.broken",
-    "text": "How can I request sidewalk repairs?"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.sidewalk.broken",
-    "text": "This sidewalk is broken. People keep tripping"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.sidewalk.broken",
-    "text": "The sidewalk needs fixing"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.sidewalk.broken",
-    "text": "A tree has split the sidewalk"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.sidewalk.broken",
-    "text": "How do I report a broken, raised, or uneven sidewalk?"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.sidewalk.broken",
-    "text": "How do report getting my sidewalk repaired?"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.curb",
-    "text": "Report curb"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.curb.ramp",
-    "text": "How do I know if a curb cut is legal?"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.curb.ramp",
-    "text": "This curb ramp isn't right"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.curb.ramp",
-    "text": "The cut away part of the curb is broken"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.sign",
-    "text": "Report street sign"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.sign.missing",
-    "text": "A parking sign is missing"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.sign.broken",
-    "text": "There is a sign down and broken, how do I report it?"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.sign.broken",
-    "text": "Someone took a sign"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.sign.broken",
-    "text": "Theres graffiti all over the parking sign"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.sign.conflict",
-    "text": "These signs dont make any sense"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.sign.conflict",
-    "text": "How do I know what a parking sign means?"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.sign.down",
-    "text": "This street sign fell down"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.sign.request",
-    "text": "How do I request an ASP rules sign?"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.sign.request",
-    "text": "Can you get a do not block driveway sign?"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.sign.request",
-    "text": "Can I request a sign?"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.sign.request",
-    "text": "How do I request a no parking or no outlet sign?"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.sign.request",
-    "text": "We need a parking rules sign here"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.signal",
-    "text": "Report signal"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.signal.always_on",
-    "text": "Both the walk and do not walk are on"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.signal.burnt_out",
-    "text": "None of the traffic lights work"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.signal.flickering",
-    "text": "The traffic light is going on and off"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.signal.down",
-    "text": "the traffic light has fallen down"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.signal.request",
-    "text": "There needs to be a traffic light here. I've nearly been in an accident multiple times"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.street_light",
-    "text": "Report street light"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.street_light.always_on",
-    "text": "The street light is on throughout the day"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.street_light.burnt_out",
-    "text": "A street light is out, who do I tell?"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.street_light.burnt_out",
-    "text": "There's a street lamp out"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.street_light.burnt_out",
-    "text": "the light outside my apartment is out"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.street_light.burnt_out",
-    "text": "Who do I notify if I see a streetlight on my street is not functioning or burned out?"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.street_light.flickering",
-    "text": "A street light at the corner is flickering"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.street_light.down",
-    "text": "A whole street light just came down outside my apartment"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.street_light.request",
-    "text": "The street along College Ave. isnt well lit. Can we get more lights?"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.street_light.request",
-    "text": "Can I request additional streetlights on my street?"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.violation.parking",
-    "text": "How do I report illegal parking?"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.violation.parking",
-    "text": "This car can't be parked here"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.violation.parking",
-    "text": "There's a car that isn't parked right"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.violation.parking",
-    "text": "Who do I call if someone is parked illegally?"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.violation.parking.blocking",
-    "text": "Someone is blocking my driveway."
-  },
-  {
-    "intent": "transportation_streets_sidewalks.violation.parking.blocking",
-    "text": "How do I report a vehicle blocking my driveway?"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.violation.parking.blocking",
-    "text": "Who do I call if someone is blocking my driveway?"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.violation.parking.blocking",
-    "text": "Theres a parked car blocking the street"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.violation.parking.bus_zone",
-    "text": "A car has been parked in the bus zone"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.violation.parking.no_parking",
-    "text": "A car is parked in a no parking zone"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.violation.parking.emergency_zone",
-    "text": "A car is parked in a fire zone"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.violation.parking.expired_tags",
-    "text": "This car has expired tags"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.violation.parking.fire_hydrant",
-    "text": "A truck parked in front of a fire hydrant"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.violation.parking.handicap",
-    "text": "Someone is taking up a handicap parking space"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.violation.parking.loading_zone",
-    "text": "A car is blocking the loading zone"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.violation.parking.parking_meter",
-    "text": "The parking meter has expired"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.violation.parking.school_zone",
-    "text": "There is someone taking up a school zone"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.parking_meter",
-    "text": "Report parking meter"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.parking_meter.broken",
-    "text": "The parking meter is not working."
-  },
-  {
-    "intent": "transportation_streets_sidewalks.parking_meter.broken",
-    "text": "This parking meter is broken"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.parking_meter.broken",
-    "text": "I can't pay for parking cause the meter isn't working"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.parking_meter.broken",
-    "text": "I tried paying for parking and it's not working"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.construction.noise",
-    "text": "How do I report a noisy jackhammer?"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.construction.noise",
-    "text": "There is really loud roadwork going on"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.construction.noise",
-    "text": "The roadwork is keeping me up"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.construction.noise",
-    "text": "Theres a loud jackhammer"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.bicycle.racks",
-    "text": "This bike rack is clogged up"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.bicycle.lanes",
-    "text": "How do I request a bike lane?"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.bicycle.lanes",
-    "text": "I want a bike lane"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.bicycle.lanes",
-    "text": "There should be a bike lane on Beeker Street"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.bicycle.lanes",
-    "text": "There should be a bike lane on my street"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.bicycle.sharing",
-    "text": "The bike sharing machine isnt working"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.bicycle.abandoned",
-    "text": "Theres been a bike frame sitting here for weeks"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.bicycle.registration",
-    "text": "How can I register my bicycle?"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.bicycle.registration",
-    "text": "Do I need to register a bike?"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.vehicle.idling",
-    "text": "There's a car idling here"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.vehicle.idling",
-    "text": "I want to report an idling vehicle"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.vehicle.idling",
-    "text": "This truck has been running for 30 minutes with no one in it"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.vehicle.reckless",
-    "text": "How do I report dangerous motorized scooter use?"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.vehicle.reckless",
-    "text": "How do I report dangerous driving?"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.vehicle.reckless",
-    "text": "There's a crazy driver here"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.vehicle.reckless",
-    "text": "I just saw someone speed down my street"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.vehicle.reckless",
-    "text": "what do we do about a neighbor that races his cars up & down our street?"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.vehicle.abandoned",
-    "text": "Theres an abandoned car on the street"
-  },
-  {
-    "intent": "transportation_streets_sidewalks.wire.down",
-    "text": "An electrical wire is down in the street"
-  },
-  {
-    "text": "Electrical wires are on the street",
-    "intent": "transportation_streets_sidewalks.wire.down"
-  },
-  {
-    "text": "There are telephone and electrical wires down",
-    "intent": "transportation_streets_sidewalks.wire.down"
-  },
-  {
-    "text": "A tree is up against electrical wires",
-    "intent": "transportation_streets_sidewalks.wire.safety"
-  },
-  {
-    "text": "How do I report a tree branch touching electrical wires?",
-    "intent": "transportation_streets_sidewalks.wire.safety"
-  },
-  {
-    "text": "How do I adopt a highway?",
-    "intent": "transportation_streets_sidewalks.adopt_a_highway"
-  }
+	{
+		"text": "How do I adopt a highway?",
+		"intent": "transportation_streets_sidewalks.adopt_a_highway"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.bicycle.abandoned",
+		"text": "Theres been a bike frame sitting here for weeks"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.bicycle.lanes",
+		"text": "There should be a bike lane on Beeker Street"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.bicycle.lanes",
+		"text": "How do I request a bike lane?"
+	},
+	{
+		"text": "Request Bikelane",
+		"intent": "transportation_streets_sidewalks.bicycle.lanes"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.bicycle.lanes",
+		"text": "I want a bike lane"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.bicycle.lanes",
+		"text": "There should be a bike lane on my street"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.bicycle.racks",
+		"text": "This bike rack is clogged up"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.bicycle.registration",
+		"text": "How can I register my bicycle?"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.bicycle.registration",
+		"text": "Do I need to register a bike?"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.bicycle.sharing",
+		"text": "The bike sharing machine isnt working"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.construction.noise",
+		"text": "How do I report a noisy jackhammer?"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.construction.noise",
+		"text": "The roadwork is keeping me up"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.construction.noise",
+		"text": "There is really loud roadwork going on"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.construction.noise",
+		"text": "Theres a loud jackhammer"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.curb",
+		"text": "Report curb"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.curb.ramp",
+		"text": "How do I know if a curb cut is legal?"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.curb.ramp",
+		"text": "This curb ramp isn't right"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.curb.ramp",
+		"text": "The cut away part of the curb is broken"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.driveway",
+		"text": "I dont think this driveway should be allowed"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.driveway",
+		"text": "I want to report an illegal driveway"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.driveway",
+		"text": "Is this driveway allowed?"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.driveway",
+		"text": "How do I report an illegal driveway?"
+	},
+	{
+		"text": "Is there a parking meter or sign map?",
+		"intent": "transportation_streets_sidewalks.map",
+		"meta": {
+			"vague": true
+		}
+	},
+	{
+		"text": "Is there an ASP street map?",
+		"intent": "transportation_streets_sidewalks.map.asp",
+		"entities": [
+			{
+				"start": 12,
+				"end": 15,
+				"value": "transportation_streets_sidewalks",
+				"entity": "category_keywords"
+			},
+			{
+				"start": 16,
+				"end": 22,
+				"value": "transportation_streets_sidewalks",
+				"entity": "category_keywords"
+			}
+		]
+	},
+	{
+		"text": "Can I get a map of parking meters?",
+		"intent": "transportation_streets_sidewalks.map.parking_meter"
+	},
+	{
+		"text": "Can I get a map of street signs?",
+		"intent": "transportation_streets_sidewalks.map.sign"
+	},
+	{
+		"text": "parking rules",
+		"intent": "transportation_streets_sidewalks.parking",
+		"meta": {
+			"vague": true
+		}
+	},
+	{
+		"text": "Where can I find information on parking?",
+		"intent": "transportation_streets_sidewalks.parking",
+		"meta": {
+			"vague": true
+		}
+	},
+	{
+		"text": "parking info",
+		"intent": "transportation_streets_sidewalks.parking",
+		"meta": {
+			"vague": true
+		}
+	},
+	{
+		"text": "parking",
+		"intent": "transportation_streets_sidewalks.parking",
+		"meta": {
+			"vague": true
+		}
+	},
+	{
+		"text": "what are the parking rules?",
+		"intent": "transportation_streets_sidewalks.parking",
+		"meta": {
+			"vague": true
+		}
+	},
+	{
+		"text": "What are the ASP rules where I am?",
+		"intent": "transportation_streets_sidewalks.parking.asp.check"
+	},
+	{
+		"text": "Is there altnerate side parking here?",
+		"intent": "transportation_streets_sidewalks.parking.asp.check"
+	},
+	{
+		"text": "How can I check the ASP rules for a specific parking spot?",
+		"intent": "transportation_streets_sidewalks.parking.asp.check"
+	},
+	{
+		"text": "Can I double park when ASP is in effect?",
+		"intent": "transportation_streets_sidewalks.parking.asp.double"
+	},
+	{
+		"text": "Can I double park when alternate side parking is happening?",
+		"intent": "transportation_streets_sidewalks.parking.asp.double"
+	},
+	{
+		"text": "Is double parking allowed when theres alternate side parking?",
+		"intent": "transportation_streets_sidewalks.parking.asp.double"
+	},
+	{
+		"text": "The street sweeper has passed, can I park there now?",
+		"intent": "transportation_streets_sidewalks.parking.asp.duration"
+	},
+	{
+		"text": "Can I park after a street sweeper has passed?",
+		"intent": "transportation_streets_sidewalks.parking.asp.duration"
+	},
+	{
+		"text": "Can I park when ASP is in effect and the street sweeper has passed or is late?",
+		"intent": "transportation_streets_sidewalks.parking.asp.duration",
+		"entities": [
+			{
+				"start": 41,
+				"end": 55,
+				"value": "transportation_streets_sidewalks",
+				"entity": "category_keywords"
+			}
+		]
+	},
+	{
+		"text": "What do I need to know about altnerate side parking?",
+		"intent": "transportation_streets_sidewalks.parking.asp.guide"
+	},
+	{
+		"text": "When does the street cleaner come?",
+		"intent": "transportation_streets_sidewalks.parking.asp.schedule",
+		"entities": [
+			{
+				"start": 14,
+				"end": 28,
+				"value": "transportation_streets_sidewalks",
+				"entity": "category_keywords"
+			}
+		]
+	},
+	{
+		"text": "When is street cleaning?",
+		"intent": "transportation_streets_sidewalks.parking.asp.schedule",
+		"entities": [
+			{
+				"start": 8,
+				"end": 23,
+				"value": "transportation_streets_sidewalks",
+				"entity": "category_keywords"
+			}
+		]
+	},
+	{
+		"text": "when is street cleaning",
+		"intent": "transportation_streets_sidewalks.parking.asp.schedule"
+	},
+	{
+		"text": "when is street sweeping",
+		"intent": "transportation_streets_sidewalks.parking.asp.schedule",
+		"entities": [
+			{
+				"start": 8,
+				"end": 23,
+				"value": "transportation_streets_sidewalks",
+				"entity": "category_keywords"
+			}
+		]
+	},
+	{
+		"text": "Street cleaning schedule?",
+		"intent": "transportation_streets_sidewalks.parking.asp.schedule",
+		"entities": [
+			{
+				"start": 0,
+				"end": 15,
+				"value": "transportation_streets_sidewalks",
+				"entity": "category_keywords"
+			}
+		]
+	},
+	{
+		"text": "How will I know when my street will be swept?",
+		"intent": "transportation_streets_sidewalks.parking.asp.schedule"
+	},
+	{
+		"text": "is alternate side parking tomorrow?",
+		"intent": "transportation_streets_sidewalks.parking.asp.schedule"
+	},
+	{
+		"text": "when do I need to move my car?",
+		"intent": "transportation_streets_sidewalks.parking.asp.schedule",
+		"entities": [
+			{
+				"start": 26,
+				"end": 29,
+				"value": "transportation_streets_sidewalks",
+				"entity": "category_keywords"
+			}
+		]
+	},
+	{
+		"text": "When is alternate side parking?",
+		"intent": "transportation_streets_sidewalks.parking.asp.schedule",
+		"entities": [
+			{
+				"start": 8,
+				"end": 30,
+				"value": "transportation_streets_sidewalks",
+				"entity": "category_keywords"
+			}
+		]
+	},
+	{
+		"text": "Is alternate side parking in effect?",
+		"intent": "transportation_streets_sidewalks.parking.asp.schedule"
+	},
+	{
+		"text": "does alternate side parking matter on weekends?",
+		"intent": "transportation_streets_sidewalks.parking.asp.weekends"
+	},
+	{
+		"text": "Can I park overnight on weekends?",
+		"intent": "transportation_streets_sidewalks.parking.asp.weekends"
+	},
+	{
+		"text": "Is ASP in effect on weekends?",
+		"intent": "transportation_streets_sidewalks.parking.asp.weekends"
+	},
+	{
+		"text": "When do I have to move my car in the morning?",
+		"intent": "transportation_streets_sidewalks.parking.overnight"
+	},
+	{
+		"text": "Can I park overnight?",
+		"intent": "transportation_streets_sidewalks.parking.overnight"
+	},
+	{
+		"text": "Is overnight street parking legal in residential neighborhoods?",
+		"intent": "transportation_streets_sidewalks.parking.overnight"
+	},
+	{
+		"text": "What time do I have to move my car by?",
+		"intent": "transportation_streets_sidewalks.parking.overnight"
+	},
+	{
+		"text": "What are the rules for short term overnight parking?",
+		"intent": "transportation_streets_sidewalks.parking.overnight"
+	},
+	{
+		"text": "How can I get a disability sticker for parking?",
+		"intent": "transportation_streets_sidewalks.parking.permit_license_permission.disability_parking"
+	},
+	{
+		"text": "How do I renew my Parking Permit For People With Disabilities?",
+		"intent": "transportation_streets_sidewalks.parking.permit_license_permission.disability_parking"
+	},
+	{
+		"text": "I need a parking disability sticker",
+		"intent": "transportation_streets_sidewalks.parking.permit_license_permission.disability_parking"
+	},
+	{
+		"text": "I'm disabled. How do I get a special permit?",
+		"intent": "transportation_streets_sidewalks.parking.permit_license_permission.disability_parking"
+	},
+	{
+		"text": "What is the application approval process for a Parking Permit for People with Disabilities?",
+		"intent": "transportation_streets_sidewalks.parking.permit_license_permission.disability_parking"
+	},
+	{
+		"text": "How do I get a residential parking permit?",
+		"intent": "transportation_streets_sidewalks.parking.permit_license_permission.residential_parking"
+	},
+	{
+		"text": "i need a parking permit",
+		"intent": "transportation_streets_sidewalks.parking.permit_license_permission.residential_parking"
+	},
+	{
+		"text": "how do i get a parking permit",
+		"intent": "transportation_streets_sidewalks.parking.permit_license_permission.residential_parking"
+	},
+	{
+		"text": "How many parking permits are allowed per house hold?",
+		"intent": "transportation_streets_sidewalks.parking.permit_license_permission.residential_parking.limit"
+	},
+	{
+		"text": "What are parking regulations in a school zone?",
+		"intent": "transportation_streets_sidewalks.parking.school_zone"
+	},
+	{
+		"text": "Can I park in a school zone?",
+		"intent": "transportation_streets_sidewalks.parking.school_zone"
+	},
+	{
+		"text": "How long can a car be parked on the street?",
+		"intent": "transportation_streets_sidewalks.parking.time_limit",
+		"entities": [
+			{
+				"start": 22,
+				"end": 28,
+				"value": "transportation_streets_sidewalks",
+				"entity": "category_keywords"
+			}
+		]
+	},
+	{
+		"text": "How long can I be parked on the street?",
+		"intent": "transportation_streets_sidewalks.parking.time_limit"
+	},
+	{
+		"text": "How long can I leave my car on the street?",
+		"intent": "transportation_streets_sidewalks.parking.time_limit"
+	},
+	{
+		"text": "How much is left on my parking card",
+		"intent": "transportation_streets_sidewalks.parking_card.balance"
+	},
+	{
+		"text": "How much money is left on my parking card?",
+		"intent": "transportation_streets_sidewalks.parking_card.balance",
+		"entities": [
+			{
+				"start": 29,
+				"end": 36,
+				"value": "transportation_streets_sidewalks",
+				"entity": "category_keywords"
+			}
+		]
+	},
+	{
+		"text": "parking card balance",
+		"intent": "transportation_streets_sidewalks.parking_card.balance"
+	},
+	{
+		"text": "What do I do if my parking card isn't working?",
+		"intent": "transportation_streets_sidewalks.parking_card.problem"
+	},
+	{
+		"text": "My parking card isnt working",
+		"intent": "transportation_streets_sidewalks.parking_card.problem"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.parking_meter",
+		"text": "Report parking meter"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.parking_meter.broken",
+		"text": "This parking meter is broken"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.parking_meter.broken",
+		"text": "I tried paying for parking and it's not working"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.parking_meter.broken",
+		"text": "The parking meter is not working."
+	},
+	{
+		"intent": "transportation_streets_sidewalks.parking_meter.broken",
+		"text": "I can't pay for parking cause the meter isn't working"
+	},
+	{
+		"text": "How do I get information on the city's street paving schedule ?",
+		"intent": "transportation_streets_sidewalks.paving.schedule"
+	},
+	{
+		"text": "How do I report my street not being plowed?",
+		"intent": "transportation_streets_sidewalks.plowing"
+	},
+	{
+		"text": "My street needs to be plowed",
+		"intent": "transportation_streets_sidewalks.plowing"
+	},
+	{
+		"text": "My street hasn't been plowed yet",
+		"intent": "transportation_streets_sidewalks.plowing.schedule"
+	},
+	{
+		"text": "How often do snow plows come by?",
+		"intent": "transportation_streets_sidewalks.plowing.schedule"
+	},
+	{
+		"text": "When does the snow plow come?",
+		"intent": "transportation_streets_sidewalks.plowing.schedule",
+		"entities": [
+			{
+				"start": 14,
+				"end": 23,
+				"value": "transportation_streets_sidewalks",
+				"entity": "category_keywords"
+			}
+		]
+	},
+	{
+		"text": "When will you plow my street?",
+		"intent": "transportation_streets_sidewalks.plowing.schedule",
+		"entities": [
+			{
+				"start": 14,
+				"end": 18,
+				"value": "transportation_streets_sidewalks",
+				"entity": "category_keywords"
+			}
+		]
+	},
+	{
+		"text": "Whens my street getting plowed",
+		"intent": "transportation_streets_sidewalks.plowing.schedule"
+	},
+	{
+		"text": "What road work is being done?",
+		"intent": "transportation_streets_sidewalks.road_work"
+	},
+	{
+		"text": "What road projects are going on?",
+		"intent": "transportation_streets_sidewalks.road_work"
+	},
+	{
+		"text": "What roads are being paved?",
+		"intent": "transportation_streets_sidewalks.road_work"
+	},
+	{
+		"text": "When my street is paved, will I be able to access my property?",
+		"intent": "transportation_streets_sidewalks.road_work.accessibility"
+	},
+	{
+		"text": "How do I get to my driveway when the streets being paved?",
+		"intent": "transportation_streets_sidewalks.road_work.accessibility"
+	},
+	{
+		"text": "Can residents access a street when its being paved?",
+		"intent": "transportation_streets_sidewalks.road_work.accessibility"
+	},
+	{
+		"text": "When will they finish paving my street?",
+		"intent": "transportation_streets_sidewalks.road_work.status",
+		"entities": [
+			{
+				"start": 22,
+				"end": 28,
+				"value": "transportation_streets_sidewalks",
+				"entity": "category_keywords"
+			}
+		]
+	},
+	{
+		"text": "When will they be done fixing the road?",
+		"intent": "transportation_streets_sidewalks.road_work.status"
+	},
+	{
+		"text": "How do I get updates on road work on my street?",
+		"intent": "transportation_streets_sidewalks.road_work.status"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.sidewalk",
+		"text": "How do I request a sidewalk inspection to remove a violation?"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.sidewalk.broken",
+		"text": "A tree has split the sidewalk"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.sidewalk.broken",
+		"text": "How do I report a broken, raised, or uneven sidewalk?"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.sidewalk.broken",
+		"text": "The sidewalk needs fixing"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.sidewalk.broken",
+		"text": "This sidewalk is broken. People keep tripping"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.sidewalk.broken",
+		"text": "How can I request sidewalk repairs?"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.sidewalk.broken",
+		"text": "How do report getting my sidewalk repaired?"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.sign",
+		"text": "Report street sign"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.sign.broken",
+		"text": "Someone took a sign"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.sign.broken",
+		"text": "Theres graffiti all over the parking sign"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.sign.broken",
+		"text": "There is a sign down and broken, how do I report it?"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.sign.conflict",
+		"text": "How do I know what a parking sign means?"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.sign.conflict",
+		"text": "These signs dont make any sense"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.sign.down",
+		"text": "This street sign fell down"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.sign.missing",
+		"text": "A parking sign is missing"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.sign.request",
+		"text": "Can you get a do not block driveway sign?"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.sign.request",
+		"text": "How do I request a no parking or no outlet sign?"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.sign.request",
+		"text": "We need a parking rules sign here"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.sign.request",
+		"text": "Can I request a sign?"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.sign.request",
+		"text": "How do I request an ASP rules sign?"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.signal",
+		"text": "Report signal"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.signal.always_on",
+		"text": "Both the walk and do not walk are on"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.signal.burnt_out",
+		"text": "None of the traffic lights work"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.signal.down",
+		"text": "the traffic light has fallen down"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.signal.flickering",
+		"text": "The traffic light is going on and off"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.signal.request",
+		"text": "There needs to be a traffic light here. I've nearly been in an accident multiple times"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.street",
+		"text": "This street is cant be driven on"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.street.blocking",
+		"text": "How do I report a basketball hoop blocking a street?"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.street.fire_hydrant",
+		"text": "A fire hydrant is spraying water wildly all over the street"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.street.fire_hydrant",
+		"text": "How do I report a Leaking/Damaged Fire Hydrant?"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.street.manhole",
+		"text": "There's a manhole cover loose"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.street.pothole",
+		"text": "I just hit a pothole"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.street.pothole",
+		"text": "How do I report a pothole?"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.street.pothole",
+		"text": "There is a huge pothole here"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.street.pothole",
+		"text": "Can you come fix this pothole?"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.street.pothole",
+		"text": "pothole"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.street_light",
+		"text": "Report street light"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.street_light.always_on",
+		"text": "The street light is on throughout the day"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.street_light.burnt_out",
+		"text": "Who do I notify if I see a streetlight on my street is not functioning or burned out?"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.street_light.burnt_out",
+		"text": "A street light is out, who do I tell?"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.street_light.burnt_out",
+		"text": "There's a street lamp out"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.street_light.burnt_out",
+		"text": "the light outside my apartment is out"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.street_light.down",
+		"text": "A whole street light just came down outside my apartment"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.street_light.flickering",
+		"text": "A street light at the corner is flickering"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.street_light.request",
+		"text": "Can I request additional streetlights on my street?"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.street_light.request",
+		"text": "The street along College Ave. isnt well lit. Can we get more lights?"
+	},
+	{
+		"text": "Request street light",
+		"intent": "transportation_streets_sidewalks.street_light.request"
+	},
+	{
+		"text": "I left my wallet in a taxi",
+		"intent": "transportation_streets_sidewalks.taxi.belongings",
+		"entities": [
+			{
+				"start": 22,
+				"end": 26,
+				"value": "transportation_streets_sidewalks",
+				"entity": "category_keywords"
+			}
+		]
+	},
+	{
+		"text": "I forgot my purse in a taxi",
+		"intent": "transportation_streets_sidewalks.taxi.belongings"
+	},
+	{
+		"text": "Is there a lost and found for taxis?",
+		"intent": "transportation_streets_sidewalks.taxi.belongings"
+	},
+	{
+		"text": "How do I find an item I lost in a taxi if I have the medallion number?",
+		"intent": "transportation_streets_sidewalks.taxi.belongings"
+	},
+	{
+		"text": "How do I find an item I lost in a taxi if I don't have the medallion number?",
+		"intent": "transportation_streets_sidewalks.taxi.belongings"
+	},
+	{
+		"text": "How many passengers are allowed in a taxi?",
+		"intent": "transportation_streets_sidewalks.taxi.max_occupancy"
+	},
+	{
+		"text": "How many people can a taxi have?",
+		"intent": "transportation_streets_sidewalks.taxi.max_occupancy"
+	},
+	{
+		"text": "I didn't do anything to get this ticket",
+		"intent": "transportation_streets_sidewalks.ticket.contested"
+	},
+	{
+		"text": "Can and how do I contest a ticket?",
+		"intent": "transportation_streets_sidewalks.ticket.contested"
+	},
+	{
+		"text": "What if I feel like the ticket was issued unjustly?",
+		"intent": "transportation_streets_sidewalks.ticket.contested"
+	},
+	{
+		"text": "How long until I'm told whether my ticket was overturned?",
+		"intent": "transportation_streets_sidewalks.ticket.contested.arrival"
+	},
+	{
+		"text": "I can't find my ticket",
+		"intent": "transportation_streets_sidewalks.ticket.lost"
+	},
+	{
+		"text": "How can I pay for my ticket?",
+		"intent": "transportation_streets_sidewalks.ticket.payment"
+	},
+	{
+		"text": "This parking ticket is wrong",
+		"intent": "transportation_streets_sidewalks.ticket.traffic.contested",
+		"entities": [
+			{
+				"start": 5,
+				"end": 19,
+				"value": "transportation_streets_sidewalks",
+				"entity": "category_keywords"
+			}
+		]
+	},
+	{
+		"text": "How do I fight a parking ticket?",
+		"intent": "transportation_streets_sidewalks.ticket.traffic.contested"
+	},
+	{
+		"text": "How do I appeal a parking ticket judgment and penalty?",
+		"intent": "transportation_streets_sidewalks.ticket.traffic.contested"
+	},
+	{
+		"text": "Where do I go to pay a parking ticket? Where do I go to contest a parking ticket?",
+		"intent": "transportation_streets_sidewalks.ticket.traffic.contested"
+	},
+	{
+		"text": "How long does it take to get a decision from an online hearing for a parking ticket?",
+		"intent": "transportation_streets_sidewalks.ticket.traffic.contested.arrival"
+	},
+	{
+		"text": "When do I hear back about my traffic ticket hearing?",
+		"intent": "transportation_streets_sidewalks.ticket.traffic.contested.arrival",
+		"entities": [
+			{
+				"start": 29,
+				"end": 43,
+				"value": "transportation_streets_sidewalks",
+				"entity": "category_keywords"
+			}
+		]
+	},
+	{
+		"text": "How long does it take to hear back on a parking ticket hearing?",
+		"intent": "transportation_streets_sidewalks.ticket.traffic.contested.arrival"
+	},
+	{
+		"text": "What should I do if I lost my ticket?",
+		"intent": "transportation_streets_sidewalks.ticket.traffic.lost"
+	},
+	{
+		"text": "I lost my traffic ticket. What do I do?",
+		"intent": "transportation_streets_sidewalks.ticket.traffic.lost"
+	},
+	{
+		"text": "Can I pay my parking ticket online?",
+		"intent": "transportation_streets_sidewalks.ticket.traffic.payment"
+	},
+	{
+		"text": "Where do I pay parking tickets?",
+		"intent": "transportation_streets_sidewalks.ticket.traffic.payment"
+	},
+	{
+		"text": "Can you pay parking tickets online?",
+		"intent": "transportation_streets_sidewalks.ticket.traffic.payment"
+	},
+	{
+		"text": "How do I pay a parking ticket?",
+		"intent": "transportation_streets_sidewalks.ticket.traffic.payment"
+	},
+	{
+		"text": "How do I pay my parking ticket?",
+		"intent": "transportation_streets_sidewalks.ticket.traffic.payment"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.vehicle.abandoned",
+		"text": "Theres an abandoned car on the street"
+	},
+	{
+		"text": "Someone just hit my car",
+		"intent": "transportation_streets_sidewalks.vehicle.accident"
+	},
+	{
+		"text": "I just got into an accident",
+		"intent": "transportation_streets_sidewalks.vehicle.accident"
+	},
+	{
+		"text": "My car just got hit",
+		"intent": "transportation_streets_sidewalks.vehicle.accident"
+	},
+	{
+		"text": "If I'm in a traffic accident, what should I do?",
+		"intent": "transportation_streets_sidewalks.vehicle.accident"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.vehicle.idling",
+		"text": "I want to report an idling vehicle"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.vehicle.idling",
+		"text": "There's a car idling here"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.vehicle.idling",
+		"text": "This truck has been running for 30 minutes with no one in it"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.vehicle.reckless",
+		"text": "what do we do about a neighbor that races his cars up & down our street?"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.vehicle.reckless",
+		"text": "There's a crazy driver here"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.vehicle.reckless",
+		"text": "How do I report dangerous driving?"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.vehicle.reckless",
+		"text": "I just saw someone speed down my street"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.vehicle.reckless",
+		"text": "How do I report dangerous motorized scooter use?"
+	},
+	{
+		"text": "Was my vehicle towed?",
+		"intent": "transportation_streets_sidewalks.vehicle.towed",
+		"entities": [
+			{
+				"start": 15,
+				"end": 20,
+				"value": "transportation_streets_sidewalks",
+				"entity": "category_keywords"
+			}
+		]
+	},
+	{
+		"text": "My car has vanished. What do I do?",
+		"intent": "transportation_streets_sidewalks.vehicle.towed"
+	},
+	{
+		"text": "How do I find my towed vehicle?",
+		"intent": "transportation_streets_sidewalks.vehicle.towed"
+	},
+	{
+		"text": "My car was impounded.  How can I get it back?",
+		"intent": "transportation_streets_sidewalks.vehicle.towed"
+	},
+	{
+		"text": "Did my vehicle get towed?",
+		"intent": "transportation_streets_sidewalks.vehicle.towed"
+	},
+	{
+		"text": "What do I when I see a traffic accident?",
+		"intent": "transportation_streets_sidewalks.vehicle.witness",
+		"entities": [
+			{
+				"start": 23,
+				"end": 39,
+				"value": "transportation_streets_sidewalks",
+				"entity": "category_keywords"
+			}
+		]
+	},
+	{
+		"text": "I just saw an accident, what should I do?",
+		"intent": "transportation_streets_sidewalks.vehicle.witness"
+	},
+	{
+		"text": "Someone just got hit by a car",
+		"intent": "transportation_streets_sidewalks.vehicle.witness"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.violation.parking",
+		"text": "Who do I call if someone is parked illegally?"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.violation.parking",
+		"text": "There's a car that isn't parked right"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.violation.parking",
+		"text": "This car can't be parked here"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.violation.parking",
+		"text": "How do I report illegal parking?"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.violation.parking.blocking",
+		"text": "Who do I call if someone is blocking my driveway?"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.violation.parking.blocking",
+		"text": "How do I report a vehicle blocking my driveway?"
+	},
+	{
+		"text": "blocked driveway",
+		"intent": "transportation_streets_sidewalks.violation.parking.blocking"
+	},
+	{
+		"text": "Blocked driveway",
+		"intent": "transportation_streets_sidewalks.violation.parking.blocking"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.violation.parking.blocking",
+		"text": "Theres a parked car blocking the street"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.violation.parking.blocking",
+		"text": "Someone is blocking my driveway."
+	},
+	{
+		"intent": "transportation_streets_sidewalks.violation.parking.bus_zone",
+		"text": "A car has been parked in the bus zone"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.violation.parking.emergency_zone",
+		"text": "A car is parked in a fire zone"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.violation.parking.expired_tags",
+		"text": "This car has expired tags"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.violation.parking.fire_hydrant",
+		"text": "A truck parked in front of a fire hydrant"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.violation.parking.handicap",
+		"text": "Someone is taking up a handicap parking space"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.violation.parking.loading_zone",
+		"text": "A car is blocking the loading zone"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.violation.parking.no_parking",
+		"text": "A car is parked in a no parking zone"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.violation.parking.parking_meter",
+		"text": "The parking meter has expired"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.violation.parking.school_zone",
+		"text": "There is someone taking up a school zone"
+	},
+	{
+		"text": "There are telephone and electrical wires down",
+		"intent": "transportation_streets_sidewalks.wire.down"
+	},
+	{
+		"text": "Electrical wires are on the street",
+		"intent": "transportation_streets_sidewalks.wire.down"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.wire.down",
+		"text": "An electrical wire is down in the street"
+	},
+	{
+		"text": "A tree is up against electrical wires",
+		"intent": "transportation_streets_sidewalks.wire.safety"
+	},
+	{
+		"text": "How do I report a tree branch touching electrical wires?",
+		"intent": "transportation_streets_sidewalks.wire.safety"
+	}
 ]

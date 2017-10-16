@@ -118,7 +118,7 @@ export default class KitClient {
         const timeStart = moment(availability.t_start, 'HH-mm-ss');
         const timeEnd = moment(availability.t_end, 'HH-mm-ss');
         entityAvailabilityText = entityAvailabilityText.concat(
-          `${rule.toText()}${availability.t_start && availability.t_end ? ` (${timeStart.format('h:mm A')} - ${timeEnd.format('h:mm A')})` : ' (No Hours Listed)'}${index === array.length - 1 ? ' / ' : ''}`);
+          `${rule.toText()}${availability.t_start && availability.t_end ? ` (${timeStart.format('h:mm A')} - ${timeEnd.format('h:mm A')})` : ' (No Hours Listed)'}${index !== array.length - 1 ? ' / ' : ''}`);
       });
     // Speak to Specific Day Availability
     } else if (datetime[0].grain === 'day') {

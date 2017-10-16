@@ -352,6 +352,38 @@
     ]
   },
   {
+    "text": "What is the mayor's contact info?",
+    "intent": "search.knowledge_entity",
+    "entities": [
+      {
+        "value": "contact",
+        "entity": "entity_property"
+      },
+      {
+        "start": 12,
+        "end": 17,
+        "value": "mayor",
+        "entity": "wit$search_query"
+      }
+    ]
+  },
+  {
+    "text": "Mayor's contact info",
+    "intent": "search.knowledge_entity",
+    "entities": [
+      {
+        "value": "contact",
+        "entity": "entity_property"
+      },
+      {
+        "start": 0,
+        "end": 5,
+        "value": "mayor",
+        "entity": "wit$search_query"
+      }
+    ]
+  },
+  {
     "text": "What are the business hours for Engineering?",
     "intent": "search.knowledge_entity",
     "entities": [

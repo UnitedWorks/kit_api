@@ -8,9 +8,9 @@ const fs = require('fs');
 // Get Args
 if (process.argv.length !== 4) throw new Error('Incorrect Number of Arrrrrgs');
 // TEXT
-const text = process.argv[3];
+const text = process.argv[3].trim();
 // INTENT
-const intent = process.argv[2];
+const intent = process.argv[2].trim();
 // Contains . and is valid category
 if (intent.indexOf('.') === -1) throw new Error('Intent may be incorrect. Didnt find any "."');
 let fitsCategory = false;

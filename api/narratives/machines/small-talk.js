@@ -6,52 +6,32 @@ import SlackService from '../../services/slack';
 import { EventTracker } from '../../services/event-tracking';
 import { fetchAnswers, randomPick } from '../helpers';
 import { getCategoryFallback } from '../../knowledge-base/helpers';
+import { ILLUSTRATION_URLS } from '../templates/assets';
 import * as elementTemplates from '../templates/elements';
 import * as replyTemplates from '../templates/quick-replies';
 import { i18n } from '../templates/messages';
-import * as ATTRIBUTES from '../../constants/attributes';
 import * as KNOWLEDGE_CONST from '../../constants/knowledge-base';
+
+const intoTemplates = {
+  type: 'template',
+  templateType: 'generic',
+  elements: [
+    elementTemplates.genericSanitation,
+    elementTemplates.genericEvents,
+    elementTemplates.genericCommuter,
+    elementTemplates.genericRenter,
+    elementTemplates.genericVotingAndElections,
+    elementTemplates.genericBusiness,
+    elementTemplates.genericDirectory,
+  ],
+};
 
 export default {
   init: {
     async enter() {
-      let botName;
       let firstName;
-      let pictureUrl = elementTemplates.illustrationUrls.neighborhood;
-      if (this.snapshot.constituent.facebookEntry) {
-        botName = this.snapshot.constituent.facebookEntry.intro_name ||
-          this.snapshot.constituent.facebookEntry.name;
-        if (this.snapshot.constituent.facebookEntry.intro_picture_url) {
-          pictureUrl = this.snapshot.constituent.facebookEntry.intro_picture_url;
-        }
-        firstName = await axios.get(`https://graph.facebook.com/v2.6/${this.snapshot.constituent.facebook_id}`, {
-          params: {
-            fields: 'first_name',
-            access_token: this.snapshot.constituent.facebookEntry.access_token,
-          },
-        }).then(res => res.data.first_name);
-      } else if (this.snapshot.constituent.smsEntry) {
-        botName = this.snapshot.constituent.smsEntry.intro_name ||
-          this.snapshot.constituent.smsEntry.name;
-        if (this.snapshot.constituent.smsEntry.intro_picture_url) {
-          pictureUrl = this.snapshot.constituent.smsEntry.intro_picture_url;
-        }
-      }
-      const templates = {
-        type: 'template',
-        templateType: 'generic',
-        elements: [
-          elementTemplates.genericWelcome(pictureUrl, this.get('organization').name),
-          elementTemplates.genericSanitation,
-          elementTemplates.genericVotingAndElections,
-          elementTemplates.genericCommuter,
-          elementTemplates.genericRenter,
-          elementTemplates.genericDirectory,
-          elementTemplates.genericAdvert,
-        ],
-      };
       this.messagingClient.addToQuene(i18n('intro_hello', { firstName }));
-      this.messagingClient.addToQuene(templates);
+      this.messagingClient.addToQuene(intoTemplates);
       this.messagingClient.addToQuene(i18n('intro_information', { organizationName: this.get('organization').name }));
       return this.messagingClient.runQuene().then(() => {
         if (!this.get('organization')) return this.stateRedirect('location', 'smallTalk.start');
@@ -62,39 +42,8 @@ export default {
 
   what_can_i_do: {
     enter() {
-      const elements = [
-        elementTemplates.genericVotingAndElections,
-      ];
-      // Add elements depending on constituent attributes
-      if (!this.get('attributes')) this.set('attributes', {});
-      // Housing
-      if (this.get('attributes').housing === ATTRIBUTES.HOUSING_OWNER) {
-        elements.unshift(elementTemplates.genericDocumentation);
-        elements.unshift(elementTemplates.genericSanitation);
-      } else if (this.get('attributes').housing === ATTRIBUTES.HOUSING_TENANT) {
-        elements.push(elementTemplates.genericBenefits);
-        elements.unshift(elementTemplates.genericRenter);
-      } else if (this.get('attributes').housing === ATTRIBUTES.HOUSING_HOMELESS) {
-        elements.unshift(elementTemplates.genericBenefits);
-        elements.unshift(elementTemplates.genericAssistance);
-      } else {
-        elements.unshift(elementTemplates.genericDocumentation);
-        elements.unshift(elementTemplates.genericSanitation);
-        elements.push(elementTemplates.genericBenefits);
-        elements.push(elementTemplates.genericAssistance);
-      }
-      // Business
-      if (this.get('attributes').business_owner || this.get('attributes').business_owner == null) {
-        elements.unshift(elementTemplates.genericBusiness);
-      }
-      elements.unshift(elementTemplates.genericCommuter);
-      elements.unshift(elementTemplates.genericNewResident);
-      this.messagingClient.addToQuene({
-        type: 'template',
-        templateType: 'generic',
-        elements,
-      });
-      this.messagingClient.addToQuene('Here is what I think might be helpful for you. Feel free to ask me anything about local government or your community! :)');
+      this.messagingClient.addToQuene(intoTemplates);
+      this.messagingClient.addToQuene('Ask me anything about local government or your community! :)');
       return this.messagingClient.runQuene().then(() => 'start');
     },
   },
@@ -168,32 +117,12 @@ export default {
         GET_STARTED: 'init',
         CHANGE_CITY: 'setup.reset_organization',
         ASK_OPTIONS: 'what_can_i_do',
-        FREQ_QUESTION_LIST: 'resident_question_list',
-        FREQ_SERVICE_LIST: 'resident_service_list',
-        FREQ_BUSINESS_QUESTIONS_LIST: 'business_questions_list',
-        FREQ_BUSINESS_REQUIREMENTS_LIST: 'business_requirements_list',
         ANSWER_HELPFUL: 'eval.answer_helpful',
         ANSWER_NOT_HELPFUL: 'eval.answer_not_helpful',
       }[this.snapshot.input.payload.payload];
       if (!goTo) return this.input('message');
       return goTo;
     },
-  },
-
-  resident_question_list() {
-    return this.messagingClient.send({ type: 'template', templateType: 'generic', elements: elementTemplates.genericNewResidentFAQList }).then(() => 'start');
-  },
-
-  resident_service_list() {
-    return this.messagingClient.send({ type: 'template', templateType: 'generic', elements: elementTemplates.genericNewResidentServicesList }).then(() => 'start');
-  },
-
-  business_questions_list() {
-    return this.messagingClient.send({ type: 'template', templateType: 'generic', elements: elementTemplates.genericBusinessQuestions }).then(() => 'start');
-  },
-
-  business_requirements_list() {
-    return this.messagingClient.send({ type: 'template', templateType: 'generic', elements: elementTemplates.genericBusinessRequirements }).then(() => 'start');
   },
 
   get_tasks() {

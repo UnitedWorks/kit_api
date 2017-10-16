@@ -2,7 +2,7 @@ import VotingClient from '../clients/voting-client';
 import * as US_VOTE_CONSTANTS from '../../constants/voting-foundation';
 import { getPlacesUrl } from '../../utils';
 import { i18n } from '../templates/messages';
-import * as ELEMENT_TEMPLATES from '../templates/elements';
+import * as ELEMENT_TEMPLATES from '../templates/assets';
 
 export default {
   votingDeadlines() {
@@ -41,7 +41,7 @@ export default {
           elements.push({
             title: election.title,
             subtitle: new Date(election.election_date).toDateString(),
-            image_url: ELEMENT_TEMPLATES.illustrationUrls.voting,
+            image_url: ELEMENT_TEMPLATES.ILLUSTRATION_URLS.voting,
           });
           election.dates.filter(date => ['DRD', 'DBRD', 'EVF'].includes(date.kind)).map((electionDate) => {
             if (electionDate.date_type.default === true) {
