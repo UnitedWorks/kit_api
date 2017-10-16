@@ -8,6 +8,8 @@ export const LOCATION = 'location';
 export const MEDIA = 'media';
 export const IMAGE = 'image';
 
+export const BOOLEAN = 'boolean';
+
 export const DOCUMENT = 'document';
 
-export const PROMPT_STEP_TYPES = [TEXT, EMAIL, PHONE, NUMBER, LOCATION, MEDIA, IMAGE, DOCUMENT];
+export const PROMPT_STEP_TYPES = [TEXT, EMAIL, PHONE, NUMBER, LOCATION, MEDIA, IMAGE, DOCUMENT, BOOLEAN];

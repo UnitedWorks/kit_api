@@ -19,7 +19,7 @@ export async function createShoutOut(label, params, config = {}) {
   await getIntegrations({ organization: { id: config.organization_id } })
     .then(ints => ints.forEach((int) => {
       if (!trigger) trigger = {};
-      if (int.label === INTEGRATIONS.SEE_CLICK_FIX) {
+      if (int.label === INTEGRATIONS.SEE_CLICK_FIX && int.enabled) {
         trigger = Object.assign(trigger, { create_task: true, see_click_fix: true });
       }
     }));

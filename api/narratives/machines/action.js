@@ -69,6 +69,12 @@ export default {
           if (steps[i].type === PROMPT_CONSTANTS.TEXT) {
             steps[i].value = { text: this.snapshot.input.payload.text };
           // Handle Picture
+          } else if (steps[i].type === PROMPT_CONSTANTS.BOOLEAN) {
+            if (nlpData.entities.intent && nlpData.entities.intent[0].value === 'speech.confirm') {
+              steps[i].value = { boolean: true };
+            } else {
+              steps[i].value = { boolean: false };
+            }
           } else if (steps[i].type === PROMPT_CONSTANTS.EMAIL) {
             if (this.snapshot.input.payload.text.indexOf('@') > 0) {
               steps[i].value = { text: this.snapshot.input.payload.text };
