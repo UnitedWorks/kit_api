@@ -326,11 +326,19 @@ SO['property_buildings_homes.fire_hazard'] = {
   params: basicReport,
 };
 SO['property_buildings_homes.noise'] = {
-  tags: ['property_buildings_homes', 'fire_hazard'],
+  tags: ['property_buildings_homes', 'noise'],
+  params: locationReport,
+};
+SO['property_buildings_homes.noise.neighbor'] = {
+  tags: ['property_buildings_homes', 'noise', 'neighbor'],
+  params: locationReport,
+};
+SO['property_buildings_homes.noise.alarm'] = {
+  tags: ['property_buildings_homes', 'noise', 'alarm'],
   params: locationReport,
 };
 SO['property_buildings_homes.squatting'] = {
-  tags: ['property_buildings_homes', 'fire_hazard'],
+  tags: ['property_buildings_homes', 'squatting'],
   params: locationReport,
 };
 SO['property_buildings_homes.water_meter'] = {
