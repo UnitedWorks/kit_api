@@ -7,10 +7,9 @@ import * as replyTemplates from './templates/quick-replies';
 import { i18n } from './templates/messages';
 import { getCategoryFallback } from '../knowledge-base/helpers';
 import EmailService from '../services/email';
-import Mixpanel from '../services/event-tracking';
+import { EventTracker } from '../services/event-tracking';
 import * as env from '../env';
 import { shuffle } from '../utils';
-import { logger } from '../logger';
 import shoutOutLogic from '../shouts/logic';
 import { paramsToPromptSteps } from '../shouts/helpers';
 
@@ -58,6 +57,18 @@ export function geoCheck(geo, constituentPosition) {
   return passesGeoCheck;
 }
 
+function missingQuestionEmail(representatives, session, question) {
+  const repEmails = [];
+  representatives.forEach((rep) => {
+    repEmails.push({ name: rep.name, email: rep.email });
+  });
+  const emailMessage = `<b>"${question.question}"</b> ... was asked by a constituent but we don't seem to have an answer!<br/><br/><a href="${env.getDashboardRoot()}/answer?organization_id=${session.get('organization').id}&question_id=${question.id}" target="_blank">Create an Answer!</a><br><br> If you have questions, send <a href="mailto:mark@mayor.chat">us</a> an email!`;
+  new EmailService().send(`🤖 Missing Answer for "${question.question}" QID:${question.id} OID:${session.get('organization').id}`, emailMessage, repEmails, {
+    organization_id: session.get('organization').id,
+    question_id: question.id,
+  });
+}
+
 /* TODO(nicksahler) Move this all to higher order answering */
 export async function fetchAnswers(intent, session) {
   const entities = session.snapshot.nlp.entities;
@@ -71,31 +82,27 @@ export async function fetchAnswers(intent, session) {
   // If no answers, run fallback
   } else if (!answers || (!answers.text && !answers.actions && !answers.facilities &&
     !answers.services && !answers.contacts && !answers.feeds)) {
-    const fallbackData = await getCategoryFallback([intent.split('.')[0]], session.get('organization').id).then(fbd => fbd);
+    const fallback = await getCategoryFallback([intent.split('.')[0]], session.get('organization').id).then(fbd => fbd);
+    const shoutOutTemplate = shoutOutLogic.ready[intent];
+    // If a default shout out exists, run it
+    if (shoutOutTemplate) {
+      const actionObj = { shout_out: intent, params: paramsToPromptSteps(shoutOutTemplate.params) };
+      session.set('action', actionObj);
+      missingQuestionEmail(fallback.representatives, session, question);
+      EventTracker('answer_sent', { session, question }, { status: 'fallback' });
+      return 'action.waiting_for_response';
     // See if we have fallback contacts
-    if (fallbackData.contacts.length === 0) {
+    } else if (fallback.contacts.length === 0) {
       session.messagingClient.addToQuene(i18n('dont_know'));
-      try {
-        Mixpanel.track('answer_sent', {
-          distinct_id: session.snapshot.constituent.id,
-          constituent_id: session.snapshot.constituent.id,
-          organization_id: session.get('organization').id,
-          knowledge_category_id: question ? question.knowledge_category_id : null,
-          question_id: question ? question.id : null,
-          status: 'failed',
-          interface: session.messagingClient.provider,
-        });
-      } catch (e) {
-        logger.error(e);
-      }
+      EventTracker('answer_sent', { session, question }, { status: 'failed' });
     } else {
-      // If we do, templates!
-      session.messagingClient.addToQuene(i18n('dont_know'));
-      // Compile names to look nice
-      let compiledContacts = 'Until then please contact my colleagues for more help: ';
-      fallbackData.contacts.forEach((contact, index) => {
+      // If we have fallback, list names and templates
+      let compiledContacts = `${i18n('dont_know')} Until then please contact my colleagues for more help: `;
+      fallback.contacts.forEach((contact, index, arr) => {
         if (index === 0) {
           compiledContacts = compiledContacts.concat(contact.name);
+        } else if (arr.length - 1 === index) {
+          compiledContacts = compiledContacts.concat(`, or ${contact.name}`);
         } else {
           compiledContacts = compiledContacts.concat(`, ${contact.name}`);
         }
@@ -105,56 +112,19 @@ export async function fetchAnswers(intent, session) {
       session.messagingClient.addToQuene({
         type: 'template',
         templateType: 'generic',
-        elements: fallbackData.contacts.map(
+        elements: fallback.contacts.map(
           contact => elementTemplates.genericContact(contact)),
-      }, replyTemplates.evalHelpfulAnswer);
-      try {
-        Mixpanel.track('answer_sent', {
-          distinct_id: session.snapshot.constituent.id,
-          constituent_id: session.snapshot.constituent.id,
-          organization_id: session.get('organization').id,
-          knowledge_category_id: question ? question.knowledge_category_id : null,
-          question_id: question ? question.id : null,
-          status: 'fallback',
-          interface: session.messagingClient.provider,
-        });
-      } catch (e) {
-        logger.error(e);
-      }
+      });
+      EventTracker('answer_sent', { session, question }, { status: 'fallback' });
     }
     // EMAIL: See if have a representative we can send this to
-    if (question && fallbackData.representatives.length > 0) {
-      const repEmails = [];
-      fallbackData.representatives.forEach((rep) => {
-        repEmails.push({ name: rep.name, email: rep.email });
-      });
-      const emailMessage = `<b>"${question.question}"</b> ... was asked by a constituent but we don't seem to have an answer!<br/><br/><a href="${env.getDashboardRoot()}/answer?organization_id=${session.get('organization').id}&question_id=${question.id}" target="_blank">Create an Answer!</a><br><br> If you have questions, send <a href="mailto:mark@mayor.chat">us</a> an email!`;
-      new EmailService().send(`🤖 Missing Answer for "${question.question}" QID:${question.id} OID:${session.get('organization').id}`, emailMessage, repEmails, {
-        organization_id: session.get('organization').id,
-        question_id: question.id,
-      });
-    }
-    // If we didn't provide any info, don't bother asking if it was helpful
-    if (question && (fallbackData.representatives.length > 0 || fallbackData.contacts.length > 0)) {
-      session.messagingClient.addToQuene('Was this helpful?', [...replyTemplates.evalHelpfulAnswer]);
+    if (question && fallback.representatives.length > 0) {
+      missingQuestionEmail(fallback.representatives, session, question);
     }
     // Run Message
     return session.messagingClient.runQuene().then(() => session.getBaseState());
   }
-  // Otherwise, proceed with answers
-  try {
-    Mixpanel.track('answer_sent', {
-      distinct_id: session.snapshot.constituent.id,
-      constituent_id: session.snapshot.constituent.id,
-      organization_id: session.get('organization').id,
-      knowledge_category_id: question.knowledge_category_id,
-      question_id: question.id,
-      status: 'available',
-      interface: session.messagingClient.provider,
-    });
-  } catch (e) {
-    logger.error(e);
-  }
+  EventTracker('answer_sent', { session, question }, { status: 'available' });
   // Translate Entities to Templates/Text
   // If we have a datetime, filter out unavailable services/facilities
   if (entities[TAGS.DATETIME]) {

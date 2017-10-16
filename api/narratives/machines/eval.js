@@ -1,4 +1,4 @@
-import Mixpanel from '../../services/event-tracking';
+import { EventTracker } from '../../services/event-tracking';
 import SlackService from '../../services/slack';
 import { logger } from '../../logger';
 
@@ -9,13 +9,7 @@ export default {
       icon: 'raised_hands',
     }).send(`>*Constituent ID*: ${this.snapshot.constituent.id}`);
     try {
-      Mixpanel.track('answer_feedback', {
-        distinct_id: this.snapshot.constituent.id,
-        constituent_id: this.snapshot.constituent.id,
-        organization_id: this.get('organization').id,
-        interface: this.messagingClient.provider,
-        helpful: 5,
-      });
+      EventTracker('answer_feedback', { session: this }, { helpful: 5 });
     } catch (e) {
       logger.error(e);
     }
@@ -27,13 +21,7 @@ export default {
       icon: 'disappointed',
     }).send(`>*Constituent ID*: ${this.snapshot.constituent.id}`);
     try {
-      Mixpanel.track('answer_feedback', {
-        distinct_id: this.snapshot.constituent.id,
-        constituent_id: this.snapshot.constituent.id,
-        organization_id: this.get('organization').id,
-        interface: this.messagingClient.provider,
-        helpful: 0,
-      });
+      EventTracker('answer_feedback', { session: this }, { helpful: 0 });
     } catch (e) {
       logger.error(e);
     }

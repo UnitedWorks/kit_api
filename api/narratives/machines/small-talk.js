@@ -3,7 +3,7 @@ import { logger } from '../../logger';
 import { nlp } from '../../services/nlp';
 import { getConstituentTasks } from '../../tasks/helpers';
 import SlackService from '../../services/slack';
-import Mixpanel from '../../services/event-tracking';
+import { EventTracker } from '../../services/event-tracking';
 import { fetchAnswers, randomPick } from '../helpers';
 import { getCategoryFallback } from '../../knowledge-base/helpers';
 import * as elementTemplates from '../templates/elements';
@@ -216,16 +216,7 @@ export default {
       username: 'Misunderstood Request',
       icon: 'question',
     }).send(`>*Request Message*: ${this.snapshot.input.payload.text}\n>*Constituent ID*: ${this.snapshot.constituent.id}`);
-    try {
-      Mixpanel.track('constituent_input_failure', {
-        distinct_id: this.snapshot.constituent.id,
-        constituent_id: this.snapshot.constituent.id,
-        organization_id: this.get('organization').id,
-        interface: this.messagingClient.provider,
-      });
-    } catch (e) {
-      logger.error(e);
-    }
+    EventTracker('constituent_input_failure', { session: this });
     // Handle Failure
     const firstFailMessage = randomPick([
       'Oops! My circuits went haywire. Can you say that a different way?',

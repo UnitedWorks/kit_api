@@ -1,6 +1,8 @@
 import knex from 'knex';
 import { ShoutOut, ShoutOutTrigger } from '../shouts/models';
 import { createTask } from '../tasks/helpers';
+import * as INTEGRATIONS from '../constants/integrations';
+import { getIntegrations } from '../integrations/helpers';
 
 export async function createShoutOut(label, params, config = {}) {
   if (!label || !params) throw new Error('Missing Values');
@@ -11,8 +13,16 @@ export async function createShoutOut(label, params, config = {}) {
     params,
   }).save().then(m => m.toJSON());
   // Run Triggers? (ex: create task, with SCF management)
-  const trigger = await ShoutOutTrigger.where({ organization_id: config.organization_id, label })
+  let trigger = await ShoutOutTrigger.where({ organization_id: config.organization_id, label })
     .fetch().then(d => (d ? d.toJSON().config : null));
+  // Check integrations
+  await getIntegrations({ organization: { id: config.organization_id } })
+    .then(ints => ints.forEach((int) => {
+      if (!trigger) trigger = {};
+      if (int.label === INTEGRATIONS.SEE_CLICK_FIX) {
+        trigger = Object.assign(trigger, { create_task: true, see_click_fix: true });
+      }
+    }));
   if (trigger && trigger.create_task) {
     const newTask = await createTask(params, {
       organization_id: config.organization_id,

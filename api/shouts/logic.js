@@ -14,7 +14,7 @@
 // Templates
 const notes = {
   type: 'text',
-  instruction: 'What else should we know?',
+  instruction: 'What else should we know? More description helps.',
 };
 const private_property = {
   type: 'boolean',
