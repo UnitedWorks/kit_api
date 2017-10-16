@@ -4,8 +4,6 @@ import { createTask } from '../tasks/helpers';
 
 export async function createShoutOut(label, params, config = {}) {
   if (!label || !params) throw new Error('Missing Values');
-  const trigger = await ShoutOutTrigger.where({ organization_id: config.organization_id, label })
-    .fetch().then(d => (d ? d.toJSON().config : null));
   // Create Shout Out?
   const newShoutOut = await ShoutOut.forge({
     label,
@@ -13,6 +11,8 @@ export async function createShoutOut(label, params, config = {}) {
     params,
   }).save().then(m => m.toJSON());
   // Run Triggers? (ex: create task, with SCF management)
+  const trigger = await ShoutOutTrigger.where({ organization_id: config.organization_id, label })
+    .fetch().then(d => (d ? d.toJSON().config : null));
   if (trigger && trigger.create_task) {
     const newTask = await createTask(params, {
       organization_id: config.organization_id,

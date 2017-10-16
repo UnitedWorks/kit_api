@@ -4,8 +4,10 @@ import { Task } from './models';
 import { KnowledgeContact } from '../knowledge-base/models';
 import SeeClickFixClient from './clients/see-click-fix-client';
 import * as TASK_CONST from '../constants/tasks';
+import * as INTEGRATION_CONST from '../constants/integrations';
 import EmailService from '../services/email';
 import { messageConstituent } from '../conversations/helpers';
+import { getIntegrations } from '../integrations/helpers';
 
 export async function taskNotification(type, contacts, fields) {
   // Reformat Contacts for Sending
@@ -36,8 +38,18 @@ export async function taskNotification(type, contacts, fields) {
 }
 
 export async function createTask(params = {}, { organization_id, constituent_id }, managed) {
-  if (managed.see_click_fix) managed.see_click_fix = await new SeeClickFixClient()
-    .report(params.location.location, params.notes.text).then(scfIssue => scfIssue.id);
+  // Get Integrations
+  const hasSeeClickFix = await getIntegrations({ organization: { id: organization_id } })
+    .then((ints) => {
+      const filtered = ints.filter(i => i.label === INTEGRATION_CONST.SEE_CLICK_FIX);
+      return filtered[0] && filtered[0].enabled;
+    });
+  // If has SCF, push by default
+  if (hasSeeClickFix || (managed && managed.see_click_fix)) {
+    console.log(params)
+    managed.see_click_fix = await new SeeClickFixClient()
+      .report(params.location.location, params.notes.text).then(scfIssue => scfIssue.id);
+  }
   return Task.forge({
     status: 'pending',
     constituent_id,

@@ -11,7 +11,6 @@
 
 // Also we should take suggestions and vague "i need help" statments
 
-const SO = {};
 // Templates
 const notes = {
   type: 'text',
@@ -19,7 +18,7 @@ const notes = {
 };
 const private_property = {
   type: 'boolean',
-  instruction: 'Is this located on private property?',
+  instruction: "Is what you're talking about on private property?",
 };
 const location = {
   type: 'location',
@@ -35,6 +34,10 @@ const email = {
   type: 'email',
   instruction: 'What email address can send updates to?',
 };
+const name = {
+  type: 'text',
+  instruction: 'What is your name?',
+}
 const vacant_lot = {
   type: 'boolean',
   instruction: 'Is this on a vacant lot?',
@@ -43,215 +46,251 @@ const public_housing = {
   type: 'boolean',
   instruction: 'Is this public housing?',
 };
+const hazardous = {
+  type: 'boolean',
+  instruction: 'Is it hazardous?',
+};
+const offensive = {
+  type: 'boolean',
+  instruction: 'Is it offensive?',
+};
+const basicReport = {
+  location,
+  attachments: image,
+};
+const basicNote = {
+  location,
+};
+const locationReport = {
+  location,
+  private_property,
+};
+const followUpReport = {
+  email,
+  location,
+  private_property,
+  attachments: image,
+};
+
+// Schema
+export const ShoutOutSchema = {
+  email: 'Email',
+  phone: 'Phone Number',
+  name: 'Name',
+  location: 'Location',
+  private_property: 'Public/Private Property',
+  attachments: 'Attachments',
+  notes: 'Notes',
+  offensive: 'Offensive',
+  hazardous: 'Hazardous',
+};
+
+
+// Shout Out Templates
+const SO = {};
 
 // Business
 SO['business_finance.business'] = {};
 
 // Environment
 SO['environment_sanitation.tree'] = {
-  knowledge_category: 'environment_sanitation',
-  domain: 'tree',
-  params: {
-    location,
-    attachments: image,
-    notes,
-  },
+  tags: ['environment_sanitation', 'tree'],
+  params: basicReport,
 };
 SO['environment_sanitation.tree.down'] = SO['environment_sanitation.tree'];
-SO['environment_sanitation.tree.down'].params.topic = { value: 'down' };
+SO['environment_sanitation.tree.down'].tags = [...SO['environment_sanitation.tree'].tags, 'down'];
 SO['environment_sanitation.tree.inspection'] = SO['environment_sanitation.tree'];
-SO['environment_sanitation.tree.inspection'].params.topic = { value: 'inspection' };
+SO['environment_sanitation.tree.inspection'].tags = [...SO['environment_sanitation.tree'].tags, 'inspection'];
 SO['environment_sanitation.tree.planting'] = SO['environment_sanitation.tree'];
-SO['environment_sanitation.tree.planting'].params.topic = { value: 'planting' };
+SO['environment_sanitation.tree.planting'].tags = [...SO['environment_sanitation.tree'].tags, 'planting'];
 SO['environment_sanitation.tree.pruning'] = SO['environment_sanitation.tree'];
-SO['environment_sanitation.tree.pruning'].params.topic = { value: 'pruning' };
+SO['environment_sanitation.tree.pruning'].tags = [...SO['environment_sanitation.tree'].tags, 'pruning'];
 SO['environment_sanitation.tree.removal'] = SO['environment_sanitation.tree'];
-SO['environment_sanitation.tree.removal'].params.topic = { value: 'removal' };
-SO['environment_sanitation.trash.animal'] = {};
+SO['environment_sanitation.tree.removal'].tags = [...SO['environment_sanitation.tree'].tags, 'removal'];
+
+SO['environment_sanitation.trash.animal'] = {
+  tags: ['environment_sanitation', 'trash', 'animal'],
+  params: basicReport,
+};
 SO['environment_sanitation.collection_missed'] = {
-  knowledge_category: 'environment_sanitation',
-  domain: 'tree',
-  params: {
-    location,
-    attachments: image,
-    notes,
-  },
+  tags: ['environment_sanitation', 'collection_missed'],
+  params: basicReport,
 };
 SO['environment_sanitation.collection_missed.trash'] = SO['environment_sanitation.collection_missed'];
-SO['environment_sanitation.collection_missed.trash'].params.topic = { value: 'trash' };
+SO['environment_sanitation.collection_missed.trash'].tags = [...SO['environment_sanitation.collection_missed'].tags, 'trash'];
 SO['environment_sanitation.collection_missed.recycling'] = SO['environment_sanitation.collection_missed'];
-SO['environment_sanitation.collection_missed.recycling'].params.topic = { value: 'recycling' };
-SO['environment_sanitation.litter'] = {};
-SO['environment_sanitation.park.reservation'] = {};
-SO['environment_sanitation.air.quality'] = {};
-SO['environment_sanitation.water.flood'] = {};
-SO['environment_sanitation.water.quality'] = {};
-SO['environment_sanitation.catch_basin'] = {};
-SO['environment_sanitation.catch_basin.repairs'] = {};
-SO['environment_sanitation.catch_basin.cleaning'] = {};
-SO['environment_sanitation.catch_basin.request'] = {};
+SO['environment_sanitation.collection_missed.recycling'].tags = [...SO['environment_sanitation.collection_missed'].tags, 'recycling'];
+SO['environment_sanitation.litter'] = {
+  tags: ['environment_sanitation', 'litter'],
+  params: basicReport,
+};
+SO['environment_sanitation.air.quality'] = {
+  tags: ['environment_sanitation', 'air', 'quality'],
+  params: basicReport,
+};
+SO['environment_sanitation.water.flood'] = {
+  tags: ['environment_sanitation', 'water', 'flood'],
+  params: basicReport,
+};
+SO['environment_sanitation.water.quality'] = {
+  tags: ['environment_sanitation', 'water', 'quality'],
+  params: basicReport,
+};
+SO['environment_sanitation.catch_basin.repairs'] = {
+  tags: ['environment_sanitation', 'catch_basin', 'repairs'],
+  params: basicReport,
+};
+SO['environment_sanitation.catch_basin.cleaning'] = {
+  tags: ['environment_sanitation', 'catch_basin', 'cleaning'],
+  params: basicReport,
+};
+SO['environment_sanitation.catch_basin.request'] = {
+  tags: ['environment_sanitation', 'catch_basin', 'request'],
+  params: basicReport,
+};
+
 SO['environment_sanitation.dumping'] = {
-  knowledge_category: 'environment_sanitation',
-  domain: 'dumping',
+  tags: ['environment_sanitation', 'dumping'],
   params: {
     location,
     attachments: image,
-    hazardous: {
-      type: 'boolean',
-      instruction: 'Is it hazardous?',
-    },
-    notes,
+    hazardous,
   },
 };
 
 // Health
-SO['health_medicine.unsanitary.business'] = {};
-SO['health_medicine.unsanitary.food_truck'] = {};
-SO['health_medicine.unsanitary.housing'] = {};
-SO['health_medicine.unsanitary.resturaunt'] = {};
-SO['health_medicine.standing_water'] = {};
+SO['health_medicine.unsanitary.business'] = {
+  tags: ['health_medicine', 'unsanitary', 'business'],
+  params: basicReport,
+};
+SO['health_medicine.unsanitary.food_truck'] = {
+  tags: ['health_medicine', 'unsanitary', 'food_truck'],
+  params: basicReport,
+};
+SO['health_medicine.unsanitary.housing'] = {
+  tags: ['health_medicine', 'unsanitary', 'housing'],
+  params: basicReport,
+};
+SO['health_medicine.unsanitary.resturaunt'] = {
+  tags: ['health_medicine', 'unsanitary', 'resturaunt'],
+  params: basicReport,
+};
+SO['health_medicine.standing_water'] = {
+  tags: ['health_medicine', 'standing_water'],
+  params: basicReport,
+};
 SO['health_medicine.animal.rabbies'] = {
-  knowledge_category: 'health_medicine',
-  domain: 'animal',
-  params: {
-    location,
-    topic: { value: 'rabid' },
-  },
+  tags: ['health_medicine', 'animal', 'rabbies'],
+  params: basicNote,
 };
 SO['health_medicine.animal.dead'] = {
-  knowledge_category: 'health_medicine',
-  domain: 'animal',
-  params: {
-    location,
-    topic: { value: 'dead' },
-  },
+  tags: ['health_medicine', 'animal', 'dead'],
+  params: basicNote,
 };
 SO['health_medicine.animal.excrement'] = {
-  knowledge_category: 'health_medicine',
-  domain: 'animal',
-  params: {
-    location,
-    topic: { value: 'excrement' },
-  },
+  tags: ['health_medicine', 'animal', 'excrement'],
+  params: basicNote,
 };
 SO['health_medicine.rodents'] = {
-  knowledge_category: 'health_medicine',
-  domain: 'rodents',
-  params: {
-    location,
-    private_property,
-  },
+  tags: ['health_medicine', 'rodents'],
+  params: locationReport,
 };
 SO['health_medicine.insects'] = {
-  knowledge_category: 'health_medicine',
-  domain: 'insects',
-  params: {
-    location,
-    private_property,
-  },
+  tags: ['health_medicine', 'insects'],
+  params: locationReport,
 };
 SO['health_medicine.insects.bed_bugs'] = {
-  knowledge_category: 'health_medicine',
-  domain: 'insects',
-  params: { ...SO['health_medicine.insects'].params,
-    topic: { value: 'bed_bugs' },
-  },
+  tags: ['health_medicine', 'insects', 'bed_bugs'],
+  params: locationReport,
 };
 SO['health_medicine.insects.bees'] = {
-  knowledge_category: 'health_medicine',
-  domain: 'insects',
-  params: { ...SO['health_medicine.insects'].params,
-    topic: { value: 'bed_bugs' },
-  },
+  tags: ['health_medicine', 'insects', 'bees'],
+  params: locationReport,
 };
 
 // Property
-SO['property_buildings_homes.accessibility.ramp'] = {};
-SO['property_buildings_homes.accessibility.elevator.broken'] = {};
-SO['property_buildings_homes.accessibility.escalator.broken'] = {};
+SO['property_buildings_homes.accessibility.ramp'] = {
+  tags: ['property_buildings_homes', 'accessibility', 'ramp'],
+  params: basicReport,
+};
+SO['property_buildings_homes.accessibility.elevator.broken'] = {
+  tags: ['property_buildings_homes', 'accessibility', 'elevator', 'broken'],
+  params: basicReport,
+};
+SO['property_buildings_homes.accessibility.escalator.broken'] = {
+  tags: ['property_buildings_homes', 'accessibility', 'escalator', 'broken'],
+  params: basicReport,
+};
 SO['property_buildings_homes.violation.housing'] = {
-  knowledge_category: 'property_buildings_homes',
-  domain: 'violation.housing',
-  params: {
-    location,
-    email,
-    notes,
-  },
+  tags: ['property_buildings_homes', 'violation', 'housing'],
+  params: followUpReport,
 };
 SO['property_buildings_homes.violation.housing.heat'] = SO['property_buildings_homes.violation.housing'];
-SO['property_buildings_homes.violation.housing.heat'].params.topic = { value: 'heat' };
+SO['property_buildings_homes.violation.housing.heat'].tags = [...SO['property_buildings_homes.violation.housing'].tags, 'heat'];
 SO['property_buildings_homes.violation.housing.hot_water'] = SO['property_buildings_homes.violation.housing'];
-SO['property_buildings_homes.violation.housing.hot_water'].params.topic = { value: 'hot_water' };
+SO['property_buildings_homes.violation.housing.hot_water'].tags = [...SO['property_buildings_homes.violation.housing'].tags, 'hot_water'];
 SO['property_buildings_homes.violation.housing.repairs'] = SO['property_buildings_homes.violation.housing'];
-SO['property_buildings_homes.violation.housing.repairs'].params.topic = { value: 'repairs' };
+SO['property_buildings_homes.violation.housing.repairs'].tags = [...SO['property_buildings_homes.violation.housing'].tags, 'repairs'];
 SO['property_buildings_homes.violation.housing.repairs.public'] = SO['property_buildings_homes.violation.housing.repairs'];
+SO['property_buildings_homes.violation.housing.repairs.public'].tags = [...SO['property_buildings_homes.violation.housing'].tags, 'repairs', 'public'];
 SO['property_buildings_homes.violation.housing.repairs.public'].params.public_property = { value: true };
 SO['property_buildings_homes.violation.housing.tree_damage'] = SO['property_buildings_homes.violation.housing'];
-SO['property_buildings_homes.violation.housing.tree_damage'].params.topic = { value: 'tree_damage' };
+SO['property_buildings_homes.violation.housing.tree_damage'].tags = [...SO['property_buildings_homes.violation.housing'].tags, 'tree_damage'];
 SO['property_buildings_homes.violation.housing.illegal_apartments'] = SO['property_buildings_homes.violation.housing'];
-SO['property_buildings_homes.violation.housing.illegal_apartments'].params.topic = { value: 'illegal_apartments' };
-SO['property_buildings_homes.assistance.housing'] = {
-  knowledge_category: 'property_buildings_homes',
-  domain: 'assistance',
-  params: {
-    public_housing,
-    notes,
-  },
+SO['property_buildings_homes.violation.housing.illegal_apartments'].tags = [...SO['property_buildings_homes.violation.housing'].tags, 'illegal_apartments'];
+SO['property_buildings_homes.contested.housing.landlord'] = {
+  tags: ['property_buildings_homes', 'contested', 'housing', 'landlord'],
+  params: followUpReport,
 };
-SO['property_buildings_homes.assistance.housing.rental'] = {};
-SO['property_buildings_homes.assistance.housing.section_8'] = {};
-SO['property_buildings_homes.assistance.housing.emergency_housing'] = {};
-SO['property_buildings_homes.contested.housing.landlord'] = {};
-SO['property_buildings_homes.contested.housing.tenant'] = {};
-SO['property_buildings_homes.contested.housing.lease'] = {};
-SO['property_buildings_homes.contested.housing.rent_increase'] = {};
-SO['property_buildings_homes.sewage.backup'] = {};
-SO['property_buildings_homes.water.pressure'] = {};
-SO['property_buildings_homes.water.quality'] = {};
-SO['property_buildings_homes.water.leak'] = {};
-SO['property_buildings_homes.water.main_break'] = {};
+SO['property_buildings_homes.contested.housing.tenant'] = {
+  tags: ['property_buildings_homes', 'contested', 'housing', 'landlord'],
+  params: followUpReport,
+};
+SO['property_buildings_homes.contested.housing.lease'] = {
+  tags: ['property_buildings_homes', 'contested', 'housing', 'landlord'],
+  params: followUpReport,
+};
+SO['property_buildings_homes.sewage.backup'] = {
+  tags: ['property_buildings_homes', 'sewage', 'backup'],
+  params: followUpReport,
+};
+SO['property_buildings_homes.water.pressure'] = {
+  tags: ['property_buildings_homes', 'water', 'pressure'],
+  params: followUpReport,
+};
+SO['property_buildings_homes.water.quality'] = {
+  tags: ['property_buildings_homes', 'water', 'quality'],
+  params: followUpReport,
+};
+SO['property_buildings_homes.water.leak'] = {
+  tags: ['property_buildings_homes', 'water', 'leak'],
+  params: followUpReport,
+};
+SO['property_buildings_homes.water.main_break'] = {
+  tags: ['property_buildings_homes', 'water', 'main_break'],
+  params: followUpReport,
+};
 
 SO['property_buildings_homes.construction'] = {
-  knowledge_category: 'property_buildings_homes',
-  domain: 'construction',
-  params: {
-    location,
-    // topic: {
-    //   type: 'text',
-    //   default_value: null,
-    //   instruction: 'Is this a noise, permit, safety, or off hours concern?',
-    //   validation: value => ['noise', 'off_hours', 'no_permit', 'safety'].includes(value),
-    // },
-    private_property,
-    notes,
-  },
+  tags: ['property_buildings_homes', 'construction'],
+  params: locationReport,
 };
 SO['property_buildings_homes.construction.noise'] = SO['property_buildings_homes.construction'];
-SO['property_buildings_homes.construction.noise'].params.topic = { value: 'noise' };
 SO['property_buildings_homes.construction.off_hours'] = SO['property_buildings_homes.construction'];
-SO['property_buildings_homes.construction.off_hours'].params.topic = { value: 'off_hours' };
 SO['property_buildings_homes.construction.no_permit'] = SO['property_buildings_homes.construction'];
-SO['property_buildings_homes.construction.no_permit'].params.topic = { value: 'no_permit' };
 SO['property_buildings_homes.construction.safety'] = SO['property_buildings_homes.construction'];
-SO['property_buildings_homes.construction.safety'].params.topic = { value: 'safety' };
 
 SO['property_buildings_homes.graffiti'] = {
-  knowledge_category: 'property_buildings_homes',
-  domain: 'graffiti',
+  tags: ['property_buildings_homes', 'graffiti'],
   params: {
     location,
     attachments: image,
-    private_property,
-    offensive: {
-      type: 'boolean',
-      instruction: 'Is it offensive?',
-    },
+    offensive,
     notes,
   },
 };
 SO['property_buildings_homes.over_growth'] = {
-  knowledge_category: 'property_buildings_homes',
-  domain: 'over_growth',
+  tags: ['property_buildings_homes', 'over_growth'],
   params: {
     location,
     attachments: image,
@@ -260,8 +299,7 @@ SO['property_buildings_homes.over_growth'] = {
   },
 };
 SO['property_buildings_homes.blight'] = {
-  knowledge_category: 'property_buildings_homes',
-  domain: 'blight',
+  tags: ['property_buildings_homes', 'blight'],
   params: {
     location,
     attachments: image,
@@ -270,207 +308,292 @@ SO['property_buildings_homes.blight'] = {
   },
 };
 SO['property_buildings_homes.odor'] = {
-  knowledge_category: 'property_buildings_homes',
-  domain: 'odor',
+  tags: ['property_buildings_homes', 'odor'],
+  params: locationReport,
+};
+SO['property_buildings_homes.odor.gas'] = {
+  tags: ['property_buildings_homes', 'odor', 'gas'],
   params: {
-    location,
-    notes,
+    ...followUpReport,
   },
 };
-SO['property_buildings_homes.odor.gas'] = SO['property_buildings_homes.odor'];
-SO['property_buildings_homes.odor.gas'].params.topic = { value: 'gas' };
 SO['property_buildings_homes.mold'] = {
-  knowledge_category: 'property_buildings_homes',
-  domain: 'mold',
-  params: {
-    location,
-    attachments: image,
-    notes,
-  },
+  tags: ['property_buildings_homes', 'mold'],
+  params: basicReport,
 };
-SO['property_buildings_homes.eviction'] = {};
-SO['property_buildings_homes.fire_hazard'] = {};
+SO['property_buildings_homes.fire_hazard'] = {
+  tags: ['property_buildings_homes', 'fire_hazard'],
+  params: basicReport,
+};
 SO['property_buildings_homes.noise'] = {
-  knowledge_category: 'property_buildings_homes',
-  domain: 'noise',
-  params: {
-    location,
-    notes,
-  },
+  tags: ['property_buildings_homes', 'fire_hazard'],
+  params: locationReport,
 };
-SO['property_buildings_homes.squatting'] = {};
-SO['property_buildings_homes.water_meter'] = {};
+SO['property_buildings_homes.squatting'] = {
+  tags: ['property_buildings_homes', 'fire_hazard'],
+  params: locationReport,
+};
+SO['property_buildings_homes.water_meter'] = {
+  tags: ['property_buildings_homes', 'water_meter'],
+  params: locationReport,
+};
 
 // Public Safety
-SO['public_safety_law.harassment'] = {};
-SO['public_safety_law.hate_crime'] = {};
-SO['public_safety_law.missing_person'] = {};
-SO['public_safety_law.panhandling'] = {};
-SO['public_safety_law.activity'] = {
-  knowledge_category: 'public_safety_law',
-  domain: 'activity',
-  params: {
-    location,
-    notes,
-  },
+SO['public_safety_law.harassment'] = {
+  tags: ['public_safety_law', 'harassment'],
+  params: followUpReport,
 };
-SO['public_safety_law.activity.drug'] = SO['public_safety_law.activity'];
-SO['public_safety_law.activity.drug'].params.topic = { value: 'drug' };
-SO['public_safety_law.activity.suspicious'] = SO['public_safety_law.activity'];
-SO['public_safety_law.activity.suspicious'].params.topic = { value: 'suspicious' };
+SO['public_safety_law.hate_crime'] = {
+  tags: ['public_safety_law', 'hate_crime'],
+  params: basicReport,
+};
+// SO['public_safety_law.missing_person'] = {
+//   tags: ['public_safety_law', 'harassment'],
+//   params: followUpReport,
+// };
+SO['public_safety_law.panhandling'] = {
+  tags: ['public_safety_law', 'panhandling'],
+  params: locationReport,
+};
+SO['public_safety_law.activity'] = {
+  tags: ['public_safety_law', 'activity'],
+  params: basicReport,
+};
+SO['public_safety_law.activity.drug'] = {
+  tags: ['public_safety_law', 'activity', 'drug'],
+  params: basicReport,
+};
+SO['public_safety_law.activity.suspicious'] = {
+  tags: ['public_safety_law', 'activity', 'suspicious'],
+  params: basicReport,
+};
 
 // Transportation
 SO['transportation_streets_sidewalks.street'] = {
-  knowledge_category: 'transportation_streets_sidewalks',
-  domain: 'street',
-  params: {
-    location,
-    attachments: image,
-    notes,
-  },
+  tags: ['transportation_streets_sidewalks', 'street'],
+  params: basicReport,
 };
-SO['transportation_streets_sidewalks.street.pothole'] = SO['transportation_streets_sidewalks.street'];
-SO['transportation_streets_sidewalks.street.pothole'].params.topic = { value: 'pothole' };
-SO['transportation_streets_sidewalks.street.manhole'] = SO['transportation_streets_sidewalks.street'];
-SO['transportation_streets_sidewalks.street.manhole'].params.topic = { value: 'manhole' };
-SO['transportation_streets_sidewalks.street.fire_hydrant'] = SO['transportation_streets_sidewalks.street'];
-SO['transportation_streets_sidewalks.street.fire_hydrant'].params.topic = { value: 'fire_hydrant' };
-SO['transportation_streets_sidewalks.street.blocking'] = SO['transportation_streets_sidewalks.street'];
-SO['transportation_streets_sidewalks.street.blocking'].params.topic = { value: 'blocking' };
+SO['transportation_streets_sidewalks.street.pothole'] = {
+  tags: ['transportation_streets_sidewalks', 'street', 'pothole'],
+  params: basicReport,
+};
+SO['transportation_streets_sidewalks.street.manhole'] = {
+  tags: ['transportation_streets_sidewalks', 'street', 'manhole'],
+  params: basicReport,
+};
+SO['transportation_streets_sidewalks.street.fire_hydrant'] = {
+  tags: ['transportation_streets_sidewalks', 'street', 'fire_hydrant'],
+  params: basicReport,
+};
+SO['transportation_streets_sidewalks.street.blocking'] = {
+  tags: ['transportation_streets_sidewalks', 'street', 'blocking'],
+  params: basicReport,
+};
 
-SO['transportation_streets_sidewalks.driveway'] = {};
-SO['transportation_streets_sidewalks.sidewalk'] = {};
-SO['transportation_streets_sidewalks.sidewalk.broken'] = {};
-SO['transportation_streets_sidewalks.curb'] = {};
-SO['transportation_streets_sidewalks.curb.ramp'] = {};
+SO['transportation_streets_sidewalks.driveway'] = {
+  tags: ['transportation_streets_sidewalks', 'driveway'],
+  params: basicReport,
+};
+SO['transportation_streets_sidewalks.sidewalk'] = {
+  tags: ['transportation_streets_sidewalks', 'sidewalk'],
+  params: basicReport,
+};
+SO['transportation_streets_sidewalks.sidewalk.broken'] = {
+  tags: ['transportation_streets_sidewalks', 'sidewalk', 'broken'],
+  params: basicReport,
+};
+SO['transportation_streets_sidewalks.curb'] = {
+  tags: ['transportation_streets_sidewalks', 'curb'],
+  params: basicReport,
+};
+SO['transportation_streets_sidewalks.curb.ramp'] = {
+  tags: ['transportation_streets_sidewalks', 'curb', 'ramp'],
+  params: basicReport,
+};
 
 SO['transportation_streets_sidewalks.sign'] = {
-  knowledge_category: 'transportation_streets_sidewalks',
-  domain: 'sign',
-  params: {
-    location,
-    attachments: image,
-  },
+  tags: ['transportation_streets_sidewalks', 'sign'],
+  params: basicReport,
 };
-SO['transportation_streets_sidewalks.sign.missing'] = SO['transportation_streets_sidewalks.sign'];
-SO['transportation_streets_sidewalks.sign.missing'].params.topic = { value: 'missing' };
-SO['transportation_streets_sidewalks.sign.broken'] = SO['transportation_streets_sidewalks.sign'];
-SO['transportation_streets_sidewalks.sign.broken'].params.topic = { value: 'broken' };
-SO['transportation_streets_sidewalks.sign.conflict'] = SO['transportation_streets_sidewalks.sign'];
-SO['transportation_streets_sidewalks.sign.conflict'].params.topic = { value: 'conflict' };
-SO['transportation_streets_sidewalks.sign.down'] = SO['transportation_streets_sidewalks.sign'];
-SO['transportation_streets_sidewalks.sign.down'].params.topic = { value: 'down' };
-SO['transportation_streets_sidewalks.sign.request'] = SO['transportation_streets_sidewalks.sign'];
-SO['transportation_streets_sidewalks.sign.request'].params.topic = { value: 'request' };
+SO['transportation_streets_sidewalks.sign.missing'] = {
+  tags: ['transportation_streets_sidewalks', 'sign', 'missing'],
+  params: basicReport,
+};
+SO['transportation_streets_sidewalks.sign.broken'] = {
+  tags: ['transportation_streets_sidewalks', 'sign', 'broken'],
+  params: basicReport,
+};
+SO['transportation_streets_sidewalks.sign.conflict'] = {
+  tags: ['transportation_streets_sidewalks', 'sign', 'conflict'],
+  params: basicReport,
+};
+SO['transportation_streets_sidewalks.sign.down'] = {
+  tags: ['transportation_streets_sidewalks', 'sign', 'down'],
+  params: basicReport,
+};
+SO['transportation_streets_sidewalks.sign.request'] = {
+  tags: ['transportation_streets_sidewalks', 'sign', 'request'],
+  params: basicReport,
+};
 
 SO['transportation_streets_sidewalks.signal'] = {
-  knowledge_category: 'transportation_streets_sidewalks',
-  domain: 'signal',
-  params: {
-    location,
-    attachments: image,
-  },
+  tags: ['transportation_streets_sidewalks', 'signal'],
+  params: basicReport,
 };
-SO['transportation_streets_sidewalks.signal.always_on'] = SO['transportation_streets_sidewalks.signal'];
-SO['transportation_streets_sidewalks.signal.always_on'].params.topic = { value: 'always_on' };
-SO['transportation_streets_sidewalks.signal.burnt_out'] = SO['transportation_streets_sidewalks.signal'];
-SO['transportation_streets_sidewalks.signal.burnt_out'].params.topic = { value: 'burnt_out' };
-SO['transportation_streets_sidewalks.signal.flickering'] = SO['transportation_streets_sidewalks.signal'];
-SO['transportation_streets_sidewalks.signal.flickering'].params.topic = { value: 'flickering' };
-SO['transportation_streets_sidewalks.signal.down'] = SO['transportation_streets_sidewalks.signal'];
-SO['transportation_streets_sidewalks.signal.down'].params.topic = { value: 'down' };
-SO['transportation_streets_sidewalks.signal.request'] = SO['transportation_streets_sidewalks.signal'];
-SO['transportation_streets_sidewalks.signal.request'].params.topic = { value: 'request' };
+SO['transportation_streets_sidewalks.signal.always_on'] = {
+  tags: ['transportation_streets_sidewalks', 'signal', 'always_on'],
+  params: basicReport,
+};
+SO['transportation_streets_sidewalks.signal.burnt_out'] = {
+  tags: ['transportation_streets_sidewalks', 'signal', 'burnt_out'],
+  params: basicReport,
+};
+SO['transportation_streets_sidewalks.signal.flickering'] = {
+  tags: ['transportation_streets_sidewalks', 'signal', 'flickering'],
+  params: basicReport,
+};
+SO['transportation_streets_sidewalks.signal.down'] = {
+  tags: ['transportation_streets_sidewalks', 'signal', 'down'],
+  params: basicReport,
+};
+SO['transportation_streets_sidewalks.signal.request'] = {
+  tags: ['transportation_streets_sidewalks', 'signal', 'request'],
+  params: basicReport,
+};
 
 SO['transportation_streets_sidewalks.street_light'] = {
-  knowledge_category: 'transportation_streets_sidewalks',
-  domain: 'street_light',
-  params: {
-    location,
-    attachments: image,
-  },
+  tags: ['transportation_streets_sidewalks', 'street_light'],
+  params: basicReport,
 };
-SO['transportation_streets_sidewalks.street_light.always_on'] = SO['transportation_streets_sidewalks.street_light'];
-SO['transportation_streets_sidewalks.street_light.always_on'].params.topic = { value: 'always_on' };
-SO['transportation_streets_sidewalks.street_light.burnt_out'] = SO['transportation_streets_sidewalks.street_light'];
-SO['transportation_streets_sidewalks.street_light.burnt_out'].params.topic = { value: 'burnt_out' };
-SO['transportation_streets_sidewalks.street_light.flickering'] = SO['transportation_streets_sidewalks.street_light'];
-SO['transportation_streets_sidewalks.street_light.flickering'].params.topic = { value: 'flickering' };
-SO['transportation_streets_sidewalks.street_light.down'] = SO['transportation_streets_sidewalks.street_light'];
-SO['transportation_streets_sidewalks.street_light.down'].params.topic = { value: 'down' };
-SO['transportation_streets_sidewalks.street_light.request'] = SO['transportation_streets_sidewalks.street_light'];
-SO['transportation_streets_sidewalks.street_light.request'].params.topic = { value: 'request' };
+SO['transportation_streets_sidewalks.street_light.always_on'] = {
+  tags: ['transportation_streets_sidewalks', 'street_light', 'always_on'],
+  params: basicReport,
+};
+SO['transportation_streets_sidewalks.street_light.burnt_out'] = {
+  tags: ['transportation_streets_sidewalks', 'street_light', 'burnt_out'],
+  params: basicReport,
+};
+SO['transportation_streets_sidewalks.street_light.flickering'] = {
+  tags: ['transportation_streets_sidewalks', 'street_light', 'flickering'],
+  params: basicReport,
+};
+SO['transportation_streets_sidewalks.street_light.down'] = {
+  tags: ['transportation_streets_sidewalks', 'street_light', 'down'],
+  params: basicReport,
+};
+SO['transportation_streets_sidewalks.street_light.request'] = {
+  tags: ['transportation_streets_sidewalks', 'street_light', 'request'],
+  params: basicReport,
+};
 
 SO['transportation_streets_sidewalks.violation.parking'] = {
-  knowledge_category: 'transportation_streets_sidewalks',
-  domain: 'parking',
-  params: {
-    location,
-    attachments: image,
-  },
+  tags: ['transportation_streets_sidewalks', 'violation', 'parking'],
+  params: basicReport,
 };
-SO['transportation_streets_sidewalks.violation.parking.blocking'] = SO['transportation_streets_sidewalks.violation.parking'];
-SO['transportation_streets_sidewalks.violation.parking.blocking'].params.topic = { value: 'blocking' };
-SO['transportation_streets_sidewalks.violation.parking.bus_zone'] = SO['transportation_streets_sidewalks.violation.parking'];
-SO['transportation_streets_sidewalks.violation.parking.bus_zone'].params.topic = { value: 'bus_zone' };
-SO['transportation_streets_sidewalks.violation.parking.no_parking'] = SO['transportation_streets_sidewalks.violation.parking'];
-SO['transportation_streets_sidewalks.violation.parking.no_parking'].params.topic = { value: 'no_parking' };
-SO['transportation_streets_sidewalks.violation.parking.emergency_zone'] = SO['transportation_streets_sidewalks.violation.parking'];
-SO['transportation_streets_sidewalks.violation.parking.emergency_zone'].params.topic = { value: 'emergency_zone' };
-SO['transportation_streets_sidewalks.violation.parking.expired_tags'] = SO['transportation_streets_sidewalks.violation.parking'];
-SO['transportation_streets_sidewalks.violation.parking.expired_tags'].params.topic = { value: 'expired_tags' };
-SO['transportation_streets_sidewalks.violation.parking.fire_hydrant'] = SO['transportation_streets_sidewalks.violation.parking'];
-SO['transportation_streets_sidewalks.violation.parking.fire_hydrant'].params.topic = { value: 'fire_hydrant' };
-SO['transportation_streets_sidewalks.violation.parking.handicap'] = SO['transportation_streets_sidewalks.violation.parking'];
-SO['transportation_streets_sidewalks.violation.parking.handicap'].params.topic = { value: 'handicap' };
-SO['transportation_streets_sidewalks.violation.parking.loading_zone'] = SO['transportation_streets_sidewalks.violation.parking'];
-SO['transportation_streets_sidewalks.violation.parking.loading_zone'].params.topic = { value: 'loading_zone' };
-SO['transportation_streets_sidewalks.violation.parking.parking_meter'] = SO['transportation_streets_sidewalks.violation.parking'];
-SO['transportation_streets_sidewalks.violation.parking.parking_meter'].params.topic = { value: 'meter' };
-SO['transportation_streets_sidewalks.violation.parking.school_zone'] = SO['transportation_streets_sidewalks.violation.parking'];
-SO['transportation_streets_sidewalks.violation.parking.school_zone'].params.topic = { value: 'school_zone' };
+SO['transportation_streets_sidewalks.violation.parking.blocking'] = {
+  tags: ['transportation_streets_sidewalks', 'violation', 'parking', 'blocking'],
+  params: basicReport,
+};
+SO['transportation_streets_sidewalks.violation.parking.bus_zone'] = {
+  tags: ['transportation_streets_sidewalks', 'violation', 'parking', 'bus_zone'],
+  params: basicReport,
+};
+SO['transportation_streets_sidewalks.violation.parking.no_parking'] = {
+  tags: ['transportation_streets_sidewalks', 'violation', 'parking', 'no_parking'],
+  params: basicReport,
+};
+SO['transportation_streets_sidewalks.violation.parking.emergency_zone'] = {
+  tags: ['transportation_streets_sidewalks', 'violation', 'parking', 'emergency_zone'],
+  params: basicReport,
+};
+SO['transportation_streets_sidewalks.violation.parking.expired_tags'] = {
+  tags: ['transportation_streets_sidewalks', 'violation', 'parking', 'expired_tags'],
+  params: basicReport,
+};
+SO['transportation_streets_sidewalks.violation.parking.fire_hydrant'] = {
+  tags: ['transportation_streets_sidewalks', 'violation', 'parking', 'fire_hydrant'],
+  params: basicReport,
+};
+SO['transportation_streets_sidewalks.violation.parking.handicap'] = {
+  tags: ['transportation_streets_sidewalks', 'violation', 'parking', 'handicap'],
+  params: basicReport,
+};
+SO['transportation_streets_sidewalks.violation.parking.loading_zone'] = {
+  tags: ['transportation_streets_sidewalks', 'violation', 'parking', 'loading_zone'],
+  params: basicReport,
+};
+SO['transportation_streets_sidewalks.violation.parking.parking_meter'] = {
+  tags: ['transportation_streets_sidewalks', 'violation', 'parking', 'parking_meter'],
+  params: basicReport,
+};
+SO['transportation_streets_sidewalks.violation.parking.school_zone'] = {
+  tags: ['transportation_streets_sidewalks', 'violation', 'parking', 'school_zone'],
+  params: basicReport,
+};
 
-SO['transportation_streets_sidewalks.parking_meter'] = {};
-SO['transportation_streets_sidewalks.parking_meter.broken'] = {};
+SO['transportation_streets_sidewalks.parking_meter'] = {
+  tags: ['transportation_streets_sidewalks', 'parking_meter'],
+  params: basicReport,
+};
+SO['transportation_streets_sidewalks.parking_meter.broken'] = {
+  tags: ['transportation_streets_sidewalks', 'parking_meter', 'broken'],
+  params: basicReport,
+};
 
-SO['transportation_streets_sidewalks.plowing'] = {};
+SO['transportation_streets_sidewalks.plowing'] = {
+  tags: ['transportation_streets_sidewalks', 'plowing'],
+  params: basicReport,
+};
 
 SO['transportation_streets_sidewalks.construction.noise'] = {
-  knowledge_category: 'transportation_streets_sidewalks',
-  domain: 'construction',
-  params: {
-    location,
-    topic: { value: 'noise' },
-  },
+  tags: ['transportation_streets_sidewalks', 'construction', 'noise'],
+  params: basicReport,
 };
 
-SO['transportation_streets_sidewalks.bicycle.racks'] = {};
-SO['transportation_streets_sidewalks.bicycle.lanes'] = {};
-SO['transportation_streets_sidewalks.bicycle.sharing'] = {};
+// SO['transportation_streets_sidewalks.bicycle.racks'] = {};
+// SO['transportation_streets_sidewalks.bicycle.lanes'] = {};
+// SO['transportation_streets_sidewalks.bicycle.sharing'] = {};
 SO['transportation_streets_sidewalks.bicycle.abandoned'] = {
-  params: {
-    private_property,
-  },
+  tags: ['transportation_streets_sidewalks', 'bicycle', 'abandoned'],
+  params: basicReport,
+  // private property
 };
 SO['transportation_streets_sidewalks.vehicle.idling'] = {
-  knowledge_category: 'transportation_streets_sidewalks',
-  domain: 'vehicle',
-  params: {
-    location,
-    attachments: image,
-    topic: { value: 'idling' },
-  },
+  tags: ['transportation_streets_sidewalks', 'vehicle', 'idling'],
+  params: basicReport,
 };
-SO['transportation_streets_sidewalks.vehicle.wreckless'] = {};
-SO['transportation_streets_sidewalks.vehicle.abandoned'] = {};
-SO['transportation_streets_sidewalks.wire.down'] = {};
-SO['transportation_streets_sidewalks.wire.safety'] = {};
+SO['transportation_streets_sidewalks.vehicle.wreckless'] = {
+  tags: ['transportation_streets_sidewalks', 'vehicle', 'wreckless'],
+  params: basicReport,
+};
+SO['transportation_streets_sidewalks.vehicle.abandoned'] = {
+  tags: ['transportation_streets_sidewalks', 'vehicle', 'abandoned'],
+  params: basicReport,
+};
+SO['transportation_streets_sidewalks.wire.down'] = {
+  tags: ['transportation_streets_sidewalks', 'wire', 'down'],
+  params: basicReport,
+};
+SO['transportation_streets_sidewalks.wire.safety'] = {
+  tags: ['transportation_streets_sidewalks', 'wire', 'safety'],
+  params: basicReport,
+};
 
 // Government, Civil Services
-SO['government_civil_services.vehicle.misuse'] = {};
+SO['government_civil_services.vehicle.misuse'] = {
+  tags: ['transportation_streets_sidewalks', 'vehicle', 'misuse'],
+  params: basicReport,
+};
 
-// Social Services
-SO['government_civil_services.vehicle.misuse'] = {};
+// General
+SO['government_civil_services.suggestion'] = {
+  tags: ['general', 'suggestion'],
+  params: {
+    notes: { ...notes, instruction: 'What\'s your idea?' },
+    location,
+    attachments: image,
+  },
+};
 
 
 // Compile!
@@ -478,9 +601,12 @@ const readySO = {};
 Object.keys(SO).forEach((key) => {
   if (Object.keys(SO[key]).length > 0) {
     readySO[key] = SO[key];
+    if (!readySO[key].params.notes) readySO[key].params.notes = notes;
   }
 });
-module.exports = {
+const ShoutOuts = {
   all: SO,
   ready: readySO,
 };
+
+export default ShoutOuts;

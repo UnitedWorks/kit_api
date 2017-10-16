@@ -4,7 +4,7 @@ import { Integration, IntegrationsLocations, OrganizationIntegrations } from './
 import geocode from '../services/geocoder';
 import { logger } from '../logger';
 
-export const getIntegrations = (params, options) => {
+export const getIntegrations = (params, options = { returnJSON: true }) => {
   if (params.organization.id) {
     return Integration.fetchAll({ withRelated: ['locations'] }).then((integrationModels) => {
       return Organization.where({ id: params.organization.id }).fetch({ withRelated: ['integrations', 'location'] }).then((orgModel) => {
@@ -134,7 +134,7 @@ export const deleteIntegration = (params) => {
 };
 
 export const setForOrganization = (params) => {
-  return getIntegrations(params, { returnJSON: true }).then((orgIntegrations) => {
+  return getIntegrations(params).then((orgIntegrations) => {
     const integrationToBeSet = orgIntegrations.filter(
       integration => integration.id === params.integration.id)[0];
     // If we're trying to enable an unavailable integration, throw error, otherwise go for it
