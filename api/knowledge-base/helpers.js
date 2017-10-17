@@ -634,7 +634,10 @@ export async function answerQuestion(organization, question, answers) {
     approvalReps,
   );
   // Conclude
-  return Promise.all(answerInserts).then(() => ({ question }));
+  await Promise.all(answerInserts).then(r => r);
+  return {
+    question: await KnowledgeQuestion.where({ id: question.id }).fetch({ withRelated: ['answers'] }).then(q => q.toJSON()),
+  };
 }
 
 export function approveAnswers(answers = []) {
