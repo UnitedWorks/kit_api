@@ -2,7 +2,7 @@ import { pointPolygonCollision, pointCircleCollision } from '../utils/collision'
 import * as PROVIDERS from '../constants/providers';
 import KitClient from './clients/kit-client';
 import * as TAGS from '../constants/nlp-tagging';
-import { ILLUSTRATION_URLS }  from './templates/assets';
+import * as elementTemplates from './templates/elements';
 import * as replyTemplates from './templates/quick-replies';
 import { i18n } from './templates/messages';
 import { getCategoryFallback } from '../knowledge-base/helpers';
