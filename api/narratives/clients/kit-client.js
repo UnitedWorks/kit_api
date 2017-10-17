@@ -109,7 +109,7 @@ export default class KitClient {
       return i18n('get_default_location', { name: entity.name });
     }
     // Describe General Schedule (even if no datetime, mention schedule)
-    if (!datetime) {
+    if (!datetime && entity.availabilitys) {
       entity.availabilitys.forEach((availability, index, array) => {
         // Geo Check
         if (availability.geo && availability.geo[0] && !geoCheck(availability.geo, [constituentAttributes.default_location.lat, constituentAttributes.default_location.lon])) return;
@@ -121,7 +121,7 @@ export default class KitClient {
           `${rule.toText()}${availability.t_start && availability.t_end ? ` (${timeStart.format('h:mm A')} - ${timeEnd.format('h:mm A')})` : ' (No Hours Listed)'}${index !== array.length - 1 ? ' / ' : ''}`);
       });
     // Speak to Specific Day Availability
-    } else if (datetime[0].grain === 'day') {
+    } else if (datetime[0].grain === 'day' && entity.availabilitys) {
       entity.availabilitys.forEach((availability) => {
         // Geo Check
         if (availability.geo && availability.geo[0] && !geoCheck(availability.geo, [constituentAttributes.default_location.lat, constituentAttributes.default_location.lon])) return;
