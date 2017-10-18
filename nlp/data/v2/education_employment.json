@@ -82,40 +82,12 @@
 		"intent": "education_employment.employment.search"
 	},
 	{
-		"text": "Where can I get job training?",
-		"intent": "education_employment.employment.training",
-		"entities": [
-			{
-				"start": 16,
-				"end": 28,
-				"value": "education_employment",
-				"entity": "category_keywords"
-			}
-		]
+		"text": "Job Openings",
+		"intent": "education_employment.employment.search"
 	},
 	{
-		"text": "Do you offer job training?",
-		"intent": "education_employment.employment.training",
-		"entities": [
-			{
-				"start": 13,
-				"end": 16,
-				"value": "education_employment",
-				"entity": "category_keywords"
-			}
-		]
-	},
-	{
-		"text": "Where can I learn new skills?",
-		"intent": "education_employment.employment.training",
-		"entities": [
-			{
-				"start": 22,
-				"end": 28,
-				"value": "education_employment",
-				"entity": "category_keywords"
-			}
-		]
+		"text": "Available Jobs",
+		"intent": "education_employment.employment.search"
 	},
 	{
 		"text": "Need job retraining",
@@ -136,16 +108,36 @@
 		]
 	},
 	{
-		"text": "My boss hasn't paid me at all the past two weeks",
-		"intent": "education_employment.employment.wage_theft"
+		"text": "Where can I learn new skills?",
+		"intent": "education_employment.employment.training",
+		"entities": [
+			{
+				"start": 22,
+				"end": 28,
+				"value": "education_employment",
+				"entity": "category_keywords"
+			}
+		]
 	},
 	{
-		"text": "I'm not getting paid",
-		"intent": "education_employment.employment.wage_theft",
+		"text": "Do you offer job training?",
+		"intent": "education_employment.employment.training",
+		"entities": [
+			{
+				"start": 13,
+				"end": 16,
+				"value": "education_employment",
+				"entity": "category_keywords"
+			}
+		]
+	},
+	{
+		"text": "Where can I get job training?",
+		"intent": "education_employment.employment.training",
 		"entities": [
 			{
 				"start": 16,
-				"end": 20,
+				"end": 28,
 				"value": "education_employment",
 				"entity": "category_keywords"
 			}
@@ -158,6 +150,22 @@
 			{
 				"start": 50,
 				"end": 58,
+				"value": "education_employment",
+				"entity": "category_keywords"
+			}
+		]
+	},
+	{
+		"text": "My boss hasn't paid me at all the past two weeks",
+		"intent": "education_employment.employment.wage_theft"
+	},
+	{
+		"text": "I'm not getting paid",
+		"intent": "education_employment.employment.wage_theft",
+		"entities": [
+			{
+				"start": 16,
+				"end": 20,
 				"value": "education_employment",
 				"entity": "category_keywords"
 			}
@@ -214,15 +222,15 @@
 		"intent": "education_employment.public_schools.registration"
 	},
 	{
+		"text": "are schools closed?",
+		"intent": "education_employment.public_schools.status"
+	},
+	{
 		"text": "Is school in session today?",
 		"intent": "education_employment.public_schools.status"
 	},
 	{
 		"text": "Are schools open?",
-		"intent": "education_employment.public_schools.status"
-	},
-	{
-		"text": "are schools closed?",
 		"intent": "education_employment.public_schools.status"
 	},
 	{

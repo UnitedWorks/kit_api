@@ -11,14 +11,6 @@
 		"intent": "business_finance.advertising.door_to_door"
 	},
 	{
-		"text": "Am I allowed to knock on doors and hand out informational brochures?",
-		"intent": "business_finance.advertising.door_to_door"
-	},
-	{
-		"text": "Do I need to let the local government know about going door to door?",
-		"intent": "business_finance.advertising.door_to_door"
-	},
-	{
 		"text": "Can I sell my product door to door?",
 		"intent": "business_finance.advertising.door_to_door"
 	},
@@ -35,6 +27,14 @@
 		]
 	},
 	{
+		"text": "Am I allowed to knock on doors and hand out informational brochures?",
+		"intent": "business_finance.advertising.door_to_door"
+	},
+	{
+		"text": "Do I need to let the local government know about going door to door?",
+		"intent": "business_finance.advertising.door_to_door"
+	},
+	{
 		"text": "Can I put posters on telephone polls?",
 		"intent": "business_finance.advertising.general_plastering"
 	},
@@ -45,30 +45,6 @@
 	{
 		"text": "Where can I advertise my event?",
 		"intent": "business_finance.advertising.general_plastering"
-	},
-	{
-		"text": "When can't I put a sign on a person's yard?",
-		"intent": "business_finance.advertising.yard_signs",
-		"entities": [
-			{
-				"start": 38,
-				"end": 42,
-				"value": "property_buildings_homes",
-				"entity": "category_keywords"
-			}
-		]
-	},
-	{
-		"text": "Is it ok to put a sign on someone's yard I'm doing work for?",
-		"intent": "business_finance.advertising.yard_signs",
-		"entities": [
-			{
-				"start": 36,
-				"end": 40,
-				"value": "property_buildings_homes",
-				"entity": "category_keywords"
-			}
-		]
 	},
 	{
 		"text": "What signs are contractors allowed to place between the street and sidewalk?",
@@ -90,6 +66,30 @@
 				"start": 67,
 				"end": 75,
 				"value": "transportation_streets_sidewalks",
+				"entity": "category_keywords"
+			}
+		]
+	},
+	{
+		"text": "When can't I put a sign on a person's yard?",
+		"intent": "business_finance.advertising.yard_signs",
+		"entities": [
+			{
+				"start": 38,
+				"end": 42,
+				"value": "property_buildings_homes",
+				"entity": "category_keywords"
+			}
+		]
+	},
+	{
+		"text": "Is it ok to put a sign on someone's yard I'm doing work for?",
+		"intent": "business_finance.advertising.yard_signs",
+		"entities": [
+			{
+				"start": 36,
+				"end": 40,
+				"value": "property_buildings_homes",
 				"entity": "category_keywords"
 			}
 		]
@@ -162,6 +162,18 @@
 		"intent": "business_finance.business.guide"
 	},
 	{
+		"text": "Start a business",
+		"intent": "business_finance.business.guide"
+	},
+	{
+		"text": "starting a business",
+		"intent": "business_finance.business.guide"
+	},
+	{
+		"text": "Where can I find money or loans to start a business?",
+		"intent": "business_finance.business.loans"
+	},
+	{
 		"text": "Where can I find a loan for my business if my credit score is low?",
 		"intent": "business_finance.business.loans"
 	},
@@ -170,11 +182,11 @@
 		"intent": "business_finance.business.loans"
 	},
 	{
-		"text": "Where can I find money or loans to start a business?",
-		"intent": "business_finance.business.loans"
+		"intent": "business_finance.business.report",
+		"text": "There is a business violating the law"
 	},
 	{
-		"text": "I hired someone to fix my house and they totally screwed it up. Who do I tell?",
+		"text": "this tattoo artist is using dirty needles",
 		"intent": "business_finance.business.report"
 	},
 	{
@@ -186,16 +198,12 @@
 		"intent": "business_finance.business.report"
 	},
 	{
-		"text": "this tattoo artist is using dirty needles",
+		"text": "I hired someone to fix my house and they totally screwed it up. Who do I tell?",
 		"intent": "business_finance.business.report"
 	},
 	{
 		"text": "A contractor did a poor job, who do I contact?",
 		"intent": "business_finance.business.report"
-	},
-	{
-		"intent": "business_finance.business.report",
-		"text": "There is a business violating the law"
 	},
 	{
 		"text": "Where can I receive help drafting a business plan?",
@@ -206,14 +214,6 @@
 		"intent": "business_finance.business.training"
 	},
 	{
-		"text": "I need to fix my business tax records",
-		"intent": "business_finance.business.update"
-	},
-	{
-		"text": "My business is moving",
-		"intent": "business_finance.business.update"
-	},
-	{
 		"text": "How do I change my business name or address to correct my business tax records?",
 		"intent": "business_finance.business.update"
 	},
@@ -222,26 +222,12 @@
 		"intent": "business_finance.business.update"
 	},
 	{
-		"text": "Where can I get a business's work history?",
-		"intent": "business_finance.history_records.complaint.business",
-		"entities": [
-			{
-				"start": 18,
-				"end": 28,
-				"value": "business_finance",
-				"entity": "category_keywords"
-			},
-			{
-				"start": 29,
-				"end": 41,
-				"value": "business_finance",
-				"entity": "category_keywords"
-			}
-		]
+		"text": "I need to fix my business tax records",
+		"intent": "business_finance.business.update"
 	},
 	{
-		"text": "Where can I get a history of complaints about a business?",
-		"intent": "business_finance.history_records.complaint.business"
+		"text": "My business is moving",
+		"intent": "business_finance.business.update"
 	},
 	{
 		"text": "How do I check if a business has a history of complaints?",
@@ -268,12 +254,46 @@
 		]
 	},
 	{
-		"text": "I want to build a billboard. What do I need to do?",
-		"intent": "business_finance.permit_license_permission.billboard.create"
+		"text": "Where can I get a business's work history?",
+		"intent": "business_finance.history_records.complaint.business",
+		"entities": [
+			{
+				"start": 18,
+				"end": 28,
+				"value": "business_finance",
+				"entity": "category_keywords"
+			},
+			{
+				"start": 29,
+				"end": 41,
+				"value": "business_finance",
+				"entity": "category_keywords"
+			}
+		]
+	},
+	{
+		"text": "Where can I get a history of complaints about a business?",
+		"intent": "business_finance.history_records.complaint.business"
 	},
 	{
 		"text": "What permit do I need to build a billboard?",
 		"intent": "business_finance.permit_license_permission.billboard.create"
+	},
+	{
+		"text": "I want to build a billboard. What do I need to do?",
+		"intent": "business_finance.permit_license_permission.billboard.create"
+	},
+	{
+		"text": "Does the city need to know about my business?",
+		"intent": "business_finance.permit_license_permission.business"
+	},
+	{
+		"text": "How can i get a business license?",
+		"intent": "business_finance.permit_license_permission.business"
+	},
+	{
+		"text": "Get a Business License",
+		"intent": "business_finance.permit_license_permission.business"
 	},
 	{
 		"text": "How do I get a business or merchants license?",
@@ -292,27 +312,19 @@
 		"intent": "business_finance.permit_license_permission.business"
 	},
 	{
-		"text": "Does the city need to know about my business?",
-		"intent": "business_finance.permit_license_permission.business"
-	},
-	{
 		"text": "I want to start a business but I don't know what licenses I need?",
 		"intent": "business_finance.permit_license_permission.business"
 	},
 	{
-		"text": "How can i get a business license?",
-		"intent": "business_finance.permit_license_permission.business"
-	},
-	{
-		"text": "Get a Business License",
-		"intent": "business_finance.permit_license_permission.business"
-	},
-	{
-		"text": "I don't think this business is licensed",
+		"text": "Check a contractor license",
 		"intent": "business_finance.permit_license_permission.business.check"
 	},
 	{
-		"text": "Check a contractor license",
+		"text": "Can you check if a business is licensed?",
+		"intent": "business_finance.permit_license_permission.business.check"
+	},
+	{
+		"text": "I don't think this business is licensed",
 		"intent": "business_finance.permit_license_permission.business.check"
 	},
 	{
@@ -320,8 +332,8 @@
 		"intent": "business_finance.permit_license_permission.business.check"
 	},
 	{
-		"text": "Can you check if a business is licensed?",
-		"intent": "business_finance.permit_license_permission.business.check"
+		"text": "I'm looking to open a food cart. What do I need to do?",
+		"intent": "business_finance.permit_license_permission.food_cart"
 	},
 	{
 		"text": "What do I need to run a food cart?",
@@ -340,11 +352,7 @@
 		]
 	},
 	{
-		"text": "I'm looking to open a food cart. What do I need to do?",
-		"intent": "business_finance.permit_license_permission.food_cart"
-	},
-	{
-		"text": "Food  Service  Permits",
+		"text": "I need a permit for my resturaunt",
 		"intent": "business_finance.permit_license_permission.food_service"
 	},
 	{
@@ -352,7 +360,7 @@
 		"intent": "business_finance.permit_license_permission.food_service"
 	},
 	{
-		"text": "I need a permit for my resturaunt",
+		"text": "Food  Service  Permits",
 		"intent": "business_finance.permit_license_permission.food_service"
 	},
 	{
@@ -376,14 +384,6 @@
 		"intent": "business_finance.permit_license_permission.signs"
 	},
 	{
-		"text": "permit to play street music",
-		"intent": "business_finance.permit_license_permission.street_musician"
-	},
-	{
-		"text": "where can I play music in public",
-		"intent": "business_finance.permit_license_permission.street_musician"
-	},
-	{
 		"text": "Is it legal to play music on the street?",
 		"intent": "business_finance.permit_license_permission.street_musician"
 	},
@@ -394,6 +394,26 @@
 	{
 		"text": "I want to play music on the street",
 		"intent": "business_finance.permit_license_permission.street_musician"
+	},
+	{
+		"text": "permit to play street music",
+		"intent": "business_finance.permit_license_permission.street_musician"
+	},
+	{
+		"text": "where can I play music in public",
+		"intent": "business_finance.permit_license_permission.street_musician"
+	},
+	{
+		"text": "How do I apply for a license to sell items on the street?",
+		"intent": "business_finance.permit_license_permission.street_vendor"
+	},
+	{
+		"text": "Do I need to do anything to sell on the sidewalk?",
+		"intent": "business_finance.permit_license_permission.street_vendor"
+	},
+	{
+		"text": "Can I sell things on the sidewalk?",
+		"intent": "business_finance.permit_license_permission.street_vendor"
 	},
 	{
 		"text": "I want to be a street vendor",
@@ -408,22 +428,6 @@
 		]
 	},
 	{
-		"text": "Can I sell things on the sidewalk?",
-		"intent": "business_finance.permit_license_permission.street_vendor"
-	},
-	{
-		"text": "How do I apply for a license to sell items on the street?",
-		"intent": "business_finance.permit_license_permission.street_vendor"
-	},
-	{
-		"text": "Do I need to do anything to sell on the sidewalk?",
-		"intent": "business_finance.permit_license_permission.street_vendor"
-	},
-	{
-		"text": "How does my company become one of your approved vendors?",
-		"intent": "business_finance.procurement.approved"
-	},
-	{
 		"text": "How do I apply to be an approved vendor?",
 		"intent": "business_finance.procurement.approved",
 		"entities": [
@@ -434,6 +438,10 @@
 				"entity": "category_keywords"
 			}
 		]
+	},
+	{
+		"text": "How does my company become one of your approved vendors?",
+		"intent": "business_finance.procurement.approved"
 	},
 	{
 		"text": "How do I get a city contract?",
@@ -450,6 +458,10 @@
 	{
 		"text": "How can my business work with the city?",
 		"intent": "business_finance.procurement.guide"
+	},
+	{
+		"text": "Do company vehicles need any special markings or signs?",
+		"intent": "business_finance.regulation_requirements.business.vehicle.markings"
 	},
 	{
 		"text": "What are construction workers required to list on their vehicles?",
@@ -470,10 +482,6 @@
 		]
 	},
 	{
-		"text": "Do company vehicles need any special markings or signs?",
-		"intent": "business_finance.regulation_requirements.business.vehicle.markings"
-	},
-	{
 		"text": "How late can a bar or club stay open?",
 		"intent": "business_finance.regulation_requirements.nightlife_closing_time"
 	},
@@ -482,7 +490,7 @@
 		"intent": "business_finance.regulation_requirements.nightlife_closing_time"
 	},
 	{
-		"text": "I live in the Princeton Township and I was wondering if Princeton is considering a ban or charge for plastic bags.",
+		"text": "Is there a plastic bag ban or charge?",
 		"intent": "business_finance.regulation_requirements.plastic_bags"
 	},
 	{
@@ -490,7 +498,7 @@
 		"intent": "business_finance.regulation_requirements.plastic_bags"
 	},
 	{
-		"text": "Is there a plastic bag ban or charge?",
+		"text": "I live in the Princeton Township and I was wondering if Princeton is considering a ban or charge for plastic bags.",
 		"intent": "business_finance.regulation_requirements.plastic_bags"
 	},
 	{

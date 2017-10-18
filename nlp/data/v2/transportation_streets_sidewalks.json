@@ -9,10 +9,6 @@
 	},
 	{
 		"intent": "transportation_streets_sidewalks.bicycle.lanes",
-		"text": "There should be a bike lane on Beeker Street"
-	},
-	{
-		"intent": "transportation_streets_sidewalks.bicycle.lanes",
 		"text": "How do I request a bike lane?"
 	},
 	{
@@ -21,11 +17,19 @@
 	},
 	{
 		"intent": "transportation_streets_sidewalks.bicycle.lanes",
-		"text": "I want a bike lane"
+		"text": "There should be a bike lane on my street"
 	},
 	{
 		"intent": "transportation_streets_sidewalks.bicycle.lanes",
-		"text": "There should be a bike lane on my street"
+		"text": "There should be a bike lane on Beeker Street"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.bicycle.lanes",
+		"text": "I want a bike lane"
+	},
+	{
+		"text": "Request bikelane",
+		"intent": "transportation_streets_sidewalks.bicycle.lanes"
 	},
 	{
 		"intent": "transportation_streets_sidewalks.bicycle.racks",
@@ -45,11 +49,11 @@
 	},
 	{
 		"intent": "transportation_streets_sidewalks.construction.noise",
-		"text": "How do I report a noisy jackhammer?"
+		"text": "Theres a loud jackhammer"
 	},
 	{
 		"intent": "transportation_streets_sidewalks.construction.noise",
-		"text": "The roadwork is keeping me up"
+		"text": "How do I report a noisy jackhammer?"
 	},
 	{
 		"intent": "transportation_streets_sidewalks.construction.noise",
@@ -57,11 +61,15 @@
 	},
 	{
 		"intent": "transportation_streets_sidewalks.construction.noise",
-		"text": "Theres a loud jackhammer"
+		"text": "The roadwork is keeping me up"
 	},
 	{
 		"intent": "transportation_streets_sidewalks.curb",
 		"text": "Report curb"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.curb.ramp",
+		"text": "The cut away part of the curb is broken"
 	},
 	{
 		"intent": "transportation_streets_sidewalks.curb.ramp",
@@ -72,20 +80,16 @@
 		"text": "This curb ramp isn't right"
 	},
 	{
-		"intent": "transportation_streets_sidewalks.curb.ramp",
-		"text": "The cut away part of the curb is broken"
-	},
-	{
-		"intent": "transportation_streets_sidewalks.driveway",
-		"text": "I dont think this driveway should be allowed"
-	},
-	{
 		"intent": "transportation_streets_sidewalks.driveway",
 		"text": "I want to report an illegal driveway"
 	},
 	{
 		"intent": "transportation_streets_sidewalks.driveway",
 		"text": "Is this driveway allowed?"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.driveway",
+		"text": "I dont think this driveway should be allowed"
 	},
 	{
 		"intent": "transportation_streets_sidewalks.driveway",
@@ -125,13 +129,6 @@
 		"intent": "transportation_streets_sidewalks.map.sign"
 	},
 	{
-		"text": "parking rules",
-		"intent": "transportation_streets_sidewalks.parking",
-		"meta": {
-			"vague": true
-		}
-	},
-	{
 		"text": "Where can I find information on parking?",
 		"intent": "transportation_streets_sidewalks.parking",
 		"meta": {
@@ -160,7 +157,14 @@
 		}
 	},
 	{
-		"text": "What are the ASP rules where I am?",
+		"text": "parking rules",
+		"intent": "transportation_streets_sidewalks.parking",
+		"meta": {
+			"vague": true
+		}
+	},
+	{
+		"text": "How can I check the ASP rules for a specific parking spot?",
 		"intent": "transportation_streets_sidewalks.parking.asp.check"
 	},
 	{
@@ -168,12 +172,8 @@
 		"intent": "transportation_streets_sidewalks.parking.asp.check"
 	},
 	{
-		"text": "How can I check the ASP rules for a specific parking spot?",
+		"text": "What are the ASP rules where I am?",
 		"intent": "transportation_streets_sidewalks.parking.asp.check"
-	},
-	{
-		"text": "Can I double park when ASP is in effect?",
-		"intent": "transportation_streets_sidewalks.parking.asp.double"
 	},
 	{
 		"text": "Can I double park when alternate side parking is happening?",
@@ -184,11 +184,15 @@
 		"intent": "transportation_streets_sidewalks.parking.asp.double"
 	},
 	{
-		"text": "The street sweeper has passed, can I park there now?",
-		"intent": "transportation_streets_sidewalks.parking.asp.duration"
+		"text": "Can I double park when ASP is in effect?",
+		"intent": "transportation_streets_sidewalks.parking.asp.double"
 	},
 	{
 		"text": "Can I park after a street sweeper has passed?",
+		"intent": "transportation_streets_sidewalks.parking.asp.duration"
+	},
+	{
+		"text": "The street sweeper has passed, can I park there now?",
 		"intent": "transportation_streets_sidewalks.parking.asp.duration"
 	},
 	{
@@ -208,18 +212,6 @@
 		"intent": "transportation_streets_sidewalks.parking.asp.guide"
 	},
 	{
-		"text": "When does the street cleaner come?",
-		"intent": "transportation_streets_sidewalks.parking.asp.schedule",
-		"entities": [
-			{
-				"start": 14,
-				"end": 28,
-				"value": "transportation_streets_sidewalks",
-				"entity": "category_keywords"
-			}
-		]
-	},
-	{
 		"text": "When is street cleaning?",
 		"intent": "transportation_streets_sidewalks.parking.asp.schedule",
 		"entities": [
@@ -236,16 +228,8 @@
 		"intent": "transportation_streets_sidewalks.parking.asp.schedule"
 	},
 	{
-		"text": "when is street sweeping",
-		"intent": "transportation_streets_sidewalks.parking.asp.schedule",
-		"entities": [
-			{
-				"start": 8,
-				"end": 23,
-				"value": "transportation_streets_sidewalks",
-				"entity": "category_keywords"
-			}
-		]
+		"text": "How will I know when my street will be swept?",
+		"intent": "transportation_streets_sidewalks.parking.asp.schedule"
 	},
 	{
 		"text": "Street cleaning schedule?",
@@ -260,14 +244,6 @@
 		]
 	},
 	{
-		"text": "How will I know when my street will be swept?",
-		"intent": "transportation_streets_sidewalks.parking.asp.schedule"
-	},
-	{
-		"text": "is alternate side parking tomorrow?",
-		"intent": "transportation_streets_sidewalks.parking.asp.schedule"
-	},
-	{
 		"text": "when do I need to move my car?",
 		"intent": "transportation_streets_sidewalks.parking.asp.schedule",
 		"entities": [
@@ -278,6 +254,14 @@
 				"entity": "category_keywords"
 			}
 		]
+	},
+	{
+		"text": "is alternate side parking tomorrow?",
+		"intent": "transportation_streets_sidewalks.parking.asp.schedule"
+	},
+	{
+		"text": "Is alternate side parking in effect?",
+		"intent": "transportation_streets_sidewalks.parking.asp.schedule"
 	},
 	{
 		"text": "When is alternate side parking?",
@@ -292,8 +276,32 @@
 		]
 	},
 	{
-		"text": "Is alternate side parking in effect?",
-		"intent": "transportation_streets_sidewalks.parking.asp.schedule"
+		"text": "When does the street cleaner come?",
+		"intent": "transportation_streets_sidewalks.parking.asp.schedule",
+		"entities": [
+			{
+				"start": 14,
+				"end": 28,
+				"value": "transportation_streets_sidewalks",
+				"entity": "category_keywords"
+			}
+		]
+	},
+	{
+		"text": "when is street sweeping",
+		"intent": "transportation_streets_sidewalks.parking.asp.schedule",
+		"entities": [
+			{
+				"start": 8,
+				"end": 23,
+				"value": "transportation_streets_sidewalks",
+				"entity": "category_keywords"
+			}
+		]
+	},
+	{
+		"text": "Is ASP in effect on weekends?",
+		"intent": "transportation_streets_sidewalks.parking.asp.weekends"
 	},
 	{
 		"text": "does alternate side parking matter on weekends?",
@@ -304,8 +312,12 @@
 		"intent": "transportation_streets_sidewalks.parking.asp.weekends"
 	},
 	{
-		"text": "Is ASP in effect on weekends?",
-		"intent": "transportation_streets_sidewalks.parking.asp.weekends"
+		"text": "Is overnight street parking legal in residential neighborhoods?",
+		"intent": "transportation_streets_sidewalks.parking.overnight"
+	},
+	{
+		"text": "What time do I have to move my car by?",
+		"intent": "transportation_streets_sidewalks.parking.overnight"
 	},
 	{
 		"text": "When do I have to move my car in the morning?",
@@ -316,23 +328,15 @@
 		"intent": "transportation_streets_sidewalks.parking.overnight"
 	},
 	{
-		"text": "Is overnight street parking legal in residential neighborhoods?",
-		"intent": "transportation_streets_sidewalks.parking.overnight"
-	},
-	{
-		"text": "What time do I have to move my car by?",
-		"intent": "transportation_streets_sidewalks.parking.overnight"
-	},
-	{
 		"text": "What are the rules for short term overnight parking?",
 		"intent": "transportation_streets_sidewalks.parking.overnight"
 	},
 	{
-		"text": "How can I get a disability sticker for parking?",
+		"text": "What is the application approval process for a Parking Permit for People with Disabilities?",
 		"intent": "transportation_streets_sidewalks.parking.permit_license_permission.disability_parking"
 	},
 	{
-		"text": "How do I renew my Parking Permit For People With Disabilities?",
+		"text": "How can I get a disability sticker for parking?",
 		"intent": "transportation_streets_sidewalks.parking.permit_license_permission.disability_parking"
 	},
 	{
@@ -344,15 +348,15 @@
 		"intent": "transportation_streets_sidewalks.parking.permit_license_permission.disability_parking"
 	},
 	{
-		"text": "What is the application approval process for a Parking Permit for People with Disabilities?",
+		"text": "How do I renew my Parking Permit For People With Disabilities?",
 		"intent": "transportation_streets_sidewalks.parking.permit_license_permission.disability_parking"
 	},
 	{
-		"text": "How do I get a residential parking permit?",
+		"text": "i need a parking permit",
 		"intent": "transportation_streets_sidewalks.parking.permit_license_permission.residential_parking"
 	},
 	{
-		"text": "i need a parking permit",
+		"text": "How do I get a residential parking permit?",
 		"intent": "transportation_streets_sidewalks.parking.permit_license_permission.residential_parking"
 	},
 	{
@@ -364,12 +368,16 @@
 		"intent": "transportation_streets_sidewalks.parking.permit_license_permission.residential_parking.limit"
 	},
 	{
+		"text": "Can I park in a school zone?",
+		"intent": "transportation_streets_sidewalks.parking.school_zone"
+	},
+	{
 		"text": "What are parking regulations in a school zone?",
 		"intent": "transportation_streets_sidewalks.parking.school_zone"
 	},
 	{
-		"text": "Can I park in a school zone?",
-		"intent": "transportation_streets_sidewalks.parking.school_zone"
+		"text": "How long can I be parked on the street?",
+		"intent": "transportation_streets_sidewalks.parking.time_limit"
 	},
 	{
 		"text": "How long can a car be parked on the street?",
@@ -384,15 +392,15 @@
 		]
 	},
 	{
-		"text": "How long can I be parked on the street?",
-		"intent": "transportation_streets_sidewalks.parking.time_limit"
-	},
-	{
 		"text": "How long can I leave my car on the street?",
 		"intent": "transportation_streets_sidewalks.parking.time_limit"
 	},
 	{
 		"text": "How much is left on my parking card",
+		"intent": "transportation_streets_sidewalks.parking_card.balance"
+	},
+	{
+		"text": "parking card balance",
 		"intent": "transportation_streets_sidewalks.parking_card.balance"
 	},
 	{
@@ -406,10 +414,6 @@
 				"entity": "category_keywords"
 			}
 		]
-	},
-	{
-		"text": "parking card balance",
-		"intent": "transportation_streets_sidewalks.parking_card.balance"
 	},
 	{
 		"text": "What do I do if my parking card isn't working?",
@@ -429,11 +433,11 @@
 	},
 	{
 		"intent": "transportation_streets_sidewalks.parking_meter.broken",
-		"text": "I tried paying for parking and it's not working"
+		"text": "The parking meter is not working."
 	},
 	{
 		"intent": "transportation_streets_sidewalks.parking_meter.broken",
-		"text": "The parking meter is not working."
+		"text": "I tried paying for parking and it's not working"
 	},
 	{
 		"intent": "transportation_streets_sidewalks.parking_meter.broken",
@@ -456,8 +460,16 @@
 		"intent": "transportation_streets_sidewalks.plowing.schedule"
 	},
 	{
-		"text": "How often do snow plows come by?",
-		"intent": "transportation_streets_sidewalks.plowing.schedule"
+		"text": "When will you plow my street?",
+		"intent": "transportation_streets_sidewalks.plowing.schedule",
+		"entities": [
+			{
+				"start": 14,
+				"end": 18,
+				"value": "transportation_streets_sidewalks",
+				"entity": "category_keywords"
+			}
+		]
 	},
 	{
 		"text": "When does the snow plow come?",
@@ -472,16 +484,8 @@
 		]
 	},
 	{
-		"text": "When will you plow my street?",
-		"intent": "transportation_streets_sidewalks.plowing.schedule",
-		"entities": [
-			{
-				"start": 14,
-				"end": 18,
-				"value": "transportation_streets_sidewalks",
-				"entity": "category_keywords"
-			}
-		]
+		"text": "How often do snow plows come by?",
+		"intent": "transportation_streets_sidewalks.plowing.schedule"
 	},
 	{
 		"text": "Whens my street getting plowed",
@@ -500,7 +504,7 @@
 		"intent": "transportation_streets_sidewalks.road_work"
 	},
 	{
-		"text": "When my street is paved, will I be able to access my property?",
+		"text": "Can residents access a street when its being paved?",
 		"intent": "transportation_streets_sidewalks.road_work.accessibility"
 	},
 	{
@@ -508,7 +512,7 @@
 		"intent": "transportation_streets_sidewalks.road_work.accessibility"
 	},
 	{
-		"text": "Can residents access a street when its being paved?",
+		"text": "When my street is paved, will I be able to access my property?",
 		"intent": "transportation_streets_sidewalks.road_work.accessibility"
 	},
 	{
@@ -541,11 +545,11 @@
 	},
 	{
 		"intent": "transportation_streets_sidewalks.sidewalk.broken",
-		"text": "How do I report a broken, raised, or uneven sidewalk?"
+		"text": "How can I request sidewalk repairs?"
 	},
 	{
 		"intent": "transportation_streets_sidewalks.sidewalk.broken",
-		"text": "The sidewalk needs fixing"
+		"text": "How do I report a broken, raised, or uneven sidewalk?"
 	},
 	{
 		"intent": "transportation_streets_sidewalks.sidewalk.broken",
@@ -553,7 +557,7 @@
 	},
 	{
 		"intent": "transportation_streets_sidewalks.sidewalk.broken",
-		"text": "How can I request sidewalk repairs?"
+		"text": "The sidewalk needs fixing"
 	},
 	{
 		"intent": "transportation_streets_sidewalks.sidewalk.broken",
@@ -576,12 +580,20 @@
 		"text": "There is a sign down and broken, how do I report it?"
 	},
 	{
+		"text": "How do I report a broken sign",
+		"intent": "transportation_streets_sidewalks.sign.broken"
+	},
+	{
 		"intent": "transportation_streets_sidewalks.sign.conflict",
 		"text": "How do I know what a parking sign means?"
 	},
 	{
 		"intent": "transportation_streets_sidewalks.sign.conflict",
 		"text": "These signs dont make any sense"
+	},
+	{
+		"text": "the street sign is down",
+		"intent": "transportation_streets_sidewalks.sign.down"
 	},
 	{
 		"intent": "transportation_streets_sidewalks.sign.down",
@@ -592,16 +604,12 @@
 		"text": "A parking sign is missing"
 	},
 	{
+		"text": "a sign is missing",
+		"intent": "transportation_streets_sidewalks.sign.missing"
+	},
+	{
 		"intent": "transportation_streets_sidewalks.sign.request",
 		"text": "Can you get a do not block driveway sign?"
-	},
-	{
-		"intent": "transportation_streets_sidewalks.sign.request",
-		"text": "How do I request a no parking or no outlet sign?"
-	},
-	{
-		"intent": "transportation_streets_sidewalks.sign.request",
-		"text": "We need a parking rules sign here"
 	},
 	{
 		"intent": "transportation_streets_sidewalks.sign.request",
@@ -609,7 +617,15 @@
 	},
 	{
 		"intent": "transportation_streets_sidewalks.sign.request",
+		"text": "How do I request a no parking or no outlet sign?"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.sign.request",
 		"text": "How do I request an ASP rules sign?"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.sign.request",
+		"text": "We need a parking rules sign here"
 	},
 	{
 		"intent": "transportation_streets_sidewalks.signal",
@@ -645,11 +661,11 @@
 	},
 	{
 		"intent": "transportation_streets_sidewalks.street.fire_hydrant",
-		"text": "A fire hydrant is spraying water wildly all over the street"
+		"text": "How do I report a Leaking/Damaged Fire Hydrant?"
 	},
 	{
 		"intent": "transportation_streets_sidewalks.street.fire_hydrant",
-		"text": "How do I report a Leaking/Damaged Fire Hydrant?"
+		"text": "A fire hydrant is spraying water wildly all over the street"
 	},
 	{
 		"intent": "transportation_streets_sidewalks.street.manhole",
@@ -657,11 +673,11 @@
 	},
 	{
 		"intent": "transportation_streets_sidewalks.street.pothole",
-		"text": "I just hit a pothole"
+		"text": "pothole"
 	},
 	{
 		"intent": "transportation_streets_sidewalks.street.pothole",
-		"text": "How do I report a pothole?"
+		"text": "I just hit a pothole"
 	},
 	{
 		"intent": "transportation_streets_sidewalks.street.pothole",
@@ -673,7 +689,7 @@
 	},
 	{
 		"intent": "transportation_streets_sidewalks.street.pothole",
-		"text": "pothole"
+		"text": "How do I report a pothole?"
 	},
 	{
 		"intent": "transportation_streets_sidewalks.street_light",
@@ -682,10 +698,6 @@
 	{
 		"intent": "transportation_streets_sidewalks.street_light.always_on",
 		"text": "The street light is on throughout the day"
-	},
-	{
-		"intent": "transportation_streets_sidewalks.street_light.burnt_out",
-		"text": "Who do I notify if I see a streetlight on my street is not functioning or burned out?"
 	},
 	{
 		"intent": "transportation_streets_sidewalks.street_light.burnt_out",
@@ -700,6 +712,10 @@
 		"text": "the light outside my apartment is out"
 	},
 	{
+		"intent": "transportation_streets_sidewalks.street_light.burnt_out",
+		"text": "Who do I notify if I see a streetlight on my street is not functioning or burned out?"
+	},
+	{
 		"intent": "transportation_streets_sidewalks.street_light.down",
 		"text": "A whole street light just came down outside my apartment"
 	},
@@ -709,15 +725,23 @@
 	},
 	{
 		"intent": "transportation_streets_sidewalks.street_light.request",
-		"text": "Can I request additional streetlights on my street?"
+		"text": "The street along College Ave. isnt well lit. Can we get more lights?"
 	},
 	{
 		"intent": "transportation_streets_sidewalks.street_light.request",
-		"text": "The street along College Ave. isnt well lit. Can we get more lights?"
+		"text": "Can I request additional streetlights on my street?"
 	},
 	{
 		"text": "Request street light",
 		"intent": "transportation_streets_sidewalks.street_light.request"
+	},
+	{
+		"text": "How do I find an item I lost in a taxi if I have the medallion number?",
+		"intent": "transportation_streets_sidewalks.taxi.belongings"
+	},
+	{
+		"text": "I forgot my purse in a taxi",
+		"intent": "transportation_streets_sidewalks.taxi.belongings"
 	},
 	{
 		"text": "I left my wallet in a taxi",
@@ -732,7 +756,7 @@
 		]
 	},
 	{
-		"text": "I forgot my purse in a taxi",
+		"text": "How do I find an item I lost in a taxi if I don't have the medallion number?",
 		"intent": "transportation_streets_sidewalks.taxi.belongings"
 	},
 	{
@@ -740,24 +764,12 @@
 		"intent": "transportation_streets_sidewalks.taxi.belongings"
 	},
 	{
-		"text": "How do I find an item I lost in a taxi if I have the medallion number?",
-		"intent": "transportation_streets_sidewalks.taxi.belongings"
-	},
-	{
-		"text": "How do I find an item I lost in a taxi if I don't have the medallion number?",
-		"intent": "transportation_streets_sidewalks.taxi.belongings"
-	},
-	{
-		"text": "How many passengers are allowed in a taxi?",
-		"intent": "transportation_streets_sidewalks.taxi.max_occupancy"
-	},
-	{
 		"text": "How many people can a taxi have?",
 		"intent": "transportation_streets_sidewalks.taxi.max_occupancy"
 	},
 	{
-		"text": "I didn't do anything to get this ticket",
-		"intent": "transportation_streets_sidewalks.ticket.contested"
+		"text": "How many passengers are allowed in a taxi?",
+		"intent": "transportation_streets_sidewalks.taxi.max_occupancy"
 	},
 	{
 		"text": "Can and how do I contest a ticket?",
@@ -765,6 +777,10 @@
 	},
 	{
 		"text": "What if I feel like the ticket was issued unjustly?",
+		"intent": "transportation_streets_sidewalks.ticket.contested"
+	},
+	{
+		"text": "I didn't do anything to get this ticket",
 		"intent": "transportation_streets_sidewalks.ticket.contested"
 	},
 	{
@@ -808,6 +824,10 @@
 		"intent": "transportation_streets_sidewalks.ticket.traffic.contested.arrival"
 	},
 	{
+		"text": "How long does it take to hear back on a parking ticket hearing?",
+		"intent": "transportation_streets_sidewalks.ticket.traffic.contested.arrival"
+	},
+	{
 		"text": "When do I hear back about my traffic ticket hearing?",
 		"intent": "transportation_streets_sidewalks.ticket.traffic.contested.arrival",
 		"entities": [
@@ -820,31 +840,15 @@
 		]
 	},
 	{
-		"text": "How long does it take to hear back on a parking ticket hearing?",
-		"intent": "transportation_streets_sidewalks.ticket.traffic.contested.arrival"
+		"text": "I lost my traffic ticket. What do I do?",
+		"intent": "transportation_streets_sidewalks.ticket.traffic.lost"
 	},
 	{
 		"text": "What should I do if I lost my ticket?",
 		"intent": "transportation_streets_sidewalks.ticket.traffic.lost"
 	},
 	{
-		"text": "I lost my traffic ticket. What do I do?",
-		"intent": "transportation_streets_sidewalks.ticket.traffic.lost"
-	},
-	{
-		"text": "Can I pay my parking ticket online?",
-		"intent": "transportation_streets_sidewalks.ticket.traffic.payment"
-	},
-	{
-		"text": "Where do I pay parking tickets?",
-		"intent": "transportation_streets_sidewalks.ticket.traffic.payment"
-	},
-	{
 		"text": "Can you pay parking tickets online?",
-		"intent": "transportation_streets_sidewalks.ticket.traffic.payment"
-	},
-	{
-		"text": "How do I pay a parking ticket?",
 		"intent": "transportation_streets_sidewalks.ticket.traffic.payment"
 	},
 	{
@@ -852,11 +856,23 @@
 		"intent": "transportation_streets_sidewalks.ticket.traffic.payment"
 	},
 	{
+		"text": "Can I pay my parking ticket online?",
+		"intent": "transportation_streets_sidewalks.ticket.traffic.payment"
+	},
+	{
+		"text": "How do I pay a parking ticket?",
+		"intent": "transportation_streets_sidewalks.ticket.traffic.payment"
+	},
+	{
+		"text": "Where do I pay parking tickets?",
+		"intent": "transportation_streets_sidewalks.ticket.traffic.payment"
+	},
+	{
 		"intent": "transportation_streets_sidewalks.vehicle.abandoned",
 		"text": "Theres an abandoned car on the street"
 	},
 	{
-		"text": "Someone just hit my car",
+		"text": "My car just got hit",
 		"intent": "transportation_streets_sidewalks.vehicle.accident"
 	},
 	{
@@ -864,7 +880,7 @@
 		"intent": "transportation_streets_sidewalks.vehicle.accident"
 	},
 	{
-		"text": "My car just got hit",
+		"text": "Someone just hit my car",
 		"intent": "transportation_streets_sidewalks.vehicle.accident"
 	},
 	{
@@ -873,15 +889,15 @@
 	},
 	{
 		"intent": "transportation_streets_sidewalks.vehicle.idling",
+		"text": "This truck has been running for 30 minutes with no one in it"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.vehicle.idling",
 		"text": "I want to report an idling vehicle"
 	},
 	{
 		"intent": "transportation_streets_sidewalks.vehicle.idling",
 		"text": "There's a car idling here"
-	},
-	{
-		"intent": "transportation_streets_sidewalks.vehicle.idling",
-		"text": "This truck has been running for 30 minutes with no one in it"
 	},
 	{
 		"intent": "transportation_streets_sidewalks.vehicle.reckless",
@@ -904,6 +920,14 @@
 		"text": "How do I report dangerous motorized scooter use?"
 	},
 	{
+		"text": "How do I find my towed vehicle?",
+		"intent": "transportation_streets_sidewalks.vehicle.towed"
+	},
+	{
+		"text": "Did my vehicle get towed?",
+		"intent": "transportation_streets_sidewalks.vehicle.towed"
+	},
+	{
 		"text": "Was my vehicle towed?",
 		"intent": "transportation_streets_sidewalks.vehicle.towed",
 		"entities": [
@@ -920,15 +944,7 @@
 		"intent": "transportation_streets_sidewalks.vehicle.towed"
 	},
 	{
-		"text": "How do I find my towed vehicle?",
-		"intent": "transportation_streets_sidewalks.vehicle.towed"
-	},
-	{
 		"text": "My car was impounded.  How can I get it back?",
-		"intent": "transportation_streets_sidewalks.vehicle.towed"
-	},
-	{
-		"text": "Did my vehicle get towed?",
 		"intent": "transportation_streets_sidewalks.vehicle.towed"
 	},
 	{
@@ -961,19 +977,15 @@
 	},
 	{
 		"intent": "transportation_streets_sidewalks.violation.parking",
-		"text": "This car can't be parked here"
-	},
-	{
-		"intent": "transportation_streets_sidewalks.violation.parking",
 		"text": "How do I report illegal parking?"
 	},
 	{
-		"intent": "transportation_streets_sidewalks.violation.parking.blocking",
-		"text": "Who do I call if someone is blocking my driveway?"
+		"intent": "transportation_streets_sidewalks.violation.parking",
+		"text": "This car can't be parked here"
 	},
 	{
 		"intent": "transportation_streets_sidewalks.violation.parking.blocking",
-		"text": "How do I report a vehicle blocking my driveway?"
+		"text": "Someone is blocking my driveway."
 	},
 	{
 		"text": "blocked driveway",
@@ -984,12 +996,20 @@
 		"intent": "transportation_streets_sidewalks.violation.parking.blocking"
 	},
 	{
+		"text": "Driveway blocked",
+		"intent": "transportation_streets_sidewalks.violation.parking.blocking"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.violation.parking.blocking",
+		"text": "How do I report a vehicle blocking my driveway?"
+	},
+	{
 		"intent": "transportation_streets_sidewalks.violation.parking.blocking",
 		"text": "Theres a parked car blocking the street"
 	},
 	{
 		"intent": "transportation_streets_sidewalks.violation.parking.blocking",
-		"text": "Someone is blocking my driveway."
+		"text": "Who do I call if someone is blocking my driveway?"
 	},
 	{
 		"intent": "transportation_streets_sidewalks.violation.parking.bus_zone",
@@ -1028,6 +1048,10 @@
 		"text": "There is someone taking up a school zone"
 	},
 	{
+		"intent": "transportation_streets_sidewalks.wire.down",
+		"text": "An electrical wire is down in the street"
+	},
+	{
 		"text": "There are telephone and electrical wires down",
 		"intent": "transportation_streets_sidewalks.wire.down"
 	},
@@ -1036,8 +1060,8 @@
 		"intent": "transportation_streets_sidewalks.wire.down"
 	},
 	{
-		"intent": "transportation_streets_sidewalks.wire.down",
-		"text": "An electrical wire is down in the street"
+		"text": "there is a wire down",
+		"intent": "transportation_streets_sidewalks.wire.down"
 	},
 	{
 		"text": "A tree is up against electrical wires",
@@ -1045,6 +1069,10 @@
 	},
 	{
 		"text": "How do I report a tree branch touching electrical wires?",
+		"intent": "transportation_streets_sidewalks.wire.safety"
+	},
+	{
+		"text": "this electrical wire is touching a tree",
 		"intent": "transportation_streets_sidewalks.wire.safety"
 	}
 ]

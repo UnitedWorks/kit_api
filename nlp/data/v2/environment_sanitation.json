@@ -1,700 +1,720 @@
 [
-  {
-    "text": "plastic",
-    "entities": [
-      {
-        "start": 1,
-        "end": 7,
-        "value": "environment_sanitation",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "What do I do with compost?",
-    "intent": "environment_sanitation.compost"
-  },
-  {
-    "text": "Can I compost?",
-    "intent": "environment_sanitation.compost"
-  },
-  {
-    "text": "Is composting allowed?",
-    "intent": "environment_sanitation.compost"
-  },
-  {
-    "text": "When do you collect compost?",
-    "intent": "environment_sanitation.compost.schedule"
-  },
-  {
-    "text": "Does the city have compost bins?",
-    "intent": "environment_sanitation.compost.bins"
-  },
-  {
-    "text": "I need to throw stuff out",
-    "intent": "environment_sanitation.disposal",
-    "meta": {
-      "vague": true
-    }
-  },
-  {
-    "text": "tossing stuff out",
-    "intent": "environment_sanitation.disposal",
-    "meta": {
-      "vague": true
-    }
-  },
-  {
-    "text": "How do I dispose of junk, old appliances, or scrap metal?",
-    "intent": "environment_sanitation.disposal",
-    "meta": {
-      "vague": true
-    }
-  },
-  {
-    "text": "How do I throw out my appliances?",
-    "intent": "environment_sanitation.disposal.appliance",
-    "entities": [
-      {
-        "start": 9,
-        "end": 18,
-        "value": "environment_sanitation",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "I want to thow out an air conditioner",
-    "intent": "environment_sanitation.disposal.appliance"
-  },
-  {
-    "text": "Where do I Recycle Appliances?",
-    "intent": "environment_sanitation.disposal.appliance"
-  },
-  {
-    "text": "I want to get rid of appliances",
-    "intent": "environment_sanitation.disposal.appliance"
-  },
-  {
-    "text": "How do I get rid of an air conditioner?",
-    "intent": "environment_sanitation.disposal.appliance"
-  },
-  {
-    "text": "How do I dispose of appliances?",
-    "intent": "environment_sanitation.disposal.appliance",
-    "entities": [
-      {
-        "start": 9,
-        "end": 16,
-        "value": "environment_sanitation",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "What do I need to do about throwing out batteries",
-    "intent": "environment_sanitation.disposal.battery"
-  },
-  {
-    "text": "How do I dispose of batteries?",
-    "intent": "environment_sanitation.disposal.battery"
-  },
-  {
-    "text": "I need bulk pickup",
-    "intent": "environment_sanitation.disposal.bulk_pickup.request"
-  },
-  {
-    "text": "I need bulk pickup",
-    "intent": "environment_sanitation.disposal.bulk_pickup.request"
-  },
-  {
-    "text": "How do I get bulk pickup?",
-    "intent": "environment_sanitation.disposal.bulk_pickup.request"
-  },
-  {
-    "text": "How can I request bulk item pickup?",
-    "intent": "environment_sanitation.disposal.bulk_pickup.request"
-  },
-  {
-    "text": "How do I get bulky waste items collected?",
-    "intent": "environment_sanitation.disposal.bulk_pickup.request"
-  },
-  {
-    "text": "What are items acceptable for Bulk pickup?",
-    "intent": "environment_sanitation.disposal.bulk_pickup.guide"
-  },
-  {
-    "text": "How do I dispose of a carpet?",
-    "intent": "environment_sanitation.disposal.carpet"
-  },
-  {
-    "text": "How do I get rid of a carpet?",
-    "intent": "environment_sanitation.disposal.carpet"
-  },
-  {
-    "text": "I have and old 9 x12 carpet.  Can I just put it out with my weekly trash?",
-    "intent": "environment_sanitation.disposal.carpet"
-  },
-  {
-    "text": "I need to throw out my carpet?",
-    "intent": "environment_sanitation.disposal.carpet"
-  },
-  {
-    "text": "Can I put a couch on the sidewalk for garbage collection?",
-    "intent": "environment_sanitation.disposal.couch"
-  },
-  {
-    "text": "Will the township pick up a couch (seats 3) as part of garbage collection?",
-    "intent": "environment_sanitation.disposal.couch"
-  },
-  {
-    "text": "How do I throw out a Christmas Tree?",
-    "intent": "environment_sanitation.disposal.christmas_tree"
-  },
-  {
-    "text": "Who do I contact to dispose of my Christmas Tree?",
-    "intent": "environment_sanitation.disposal.christmas_tree"
-  },
-  {
-    "text": "Where can I dispose of electronics?",
-    "intent": "environment_sanitation.disposal.electronics"
-  },
-  {
-    "text": "When is New Haven's electronic recycling? Not posted on the NH website and I can';'t get a hold of anyone in public works.",
-    "intent": "environment_sanitation.disposal.electronics"
-  },
-  {
-    "text": "I want to throw out my couch",
-    "intent": "environment_sanitation.disposal.furniture"
-  },
-  {
-    "text": "How do I throw out my futon?",
-    "intent": "environment_sanitation.disposal.furniture"
-  },
-  {
-    "text": "I need to get rid of my sofa?",
-    "intent": "environment_sanitation.disposal.furniture"
-  },
-  {
-    "text": "How do I dispose of a lawn mower?",
-    "intent": "environment_sanitation.disposal.lawn_mower"
-  },
-  {
-    "text": "How do I get rid of my leaves?",
-    "intent": "environment_sanitation.disposal.leaf"
-  },
-  {
-    "text": "Do I brush leaves to the curb?",
-    "intent": "environment_sanitation.disposal.leaf"
-  },
-  {
-    "text": "What do I do about leaves?",
-    "intent": "environment_sanitation.disposal.leaf"
-  },
-  {
-    "text": "Do I need to bag my leaves?",
-    "intent": "environment_sanitation.disposal.leaf.guide"
-  },
-  {
-    "text": "Can I put yard waste curbside to be picked up?",
-    "intent": "environment_sanitation.disposal.leaf.guide"
-  },
-  {
-    "text": "How should leaves be handled?",
-    "intent": "environment_sanitation.disposal.leaf.guide"
-  },
-  {
-    "text": "Where can I get leaf bags?",
-    "intent": "environment_sanitation.disposal.leaf.guide"
-  },
-  {
-    "text": "How do I dispose of my mattress?",
-    "intent": "environment_sanitation.disposal.mattress"
-  },
-  {
-    "text": "I'm trying to get rid of a big metal item?",
-    "intent": "environment_sanitation.disposal.metal",
-    "entities": [
-      {
-        "start": 14,
-        "end": 24,
-        "value": "environment_sanitation",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "How do I throw out a large metal item?",
-    "intent": "environment_sanitation.disposal.metal"
-  },
-  {
-    "text": "How do I throw out paint?",
-    "intent": "environment_sanitation.disposal.paint"
-  },
-  {
-    "text": "Where do I throw out paint?",
-    "intent": "environment_sanitation.disposal.paint"
-  },
-  {
-    "text": "How do I throw out a piano?",
-    "intent": "environment_sanitation.disposal.piano"
-  },
-  {
-    "text": "How do I get rid of a piano?",
-    "intent": "environment_sanitation.disposal.piano"
-  },
-  {
-    "text": "Where do I dispose used syringes?",
-    "intent": "environment_sanitation.disposal.syringes"
-  },
-  {
-    "text": "Where do I bring syringes?",
-    "intent": "environment_sanitation.disposal.syringes"
-  },
-  {
-    "text": "Where do I throw out used syringes??",
-    "intent": "environment_sanitation.disposal.syringes"
-  },
-  {
-    "text": "i need to get rid of syringes",
-    "intent": "environment_sanitation.disposal.syringes"
-  },
-  {
-    "text": "What should I do with used syringes?",
-    "intent": "environment_sanitation.disposal.syringes"
-  },
-  {
-    "text": "Where can I safely dispose of household hazardous waste?",
-    "intent": "environment_sanitation.disposal.hazardous"
-  },
-  {
-    "text": "Do do you have any information about black bears?",
-    "intent": "environment_sanitation.bear.guide",
-    "entities": [
-      {
-        "start": 43,
-        "end": 48,
-        "value": "environment_sanitation",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "What should I know about black bears?",
-    "intent": "environment_sanitation.bear.guide"
-  },
-  {
-    "text": "Where do I find a mattress disposal bag?",
-    "intent": "environment_sanitation.mattress_disposal_bag"
-  },
-  {
-    "text": "Can I bring alcohol to the park?",
-    "intent": "environment_sanitation.park.alcohol",
-    "entities": [
-      {
-        "start": 27,
-        "end": 31,
-        "value": "environment_sanitation",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "Can I barbecue in the park?",
-    "intent": "environment_sanitation.park.barbecue"
-  },
-  {
-    "text": "Are grills allowed in the park?",
-    "intent": "environment_sanitation.park.barbecue"
-  },
-  {
-    "text": "Can dogs be at the park?",
-    "intent": "environment_sanitation.park.pet"
-  },
-  {
-    "text": "Am I allowed to bring a dog to a park?",
-    "intent": "environment_sanitation.park.pet"
-  },
-  {
-    "text": "Can I bring my dog to the park?",
-    "intent": "environment_sanitation.park.pet"
-  },
-  {
-    "text": "Is it ok to bring a dog to the park?",
-    "intent": "environment_sanitation.park.pet"
-  },
-  {
-    "text": "Can I smoke in the park?",
-    "intent": "environment_sanitation.park.smoking"
-  },
-  {
-    "text": "recycle?",
-    "intent": "environment_sanitation.recycling",
-    "meta": {
-      "vague": true
-    }
-  },
-  {
-    "text": "Does recylcing and trash pickup happen on holidays?",
-    "intent": "environment_sanitation.schedule.exceptions"
-  },
-  {
-    "text": "Where can I find a copy of the garbage and trash holiday schedule?",
-    "intent": "environment_sanitation.schedule.exceptions"
-  },
-  {
-    "text": "I need a new garbage can and new recycle can, who do I need to contact?",
-    "intent": "environment_sanitation.bins.request"
-  },
-  {
-    "text": "Do I need special bins for recycling?",
-    "intent": "environment_sanitation.recycling.bins",
-    "entities": [
-      {
-        "start": 18,
-        "end": 22,
-        "value": "environment_sanitation",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "What bins or bags do I need to use for garbage, recycling, and compost?",
-    "intent": "environment_sanitation.bins.guide"
-  },
-  {
-    "text": "Can I use a blue recycling bin instead of the standard ones?",
-    "intent": "environment_sanitation.bins.guide"
-  },
-  {
-    "text": "When and where should I place my garbage recycling and refuse container?",
-    "intent": "environment_sanitation.bins.placement"
-  },
-  {
-    "text": "What time should my recycling container be placed by the curb?",
-    "intent": "environment_sanitation.recycling.schedule"
-  },
-  {
-    "text": "Where do I dispose of my recycling?",
-    "intent": "environment_sanitation.recycling.location"
-  },
-  {
-    "text": "Where do I bring recycling?",
-    "intent": "environment_sanitation.recycling.location"
-  },
-  {
-    "text": "What plastics are recycable?",
-    "intent": "environment_sanitation.recycling.guide"
-  },
-  {
-    "text": "What do I recycle in Jersey city?",
-    "intent": "environment_sanitation.recycling.guide"
-  },
-  {
-    "text": "Can I recycle plastic #5 in Jersey City?",
-    "intent": "environment_sanitation.recycling.guide"
-  },
-  {
-    "text": "Where can I find a printed Recycling Guide?",
-    "intent": "environment_sanitation.recycling.guide"
-  },
-  {
-    "text": "Can recycling be mixed?",
-    "intent": "environment_sanitation.recycling.guide",
-    "entities": [
-      {
-        "start": 4,
-        "end": 13,
-        "value": "environment_sanitation",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "Does recycling need to be separated?",
-    "intent": "environment_sanitation.recycling.guide"
-  },
-  {
-    "text": "Is recycling next Wednesday?",
-    "intent": "environment_sanitation.recycling.schedule"
-  },
-  {
-    "text": "Recycling Schedule",
-    "intent": "environment_sanitation.recycling.schedule"
-  },
-  {
-    "text": "my recycling schedule",
-    "intent": "environment_sanitation.recycling.schedule"
-  },
-  {
-    "text": "Is there recycling next week?",
-    "intent": "environment_sanitation.recycling.schedule"
-  },
-  {
-    "text": "When is recycling next month?",
-    "intent": "environment_sanitation.recycling.schedule"
-  },
-  {
-    "text": "When is recycling?",
-    "intent": "environment_sanitation.recycling.schedule"
-  },
-  {
-    "text": "Which day is recycling?",
-    "intent": "environment_sanitation.recycling.schedule"
-  },
-  {
-    "text": "What is the recycling schedule?",
-    "intent": "environment_sanitation.recycling.schedule"
-  },
-  {
-    "text": "i have garbage",
-    "intent": "environment_sanitation.trash",
-    "meta": {
-      "vague": true
-    }
-  },
-  {
-    "text": "Where do I dispose of my garbage?",
-    "intent": "environment_sanitation.trash.location"
-  },
-  {
-    "text": "Is there a place where I can drop off trash?",
-    "intent": "environment_sanitation.trash.location"
-  },
-  {
-    "text": "When is trash pickup?",
-    "intent": "environment_sanitation.trash.schedule"
-  },
-  {
-    "text": "Where can I find the trash pick-up schedule for New Haven?",
-    "intent": "environment_sanitation.trash.schedule"
-  },
-  {
-    "text": "What day is trash? ",
-    "intent": "environment_sanitation.trash.schedule"
-  },
-  {
-    "text": "my garbage schedule",
-    "intent": "environment_sanitation.trash.schedule"
-  },
-  {
-    "text": "Is there trash pickup next week?",
-    "intent": "environment_sanitation.trash.schedule"
-  },
-  {
-    "text": "What is my solid waste collection day?",
-    "intent": "environment_sanitation.trash.schedule"
-  },
-  {
-    "text": "Is garbage picked up tomorrow?",
-    "intent": "environment_sanitation.trash.schedule",
-    "entities": [
-      {
-        "start": 3,
-        "end": 10,
-        "value": "environment_sanitation",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "What day is trash pickup?",
-    "intent": "environment_sanitation.trash.schedule",
-    "entities": [
-      {
-        "start": 12,
-        "end": 17,
-        "value": "environment_sanitation",
-        "entity": "category_keywords"
-      }
-    ]
-  },
-  {
-    "text": "Is there garbage pickup next week?",
-    "intent": "environment_sanitation.trash.schedule"
-  },
-  {
-    "text": "Is trash pickup next Tuesday?",
-    "intent": "environment_sanitation.trash.schedule"
-  },
-  {
-    "text": "Garbage Schedule",
-    "intent": "environment_sanitation.trash.schedule"
-  },
-  {
-    "text": "What is the trash schedule?",
-    "intent": "environment_sanitation.trash.schedule"
-  },
-  {
-    "text": "A tree is down",
-    "intent": "environment_sanitation.tree.down"
-  },
-  {
-    "text": "A tree is blocking the street",
-    "intent": "environment_sanitation.tree.down"
-  },
-  {
-    "text": "There is a tree down, how do I report it?",
-    "intent": "environment_sanitation.tree.down"
-  },
-  {
-    "text": "There's a tree down outside my house",
-    "intent": "environment_sanitation.tree.down"
-  },
-  {
-    "intent": "environment_sanitation.tree.inspection",
-    "text": "The tree outside my house looks dead"
-  },
-  {
-    "intent": "environment_sanitation.tree.inspection",
-    "text": "Who do I report a dead city tree to?"
-  },
-  {
-    "text": "I want a tree planted. Anything I need to do?",
-    "intent": "environment_sanitation.tree.planting"
-  },
-  {
-    "text": "Do the landscapers need permission to plant trees?",
-    "intent": "environment_sanitation.tree.planting"
-  },
-  {
-    "text": "Can I just plant a tree?",
-    "intent": "environment_sanitation.tree.planting"
-  },
-  {
-    "text": "Is anything required to plant a tree?",
-    "intent": "environment_sanitation.tree.planting"
-  },
-  {
-    "intent": "environment_sanitation.tree.planting",
-    "text": "Can we get a new tree on the corner of George Street and College Ave?"
-  },
-  {
-    "intent": "environment_sanitation.tree.pruning",
-    "text": "I think a tree needs pruning"
-  },
-  {
-    "intent": "environment_sanitation.tree.pruning",
-    "text": "The tree in front of my house is too tall. I would like the tree topped. Will the City do that?"
-  },
-  {
-    "intent": "environment_sanitation.tree.pruning",
-    "text": "There is a limb broken and hanging over the street/sidewalk. Will you take care of it?"
-  },
-  {
-    "intent": "environment_sanitation.tree.pruning",
-    "text": "A tree outside my house is touching an eletrical wire"
-  },
-  {
-    "intent": "environment_sanitation.tree.pruning",
-    "text": "Will you trim or remove my tree?"
-  },
-  {
-    "intent": "environment_sanitation.tree.removal",
-    "text": "Can you remove a tree on my street?"
-  },
-  {
-    "intent": "environment_sanitation.trash.animal",
-    "text": "Rodents keep eating my garbage"
-  },
-  {
-    "intent": "environment_sanitation.trash.animal",
-    "text": "Animals keep eating my garbage"
-  },
-  {
-    "intent": "environment_sanitation.trash.animal",
-    "text": "How do I stop animals from eating my garbage?"
-  },
-  {
-    "intent": "environment_sanitation.collection_missed",
-    "text": "What number should I call to report that my trash / recycling / yard waste was not picked up?"
-  },
-  {
-    "intent": "environment_sanitation.trash.collection_missed",
-    "text": "My garbage wasnt picked up"
-  },
-  {
-    "intent": "environment_sanitation.recycling.collection_missed",
-    "text": "My recycling didnt get picked up this morning"
-  },
-  {
-    "intent": "environment_sanitation.recycling.collection_missed",
-    "text": "Where do I report a missed recycling and/or refuse pickup?"
-  },
-  {
-    "intent": "environment_sanitation.litter",
-    "text": "The sidewalk outside my house is covered in trash"
-  },
-  {
-    "intent": "environment_sanitation.litter",
-    "text": "Who do I report abandoned trash to?"
-  },
-  {
-    "intent": "environment_sanitation.park.reservation",
-    "text": "Can I reserve a park or picnic area?"
-  },
-  {
-    "intent": "environment_sanitation.park.reservation",
-    "text": "How do I reserve a section at the park for a party?"
-  },
-  {
-    "intent": "environment_sanitation.park.reservation",
-    "text": "How do I reserve a park pavilion?"
-  },
-  {
-    "intent": "environment_sanitation.water.flood",
-    "text": "My street is flooding"
-  },
-  {
-    "intent": "environment_sanitation.water.flood",
-    "text": "The block is still underwater"
-  },
-  {
-    "intent": "environment_sanitation.water.quality",
-    "text": "It looks like theres oil on the water"
-  },
-  {
-    "intent": "environment_sanitation.water.quality",
-    "text": "How do I report a waterway that is an unusual color?"
-  },
-  {
-    "intent": "environment_sanitation.water.quality",
-    "text": "The river looks dirty"
-  },
-  {
-    "intent": "environment_sanitation.air.quality",
-    "text": "there's a thick smog"
-  },
-  {
-    "intent": "environment_sanitation.air.quality",
-    "text": "Our air isn't clean"
-  },
-  {
-    "intent": "environment_sanitation.catch_basin.repairs",
-    "text": "How do I report a catch basin repair?"
-  },
-  {
-    "intent": "environment_sanitation.catch_basin.cleaning",
-    "text": "How do I report a catch basin clean-out?"
-  },
-  {
-    "intent": "environment_sanitation.catch_basin.request",
-    "text": "How do I get a catch basin?"
-  },
-  {
-    "intent": "environment_sanitation.dumping",
-    "text": "There is an RV dumping at Malipardis park"
-  },
-  {
-    "intent": "environment_sanitation.dumping",
-    "text": "Someone is dumping trash behind our house"
-  },
-  {
-    "intent": "environment_sanitation.trails",
-    "text": "What trails are available to hike and bike on?"
-  },
-  {
-    "intent": "environment_sanitation.trails",
-    "text": "How can I find maps of hiking trails in the area?"
-  }
+	{
+		"text": "plastic",
+		"entities": [
+			{
+				"start": 1,
+				"end": 7,
+				"value": "environment_sanitation",
+				"entity": "category_keywords"
+			}
+		]
+	},
+	{
+		"intent": "environment_sanitation.air.quality",
+		"text": "there's a thick smog"
+	},
+	{
+		"intent": "environment_sanitation.air.quality",
+		"text": "Our air isn't clean"
+	},
+	{
+		"text": "What should I know about black bears?",
+		"intent": "environment_sanitation.bear.guide"
+	},
+	{
+		"text": "Do do you have any information about black bears?",
+		"intent": "environment_sanitation.bear.guide",
+		"entities": [
+			{
+				"start": 43,
+				"end": 48,
+				"value": "environment_sanitation",
+				"entity": "category_keywords"
+			}
+		]
+	},
+	{
+		"text": "Can I use a blue recycling bin instead of the standard ones?",
+		"intent": "environment_sanitation.bins.guide"
+	},
+	{
+		"text": "What bins or bags do I need to use for garbage, recycling, and compost?",
+		"intent": "environment_sanitation.bins.guide"
+	},
+	{
+		"text": "When and where should I place my garbage recycling and refuse container?",
+		"intent": "environment_sanitation.bins.placement"
+	},
+	{
+		"text": "I need a new garbage can and new recycle can, who do I need to contact?",
+		"intent": "environment_sanitation.bins.request"
+	},
+	{
+		"intent": "environment_sanitation.catch_basin.cleaning",
+		"text": "How do I report a catch basin clean-out?"
+	},
+	{
+		"text": "Catch basin needs cleaning",
+		"intent": "environment_sanitation.catch_basin.cleaning"
+	},
+	{
+		"intent": "environment_sanitation.catch_basin.repairs",
+		"text": "How do I report a catch basin repair?"
+	},
+	{
+		"text": "Request a catch basin",
+		"intent": "environment_sanitation.catch_basin.request"
+	},
+	{
+		"text": "Can I request a catch basin",
+		"intent": "environment_sanitation.catch_basin.request"
+	},
+	{
+		"intent": "environment_sanitation.catch_basin.request",
+		"text": "How do I get a catch basin?"
+	},
+	{
+		"text": "How do I request a catch basin",
+		"intent": "environment_sanitation.catch_basin.request"
+	},
+	{
+		"text": "adopt a catch basin",
+		"intent": "environment_sanitation.catch_basin.request"
+	},
+	{
+		"intent": "environment_sanitation.collection_missed",
+		"text": "What number should I call to report that my trash / recycling / yard waste was not picked up?"
+	},
+	{
+		"text": "Can I compost?",
+		"intent": "environment_sanitation.compost"
+	},
+	{
+		"text": "What do I do with compost?",
+		"intent": "environment_sanitation.compost"
+	},
+	{
+		"text": "Is composting allowed?",
+		"intent": "environment_sanitation.compost"
+	},
+	{
+		"text": "Does the city have compost bins?",
+		"intent": "environment_sanitation.compost.bins"
+	},
+	{
+		"text": "When do you collect compost?",
+		"intent": "environment_sanitation.compost.schedule"
+	},
+	{
+		"text": "I need to throw stuff out",
+		"intent": "environment_sanitation.disposal",
+		"meta": {
+			"vague": true
+		}
+	},
+	{
+		"text": "tossing stuff out",
+		"intent": "environment_sanitation.disposal",
+		"meta": {
+			"vague": true
+		}
+	},
+	{
+		"text": "How do I dispose of junk, old appliances, or scrap metal?",
+		"intent": "environment_sanitation.disposal",
+		"meta": {
+			"vague": true
+		}
+	},
+	{
+		"text": "How do I throw out my appliances?",
+		"intent": "environment_sanitation.disposal.appliance",
+		"entities": [
+			{
+				"start": 9,
+				"end": 18,
+				"value": "environment_sanitation",
+				"entity": "category_keywords"
+			}
+		]
+	},
+	{
+		"text": "I want to get rid of appliances",
+		"intent": "environment_sanitation.disposal.appliance"
+	},
+	{
+		"text": "I want to thow out an air conditioner",
+		"intent": "environment_sanitation.disposal.appliance"
+	},
+	{
+		"text": "Where do I Recycle Appliances?",
+		"intent": "environment_sanitation.disposal.appliance"
+	},
+	{
+		"text": "How do I get rid of an air conditioner?",
+		"intent": "environment_sanitation.disposal.appliance"
+	},
+	{
+		"text": "How do I dispose of appliances?",
+		"intent": "environment_sanitation.disposal.appliance",
+		"entities": [
+			{
+				"start": 9,
+				"end": 16,
+				"value": "environment_sanitation",
+				"entity": "category_keywords"
+			}
+		]
+	},
+	{
+		"text": "What do I need to do about throwing out batteries",
+		"intent": "environment_sanitation.disposal.battery"
+	},
+	{
+		"text": "How do I dispose of batteries?",
+		"intent": "environment_sanitation.disposal.battery"
+	},
+	{
+		"text": "What are items acceptable for Bulk pickup?",
+		"intent": "environment_sanitation.disposal.bulk_pickup.guide"
+	},
+	{
+		"text": "I need bulk pickup",
+		"intent": "environment_sanitation.disposal.bulk_pickup.request"
+	},
+	{
+		"text": "I need bulk pickup",
+		"intent": "environment_sanitation.disposal.bulk_pickup.request"
+	},
+	{
+		"text": "How do I get bulk pickup?",
+		"intent": "environment_sanitation.disposal.bulk_pickup.request"
+	},
+	{
+		"text": "How do I get bulky waste items collected?",
+		"intent": "environment_sanitation.disposal.bulk_pickup.request"
+	},
+	{
+		"text": "How can I request bulk item pickup?",
+		"intent": "environment_sanitation.disposal.bulk_pickup.request"
+	},
+	{
+		"text": "How do I get rid of a carpet?",
+		"intent": "environment_sanitation.disposal.carpet"
+	},
+	{
+		"text": "How do I dispose of a carpet?",
+		"intent": "environment_sanitation.disposal.carpet"
+	},
+	{
+		"text": "I need to throw out my carpet?",
+		"intent": "environment_sanitation.disposal.carpet"
+	},
+	{
+		"text": "I have and old 9 x12 carpet.  Can I just put it out with my weekly trash?",
+		"intent": "environment_sanitation.disposal.carpet"
+	},
+	{
+		"text": "How do I throw out a Christmas Tree?",
+		"intent": "environment_sanitation.disposal.christmas_tree"
+	},
+	{
+		"text": "Who do I contact to dispose of my Christmas Tree?",
+		"intent": "environment_sanitation.disposal.christmas_tree"
+	},
+	{
+		"text": "Will the township pick up a couch (seats 3) as part of garbage collection?",
+		"intent": "environment_sanitation.disposal.couch"
+	},
+	{
+		"text": "Can I put a couch on the sidewalk for garbage collection?",
+		"intent": "environment_sanitation.disposal.couch"
+	},
+	{
+		"text": "When is New Haven's electronic recycling? Not posted on the NH website and I can';'t get a hold of anyone in public works.",
+		"intent": "environment_sanitation.disposal.electronics"
+	},
+	{
+		"text": "Where can I dispose of electronics?",
+		"intent": "environment_sanitation.disposal.electronics"
+	},
+	{
+		"text": "I need to get rid of my sofa?",
+		"intent": "environment_sanitation.disposal.furniture"
+	},
+	{
+		"text": "I want to throw out my couch",
+		"intent": "environment_sanitation.disposal.furniture"
+	},
+	{
+		"text": "How do I throw out my futon?",
+		"intent": "environment_sanitation.disposal.furniture"
+	},
+	{
+		"text": "Where can I safely dispose of household hazardous waste?",
+		"intent": "environment_sanitation.disposal.hazardous"
+	},
+	{
+		"text": "How do I dispose of a lawn mower?",
+		"intent": "environment_sanitation.disposal.lawn_mower"
+	},
+	{
+		"text": "What do I do about leaves?",
+		"intent": "environment_sanitation.disposal.leaf"
+	},
+	{
+		"text": "Do I brush leaves to the curb?",
+		"intent": "environment_sanitation.disposal.leaf"
+	},
+	{
+		"text": "How do I get rid of my leaves?",
+		"intent": "environment_sanitation.disposal.leaf"
+	},
+	{
+		"text": "Do I need to bag my leaves?",
+		"intent": "environment_sanitation.disposal.leaf.guide"
+	},
+	{
+		"text": "Where can I get leaf bags?",
+		"intent": "environment_sanitation.disposal.leaf.guide"
+	},
+	{
+		"text": "Can I put yard waste curbside to be picked up?",
+		"intent": "environment_sanitation.disposal.leaf.guide"
+	},
+	{
+		"text": "How should leaves be handled?",
+		"intent": "environment_sanitation.disposal.leaf.guide"
+	},
+	{
+		"text": "How do I dispose of my mattress?",
+		"intent": "environment_sanitation.disposal.mattress"
+	},
+	{
+		"text": "I'm trying to get rid of a big metal item?",
+		"intent": "environment_sanitation.disposal.metal",
+		"entities": [
+			{
+				"start": 14,
+				"end": 24,
+				"value": "environment_sanitation",
+				"entity": "category_keywords"
+			}
+		]
+	},
+	{
+		"text": "How do I throw out a large metal item?",
+		"intent": "environment_sanitation.disposal.metal"
+	},
+	{
+		"text": "How do I throw out paint?",
+		"intent": "environment_sanitation.disposal.paint"
+	},
+	{
+		"text": "Where do I throw out paint?",
+		"intent": "environment_sanitation.disposal.paint"
+	},
+	{
+		"text": "How do I throw out a piano?",
+		"intent": "environment_sanitation.disposal.piano"
+	},
+	{
+		"text": "How do I get rid of a piano?",
+		"intent": "environment_sanitation.disposal.piano"
+	},
+	{
+		"text": "Where do I bring syringes?",
+		"intent": "environment_sanitation.disposal.syringes"
+	},
+	{
+		"text": "What should I do with used syringes?",
+		"intent": "environment_sanitation.disposal.syringes"
+	},
+	{
+		"text": "Where do I throw out used syringes??",
+		"intent": "environment_sanitation.disposal.syringes"
+	},
+	{
+		"text": "Where do I dispose used syringes?",
+		"intent": "environment_sanitation.disposal.syringes"
+	},
+	{
+		"text": "i need to get rid of syringes",
+		"intent": "environment_sanitation.disposal.syringes"
+	},
+	{
+		"intent": "environment_sanitation.dumping",
+		"text": "There is an RV dumping at Malipardis park"
+	},
+	{
+		"intent": "environment_sanitation.dumping",
+		"text": "Someone is dumping trash behind our house"
+	},
+	{
+		"intent": "environment_sanitation.litter",
+		"text": "The sidewalk outside my house is covered in trash"
+	},
+	{
+		"intent": "environment_sanitation.litter",
+		"text": "Who do I report abandoned trash to?"
+	},
+	{
+		"text": "Where do I find a mattress disposal bag?",
+		"intent": "environment_sanitation.mattress_disposal_bag"
+	},
+	{
+		"text": "Can I bring alcohol to the park?",
+		"intent": "environment_sanitation.park.alcohol",
+		"entities": [
+			{
+				"start": 27,
+				"end": 31,
+				"value": "environment_sanitation",
+				"entity": "category_keywords"
+			}
+		]
+	},
+	{
+		"text": "Can I barbecue in the park?",
+		"intent": "environment_sanitation.park.barbecue"
+	},
+	{
+		"text": "Are grills allowed in the park?",
+		"intent": "environment_sanitation.park.barbecue"
+	},
+	{
+		"text": "Can I bring my dog to the park?",
+		"intent": "environment_sanitation.park.pet"
+	},
+	{
+		"text": "Can dogs be at the park?",
+		"intent": "environment_sanitation.park.pet"
+	},
+	{
+		"text": "Is it ok to bring a dog to the park?",
+		"intent": "environment_sanitation.park.pet"
+	},
+	{
+		"text": "Am I allowed to bring a dog to a park?",
+		"intent": "environment_sanitation.park.pet"
+	},
+	{
+		"intent": "environment_sanitation.park.reservation",
+		"text": "Can I reserve a park or picnic area?"
+	},
+	{
+		"intent": "environment_sanitation.park.reservation",
+		"text": "How do I reserve a section at the park for a party?"
+	},
+	{
+		"intent": "environment_sanitation.park.reservation",
+		"text": "How do I reserve a park pavilion?"
+	},
+	{
+		"text": "Can I smoke in the park?",
+		"intent": "environment_sanitation.park.smoking"
+	},
+	{
+		"text": "recycle?",
+		"intent": "environment_sanitation.recycling",
+		"meta": {
+			"vague": true
+		}
+	},
+	{
+		"text": "Do I need special bins for recycling?",
+		"intent": "environment_sanitation.recycling.bins",
+		"entities": [
+			{
+				"start": 18,
+				"end": 22,
+				"value": "environment_sanitation",
+				"entity": "category_keywords"
+			}
+		]
+	},
+	{
+		"intent": "environment_sanitation.recycling.collection_missed",
+		"text": "My recycling didnt get picked up this morning"
+	},
+	{
+		"intent": "environment_sanitation.recycling.collection_missed",
+		"text": "Where do I report a missed recycling and/or refuse pickup?"
+	},
+	{
+		"text": "Can I recycle plastic #5 in Jersey City?",
+		"intent": "environment_sanitation.recycling.guide"
+	},
+	{
+		"text": "Can recycling be mixed?",
+		"intent": "environment_sanitation.recycling.guide",
+		"entities": [
+			{
+				"start": 4,
+				"end": 13,
+				"value": "environment_sanitation",
+				"entity": "category_keywords"
+			}
+		]
+	},
+	{
+		"text": "What do I recycle in Jersey city?",
+		"intent": "environment_sanitation.recycling.guide"
+	},
+	{
+		"text": "Does recycling need to be separated?",
+		"intent": "environment_sanitation.recycling.guide"
+	},
+	{
+		"text": "What plastics are recycable?",
+		"intent": "environment_sanitation.recycling.guide"
+	},
+	{
+		"text": "Where can I find a printed Recycling Guide?",
+		"intent": "environment_sanitation.recycling.guide"
+	},
+	{
+		"text": "Where do I dispose of my recycling?",
+		"intent": "environment_sanitation.recycling.location"
+	},
+	{
+		"text": "Where do I bring recycling?",
+		"intent": "environment_sanitation.recycling.location"
+	},
+	{
+		"text": "What is the recycling schedule?",
+		"intent": "environment_sanitation.recycling.schedule"
+	},
+	{
+		"text": "Which day is recycling?",
+		"intent": "environment_sanitation.recycling.schedule"
+	},
+	{
+		"text": "Recycling Schedule",
+		"intent": "environment_sanitation.recycling.schedule"
+	},
+	{
+		"text": "When is recycling next month?",
+		"intent": "environment_sanitation.recycling.schedule"
+	},
+	{
+		"text": "Is there recycling next week?",
+		"intent": "environment_sanitation.recycling.schedule"
+	},
+	{
+		"text": "Is recycling next Wednesday?",
+		"intent": "environment_sanitation.recycling.schedule"
+	},
+	{
+		"text": "When is recycling?",
+		"intent": "environment_sanitation.recycling.schedule"
+	},
+	{
+		"text": "my recycling schedule",
+		"intent": "environment_sanitation.recycling.schedule"
+	},
+	{
+		"text": "What time should my recycling container be placed by the curb?",
+		"intent": "environment_sanitation.recycling.schedule"
+	},
+	{
+		"text": "Does recylcing and trash pickup happen on holidays?",
+		"intent": "environment_sanitation.schedule.exceptions"
+	},
+	{
+		"text": "Where can I find a copy of the garbage and trash holiday schedule?",
+		"intent": "environment_sanitation.schedule.exceptions"
+	},
+	{
+		"intent": "environment_sanitation.trails",
+		"text": "How can I find maps of hiking trails in the area?"
+	},
+	{
+		"intent": "environment_sanitation.trails",
+		"text": "What trails are available to hike and bike on?"
+	},
+	{
+		"text": "i have garbage",
+		"intent": "environment_sanitation.trash",
+		"meta": {
+			"vague": true
+		}
+	},
+	{
+		"intent": "environment_sanitation.trash.animal",
+		"text": "Rodents keep eating my garbage"
+	},
+	{
+		"intent": "environment_sanitation.trash.animal",
+		"text": "Animals keep eating my garbage"
+	},
+	{
+		"intent": "environment_sanitation.trash.animal",
+		"text": "How do I stop animals from eating my garbage?"
+	},
+	{
+		"intent": "environment_sanitation.trash.collection_missed",
+		"text": "My garbage wasnt picked up"
+	},
+	{
+		"text": "Is there a place where I can drop off trash?",
+		"intent": "environment_sanitation.trash.location"
+	},
+	{
+		"text": "Where do I dispose of my garbage?",
+		"intent": "environment_sanitation.trash.location"
+	},
+	{
+		"text": "Is there trash pickup next week?",
+		"intent": "environment_sanitation.trash.schedule"
+	},
+	{
+		"text": "What is my solid waste collection day?",
+		"intent": "environment_sanitation.trash.schedule"
+	},
+	{
+		"text": "Where can I find the trash pick-up schedule for New Haven?",
+		"intent": "environment_sanitation.trash.schedule"
+	},
+	{
+		"text": "Is garbage picked up tomorrow?",
+		"intent": "environment_sanitation.trash.schedule",
+		"entities": [
+			{
+				"start": 3,
+				"end": 10,
+				"value": "environment_sanitation",
+				"entity": "category_keywords"
+			}
+		]
+	},
+	{
+		"text": "What day is trash pickup?",
+		"intent": "environment_sanitation.trash.schedule",
+		"entities": [
+			{
+				"start": 12,
+				"end": 17,
+				"value": "environment_sanitation",
+				"entity": "category_keywords"
+			}
+		]
+	},
+	{
+		"text": "Is there garbage pickup next week?",
+		"intent": "environment_sanitation.trash.schedule"
+	},
+	{
+		"text": "Is trash pickup next Tuesday?",
+		"intent": "environment_sanitation.trash.schedule"
+	},
+	{
+		"text": "Garbage Schedule",
+		"intent": "environment_sanitation.trash.schedule"
+	},
+	{
+		"text": "What day is trash? ",
+		"intent": "environment_sanitation.trash.schedule"
+	},
+	{
+		"text": "my garbage schedule",
+		"intent": "environment_sanitation.trash.schedule"
+	},
+	{
+		"text": "What is the trash schedule?",
+		"intent": "environment_sanitation.trash.schedule"
+	},
+	{
+		"text": "When is trash pickup?",
+		"intent": "environment_sanitation.trash.schedule"
+	},
+	{
+		"text": "There is a tree down, how do I report it?",
+		"intent": "environment_sanitation.tree.down"
+	},
+	{
+		"text": "There's a tree down outside my house",
+		"intent": "environment_sanitation.tree.down"
+	},
+	{
+		"text": "A tree is blocking the street",
+		"intent": "environment_sanitation.tree.down"
+	},
+	{
+		"text": "A tree is down",
+		"intent": "environment_sanitation.tree.down"
+	},
+	{
+		"intent": "environment_sanitation.tree.inspection",
+		"text": "Who do I report a dead city tree to?"
+	},
+	{
+		"intent": "environment_sanitation.tree.inspection",
+		"text": "The tree outside my house looks dead"
+	},
+	{
+		"text": "Is anything required to plant a tree?",
+		"intent": "environment_sanitation.tree.planting"
+	},
+	{
+		"text": "Can I just plant a tree?",
+		"intent": "environment_sanitation.tree.planting"
+	},
+	{
+		"text": "I want a tree planted. Anything I need to do?",
+		"intent": "environment_sanitation.tree.planting"
+	},
+	{
+		"text": "Do the landscapers need permission to plant trees?",
+		"intent": "environment_sanitation.tree.planting"
+	},
+	{
+		"intent": "environment_sanitation.tree.planting",
+		"text": "Can we get a new tree on the corner of George Street and College Ave?"
+	},
+	{
+		"intent": "environment_sanitation.tree.pruning",
+		"text": "Will you trim or remove my tree?"
+	},
+	{
+		"intent": "environment_sanitation.tree.pruning",
+		"text": "A tree outside my house is touching an eletrical wire"
+	},
+	{
+		"intent": "environment_sanitation.tree.pruning",
+		"text": "There is a limb broken and hanging over the street/sidewalk. Will you take care of it?"
+	},
+	{
+		"intent": "environment_sanitation.tree.pruning",
+		"text": "I think a tree needs pruning"
+	},
+	{
+		"intent": "environment_sanitation.tree.pruning",
+		"text": "The tree in front of my house is too tall. I would like the tree topped. Will the City do that?"
+	},
+	{
+		"intent": "environment_sanitation.tree.removal",
+		"text": "Can you remove a tree on my street?"
+	},
+	{
+		"intent": "environment_sanitation.water.flood",
+		"text": "The block is still underwater"
+	},
+	{
+		"intent": "environment_sanitation.water.flood",
+		"text": "My street is flooding"
+	},
+	{
+		"intent": "environment_sanitation.water.quality",
+		"text": "How do I report a waterway that is an unusual color?"
+	},
+	{
+		"intent": "environment_sanitation.water.quality",
+		"text": "It looks like theres oil on the water"
+	},
+	{
+		"intent": "environment_sanitation.water.quality",
+		"text": "The river looks dirty"
+	}
 ]

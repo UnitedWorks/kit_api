@@ -355,13 +355,9 @@ SO['public_safety_law.hate_crime'] = {
   tags: ['public_safety_law', 'hate_crime'],
   params: basicReport,
 };
-// SO['public_safety_law.missing_person'] = {
-//   tags: ['public_safety_law', 'harassment'],
-//   params: followUpReport,
-// };
-SO['public_safety_law.panhandling'] = {
-  tags: ['public_safety_law', 'panhandling'],
-  params: locationReport,
+SO['public_safety_law.missing_person'] = {
+  tags: ['public_safety_law', 'missing_person'],
+  params: followUpReport,
 };
 SO['public_safety_law.activity'] = {
   tags: ['public_safety_law', 'activity'],
@@ -559,7 +555,10 @@ SO['transportation_streets_sidewalks.construction.noise'] = {
 };
 
 // SO['transportation_streets_sidewalks.bicycle.racks'] = {};
-// SO['transportation_streets_sidewalks.bicycle.lanes'] = {};
+SO['transportation_streets_sidewalks.bicycle.lanes'] = {
+  tags: ['transportation_streets_sidewalks', 'bicycle', 'lanes'],
+  params: basicReport,
+};
 // SO['transportation_streets_sidewalks.bicycle.sharing'] = {};
 SO['transportation_streets_sidewalks.bicycle.abandoned'] = {
   tags: ['transportation_streets_sidewalks', 'bicycle', 'abandoned'],

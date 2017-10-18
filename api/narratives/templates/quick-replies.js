@@ -36,8 +36,8 @@ export const exit = { content_type: 'text', title: 'Nevermind', payload: 'Neverm
 export const whatCanIAsk = { content_type: 'text', title: 'F.A.Q. List', payload: 'What can I Ask?' };
 
 export const evalHelpfulAnswer = [
-  { content_type: 'text', title: 'Helpful', payload: 'ANSWER_HELPFUL' },
-  { content_type: 'text', title: 'Not Helpful', payload: 'ANSWER_NOT_HELPFUL' },
+  { content_type: 'text', title: '👍', payload: 'ANSWER_HELPFUL' },
+  { content_type: 'text', title: '👎', payload: 'ANSWER_NOT_HELPFUL' },
 ];
 
 export const basicRequestQuickReplies = [
