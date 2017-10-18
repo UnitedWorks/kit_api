@@ -258,6 +258,10 @@ SO['property_buildings_homes.water.pressure'] = {
   tags: ['property_buildings_homes', 'water', 'pressure'],
   params: followUpReport,
 };
+SO['property_buildings_homes.water.drainage'] = {
+  tags: ['property_buildings_homes', 'water', 'drainage'],
+  params: followUpReport,
+};
 SO['property_buildings_homes.water.quality'] = {
   tags: ['property_buildings_homes', 'water', 'quality'],
   params: followUpReport,

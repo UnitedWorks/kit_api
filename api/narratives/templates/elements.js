@@ -19,23 +19,6 @@ export const genericSanitation = {
   }],
 };
 
-export const genericDocumentation = {
-  title: 'Local Gov Services',
-  subtitle: 'Common questions about constituent and business needs',
-  image_url: ILLUSTRATION_URLS.whatCanIAsk,
-  buttons: [{
-    type: 'postback',
-    title: 'Get Birth Certificate',
-    payload: 'Get Birth Certificate',
-  }, {
-    type: 'postback',
-    title: 'Get Pet License',
-    payload: 'Get Pet License',
-  }, {
-    type: 'element_share',
-  }],
-};
-
 export const genericVotingAndElections = {
   title: 'Voting and Elections',
   subtitle: 'Ask about elections, voter ID laws, registration deadlines, and anything else to help you elect representatives!',
@@ -48,40 +31,6 @@ export const genericVotingAndElections = {
     type: 'postback',
     title: 'Register To Vote',
     payload: 'Register To Vote',
-  }, {
-    type: 'element_share',
-  }],
-};
-
-export const genericBenefits = {
-  title: 'Service Providers and Benefits',
-  subtitle: 'Find out what state and federal benefits programs may be available for you and your family.',
-  image_url: ILLUSTRATION_URLS.navigating,
-  buttons: [{
-    type: 'postback',
-    title: 'Report Wage Theft',
-    payload: 'Report Wage Theft',
-  }, {
-    type: 'postback',
-    title: 'Benefits Screener',
-    payload: 'Benefits Screener',
-  }, {
-    type: 'element_share',
-  }],
-};
-
-export const genericAssistance = {
-  title: 'Immediate Help',
-  subtitle: 'Find immediate or short-term assistance if you are facing tough times.',
-  image_url: ILLUSTRATION_URLS.help,
-  buttons: [{
-    type: 'postback',
-    title: 'Find Shelter',
-    payload: 'Find Shelter',
-  }, {
-    type: 'postback',
-    title: 'Food Assistance',
-    payload: 'Food Assistance',
   }, {
     type: 'element_share',
   }],
@@ -104,24 +53,6 @@ export const genericRenter = {
   }],
 };
 
-// Big New Residents List
-export const genericNewResident = {
-  title: 'Know Your Community!',
-  subtitle: 'Learn what is going on around you and how to interact with local gov!',
-  image_url: ILLUSTRATION_URLS.neighborhood,
-  buttons: [{
-    type: 'postback',
-    title: 'Common Questions',
-    payload: 'FREQ_QUESTION_LIST',
-  }, {
-    type: 'postback',
-    title: 'Common Services',
-    payload: 'FREQ_SERVICE_LIST',
-  }, {
-    type: 'element_share',
-  }],
-};
-
 // Biker
 export const genericCommuter = {
   title: 'Transportation Feedback',
@@ -129,11 +60,11 @@ export const genericCommuter = {
   image_url: ILLUSTRATION_URLS.transit,
   buttons: [{
     type: 'postback',
-    title: 'Driveway blocked',
+    title: 'Driveway Blocked',
     payload: 'Driveway blocked',
   }, {
     type: 'postback',
-    title: 'Request bikelane',
+    title: 'Request Bikelane',
     payload: 'Request bikelane',
   }, {
     type: 'element_share',
@@ -191,52 +122,6 @@ export const genericAdvert = {
   }],
 };
 
-// Maybe getting to know the town can be more than an answer. Could be events, tourism, local town meetings, etc.
-// export const genericNewResidentGetAquaintedList = [];
-
-export const genericNewResidentFAQList = [{
-  title: 'Trash + Recycling',
-  buttons: [{
-    type: 'postback',
-    title: 'Trash Schedule',
-    payload: 'Trash Schedule',
-  }, {
-    type: 'postback',
-    title: 'Recycling Schedule',
-    payload: 'Recycling Schedule',
-  }, {
-    type: 'postback',
-    title: 'Bulk Pickup Request',
-    payload: 'Bulk Pickup Request',
-  }],
-}, {
-  title: 'Getting Documents',
-  buttons: [{
-    type: 'postback',
-    title: 'Request a Service',
-    payload: 'Request A Service',
-  }, {
-    type: 'postback',
-    title: 'See My Requests',
-    payload: 'GET_REQUESTS',
-  }],
-}, {
-  title: 'Immediate Assistance',
-  buttons: [{
-    type: 'postback',
-    title: 'Find Nearby Shelter',
-    payload: 'Find Nearby Shelter',
-  }, {
-    type: 'postback',
-    title: 'Find Nearby Clinic',
-    payload: 'Find Nearby Clinic',
-  }, {
-    type: 'postback',
-    title: 'Find Nearby Washroom',
-    payload: 'Find Nearby Washroom',
-  }],
-}];
-
 // Big Business Owner Tiles
 export const genericBusiness = {
   title: 'Business & Employment',
@@ -254,70 +139,6 @@ export const genericBusiness = {
     type: 'element_share',
   }],
 };
-
-export const genericBusinessQuestions = [{
-  title: 'Planning and Zoning',
-  buttons: [{
-    type: 'postback',
-    title: 'Development Services',
-    payload: 'Development Services',
-  }, {
-    type: 'postback',
-    title: 'Expedited Processing',
-    payload: 'Expedited Processing',
-  }, {
-    type: 'postback',
-    title: 'Historic Preservation',
-    payload: 'Historic Preservation',
-  }],
-}, {
-  title: 'Local Government Contracts',
-  buttons: [{
-    type: 'postback',
-    title: 'Where are contracts?',
-    payload: 'Where Are Contracts?',
-  }, {
-    type: 'postback',
-    title: 'Become a Vendor',
-    payload: 'Become A Vendor',
-  }, {
-    type: 'postback',
-    title: 'Get Notifications',
-    payload: 'Get Notifications',
-  }],
-}];
-
-export const genericBusinessRequirements = [{
-  title: 'Permits',
-  buttons: [{
-    type: 'postback',
-    title: 'What needs a permit?',
-    payload: 'What Needs A Permit?',
-  }, {
-    type: 'postback',
-    title: 'Filming Permits',
-    payload: 'Filming Permits',
-  }, {
-    type: 'postback',
-    title: 'Food Service Permits',
-    payload: 'Food Service Permits',
-  }],
-}, {
-  title: 'Inspections',
-  buttons: [{
-    type: 'postback',
-    title: 'Schedule Fire Inspection',
-    payload: 'Schedule Fire Inspection',
-  }, {
-    type: 'postback',
-    title: 'Schedule Safety Inspection',
-    payload: 'Schedule Safety Inspection',
-  }, {
-    type: 'postback',
-    title: 'Schedule Health Inspection',
-    payload: 'Schedule Health Inspection',
-  }],
-}];
 
 export function genericContact(contact) {
   const element = {
@@ -344,6 +165,7 @@ export function genericContact(contact) {
       type: 'web_url',
       title: contact.url,
       url: contact.url,
+      webview_height_ratio: 'tall',
     });
   }
   if (buttons.length < 3) buttons.push({ type: 'element_share' });
@@ -376,6 +198,7 @@ export function genericFacility(facility) {
       type: 'web_url',
       title: facility.url,
       url: facility.url,
+      webview_height_ratio: 'tall',
     });
   }
   if (facility.email && buttons.length < 3) {
@@ -415,6 +238,7 @@ export function genericService(service) {
       type: 'web_url',
       title: service.url,
       url: service.url,
+      webview_height_ratio: 'tall',
     });
   }
   if (buttons.length < 3) buttons.push({ type: 'element_share' });
@@ -448,6 +272,7 @@ export function genericEvent(event) {
       type: 'web_url',
       title: event.url,
       url: event.url,
+      webview_height_ratio: 'tall',
     });
   }
   if (buttons.length < 3) buttons.push({ type: 'element_share' });
