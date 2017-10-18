@@ -184,10 +184,7 @@ export default {
           type: 'template',
           templateType: 'generic',
           elements: fallbackData.contacts.map(contact => elementTemplates.genericContact(contact)),
-        });
-        if (fallbackData.contacts.length > 0) {
-          this.messagingClient.addToQuene('Was this helpful?', [...replyTemplates.evalHelpfulAnswer]);
-        }
+        }, replyTemplates.evalHelpfulAnswer);
       }
       return this.messagingClient.runQuene().then(() => 'start');
     }).catch((err) => {
