@@ -6,19 +6,19 @@ export default class StateMachine {
     this.states = states;
     this.current = current || 'init';
     this.previous = previous || null;
-    this.datastore = datastore || {};
+    this.data_store = datastore || {};
   }
 
   set(key, value) {
-    this.datastore[key] = value;
+    this.data_store[key] = value;
   }
 
   get(key) {
-    return this.datastore[key];
+    return this.data_store[key];
   }
 
   delete(key) {
-    delete this.datastore[key];
+    delete this.data_store[key];
   }
 
   input(event, aux) {

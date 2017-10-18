@@ -108,8 +108,8 @@ export default {
       return this.getBaseState();
     }
     // I hate this random string joining so much
-    const formedString = `${this.snapshot.nlp.entities[TAGS.SEARCH_QUERY] ? this.snapshot.nlp.entities[TAGS.SEARCH_QUERY].map(l => l.value).join(' ') : ''}${this.snapshot.nlp.entities[TAGS.LOCATION] ? this.snapshot.nlp.entities[TAGS.LOCATION][0].value : ''}`;
-    const geoData = await geocoder(formedString).then(gd => gd[0]);
+    const formedString = `${this.snapshot.nlp.entities[TAGS.LOCATION] ? this.snapshot.nlp.entities[TAGS.LOCATION][0].value : ''}`;
+    const geoData = await geocoder(formedString, [], this.get('organization').location.address).then(gd => gd[0]);
     if (geoData) {
       this.set('attributes', {
         ...this.get('attributes'),

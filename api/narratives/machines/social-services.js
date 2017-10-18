@@ -8,7 +8,7 @@ export default {
   waiting_shelter_search: {
     enter() {
       if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'socialServices.waiting_shelter_search');
-      return hasIntegration(this.datastore.organization, INTEGRATIONS.ASK_DARCEL)
+      return hasIntegration(this.get('organization'), INTEGRATIONS.ASK_DARCEL)
         .then((integrated) => {
           if (integrated) {
             this.messagingClient.send('What address are you currently at? I want to make sure I give you locations close by.');
@@ -48,7 +48,7 @@ export default {
   waiting_food_search: {
     enter() {
       if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'socialServices.waiting_food_search');
-      return hasIntegration(this.datastore.organization, INTEGRATIONS.ASK_DARCEL)
+      return hasIntegration(this.get('organization'), INTEGRATIONS.ASK_DARCEL)
         .then((integrated) => {
           if (integrated) {
             this.messagingClient.send('What address are you currently at? I want to make sure I give you locations close by.');
@@ -87,7 +87,7 @@ export default {
   waiting_hygiene_search: {
     enter() {
       if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'socialServices.waiting_hygiene_search');
-      return hasIntegration(this.datastore.organization, INTEGRATIONS.ASK_DARCEL)
+      return hasIntegration(this.get('organization'), INTEGRATIONS.ASK_DARCEL)
         .then((integrated) => {
           if (integrated) {
             this.messagingClient.send('What address are you currently at? I want to make sure I give you locations close by.');
