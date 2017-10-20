@@ -81,7 +81,7 @@ async function todaysWeather() {
   return weatherDeck;
 }
 
-export const watchers = () => {
+export const scheduledJobs = () => {
   // Email Representatives of Alerts
   schedule.scheduleJob('0 30 12 * * *', () => {
     const alertDeck = twitterWatchers();
@@ -133,7 +133,7 @@ export const watchers = () => {
   });
 
   // Constituent Notification: Evening - Services
-  schedule.scheduleJob('0 30 20 * * *', () => {
+  schedule.scheduleJob('0 30 19 * * *', () => {
     NarrativeSession.fetchAll().then((s) => {
       // Get sanitation answers for each org
       const sessions = s.toJSON();
