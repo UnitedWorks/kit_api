@@ -109,7 +109,7 @@ export const watchers = () => {
             if (!session.data_store.notifications) {
               return client.send(
                 'Would you like reminders about trash/recycling collection, big city events, and the weather?',
-                [QUICK_REPLIES.allNotificationsOn]);
+                [QUICK_REPLIES.allNotificationsOn, QUICK_REPLIES.allNotificationsOff]);
             }
             // Weather
             if (session.data_store.notifications.weather && weather[session.organization_id]) {
