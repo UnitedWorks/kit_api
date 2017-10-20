@@ -30,7 +30,7 @@ export default {
       let firstName;
       this.messagingClient.addToQuene(i18n('intro_hello', { firstName }));
       this.messagingClient.addToQuene(intoTemplates);
-      this.messagingClient.addToQuene(i18n('intro_information', { organizationName: this.get('organization').name }));
+      this.messagingClient.addToQuene(i18n('intro_information', { organizationName: this.get('organization').name }), [replyTemplates.allNotificationsOn]);
       return this.messagingClient.runQuene().then(() => {
         if (!this.get('organization')) return this.stateRedirect('location', 'smallTalk.start');
         return 'start';
@@ -41,7 +41,7 @@ export default {
   what_can_i_do: {
     enter() {
       this.messagingClient.addToQuene(intoTemplates);
-      this.messagingClient.addToQuene('Ask me anything about local government or your community! :)');
+      this.messagingClient.addToQuene('I can answer questions about your local government or your community! If you like, I can send you reminders about trash/recycling pickup, events, and the weather!', [replyTemplates.allNotificationsOn]);
       return this.messagingClient.runQuene().then(() => 'start');
     },
   },
