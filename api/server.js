@@ -78,11 +78,10 @@ app.use(baseErrorHandler);
 // Start Server
 app.listen(port, () => {
   logger.info(`Server listening at port: ${port}`);
+  // Start Scheduled Jobs
+  try {
+    scheduledJobs();
+  } catch (e) {
+    logger.error(e);
+  }
 });
-
-// Crons
-try {
-  scheduledJobs();
-} catch (e) {
-  logger.error(e);
-}

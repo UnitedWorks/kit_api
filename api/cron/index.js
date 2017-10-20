@@ -81,7 +81,7 @@ async function todaysWeather() {
   return weatherDeck;
 }
 
-export const scheduledJobs = () => {
+export function scheduledJobs() {
   // Email Representatives of Alerts
   schedule.scheduleJob('0 30 12 * * *', () => {
     const alertDeck = twitterWatchers();
@@ -201,4 +201,4 @@ export const scheduledJobs = () => {
       });
     });
   });
-};
+}
