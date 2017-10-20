@@ -98,107 +98,107 @@ export const scheduledJobs = () => {
 
   // Constituent Notification: Morning - Weather, Events, Alerts
   schedule.scheduleJob('0 15 13 * * *', () => {
-    // NarrativeSession.fetchAll({ withRelated: ['constituent', 'constituent.facebookEntry', 'constituent.smsEntry'] }).then((s) => {
-    //   todaysWeather().then((weather) => {
-    //     todaysEvents().then((events) => {
-    //       const quickReplies = [];
-    //       // Run Notifciation on Sessions
-    //       s.toJSON().forEach((session) => {
-    //         const client = getPreferredClient(session.constituent);
-    //         if (!client) return;
-    //         if (!session.data_store.notifications) {
-    //           return client.send(
-    //             'Would you like reminders about trash/recycling collection, big city events, and the weather?',
-    //             [QUICK_REPLIES.allNotificationsOn, QUICK_REPLIES.allNotificationsOff]);
-    //         }
-    //         // Weather
-    //         if (session.data_store.notifications.weather && weather[session.organization_id]) {
-    //           quickReplies.push(QUICK_REPLIES.weatherOff);
-    //           client.addToQuene(`Today's weather will have a low of ${weather[session.organization_id].max}° and a high of ${weather[session.organization_id].max}°. ${weather[session.organization_id].weather[0] ? `Looks like we're going to have ${weather[session.organization_id].weather[0].description}s.` : ''}`, quickReplies);
-    //         }
-    //         // Events
-    //         if (session.data_store.notifications.events && events[session.organization_id]
-    //           && events[session.organization_id].length > 0) {
-    //           quickReplies.push(QUICK_REPLIES.eventsOff);
-    //           client.addToQuene('Here is whats happening today!');
-    //           client.addAll(KitClient.genericTemplateFromEntities(
-    //             events[session.organization_id].map(event => ({ type: 'event', payload: event }))),
-    //             quickReplies);
-    //         }
-    //         client.runQuene();
-    //       });
-    //     });
-    //   });
-    // });
+    NarrativeSession.fetchAll({ withRelated: ['constituent', 'constituent.facebookEntry', 'constituent.smsEntry'] }).then((s) => {
+      todaysWeather().then((weather) => {
+        todaysEvents().then((events) => {
+          const quickReplies = [];
+          // Run Notifciation on Sessions
+          s.toJSON().forEach((session) => {
+            const client = getPreferredClient(session.constituent);
+            if (!client) return;
+            if (!session.data_store.notifications) {
+              return client.send(
+                'Would you like reminders about trash/recycling collection, big city events, and the weather?',
+                [QUICK_REPLIES.allNotificationsOn, QUICK_REPLIES.allNotificationsOff]);
+            }
+            // Weather
+            if (session.data_store.notifications.weather && weather[session.organization_id]) {
+              quickReplies.push(QUICK_REPLIES.weatherOff);
+              client.addToQuene(`Today's weather will have a low of ${weather[session.organization_id].max}° and a high of ${weather[session.organization_id].max}°. ${weather[session.organization_id].weather[0] ? `Looks like we're going to have ${weather[session.organization_id].weather[0].description}s.` : ''}`, quickReplies);
+            }
+            // Events
+            if (session.data_store.notifications.events && events[session.organization_id]
+              && events[session.organization_id].length > 0) {
+              quickReplies.push(QUICK_REPLIES.eventsOff);
+              client.addToQuene('Here is whats happening today!');
+              client.addAll(KitClient.genericTemplateFromEntities(
+                events[session.organization_id].map(event => ({ type: 'event', payload: event }))),
+                quickReplies);
+            }
+            client.runQuene();
+          });
+        });
+      });
+    });
   });
 
   // Constituent Notification: Evening - Services
   schedule.scheduleJob('0 30 19 * * *', () => {
-  //   NarrativeSession.fetchAll().then((s) => {
-  //     // Get sanitation answers for each org
-  //     const sessions = s.toJSON();
-  //     Promise.all([...new Set(sessions.map(session => session.organization_id))].map((orgId) => {
-  //       return getAnswers({ organization_id: orgId, label: 'environment_sanitation.recycling.schedule' }, { answerGrouped: true, returnJSON: true }).then((recyclingCluster) => {
-  //         return getAnswers({ organization_id: orgId, label: 'environment_sanitation.trash.schedule' }, { answerGrouped: true, returnJSON: true }).then((trashCluster) => {
-  //           if (trashCluster.answers.length === 0 &&
-  //             recyclingCluster.answers.length === 0) return null;
-  //           const answerCluster = {};
-  //           if (trashCluster.answers.filter(a => a.service)) {
-  //             if (Object.keys(answerCluster).length === 0) answerCluster[orgId] = {};
-  //             answerCluster[orgId].trash = trashCluster.answers
-  //               .filter(a => a.service).map(a => a.service);
-  //           }
-  //           if (recyclingCluster.answers.filter(a => a.service)) {
-  //             if (Object.keys(answerCluster).length === 0) answerCluster[orgId] = {};
-  //             answerCluster[orgId].recycling = recyclingCluster.answers
-  //               .filter(a => a.serivce).map(a => a.service);
-  //           }
-  //           if (Object.keys(answerCluster).length > 0) return answerCluster;
-  //         });
-  //       });
-  //     })).then((answerClusters) => {
-  //       const orgAnswerSet = {};
-  //       answerClusters.filter(c => c).forEach(cluster =>
-  //         (orgAnswerSet[Object.keys(cluster)[0]] = cluster[Object.keys(cluster)[0]]));
-  //       // Run Notifciation on Sessions
-  //       sessions.forEach((session) => {
-  //         // Check if org even has answers
-  //         if (orgAnswerSet.hasOwnProperty(session.organization_id)) {
-  //           if (session.data_store && !session.data_store.notifications) session.data_store.notifications = {};
-  //           const tomorrow = moment().add(1, 'days').utc().format();
-  //           let hasRecycling = false;
-  //           let hasTrash = false;
-  //           if (orgAnswerSet[session.organization_id].recycling && orgAnswerSet[session.organization_id].recycling[0]) {
-  //             hasRecycling = KitClient.entityAvailabilityToText('service', orgAnswerSet[session.organization_id].recycling[0], {
-  //               datetime: [{ grain: 'day', value: tomorrow }],
-  //               constituentAttributes: session.data_store.attributes
-  //             }) != null;
-  //           }
-  //           if (orgAnswerSet[session.organization_id].trash && orgAnswerSet[session.organization_id].trash[0]) {
-  //             hasTrash = KitClient.entityAvailabilityToText('service', orgAnswerSet[session.organization_id].trash[0], {
-  //               datetime: [{ grain: 'day', value: tomorrow }],
-  //               constituentAttributes: session.data_store.attributes
-  //             }) != null;
-  //           }
-  //           // if (!hasRecycling && !hasTrash) return;
-  //           let messageInsert = null;
-  //           if (hasRecycling && !hasTrash) {
-  //             messageInsert = 'recycling';
-  //           } else if (!hasRecycling && hasTrash) {
-  //             messageInsert = 'trash';
-  //           } else if (hasRecycling && hasTrash) {
-  //             messageInsert = 'trash and recycling';
-  //           }
-  //           // If wants notification, check availability for tomorrow, and send
-  //           if (messageInsert && session.data_store.notifications.sanitation_collection === true) {
-  //             const reminderMessage = `Tomorrow is ${messageInsert} collection. Remember to set out after 4pm!`;
-  //             messageConstituent(session.constituent_id, reminderMessage);
-  //           // If we haven't asked yet, request permission
-  //           }
-  //           // Otherwise the person has said they don't want it
-  //         }
-  //       });
-  //     });
-  //   });
-  // });
+    NarrativeSession.fetchAll().then((s) => {
+      // Get sanitation answers for each org
+      const sessions = s.toJSON();
+      Promise.all([...new Set(sessions.map(session => session.organization_id))].map((orgId) => {
+        return getAnswers({ organization_id: orgId, label: 'environment_sanitation.recycling.schedule' }, { answerGrouped: true, returnJSON: true }).then((recyclingCluster) => {
+          return getAnswers({ organization_id: orgId, label: 'environment_sanitation.trash.schedule' }, { answerGrouped: true, returnJSON: true }).then((trashCluster) => {
+            if (trashCluster.answers.length === 0 &&
+              recyclingCluster.answers.length === 0) return null;
+            const answerCluster = {};
+            if (trashCluster.answers.filter(a => a.service)) {
+              if (Object.keys(answerCluster).length === 0) answerCluster[orgId] = {};
+              answerCluster[orgId].trash = trashCluster.answers
+                .filter(a => a.service).map(a => a.service);
+            }
+            if (recyclingCluster.answers.filter(a => a.service)) {
+              if (Object.keys(answerCluster).length === 0) answerCluster[orgId] = {};
+              answerCluster[orgId].recycling = recyclingCluster.answers
+                .filter(a => a.serivce).map(a => a.service);
+            }
+            if (Object.keys(answerCluster).length > 0) return answerCluster;
+          });
+        });
+      })).then((answerClusters) => {
+        const orgAnswerSet = {};
+        answerClusters.filter(c => c).forEach(cluster =>
+          (orgAnswerSet[Object.keys(cluster)[0]] = cluster[Object.keys(cluster)[0]]));
+        // Run Notifciation on Sessions
+        sessions.forEach((session) => {
+          // Check if org even has answers
+          if (orgAnswerSet.hasOwnProperty(session.organization_id)) {
+            if (session.data_store && !session.data_store.notifications) session.data_store.notifications = {};
+            const tomorrow = moment().add(1, 'days').utc().format();
+            let hasRecycling = false;
+            let hasTrash = false;
+            if (orgAnswerSet[session.organization_id].recycling && orgAnswerSet[session.organization_id].recycling[0]) {
+              hasRecycling = KitClient.entityAvailabilityToText('service', orgAnswerSet[session.organization_id].recycling[0], {
+                datetime: [{ grain: 'day', value: tomorrow }],
+                constituentAttributes: session.data_store.attributes
+              }) != null;
+            }
+            if (orgAnswerSet[session.organization_id].trash && orgAnswerSet[session.organization_id].trash[0]) {
+              hasTrash = KitClient.entityAvailabilityToText('service', orgAnswerSet[session.organization_id].trash[0], {
+                datetime: [{ grain: 'day', value: tomorrow }],
+                constituentAttributes: session.data_store.attributes
+              }) != null;
+            }
+            // if (!hasRecycling && !hasTrash) return;
+            let messageInsert = null;
+            if (hasRecycling && !hasTrash) {
+              messageInsert = 'recycling';
+            } else if (!hasRecycling && hasTrash) {
+              messageInsert = 'trash';
+            } else if (hasRecycling && hasTrash) {
+              messageInsert = 'trash and recycling';
+            }
+            // If wants notification, check availability for tomorrow, and send
+            if (messageInsert && session.data_store.notifications.sanitation_collection === true) {
+              const reminderMessage = `Tomorrow is ${messageInsert} collection. Remember to set out after 4pm!`;
+              messageConstituent(session.constituent_id, reminderMessage);
+            // If we haven't asked yet, request permission
+            }
+            // Otherwise the person has said they don't want it
+          }
+        });
+      });
+    });
+  });
 };
