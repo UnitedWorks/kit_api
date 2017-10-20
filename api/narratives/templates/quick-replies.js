@@ -47,6 +47,7 @@ export const basicRequestQuickReplies = [
 ];
 
 const allNotificationsOn = { content_type: 'text', title: 'Reminders On', payload: 'Turn on notifications' };
+const allNotificationsOff = { content_type: 'text', title: 'Reminders Off', payload: 'Turn off notifications' };
 
 export const sanitationNotification = [
   { content_type: 'text', title: '♻ On', payload: 'Turn on sanitation notifications' },

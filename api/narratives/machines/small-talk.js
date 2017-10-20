@@ -209,19 +209,24 @@ export default {
         notifications.sanitation_collection = false;
         notifications.events = false;
         notifications.weather = false;
+        this.messagingClient.send('Reminders are turned off.', [replyTemplates.allNotificationsOn]);
       } else {
         notifications.sanitation_collection = true;
         notifications.events = true;
         notifications.weather = true;
+        this.messagingClient.send('Remders are on!', [replyTemplates.allNotificationsOff]);
       }
     // Otherwise flip specific type
     } else {
       if (notificationType === 'weather') {
         notifications.weather = newState === 'on';
+        this.messagingClient.send(`Weather reminders are ${notifications.weather}`);
       } else if (notificationType === 'sanitation_collection') {
         notifications.sanitation_collection = newState === 'on';
+        this.messagingClient.send(`Sanitation reminders are ${notifications.sanitation_collection}`);
       } else if (notificationType === 'events') {
         notifications.events = newState === 'on';
+        this.messagingClient.send(`Event reminders are ${notifications.events}`);
       }
     }
     this.set('notifications', notifications);
