@@ -46,8 +46,8 @@ export const basicRequestQuickReplies = [
   { content_type: 'text', title: 'Available Benefits', payload: 'Available Benefits' },
 ];
 
-export const allNotificationsOn = { content_type: 'text', title: 'Reminders On', payload: 'Turn on notifications' };
-export const allNotificationsOff = { content_type: 'text', title: 'Reminders Off', payload: 'Turn off notifications' };
+export const allNotificationsOn = { content_type: 'text', title: 'Turn Reminders On', payload: 'Turn on notifications' };
+export const allNotificationsOff = { content_type: 'text', title: 'Turn Reminders Off', payload: 'Turn off notifications' };
 
 export const sanitationNotification = [
   { content_type: 'text', title: '♻ On', payload: 'Turn on sanitation notifications' },

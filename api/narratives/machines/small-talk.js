@@ -41,7 +41,7 @@ export default {
   what_can_i_do: {
     enter() {
       this.messagingClient.addToQuene(intoTemplates);
-      this.messagingClient.addToQuene('I can answer questions about your local government or your community! If you like, I can send you reminders about trash/recycling pickup, events, and the weather!', [replyTemplates.allNotificationsOn]);
+      this.messagingClient.addToQuene('I can answer questions about your local government or your community. I can also reminder you about trash/recycling pickup, events, and the weather!', [replyTemplates.allNotificationsOn]);
       return this.messagingClient.runQuene().then(() => 'start');
     },
   },
