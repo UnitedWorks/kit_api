@@ -105,8 +105,9 @@ export const watchers = () => {
           // Run Notifciation on Sessions
           s.toJSON().forEach((session) => {
             const client = getPreferredClient(session.constituent);
+            if (!client) return;
             if (!session.data_store.notifications) {
-              return client.messagingClient.send(
+              return client.send(
                 'Would you like reminders about trash/recycling collection, big city events, and the weather?',
                 [QUICK_REPLIES.allNotificationsOn]);
             }
