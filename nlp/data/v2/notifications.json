@@ -20,6 +20,26 @@
     ]
   },
   {
+    "text": "turn reminders on",
+    "intent": "notifications",
+    "entities": [
+      {
+        "entity": "wit$on_off",
+        "value" : "on"
+      }
+    ]
+  },
+  {
+    "text": "turn off reminders",
+    "intent": "notifications",
+    "entities": [
+      {
+        "entity": "wit$on_off",
+        "value" : "off"
+      }
+    ]
+  },
+  {
     "text": "Stop all reminders",
     "intent": "notifications",
     "entities": [

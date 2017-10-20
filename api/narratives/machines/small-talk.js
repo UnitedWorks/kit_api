@@ -219,14 +219,14 @@ export default {
     // Otherwise flip specific type
     } else {
       if (notificationType === 'weather') {
-        notifications.weather = newState === 'on';
-        this.messagingClient.send(`Weather reminders are ${notifications.weather}`);
+        notifications.weather = newState ? 'on' : 'off';
+        this.messagingClient.send(`Weather reminders are ${notifications.weather}!`);
       } else if (notificationType === 'sanitation_collection') {
-        notifications.sanitation_collection = newState === 'on';
-        this.messagingClient.send(`Sanitation reminders are ${notifications.sanitation_collection}`);
+        notifications.sanitation_collection = newState ? 'on' : 'off';
+        this.messagingClient.send(`Garbage/recycling collection reminders are ${notifications.sanitation_collection}!`);
       } else if (notificationType === 'events') {
-        notifications.events = newState === 'on';
-        this.messagingClient.send(`Event reminders are ${notifications.events}`);
+        notifications.events = newState ? 'on' : 'off';
+        this.messagingClient.send(`Event reminders are ${notifications.events}!`);
       }
     }
     this.set('notifications', notifications);
