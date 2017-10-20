@@ -26,7 +26,7 @@ export const incrementTimesAsked = (questionId, orgId) => {
     });
 };
 
-export async function getAnswers(params = {}, options = {}) {
+export async function getAnswers(params = {}, options = { returnJSON: true }) {
   const data = await KnowledgeQuestion.where({ label: params.label }).fetch({
     withRelated: [{
       answers: q => q.where('organization_id', params.organization_id).whereNotNull('approved_at'),

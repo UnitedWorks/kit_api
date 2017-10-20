@@ -45,3 +45,25 @@ export const basicRequestQuickReplies = [
   { content_type: 'text', title: 'Upcoming Elections', payload: 'Upcoming Elections' },
   { content_type: 'text', title: 'Available Benefits', payload: 'Available Benefits' },
 ];
+
+const allNotificationsOn = { content_type: 'text', title: 'Reminders On', payload: 'Turn on notifications' };
+
+export const sanitationNotification = [
+  { content_type: 'text', title: '♻ On', payload: 'Turn on sanitation notifications' },
+  { content_type: 'text', title: '♻ Off', payload: 'Turn off sanitation notifications' },
+  allNotificationsOn,
+];
+
+export const weatherOff = { content_type: 'text', title: '❄ Off', payload: 'Turn off weather notifications' };
+export const weatherNotification = [
+  { content_type: 'text', title: '❄ On', payload: 'Turn on weather notifications' },
+  weatherOff,
+  allNotificationsOn,
+];
+
+export const eventsOff = { content_type: 'text', title: '📅 Off', payload: 'Turn off event notifications' };
+export const eventNotification = [
+  { content_type: 'text', title: '📅 On', payload: 'Turn on event notifications' },
+  eventsOff,
+  allNotificationsOn,
+];

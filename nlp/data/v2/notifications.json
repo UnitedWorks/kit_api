@@ -1,0 +1,322 @@
+[
+  {
+    "text": "Turn off notifications",
+    "intent": "notifications",
+    "entities": [
+      {
+        "entity": "wit$on_off",
+        "value" : "off"
+      }
+    ]
+  },
+  {
+    "text": "I want notifications",
+    "intent": "notifications",
+    "entities": [
+      {
+        "entity": "wit$on_off",
+        "value" : "on"
+      }
+    ]
+  },
+  {
+    "text": "Stop all reminders",
+    "intent": "notifications",
+    "entities": [
+      {
+        "entity": "wit$on_off",
+        "value" : "off"
+      }
+    ]
+  },
+  {
+    "text": "Stop sending me messages",
+    "intent": "notifications",
+    "entities": [
+      {
+        "entity": "wit$on_off",
+        "value" : "off"
+      }
+    ]
+  },
+  {
+    "text": "I want sanitation reminders",
+    "intent": "notifications",
+    "entities": [
+      {
+        "value": "sanitation_collection",
+        "entity": "notification_type"
+      },
+      {
+        "entity": "wit$on_off",
+        "value" : "on"
+      }
+    ]
+  },
+  {
+    "text": "I want reminders about collection",
+    "intent": "notifications",
+    "entities": [
+      {
+        "value": "sanitation_collection",
+        "entity": "notification_type"
+      },
+      {
+        "entity": "wit$on_off",
+        "value" : "on"
+      }
+    ]
+  },
+  {
+    "text": "Remind me about garbage pickup",
+    "intent": "notifications",
+    "entities": [
+      {
+        "value": "sanitation_collection",
+        "entity": "notification_type"
+      },
+      {
+        "entity": "wit$on_off",
+        "value" : "on"
+      }
+    ]
+  },
+  {
+    "text": "Remind me to put out my garbage",
+    "intent": "notifications",
+    "entities": [
+      {
+        "value": "sanitation_collection",
+        "entity": "notification_type"
+      },
+      {
+        "entity": "wit$on_off",
+        "value" : "on"
+      }
+    ]
+  },
+  {
+    "text": "Stop notifications about trash",
+    "intent": "notifications",
+    "entities": [
+      {
+        "value": "sanitation_collection",
+        "entity": "notification_type"
+      },
+      {
+        "entity": "wit$on_off",
+        "value" : "off"
+      }
+    ]
+  },
+  {
+    "text": "I dont want any messages about recycling",
+    "intent": "notifications",
+    "entities": [
+      {
+        "value": "sanitation_collection",
+        "entity": "notification_type"
+      },
+      {
+        "entity": "wit$on_off",
+        "value" : "off"
+      }
+    ]
+  },
+  {
+    "text": "Remind me about the weather",
+    "intent": "notifications",
+    "entities": [
+      {
+        "value": "weather",
+        "entity": "notification_type"
+      },
+      {
+        "entity": "wit$on_off",
+        "value" : "on"
+      }
+    ]
+  },
+  {
+    "text": "I don't want reminders about weather",
+    "intent": "notifications",
+    "entities": [
+      {
+        "value": "weather",
+        "entity": "notification_type"
+      },
+      {
+        "entity": "wit$on_off",
+        "value" : "off"
+      }
+    ]
+  },
+  {
+    "text": "Stop sending me messages about the weather",
+    "intent": "notifications",
+    "entities": [
+      {
+        "value": "weather",
+        "entity": "notification_type"
+      },
+      {
+        "entity": "wit$on_off",
+        "value" : "off"
+      }
+    ]
+  },
+  {
+    "text": "Stop weather reminders",
+    "intent": "notifications",
+    "entities": [
+      {
+        "value": "weather",
+        "entity": "notification_type"
+      },
+      {
+        "entity": "wit$on_off",
+        "value" : "off"
+      }
+    ]
+  },
+  {
+    "text": "Don't send me weather notifications",
+    "intent": "notifications",
+    "entities": [
+      {
+        "value": "weather",
+        "entity": "notification_type"
+      },
+      {
+        "entity": "wit$on_off",
+        "value" : "off"
+      }
+    ]
+  },
+  {
+    "text": "Don't tell me about events",
+    "intent": "notifications",
+    "entities": [
+      {
+        "value": "events",
+        "entity": "notification_type"
+      },
+      {
+        "entity": "wit$on_off",
+        "value" : "off"
+      }
+    ]
+  },
+  {
+    "text": "I don't want event reminders",
+    "intent": "notifications",
+    "entities": [
+      {
+        "value": "events",
+        "entity": "notification_type"
+      },
+      {
+        "entity": "wit$on_off",
+        "value" : "off"
+      }
+    ]
+  },
+  {
+    "text": "Get event notifications",
+    "intent": "notifications",
+    "entities": [
+      {
+        "value": "events",
+        "entity": "notification_type"
+      },
+      {
+        "entity": "wit$on_off",
+        "value" : "on"
+      }
+    ]
+  },
+  {
+    "text": "Turn off event reminders",
+    "intent": "notifications",
+    "entities": [
+      {
+        "value": "event",
+        "entity": "notification_type"
+      },
+      {
+        "entity": "wit$on_off",
+        "value" : "off"
+      }
+    ]
+  },
+  {
+    "text": "Turn on event notifications",
+    "intent": "notifications",
+    "entities": [
+      {
+        "value": "event",
+        "entity": "notification_type"
+      },
+      {
+        "entity": "wit$on_off",
+        "value" : "on"
+      }
+    ]
+  },
+  {
+    "text": "Turn off weather reminders",
+    "intent": "notifications",
+    "entities": [
+      {
+        "value": "weather",
+        "entity": "notification_type"
+      },
+      {
+        "entity": "wit$on_off",
+        "value" : "off"
+      }
+    ]
+  },
+  {
+    "text": "Turn on weather notifications",
+    "intent": "notifications",
+    "entities": [
+      {
+        "value": "weather",
+        "entity": "notification_type"
+      },
+      {
+        "entity": "wit$on_off",
+        "value" : "on"
+      }
+    ]
+  },
+  {
+    "text": "Turn off sanitation reminders",
+    "intent": "notifications",
+    "entities": [
+      {
+        "value": "sanitation_collection",
+        "entity": "notification_type"
+      },
+      {
+        "entity": "wit$on_off",
+        "value" : "off"
+      }
+    ]
+  },
+  {
+    "text": "Turn on weather notifications",
+    "intent": "notifications",
+    "entities": [
+      {
+        "value": "sanitation_collection",
+        "entity": "notification_type"
+      },
+      {
+        "entity": "wit$on_off",
+        "value" : "on"
+      }
+    ]
+  }
+]

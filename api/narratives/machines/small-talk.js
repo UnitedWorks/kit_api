@@ -94,6 +94,8 @@ export default {
 
           'interaction.tasks.get': 'get_tasks',
 
+          'notifications': 'notifications',
+
           'search.knowledge_entity': 'search.knowledge_entity',
           'search.event': 'search.event',
 
@@ -192,202 +194,37 @@ export default {
       return 'start';
     });
   },
-};
 
-export const persistentMenu = [{
-  locale: 'default',
-  call_to_actions: [{
-    title: '🔦 Quick Questions',
-    type: 'nested',
-    call_to_actions: [{
-      title: '📍 Common Questions',
-      type: 'nested',
-      call_to_actions: [{
-        type: 'postback',
-        title: 'Get Trash Schedule',
-        payload: 'Get Trash Schedule',
-      }, {
-        type: 'postback',
-        title: 'Get Recycling Schedule',
-        payload: 'Get Recycling Schedule',
-      }, {
-        type: 'postback',
-        title: 'Get Parking Schedule',
-        payload: 'Get Parking Schedule',
-      }, {
-        type: 'postback',
-        title: 'Are Schools Open Tomorrow?',
-        payload: 'Are Schools Open Tomorrow?',
-      }, {
-        type: 'postback',
-        title: 'Deadlines I Should Know Of',
-        payload: 'Deadlines I Should Know Of',
-      }],
-    }, {
-      title: '🚨 Local Gov Services',
-      type: 'nested',
-      call_to_actions: [{
-        type: 'postback',
-        title: 'Upcoming Town Meetings',
-        payload: 'Upcoming Town Meetings',
-      }, {
-        type: 'postback',
-        title: 'When Are Taxes Due?',
-        payload: 'When Are Taxes Due?',
-      }, {
-        type: 'postback',
-        title: 'Get Marriage Certificate Copy',
-        payload: 'Get Marriage Certificate Copy',
-      }, {
-        type: 'postback',
-        title: 'Get Pet License',
-        payload: 'Get Pet License',
-      }, {
-        type: 'postback',
-        title: 'Get Copy of a Deed',
-        payload: 'Get Copy of a Deed',
-      }],
-    }, {
-      title: '📅 Voting and Elections',
-      type: 'nested',
-      call_to_actions: [{
-        type: 'postback',
-        title: 'Upcoming Elections',
-        payload: 'Upcoming Elections',
-      }, {
-        type: 'postback',
-        title: 'Register to Vote',
-        payload: 'Register To Vote',
-      }, {
-        type: 'postback',
-        title: 'Voter ID Requirements',
-        payload: 'Voter ID Requirements',
-      }, {
-        type: 'postback',
-        title: 'Early Voting Rules',
-        payload: 'Early Voting Rules',
-      }, {
-        type: 'postback',
-        title: 'Problem at Polls',
-        payload: 'Problem At Polls',
-      }],
-    }, {
-      title: '🔔 Employment and Benefits',
-      type: 'nested',
-      call_to_actions: [{
-        type: 'postback',
-        title: 'Benefits Screener',
-        payload: 'Benefits Screener',
-      }, {
-        type: 'postback',
-        title: 'Report Wage Theft',
-        payload: 'Report Wage Theft',
-      }, {
-        type: 'postback',
-        title: 'Job Assistance',
-        payload: 'Job Assistance',
-      }],
-    }, {
-      title: '❤️ Immediate Assistance',
-      type: 'nested',
-      call_to_actions: [{
-        type: 'postback',
-        title: 'Find a Shelter',
-        payload: 'Find a Shelter',
-      }, {
-        type: 'postback',
-        title: 'Find Health Clinic',
-        payload: 'Find Health Clinic',
-      }, {
-        type: 'postback',
-        title: 'Find a Washroom',
-        payload: 'Find a Washroom',
-      }],
-    }],
-  }, {
-    title: '🎯 Quick Actions',
-    type: 'nested',
-    call_to_actions: [{
-      title: '🔨 Report a Problem',
-      type: 'nested',
-      call_to_actions: [{
-        type: 'postback',
-        title: 'Report Pothole',
-        payload: 'Report Pothole',
-      }, {
-        type: 'postback',
-        title: 'Report Broken Sidewalk',
-        payload: 'Report Broken Sidewalk',
-      }, {
-        type: 'postback',
-        title: 'Report Broken Sign',
-        payload: 'Report Broken Sign',
-      }, {
-        type: 'postback',
-        title: 'Report Light Outage',
-        payload: 'Report Light Outage',
-      }, {
-        type: 'postback',
-        title: 'Report General Problem',
-        payload: 'Report General Problem',
-      }],
-    }, {
-      title: '🔧 Request a Service',
-      type: 'nested',
-      call_to_actions: [{
-        type: 'postback',
-        title: 'Request Bulk Pickup',
-        payload: 'Request Bulk Pickup'
-      }, {
-        type: 'postback',
-        title: 'Request Parking Permit',
-        payload: 'Request Parking Permit'
-      }, {
-        type: 'postback',
-        title: 'Request Disability Tags',
-        payload: 'Request Disability Tags'
-      }, {
-        type: 'postback',
-        title: 'Request Building Inspection',
-        payload: 'Request Building Inspection'
-      }, {
-        type: 'postback',
-        title: 'Request Fire Inspection',
-        payload: 'Request Fire Inspection'
-      }],
-    }, {
-      type: 'postback',
-      title: '📥 View My Requests',
-      payload: 'GET_TASKS',
-    }],
-  }, {
-    title: '🔮 Help',
-    type: 'nested',
-    call_to_actions: [{
-      type: 'postback',
-      title: 'What can I ask?',
-      payload: 'What can I ask?',
-    }, {
-      title: 'Language',
-      type: 'nested',
-      call_to_actions: [{
-        type: 'postback',
-        title: 'Change language to English',
-        payload: 'Change language to English',
-      }, {
-        type: 'postback',
-        title: 'Cambiar el idioma al Espanol',
-        payload: 'Change Language To Espanol',
-      }],
-    }, {
-      type: 'postback',
-      title: 'Leave Feedback',
-      payload: 'Leave Feedback',
-    }, {
-      type: 'web_url',
-      title: 'Want your own bot?',
-      url: 'https://mayor.chat',
-      webview_height_ratio: 'tall',
-    }],
-  }],
-}];
+  notifications() {
+    const notifications = this.get('notifications') || {};
+    const notificationType = this.snapshot.nlp.entities.notification_type ?
+      this.snapshot.nlp.entities.notification_type[0].value : null;
+    const newState = this.snapshot.nlp.entities.on_off ?
+      this.snapshot.nlp.entities.on_off[0].value : null;
+    // If no state, abort
+    if (newState === null) return this.messagingClient.send('Sorry, I didn\'t catch whether you wanted to turn on or off a notification.').then(() => 'start');
+    // If no type, set all off or on
+    if (!notificationType) {
+      if (newState === 'off') {
+        notifications.sanitation_collection = false;
+        notifications.events = false;
+        notifications.weather = false;
+      } else {
+        notifications.sanitation_collection = true;
+        notifications.events = true;
+        notifications.weather = true;
+      }
+    // Otherwise flip specific type
+    } else {
+      if (notificationType === 'weather') {
+        notifications.weather = newState === 'on';
+      } else if (notificationType === 'sanitation_collection') {
+        notifications.sanitation_collection = newState === 'on';
+      } else if (notificationType === 'events') {
+        notifications.events = newState === 'on';
+      }
+    }
+    this.set('notifications', notifications);
+    return 'start';
+  },
+};

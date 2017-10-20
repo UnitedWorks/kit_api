@@ -46,10 +46,10 @@ export function broadcastHelper(broadcast, organization) {
   throw new Error('Unable to broadcast');
 }
 
-export async function messageConstituent(constituentId, message) {
+export async function messageConstituent(constituentId, message, quickReplies) {
   const con = await Constituent.where({ id: constituentId }).fetch({ withRelated: ['facebookEntry', 'smsEntry'] }).then(c => c.toJSON());
   const client = getPreferredClient(con);
-  client.send(message);
+  if (client) client.send(message, quickReplies);
 }
 
 export function createEntry(entry, organization, options = {}) {
