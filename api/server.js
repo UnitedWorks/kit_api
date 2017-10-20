@@ -81,4 +81,8 @@ app.listen(port, () => {
 });
 
 // Crons
-scheduledJobs();
+try {
+  scheduledJobs();
+} catch (e) {
+  logger.error(e);
+}
