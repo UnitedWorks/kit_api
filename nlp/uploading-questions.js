@@ -13,7 +13,7 @@ const questionOperations = [];
 knex.select().from('knowledge_categorys').then((catRows) => {
   // Get Knowledge Base Categories
   const categoryHash = {};
-  const nonCategories = ['speech', 'interaction', 'settings'];
+  const nonCategories = ['speech', 'interaction', 'notifications', 'settings'];
   catRows.forEach((category) => {
     categoryHash[category.label] = category.id;
   });

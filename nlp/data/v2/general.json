@@ -36,50 +36,6 @@
 		"intent": "general.join.public_facilities"
 	},
 	{
-		"text": "Can I get updates from the town?",
-		"intent": "general.notifications"
-	},
-	{
-		"text": "How do I get notifications from the town?",
-		"intent": "general.notifications"
-	},
-	{
-		"text": "Does the city send updates?",
-		"intent": "general.notifications"
-	},
-	{
-		"text": "How do I get email notifications?",
-		"intent": "general.notifications"
-	},
-	{
-		"text": "How do I get SMS notifications?",
-		"intent": "general.notifications"
-	},
-	{
-		"text": "Tell me about emergencies when they happen",
-		"intent": "general.notifications.emergency.subscribe"
-	},
-	{
-		"text": "I want emergency updates",
-		"intent": "general.notifications.emergency.subscribe"
-	},
-	{
-		"text": "How can I get notified of emergencies?",
-		"intent": "general.notifications.emergency.subscribe"
-	},
-	{
-		"text": "Where do I update my emergency contact info",
-		"intent": "general.notifications.emergency.update"
-	},
-	{
-		"text": "How do I update my phone number on the emergency call list?",
-		"intent": "general.notifications.emergency.update"
-	},
-	{
-		"text": "I need to update my emergency info",
-		"intent": "general.notifications.emergency.update"
-	},
-	{
 		"text": "What do I need to know about Pokemon Go?",
 		"intent": "general.pokemon_go",
 		"entities": [
