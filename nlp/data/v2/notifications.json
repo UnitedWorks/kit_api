@@ -10,6 +10,26 @@
     ]
   },
   {
+    "text": "I don't want notifications",
+    "intent": "notifications",
+    "entities": [
+      {
+        "entity": "wit$on_off",
+        "value" : "off"
+      }
+    ]
+  },
+  {
+    "text": "I want reminders",
+    "intent": "notifications",
+    "entities": [
+      {
+        "entity": "wit$on_off",
+        "value" : "on"
+      }
+    ]
+  },
+  {
     "text": "I want notifications",
     "intent": "notifications",
     "entities": [
@@ -98,6 +118,36 @@
       {
         "entity": "wit$on_off",
         "value" : "on"
+      }
+    ]
+  },
+  {
+    "text": "Turn off updates",
+    "intent": "notifications",
+    "entities": [
+      {
+        "entity": "wit$on_off",
+        "value" : "off"
+      }
+    ]
+  },
+  {
+    "text": "Stop updates",
+    "intent": "notifications",
+    "entities": [
+      {
+        "entity": "wit$on_off",
+        "value" : "off"
+      }
+    ]
+  },
+  {
+    "text": "Stop reminders",
+    "intent": "notifications",
+    "entities": [
+      {
+        "entity": "wit$on_off",
+        "value" : "off"
       }
     ]
   },
@@ -260,7 +310,7 @@
     "intent": "notifications",
     "entities": [
       {
-        "value": "event",
+        "value": "events",
         "entity": "notification_type"
       },
       {
@@ -274,7 +324,7 @@
     "intent": "notifications",
     "entities": [
       {
-        "value": "event",
+        "value": "events",
         "entity": "notification_type"
       },
       {

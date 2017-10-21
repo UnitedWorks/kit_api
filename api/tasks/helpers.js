@@ -76,7 +76,7 @@ export function getConstituentTasks(id) {
   return Task.where({ constituent_id: id }).fetchAll().then((results) => {
     const refreshedTasks = [];
     results.toJSON().forEach((task) => {
-      if (Number(task.managed.see_click_fix) > 0 && task.status === TASK_CONST.PENDING) {
+      if (task.managed && Number(task.managed.see_click_fix) > 0 && task.status === TASK_CONST.PENDING) {
         refreshedTasks.push(new SeeClickFixClient().syncTaskStatus(task.managed.see_click_fix).then((status) => {
           return { ...task, status };
         }));

@@ -92,7 +92,7 @@ export default {
 
           'education_employment.employment_job_training': 'employment.waiting_job_training',
 
-          'interaction.tasks.get': 'get_tasks',
+          'interaction.tasks.status': 'get_tasks',
 
           'notifications': 'notifications',
 
