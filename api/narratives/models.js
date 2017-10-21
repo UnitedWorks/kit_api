@@ -5,10 +5,10 @@ import * as AccountModels from '../accounts/models';
 export const NarrativeSession = bookshelf.Model.extend({
   tableName: 'narrative_sessions',
   hasTimestamps: true,
-  constituent: function() {
+  constituent() {
     return this.belongsTo(AccountModels.Constituent, 'constituent_id');
   },
-  organization: function() {
+  organization() {
     return this.belongsTo(AccountModels.Organization, 'organization_id');
   },
 });

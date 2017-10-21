@@ -101,15 +101,16 @@ export function scheduledJobs() {
   const constituentNotifications = schedule.scheduleJob('0 15 13 * * 1', () => {
     NarrativeSession.fetchAll({ withRelated: ['constituent', 'constituent.facebookEntry', 'constituent.smsEntry', 'organization'] })
       .then((s) => {
-        s.toJSON().forEach((session) => {
-          if (session.organization.type !== ORG_CONST.GOVERNMENT) return;
-          const client = getPreferredClient(session.constituent);
-          if (client && !session.data_store.notifications) {
-            client.send(
-              'Would you like reminders about trash/recycling collection, big city events, and the weather?',
-              [QUICK_REPLIES.allNotificationsOn, QUICK_REPLIES.allNotificationsOff]);
-          }
-        });
+        s.toJSON().filter(session => session.organization &&
+          session.organization.type === ORG_CONST.GOVERNMENT)
+          .forEach((session) => {
+            const client = getPreferredClient(session.constituent);
+            if (client && !session.data_store.notifications) {
+              client.send(
+                'Would you like reminders about trash/recycling collection, big city events, and the weather?',
+                [QUICK_REPLIES.allNotificationsOn, QUICK_REPLIES.allNotificationsOff]);
+            }
+          });
       });
   });
 
@@ -147,9 +148,10 @@ export function scheduledJobs() {
 
   // Constituent Notification: Evening - Services
   const constituentNotificationsEvenings = schedule.scheduleJob('0 30 19 * * *', () => {
-    NarrativeSession.fetchAll().then((s) => {
+    NarrativeSession.fetchAll({ withRelated: ['organization'] }).then((s) => {
       // Get sanitation answers for each org
-      const sessions = s.toJSON();
+      const sessions = s.toJSON().filter(session => session.organization &&
+        session.organization.type === ORG_CONST.GOVERNMENT);
       Promise.all([...new Set(sessions.map(session => session.organization_id))].map((orgId) => {
         return getAnswers({ organization_id: orgId, label: 'environment_sanitation.recycling.schedule' }, { answerGrouped: true, returnJSON: true }).then((recyclingCluster) => {
           return getAnswers({ organization_id: orgId, label: 'environment_sanitation.trash.schedule' }, { answerGrouped: true, returnJSON: true }).then((trashCluster) => {
