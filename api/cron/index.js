@@ -114,7 +114,7 @@ export function scheduledJobs() {
             // Weather
             if (session.data_store.notifications.weather && weather[session.organization_id]) {
               quickReplies.push(QUICK_REPLIES.weatherOff);
-              client.addToQuene(`Today's weather will have a low of ${weather[session.organization_id].max}° and a high of ${weather[session.organization_id].max}°. ${weather[session.organization_id].weather[0] ? `Looks like we're going to have ${weather[session.organization_id].weather[0].description}s.` : ''}`, quickReplies);
+              client.addToQuene(`Today's weather will have a low of ${weather[session.organization_id].min}° and a high of ${weather[session.organization_id].max}°. ${weather[session.organization_id].weather[0] ? `Looks like we're going to have ${weather[session.organization_id].weather[0].description}s.` : ''}`, quickReplies);
             }
             // Events
             if (session.data_store.notifications.events && events[session.organization_id]
