@@ -3,6 +3,7 @@ import schedule from 'node-schedule';
 import axios from 'axios';
 import * as env from '../env';
 import * as KNOWLEDGE_CONST from '../constants/knowledge-base';
+import * as ORG_CONST from '../constants/organizations';
 import * as FEED_CONST from '../constants/feeds';
 import { logger } from '../logger';
 import { nlp } from '../services/nlp';
@@ -83,7 +84,7 @@ async function todaysWeather() {
 
 export function scheduledJobs() {
   // Email Representatives of Alerts
-  schedule.scheduleJob('0 30 12 * * *', () => {
+  const representativeNotifications = schedule.scheduleJob('0 30 12 * * *', () => {
     const alertDeck = twitterWatchers();
     // Email reps responsbile for the general category + link to FAQ page
     Object.keys(alertDeck).forEach((key) => {
@@ -96,21 +97,33 @@ export function scheduledJobs() {
     });
   });
 
+  // Constituent Notification Signup
+  const constituentNotifications = schedule.scheduleJob('0 15 13 * * 1', () => {
+    NarrativeSession.fetchAll({ withRelated: ['constituent', 'constituent.facebookEntry', 'constituent.smsEntry', 'organization'] })
+      .then((s) => {
+        s.toJSON().forEach((session) => {
+          if (session.organization.type !== ORG_CONST.GOVERNMENT) return;
+          const client = getPreferredClient(session.constituent);
+          if (client && !session.data_store.notifications) {
+            client.send(
+              'Would you like reminders about trash/recycling collection, big city events, and the weather?',
+              [QUICK_REPLIES.allNotificationsOn, QUICK_REPLIES.allNotificationsOff]);
+          }
+        });
+      });
+  });
+
   // Constituent Notification: Morning - Weather, Events, Alerts
-  schedule.scheduleJob('0 15 13 * * *', () => {
-    NarrativeSession.fetchAll({ withRelated: ['constituent', 'constituent.facebookEntry', 'constituent.smsEntry'] }).then((s) => {
+  const constituentNotificationsMornings = schedule.scheduleJob('0 15 12 * * *', () => {
+    NarrativeSession.fetchAll({ withRelated: ['constituent', 'constituent.facebookEntry', 'constituent.smsEntry', 'organization'] }).then((s) => {
       todaysWeather().then((weather) => {
         todaysEvents().then((events) => {
           const quickReplies = [];
           // Run Notifciation on Sessions
           s.toJSON().forEach((session) => {
+            if (session.organization.type !== ORG_CONST.GOVERNMENT) return;
             const client = getPreferredClient(session.constituent);
-            if (!client) return;
-            if (!session.data_store.notifications) {
-              return client.send(
-                'Would you like reminders about trash/recycling collection, big city events, and the weather?',
-                [QUICK_REPLIES.allNotificationsOn, QUICK_REPLIES.allNotificationsOff]);
-            }
+            if (!client || !session.data_store.notifications) return;
             // Weather
             if (session.data_store.notifications.weather && weather[session.organization_id]) {
               quickReplies.push(QUICK_REPLIES.weatherOff);
@@ -133,7 +146,7 @@ export function scheduledJobs() {
   });
 
   // Constituent Notification: Evening - Services
-  schedule.scheduleJob('0 30 19 * * *', () => {
+  const constituentNotificationsEvenings = schedule.scheduleJob('0 30 19 * * *', () => {
     NarrativeSession.fetchAll().then((s) => {
       // Get sanitation answers for each org
       const sessions = s.toJSON();
@@ -180,7 +193,6 @@ export function scheduledJobs() {
                 constituentAttributes: session.data_store.attributes
               }) != null;
             }
-            // if (!hasRecycling && !hasTrash) return;
             let messageInsert = null;
             if (hasRecycling && !hasTrash) {
               messageInsert = 'recycling';
