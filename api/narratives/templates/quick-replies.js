@@ -40,31 +40,38 @@ export const evalHelpfulAnswer = [
   { content_type: 'text', title: '👎', payload: 'ANSWER_NOT_HELPFUL' },
 ];
 
-export const basicRequestQuickReplies = [
-  { content_type: 'text', title: 'What can I ask?', payload: 'What can I ask?' },
-  { content_type: 'text', title: 'Upcoming Elections', payload: 'Upcoming Elections' },
-  { content_type: 'text', title: 'Available Benefits', payload: 'Available Benefits' },
-];
-
 export const allNotificationsOn = { content_type: 'text', title: 'Turn On Reminders', payload: 'Turn on notifications' };
 export const allNotificationsOff = { content_type: 'text', title: 'Turn Off Reminders', payload: 'Turn off notifications' };
 
+export const sanitationOn = { content_type: 'text', title: '♻ On', payload: 'Turn on sanitation notifications' };
+export const sanitationOff = { content_type: 'text', title: '♻ Off', payload: 'Turn off sanitation notifications' };
 export const sanitationNotification = [
-  { content_type: 'text', title: '♻ On', payload: 'Turn on sanitation notifications' },
-  { content_type: 'text', title: '♻ Off', payload: 'Turn off sanitation notifications' },
+  sanitationOn,
+  sanitationOff,
   allNotificationsOn,
 ];
 
-export const weatherOff = { content_type: 'text', title: '❄ Off', payload: 'Turn off weather notifications' };
+export const weatherOff = { content_type: 'text', title: 'Turn Off ❄', payload: 'Turn off weather notifications' };
+export const weatherOn = { content_type: 'text', title: 'Turn On ❄', payload: 'Turn on weather notifications' };
 export const weatherNotification = [
-  { content_type: 'text', title: '❄ On', payload: 'Turn on weather notifications' },
+  weatherOn,
   weatherOff,
   allNotificationsOn,
 ];
 
-export const eventsOff = { content_type: 'text', title: '📅 Off', payload: 'Turn off event notifications' };
+export const eventsOff = { content_type: 'text', title: 'Turn Off 📅', payload: 'Turn off event notifications' };
+export const eventsOn = { content_type: 'text', title: 'Turn On 📅', payload: 'Turn on event notifications' };
 export const eventNotification = [
-  { content_type: 'text', title: '📅 On', payload: 'Turn on event notifications' },
+  eventsOn,
   eventsOff,
   allNotificationsOn,
+];
+
+export const alertsOff = { content_type: 'text', title: 'Turn Off 🚨', payload: 'Turn off alert notifications' };
+export const alertsOn = { content_type: 'text', title: 'Turn On 🚨', payload: 'Turn on alert notifications' };
+
+export const basicRequestQuickReplies = [
+  { content_type: 'text', title: 'What can I ask?', payload: 'What can I ask?' },
+  allNotificationsOn,
+  { content_type: 'text', title: 'Upcoming Elections', payload: 'Upcoming Elections' },
 ];

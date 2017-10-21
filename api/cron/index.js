@@ -17,7 +17,7 @@ import KitClient from '../narratives/clients/kit-client';
 import * as QUICK_REPLIES from '../narratives/templates/quick-replies';
 import { Organization } from '../accounts/models';
 
-async function twitterWatchers() {
+async function todaysAlerts() {
   const feeds = await Feed.where({ watcher: true }).fetchAll().then(f => f);
   // Run feeds
   const feedData = await Promise.all(feeds.toJSON().map(f => runWatcher(f))).then((data) => {
@@ -28,9 +28,15 @@ async function twitterWatchers() {
   // On each response, check for entities
   const alerts = await Promise.all(feedData.map(d => nlp.message(d.text).then((wit) => {
     // Check for watcher => schedule change
-    if (wit.entities.watchers) {
-      return wit.entities.watchers.filter(w =>
-        w.value === FEED_CONST.ALERTS_SCHEDULE_CHANGE).length > 0 ? d : null;
+    const alertEntities = wit.entities.watchers ? wit.entities.watchers.filter(w =>
+      w.value === FEED_CONST.ALERTS_SCHEDULE_CHANGE ||
+      w.value === FEED_CONST.ALERTS_DELAYS) : [];
+    if (alertEntities.length > 0) {
+      if (alertEntities[0].value === FEED_CONST.ALERTS_DELAYS) {
+        return { ...d, type: FEED_CONST.ALERTS_DELAYS };
+      } else if (alertEntities[0].value === FEED_CONST.ALERTS_SCHEDULE_CHANGE) {
+        return { ...d, type: FEED_CONST.ALERTS_SCHEDULE_CHANGE };
+      }
     }
   }))).then(filtered => filtered.filter(a => a));
   // Group by organization
@@ -85,7 +91,7 @@ async function todaysWeather() {
 export function scheduledJobs() {
   // Email Representatives of Alerts
   const representativeNotifications = schedule.scheduleJob('0 30 12 * * *', () => {
-    const alertDeck = twitterWatchers();
+    const alertDeck = todaysAlerts();
     // Email reps responsbile for the general category + link to FAQ page
     Object.keys(alertDeck).forEach((key) => {
       getCategoryFallback([KNOWLEDGE_CONST.GENERAL_LABEL], key).then((fb) => {
@@ -115,31 +121,46 @@ export function scheduledJobs() {
   });
 
   // Constituent Notification: Morning - Weather, Events, Alerts
-  const constituentNotificationsMornings = schedule.scheduleJob('0 15 12 * * *', () => {
+  const constituentNotificationsMornings = schedule.scheduleJob('*/35 * * * * *', () => {
+  // const constituentNotificationsMornings = schedule.scheduleJob('0 15 12 * * *', () => {
     NarrativeSession.fetchAll({ withRelated: ['constituent', 'constituent.facebookEntry', 'constituent.smsEntry', 'organization'] }).then((s) => {
       todaysWeather().then((weather) => {
         todaysEvents().then((events) => {
-          const quickReplies = [];
-          // Run Notifciation on Sessions
-          s.toJSON().forEach((session) => {
-            if (session.organization.type !== ORG_CONST.GOVERNMENT) return;
-            const client = getPreferredClient(session.constituent);
-            if (!client || !session.data_store.notifications) return;
-            // Weather
-            if (session.data_store.notifications.weather && weather[session.organization_id]) {
-              quickReplies.push(QUICK_REPLIES.weatherOff);
-              client.addToQuene(`Today's weather will have a low of ${weather[session.organization_id].min}° and a high of ${weather[session.organization_id].max}°. ${weather[session.organization_id].weather[0] ? `Looks like we're going to have ${weather[session.organization_id].weather[0].description}s.` : ''}`, quickReplies);
-            }
-            // Events
-            if (session.data_store.notifications.events && events[session.organization_id]
-              && events[session.organization_id].length > 0) {
-              quickReplies.push(QUICK_REPLIES.eventsOff);
-              client.addToQuene('Here is whats happening today!');
-              client.addAll(KitClient.genericTemplateFromEntities(
-                events[session.organization_id].map(event => ({ type: 'event', payload: event }))),
-                quickReplies);
-            }
-            client.runQuene();
+          todaysAlerts().then((alerts) => {
+            const quickReplies = [];
+            // Run Notifciation on Sessions
+            s.toJSON().forEach((session) => {
+              if (!session.organization || session.organization.type !== ORG_CONST.GOVERNMENT) return;
+              const client = getPreferredClient(session.constituent);
+              if (!client || !session.data_store.notifications) return;
+              // Weather
+              if (session.data_store.notifications.weather && weather[session.organization_id]) {
+                quickReplies.push(QUICK_REPLIES.weatherOff);
+                client.addToQuene(`Today's weather will have a low of ${weather[session.organization_id].min}° and a high of ${weather[session.organization_id].max}°. ${weather[session.organization_id].weather[0] ? `Looks like we're going to have ${weather[session.organization_id].weather[0].description}s.` : ''}`, quickReplies);
+              } else if (session.data_store.notifications.weather === false) {
+                quickReplies.push(QUICK_REPLIES.weatherOn);
+              }
+              // Events
+              if (session.data_store.notifications.events && events[session.organization_id]
+                && events[session.organization_id].length > 0) {
+                quickReplies.push(QUICK_REPLIES.eventsOff);
+                client.addToQuene('Here is whats happening today!');
+                client.addAll(KitClient.genericTemplateFromEntities(
+                  events[session.organization_id].map(event => ({ type: 'event', payload: event }))),
+                  quickReplies);
+              } else if (session.data_store.notifications.events === false) {
+                quickReplies.push(QUICK_REPLIES.eventsOn);
+              }
+              if (session.data_store.notifications.alerts && alerts[session.organization_id]
+                && alerts[session.organization_id].length > 0) {
+                quickReplies.push(QUICK_REPLIES.alertsOff);
+                const alertsMessage = alerts[session.organization_id].map(u => `"${u.text.length > 40 ? `${u.text.slice(0, 40)}...` : u.text}"(${u.url}) `);
+                client.addToQuene(`Notices that may impact your day: ${alertsMessage}`, quickReplies);
+              } else if (session.data_store.notifications.alerts === false) {
+                quickReplies.push(QUICK_REPLIES.alertsOn);
+              }
+              client.runQuene();
+            });
           });
         });
       });
