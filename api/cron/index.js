@@ -121,8 +121,7 @@ export function scheduledJobs() {
   });
 
   // Constituent Notification: Morning - Weather, Events, Alerts
-  const constituentNotificationsMornings = schedule.scheduleJob('*/35 * * * * *', () => {
-  // const constituentNotificationsMornings = schedule.scheduleJob('0 15 12 * * *', () => {
+  const constituentNotificationsMornings = schedule.scheduleJob('0 15 12 * * *', () => {
     NarrativeSession.fetchAll({ withRelated: ['constituent', 'constituent.facebookEntry', 'constituent.smsEntry', 'organization'] }).then((s) => {
       todaysWeather().then((weather) => {
         todaysEvents().then((events) => {
