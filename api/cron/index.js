@@ -1,16 +1,12 @@
 import moment from 'moment';
 import schedule from 'node-schedule';
 import axios from 'axios';
-import * as env from '../env';
-import * as KNOWLEDGE_CONST from '../constants/knowledge-base';
 import * as ORG_CONST from '../constants/organizations';
 import * as FEED_CONST from '../constants/feeds';
-import { logger } from '../logger';
 import { nlp } from '../services/nlp';
-import EmailService from '../services/email';
 import { Feed } from '../feeds/models';
 import { runWatcher, runFeed } from '../feeds/helpers';
-import { getCategoryFallback, getAnswers } from '../knowledge-base/helpers';
+import { getAnswers } from '../knowledge-base/helpers';
 import { NarrativeSession } from '../narratives/models';
 import { messageConstituent, getPreferredClient } from '../conversations/helpers';
 import KitClient from '../narratives/clients/kit-client';

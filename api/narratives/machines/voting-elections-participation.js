@@ -67,7 +67,8 @@ export default {
         const quickReplies = ['Register to Vote', 'Am I Registered?'].map((label) => {
           return { content_type: 'text', title: label, payload: label };
         });
-        this.messagingClient.addToQuene(`You have ${Math.floor((earliestRegistrationDate.getTime() - Date.now()) / 86400000)} days left to register. Are you ready for the elections?`, quickReplies);
+        const daysLeftToRegister = Math.floor((earliestRegistrationDate.getTime() - Date.now()) / 86400000);
+        if (daysLeftToRegister > 0) this.messagingClient.addToQuene(`You have ${daysLeftToRegister} days left to register. Are you ready for the elections?`, quickReplies);
       }
       this.messagingClient.runQuene();
       return this.getBaseState();
