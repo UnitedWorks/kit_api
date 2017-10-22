@@ -78,7 +78,7 @@ export default {
     const searchStrings = [];
     if (this.snapshot.nlp && this.snapshot.nlp.entities.search_query) {
       this.snapshot.nlp.entities.search_query.forEach((q) => {
-        if (!q.value.includes('event')) searchStrings.push(q.value);
+        if (!q.value.toLowerCase().includes('event')) searchStrings.push(q.value);
       });
     }
     // If strings exist, run filter
