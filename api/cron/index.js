@@ -108,9 +108,9 @@ export function scheduledJobs() {
       todaysWeather().then((weather) => {
         todaysEvents().then((events) => {
           todaysAlerts().then((alerts) => {
-            const quickReplies = [];
             // Run Notifciation on Sessions
             s.toJSON().forEach((session) => {
+              const quickReplies = [];
               if (!session.organization || session.organization.type !== ORG_CONST.GOVERNMENT) return;
               const client = getPreferredClient(session.constituent);
               if (!client || !session.data_store.notifications) return;
