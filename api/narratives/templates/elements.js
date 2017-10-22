@@ -61,11 +61,11 @@ export const genericCommuter = {
   buttons: [{
     type: 'postback',
     title: 'Driveway Blocked',
-    payload: 'Driveway blocked',
+    payload: 'Someone is blocking my driveway',
   }, {
     type: 'postback',
     title: 'Request Bikelane',
-    payload: 'Request bikelane',
+    payload: 'Request a bike lane',
   }, {
     type: 'element_share',
   }],

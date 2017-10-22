@@ -228,7 +228,7 @@ export default {
         this.messagingClient.send(`Garbage/recycling reminders are ${notifications.sanitation_collection ? 'on. Collection day wont catch you by surprise again!' : 'off. Let me know when you want collection reminders again.'}`, !notifications.sanitation_collection ? [replyTemplates.sanitationOn] : null);
       } else if (notificationType === 'events') {
         notifications.events = newState === 'on';
-        this.messagingClient.send(`Event reminders are ${notifications.events ? 'on. I\'ll let you in the know.' : 'off. Feel free to ask for updates again at any time.'}`, !notifications.events ? [replyTemplates.eventsOn] : null);
+        this.messagingClient.send(`Event reminders are ${notifications.events ? 'on. I\'ll keep you in the know.' : 'off. Feel free to ask for updates again at any time.'}`, !notifications.events ? [replyTemplates.eventsOn] : null);
       } else if (notificationType === 'alerts') {
         notifications.alerts = newState === 'on';
         this.messagingClient.send(`Priority updates are ${notifications.alerts ? 'on. Hope that your commute goes a bit smoother!' : 'off. Feel free to ask for them again anytime.'}`, !notifications.alerts ? [replyTemplates.alertsOn] : null);
