@@ -100,9 +100,9 @@ export async function runFeed(feedObj, options = { filterPast: true }) {
       .map(event => veventToKnowledgeEvent({ ...event, organization_id: feed.organization_id }));
     return { events };
   } else if (feed.format === FEED_CONSTANTS.SCRAPED) {
-    const results = await scrapeEvents(feed.script).then(r => r)
+    const results = await scrapeEvents(feed.script).then(r => r);
     return {
-      events: results,
+      events: results.map(e => ({ ...e, organization_id: feed.organization_id })),
     };
   }
   return {};

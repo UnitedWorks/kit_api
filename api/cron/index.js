@@ -56,8 +56,8 @@ async function todaysEvents() {
   feedEvents.filter(e => e.organization_id).forEach((e) => {
     if (!eventDeck[e.organization_id]) eventDeck[e.organization_id] = [];
     // If passes check, push
-    const diff = moment().diff(moment(new Date(e.availabilitys[0].t_start)), 'h');
-    const passes = diff <= 24 && diff > 0;
+    const diff = moment(new Date(e.availabilitys[0].t_start)).diff(moment(), 'h');
+    const passes = diff <= 16 && diff > -2;
     if (passes) eventDeck[e.organization_id].push(e);
   });
   return eventDeck;
