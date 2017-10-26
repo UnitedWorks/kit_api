@@ -40,11 +40,11 @@
 	},
 	{
 		"intent": "property_buildings_homes.blight",
-		"text": "the buildings on Wadsworth are falling apart"
+		"text": "where do i call to report a neighbors yard broken down privacy fence for over a year, overgrown weeds, leaves, trash, mice , wont clean up."
 	},
 	{
 		"intent": "property_buildings_homes.blight",
-		"text": "where do i call to report a neighbors yard broken down privacy fence for over a year, overgrown weeds, leaves, trash, mice , wont clean up."
+		"text": "the buildings on Wadsworth are falling apart"
 	},
 	{
 		"intent": "property_buildings_homes.blight",
@@ -76,7 +76,7 @@
 	},
 	{
 		"intent": "property_buildings_homes.construction.noise",
-		"text": "This construction is noisy and it's late"
+		"text": "How do I report noise from after-hours construction?"
 	},
 	{
 		"intent": "property_buildings_homes.construction.noise",
@@ -84,15 +84,15 @@
 	},
 	{
 		"intent": "property_buildings_homes.construction.noise",
-		"text": "There is really loud construction going on"
-	},
-	{
-		"intent": "property_buildings_homes.construction.noise",
 		"text": "I can't do anything because this construction is so loud"
 	},
 	{
 		"intent": "property_buildings_homes.construction.noise",
-		"text": "How do I report noise from after-hours construction?"
+		"text": "There is really loud construction going on"
+	},
+	{
+		"intent": "property_buildings_homes.construction.noise",
+		"text": "This construction is noisy and it's late"
 	},
 	{
 		"intent": "property_buildings_homes.construction.no_permit",
@@ -139,11 +139,27 @@
 		"intent": "property_buildings_homes.district_zoning"
 	},
 	{
+		"text": "Check flood zones?",
+		"intent": "property_buildings_homes.district_zoning.flood"
+	},
+	{
 		"text": "Is my property in a flood zone?",
 		"intent": "property_buildings_homes.district_zoning.flood"
 	},
 	{
+		"text": "How can I find out if my property in a flood zone?",
+		"intent": "property_buildings_homes.district_zoning.flood"
+	},
+	{
 		"text": "Is my property in the flood plain?",
+		"intent": "property_buildings_homes.district_zoning.flood"
+	},
+	{
+		"text": "Am I in a flood zone?",
+		"intent": "property_buildings_homes.district_zoning.flood"
+	},
+	{
+		"text": "Where are the flood zones?",
 		"intent": "property_buildings_homes.district_zoning.flood"
 	},
 	{
@@ -157,22 +173,6 @@
 				"entity": "category_keywords"
 			}
 		]
-	},
-	{
-		"text": "How can I find out if my property in a flood zone?",
-		"intent": "property_buildings_homes.district_zoning.flood"
-	},
-	{
-		"text": "Check flood zones?",
-		"intent": "property_buildings_homes.district_zoning.flood"
-	},
-	{
-		"text": "Am I in a flood zone?",
-		"intent": "property_buildings_homes.district_zoning.flood"
-	},
-	{
-		"text": "Where are the flood zones?",
-		"intent": "property_buildings_homes.district_zoning.flood"
 	},
 	{
 		"text": "Does my house fall in a historical district?",
@@ -195,12 +195,20 @@
 		"intent": "property_buildings_homes.district_zoning.historical"
 	},
 	{
+		"text": "What political districts am I in?",
+		"intent": "property_buildings_homes.district_zoning.political"
+	},
+	{
 		"text": "What Council District do I live in?",
 		"intent": "property_buildings_homes.district_zoning.political"
 	},
 	{
-		"text": "What political districts am I in?",
-		"intent": "property_buildings_homes.district_zoning.political"
+		"text": "What's my zone?",
+		"intent": "property_buildings_homes.district_zoning.search"
+	},
+	{
+		"text": "How is my property zoned?",
+		"intent": "property_buildings_homes.district_zoning.search"
 	},
 	{
 		"text": "What is the zone of my property?",
@@ -213,14 +221,6 @@
 				"entity": "category_keywords"
 			}
 		]
-	},
-	{
-		"text": "How is my property zoned?",
-		"intent": "property_buildings_homes.district_zoning.search"
-	},
-	{
-		"text": "What's my zone?",
-		"intent": "property_buildings_homes.district_zoning.search"
 	},
 	{
 		"text": "Issues with drainage on my property",
@@ -255,6 +255,10 @@
 		"text": "I received an eviction. what should I do?"
 	},
 	{
+		"text": "What rules and permits exist regarding residential fences?",
+		"intent": "property_buildings_homes.fences"
+	},
+	{
 		"text": "Can I put a fence on my property?",
 		"intent": "property_buildings_homes.fences"
 	},
@@ -264,10 +268,6 @@
 	},
 	{
 		"text": "What matters about fences?",
-		"intent": "property_buildings_homes.fences"
-	},
-	{
-		"text": "What rules and permits exist regarding residential fences?",
 		"intent": "property_buildings_homes.fences"
 	},
 	{
@@ -283,16 +283,12 @@
 		"intent": "property_buildings_homes.fences.property_line"
 	},
 	{
-		"text": "How do I report hoarding that creates a fire hazard?",
-		"intent": "property_buildings_homes.fire_hazard"
-	},
-	{
 		"text": "I think there's a fire hazard",
 		"intent": "property_buildings_homes.fire_hazard"
 	},
 	{
-		"intent": "property_buildings_homes.graffiti",
-		"text": "Who should I call about graffiti?"
+		"text": "How do I report hoarding that creates a fire hazard?",
+		"intent": "property_buildings_homes.fire_hazard"
 	},
 	{
 		"intent": "property_buildings_homes.graffiti",
@@ -309,6 +305,14 @@
 	{
 		"intent": "property_buildings_homes.graffiti",
 		"text": "There is graffiti in a park what is the process for having it removed?"
+	},
+	{
+		"intent": "property_buildings_homes.graffiti",
+		"text": "Who should I call about graffiti?"
+	},
+	{
+		"text": "Can I get records of complaints against my landlord",
+		"intent": "property_buildings_homes.history_records.complaint.landlord"
 	},
 	{
 		"text": "Is there a record of property complaints?",
@@ -331,11 +335,7 @@
 		"intent": "property_buildings_homes.history_records.complaint.landlord"
 	},
 	{
-		"text": "Can I get records of complaints against my landlord",
-		"intent": "property_buildings_homes.history_records.complaint.landlord"
-	},
-	{
-		"text": "How can I get a tenants history of complaints?",
+		"text": "Can a landlord get a record of noise complaints against a tenant?",
 		"intent": "property_buildings_homes.history_records.complaint.tenant"
 	},
 	{
@@ -343,15 +343,11 @@
 		"intent": "property_buildings_homes.history_records.complaint.tenant"
 	},
 	{
-		"text": "Can a landlord get a record of noise complaints against a tenant?",
+		"text": "How can I get a tenants history of complaints?",
 		"intent": "property_buildings_homes.history_records.complaint.tenant"
 	},
 	{
 		"text": "Check the property infestation history",
-		"intent": "property_buildings_homes.history_records.infestation"
-	},
-	{
-		"text": "Has my house had infestations?",
 		"intent": "property_buildings_homes.history_records.infestation"
 	},
 	{
@@ -368,6 +364,10 @@
 	},
 	{
 		"text": "How can I check if an apartment has had bed bugs?",
+		"intent": "property_buildings_homes.history_records.infestation"
+	},
+	{
+		"text": "Has my house had infestations?",
 		"intent": "property_buildings_homes.history_records.infestation"
 	},
 	{
@@ -435,11 +435,11 @@
 		"intent": "property_buildings_homes.inspection.cancel.fire"
 	},
 	{
-		"text": "How do I cancel a fire inspection?",
+		"text": "I need to cancel an onsite fire inspection?",
 		"intent": "property_buildings_homes.inspection.cancel.fire"
 	},
 	{
-		"text": "I need to cancel an onsite fire inspection?",
+		"text": "How do I cancel a fire inspection?",
 		"intent": "property_buildings_homes.inspection.cancel.fire"
 	},
 	{
@@ -513,10 +513,6 @@
 		"intent": "property_buildings_homes.lighting"
 	},
 	{
-		"text": "Do I need to tell the city about outdoor lighting?",
-		"intent": "property_buildings_homes.lighting.outdoor"
-	},
-	{
 		"text": "Do I need permits for outdoor lighting?",
 		"intent": "property_buildings_homes.lighting.outdoor",
 		"entities": [
@@ -527,6 +523,10 @@
 				"entity": "category_keywords"
 			}
 		]
+	},
+	{
+		"text": "Do I need to tell the city about outdoor lighting?",
+		"intent": "property_buildings_homes.lighting.outdoor"
 	},
 	{
 		"text": "Can I have chickens or livestock on my property?",
@@ -565,7 +565,7 @@
 		"intent": "property_buildings_homes.lot_split"
 	},
 	{
-		"text": "How do I know if a tree is on City or private property?",
+		"text": "How do I know whos responsible for a tree?",
 		"intent": "property_buildings_homes.map.tree"
 	},
 	{
@@ -573,11 +573,11 @@
 		"intent": "property_buildings_homes.map.tree"
 	},
 	{
-		"text": "Is the tree on the sidewalk my own or the towns?",
+		"text": "How do I know if a tree is on City or private property?",
 		"intent": "property_buildings_homes.map.tree"
 	},
 	{
-		"text": "How do I know whos responsible for a tree?",
+		"text": "Is the tree on the sidewalk my own or the towns?",
 		"intent": "property_buildings_homes.map.tree"
 	},
 	{
@@ -623,6 +623,14 @@
 		"intent": "property_buildings_homes.modification.deck"
 	},
 	{
+		"text": "I'd like to make changes to my driveway, what do I need?",
+		"intent": "property_buildings_homes.modification.driveway"
+	},
+	{
+		"text": "Does the town need to approve changing a driveway?",
+		"intent": "property_buildings_homes.modification.driveway"
+	},
+	{
 		"text": "Who needs to approve a driveway change?",
 		"intent": "property_buildings_homes.modification.driveway"
 	},
@@ -639,14 +647,6 @@
 		]
 	},
 	{
-		"text": "Does the town need to approve changing a driveway?",
-		"intent": "property_buildings_homes.modification.driveway"
-	},
-	{
-		"text": "I'd like to make changes to my driveway, what do I need?",
-		"intent": "property_buildings_homes.modification.driveway"
-	},
-	{
 		"text": "I need to change the use of a property",
 		"intent": "property_buildings_homes.modification.property",
 		"entities": [
@@ -659,10 +659,6 @@
 		]
 	},
 	{
-		"text": "How do I change the use or occupancy of a building or property?",
-		"intent": "property_buildings_homes.modification.property"
-	},
-	{
 		"text": "I'm changing the occupancy of my building",
 		"intent": "property_buildings_homes.modification.property",
 		"entities": [
@@ -673,6 +669,10 @@
 				"entity": "category_keywords"
 			}
 		]
+	},
+	{
+		"text": "How do I change the use or occupancy of a building or property?",
+		"intent": "property_buildings_homes.modification.property"
 	},
 	{
 		"intent": "property_buildings_homes.mold",
@@ -700,10 +700,6 @@
 	},
 	{
 		"intent": "property_buildings_homes.noise.alarm",
-		"text": "There is an alarm that wont stop"
-	},
-	{
-		"intent": "property_buildings_homes.noise.alarm",
 		"text": "An alarm keeps ringing"
 	},
 	{
@@ -711,16 +707,8 @@
 		"text": "How do I report a noisy alarm?"
 	},
 	{
-		"intent": "property_buildings_homes.noise.neighbor",
-		"text": "My neighbors party is disturbing"
-	},
-	{
-		"intent": "property_buildings_homes.noise.neighbor",
-		"text": "How do I report a noisy neighbor?"
-	},
-	{
-		"intent": "property_buildings_homes.noise.neighbor",
-		"text": "I have a complaint about loud music."
+		"intent": "property_buildings_homes.noise.alarm",
+		"text": "There is an alarm that wont stop"
 	},
 	{
 		"intent": "property_buildings_homes.noise.neighbor",
@@ -729,6 +717,18 @@
 	{
 		"intent": "property_buildings_homes.noise.neighbor",
 		"text": "My neighbor is being obnoxious"
+	},
+	{
+		"intent": "property_buildings_homes.noise.neighbor",
+		"text": "How do I report a noisy neighbor?"
+	},
+	{
+		"intent": "property_buildings_homes.noise.neighbor",
+		"text": "My neighbors party is disturbing"
+	},
+	{
+		"intent": "property_buildings_homes.noise.neighbor",
+		"text": "I have a complaint about loud music."
 	},
 	{
 		"text": "Theres a weird smell in the air",
@@ -759,12 +759,20 @@
 		"intent": "property_buildings_homes.oil_tanks.history_records"
 	},
 	{
+		"text": "I need to know where decommisioned oil tanks are.",
+		"intent": "property_buildings_homes.oil_tanks.history_records"
+	},
+	{
 		"text": "Where are underground oil tanks?",
 		"intent": "property_buildings_homes.oil_tanks.history_records"
 	},
 	{
-		"text": "I need to know where decommisioned oil tanks are.",
-		"intent": "property_buildings_homes.oil_tanks.history_records"
+		"text": "Installing a new oil tank",
+		"intent": "property_buildings_homes.oil_tanks.replacement"
+	},
+	{
+		"text": "I'd like to remove an old oil tank and install a new one. What do I need?",
+		"intent": "property_buildings_homes.oil_tanks.replacement"
 	},
 	{
 		"text": "I need to replace my oil tank. What should I do?",
@@ -779,20 +787,8 @@
 		]
 	},
 	{
-		"text": "Installing a new oil tank",
-		"intent": "property_buildings_homes.oil_tanks.replacement"
-	},
-	{
-		"text": "I'd like to remove an old oil tank and install a new one. What do I need?",
-		"intent": "property_buildings_homes.oil_tanks.replacement"
-	},
-	{
 		"intent": "property_buildings_homes.over_growth",
-		"text": "My neighbors grass and weeds are out of control"
-	},
-	{
-		"intent": "property_buildings_homes.over_growth",
-		"text": "How do I get my neighbor to take care of their grass and foilage"
+		"text": "How do I report overgrown grass or weeds on private property?"
 	},
 	{
 		"intent": "property_buildings_homes.over_growth",
@@ -800,19 +796,11 @@
 	},
 	{
 		"intent": "property_buildings_homes.over_growth",
-		"text": "How do I report overgrown grass or weeds on private property?"
+		"text": "How do I get my neighbor to take care of their grass and foilage"
 	},
 	{
-		"text": "What do I need to do demolish a building?",
-		"intent": "property_buildings_homes.permit_license_permission.demolition",
-		"entities": [
-			{
-				"start": 21,
-				"end": 29,
-				"value": "property_buildings_homes",
-				"entity": "category_keywords"
-			}
-		]
+		"intent": "property_buildings_homes.over_growth",
+		"text": "My neighbors grass and weeds are out of control"
 	},
 	{
 		"text": "Do I need approval to demolish a building?",
@@ -831,6 +819,18 @@
 		]
 	},
 	{
+		"text": "What do I need to do demolish a building?",
+		"intent": "property_buildings_homes.permit_license_permission.demolition",
+		"entities": [
+			{
+				"start": 21,
+				"end": 29,
+				"value": "property_buildings_homes",
+				"entity": "category_keywords"
+			}
+		]
+	},
+	{
 		"text": "I want to demolish my house",
 		"intent": "property_buildings_homes.permit_license_permission.demolition"
 	},
@@ -843,15 +843,15 @@
 		"intent": "property_buildings_homes.permit_license_permission.dock"
 	},
 	{
+		"text": "How do I apply for a dumpster permit?",
+		"intent": "property_buildings_homes.permit_license_permission.dumpster"
+	},
+	{
 		"text": "Can I have a dumpster in my driveway?",
 		"intent": "property_buildings_homes.permit_license_permission.dumpster"
 	},
 	{
 		"text": "Do I need a permit to put a dumpster in the street?",
-		"intent": "property_buildings_homes.permit_license_permission.dumpster"
-	},
-	{
-		"text": "How do I apply for a dumpster permit?",
 		"intent": "property_buildings_homes.permit_license_permission.dumpster"
 	},
 	{
@@ -875,11 +875,11 @@
 		"intent": "property_buildings_homes.permit_license_permission.equipment_use"
 	},
 	{
-		"text": "Do we need a permit for a yard sale ?",
+		"text": "Do you need a permit to have a garage sale?",
 		"intent": "property_buildings_homes.permit_license_permission.garage_sale"
 	},
 	{
-		"text": "Do you need a permit to have a garage sale?",
+		"text": "Do we need a permit for a yard sale ?",
 		"intent": "property_buildings_homes.permit_license_permission.garage_sale"
 	},
 	{
@@ -899,10 +899,6 @@
 		]
 	},
 	{
-		"text": "Can we have a backyard campfire?",
-		"intent": "property_buildings_homes.permit_license_permission.outdoor_burning"
-	},
-	{
 		"text": "Is outdoor burning, like a campfire for firepit, allowed?",
 		"intent": "property_buildings_homes.permit_license_permission.outdoor_burning"
 	},
@@ -911,8 +907,8 @@
 		"intent": "property_buildings_homes.permit_license_permission.outdoor_burning"
 	},
 	{
-		"text": "Am I allowed to have propane?",
-		"intent": "property_buildings_homes.permit_license_permission.propane"
+		"text": "Can we have a backyard campfire?",
+		"intent": "property_buildings_homes.permit_license_permission.outdoor_burning"
 	},
 	{
 		"text": "Can I keep propane?",
@@ -923,8 +919,8 @@
 		"intent": "property_buildings_homes.permit_license_permission.propane"
 	},
 	{
-		"text": "Where do I get a shed permit?",
-		"intent": "property_buildings_homes.permit_license_permission.shed"
+		"text": "Am I allowed to have propane?",
+		"intent": "property_buildings_homes.permit_license_permission.propane"
 	},
 	{
 		"text": "I want a shed. What do I need?",
@@ -943,6 +939,10 @@
 		]
 	},
 	{
+		"text": "Where do I get a shed permit?",
+		"intent": "property_buildings_homes.permit_license_permission.shed"
+	},
+	{
 		"text": "I need a sign off on my building permit. Who do I contact?",
 		"intent": "property_buildings_homes.permit_license_permission.sign_off.building"
 	},
@@ -955,15 +955,7 @@
 		"intent": "property_buildings_homes.permit_license_permission.sign_off.building"
 	},
 	{
-		"text": "Who are the surrounding property owners?",
-		"intent": "property_buildings_homes.property.search"
-	},
-	{
 		"text": "Who owns property around 11 Juniper Drive, Cedar Knolls NJ?",
-		"intent": "property_buildings_homes.property.search"
-	},
-	{
-		"text": "I need a list of surrounding property owners, where do I get that?",
 		"intent": "property_buildings_homes.property.search"
 	},
 	{
@@ -971,11 +963,19 @@
 		"intent": "property_buildings_homes.property.search"
 	},
 	{
-		"text": "How can I locate my property line?",
-		"intent": "property_buildings_homes.property_line"
+		"text": "I need a list of surrounding property owners, where do I get that?",
+		"intent": "property_buildings_homes.property.search"
+	},
+	{
+		"text": "Who are the surrounding property owners?",
+		"intent": "property_buildings_homes.property.search"
 	},
 	{
 		"text": "How do I know where my property lines are?",
+		"intent": "property_buildings_homes.property_line"
+	},
+	{
+		"text": "How can I locate my property line?",
 		"intent": "property_buildings_homes.property_line"
 	},
 	{
@@ -991,11 +991,11 @@
 		"intent": "property_buildings_homes.registration.backflow_preventer"
 	},
 	{
-		"text": "How do I find out if my building's backflow preventer is registered?",
+		"text": "Is my backflow preventer registered?",
 		"intent": "property_buildings_homes.registration.backflow_preventer.check"
 	},
 	{
-		"text": "Is my backflow preventer registered?",
+		"text": "How do I find out if my building's backflow preventer is registered?",
 		"intent": "property_buildings_homes.registration.backflow_preventer.check"
 	},
 	{
@@ -1019,16 +1019,20 @@
 		"intent": "property_buildings_homes.registration.boiler"
 	},
 	{
-		"text": "What is required to sell a apartment?",
+		"text": "What do I need to do when selling a home?",
 		"intent": "property_buildings_homes.regulation_requirements.home.selling"
 	},
 	{
-		"text": "What do I need to do when selling a home?",
+		"text": "What is required to sell a apartment?",
 		"intent": "property_buildings_homes.regulation_requirements.home.selling"
 	},
 	{
 		"text": "When selling a home, what forms or requirements are there?",
 		"intent": "property_buildings_homes.regulation_requirements.home.selling"
+	},
+	{
+		"text": "How many people can live in a house?",
+		"intent": "property_buildings_homes.regulation_requirements.max_occupancy.home"
 	},
 	{
 		"text": "Is there a maximum number of people who can live in a house?",
@@ -1043,20 +1047,28 @@
 		]
 	},
 	{
-		"text": "How many people can live in a house?",
+		"text": "Whats the most number of people you can have in a house?",
 		"intent": "property_buildings_homes.regulation_requirements.max_occupancy.home"
 	},
 	{
-		"text": "Whats the most number of people you can have in a house?",
-		"intent": "property_buildings_homes.regulation_requirements.max_occupancy.home"
+		"text": "What requirements are there for railings?",
+		"intent": "property_buildings_homes.regulation_requirements.railings"
 	},
 	{
 		"text": "What is the required height for railings on a rooftop terrace?",
 		"intent": "property_buildings_homes.regulation_requirements.railings"
 	},
 	{
-		"text": "What requirements are there for railings?",
-		"intent": "property_buildings_homes.regulation_requirements.railings"
+		"text": "Is it ok if I rent rooms in my apartment?",
+		"intent": "property_buildings_homes.regulation_requirements.rental"
+	},
+	{
+		"text": "Can I rent rooms in my home?",
+		"intent": "property_buildings_homes.regulation_requirements.rental"
+	},
+	{
+		"text": "What are the rules about renting out rooms?",
+		"intent": "property_buildings_homes.regulation_requirements.rental"
 	},
 	{
 		"text": "Can I rent out my basement as an apartment?",
@@ -1069,18 +1081,6 @@
 				"entity": "category_keywords"
 			}
 		]
-	},
-	{
-		"text": "What are the rules about renting out rooms?",
-		"intent": "property_buildings_homes.regulation_requirements.rental"
-	},
-	{
-		"text": "Is it ok if I rent rooms in my apartment?",
-		"intent": "property_buildings_homes.regulation_requirements.rental"
-	},
-	{
-		"text": "Can I rent rooms in my home?",
-		"intent": "property_buildings_homes.regulation_requirements.rental"
 	},
 	{
 		"text": "What kind of permit do I need to perform roof maintenance?",
@@ -1143,16 +1143,12 @@
 		"intent": "property_buildings_homes.regulation_requirements.sprinkler"
 	},
 	{
-		"text": "When does a building need sprinkler system?",
-		"intent": "property_buildings_homes.regulation_requirements.sprinkler"
-	},
-	{
 		"text": "How do I find out if a building requires a sprinkler system?",
 		"intent": "property_buildings_homes.regulation_requirements.sprinkler"
 	},
 	{
-		"text": "A tree hangs over my property",
-		"intent": "property_buildings_homes.regulation_requirements.tree.overhang"
+		"text": "When does a building need sprinkler system?",
+		"intent": "property_buildings_homes.regulation_requirements.sprinkler"
 	},
 	{
 		"text": "My neighbors tree extends into my property. Can I prune it without permission?",
@@ -1163,11 +1159,15 @@
 		"intent": "property_buildings_homes.regulation_requirements.tree.overhang"
 	},
 	{
+		"text": "A tree hangs over my property",
+		"intent": "property_buildings_homes.regulation_requirements.tree.overhang"
+	},
+	{
 		"text": "What do I do about a neighbor's tree leaning towards my property?",
 		"intent": "property_buildings_homes.regulation_requirements.tree.overhang"
 	},
 	{
-		"text": "Is a landlord supposed to give air conditioning?",
+		"text": "Is a landlord required to provide air conditioning?",
 		"intent": "property_buildings_homes.responsibility.air_conditioning"
 	},
 	{
@@ -1175,7 +1175,7 @@
 		"intent": "property_buildings_homes.responsibility.air_conditioning"
 	},
 	{
-		"text": "Is a landlord required to provide air conditioning?",
+		"text": "Is a landlord supposed to give air conditioning?",
 		"intent": "property_buildings_homes.responsibility.air_conditioning"
 	},
 	{
@@ -1183,11 +1183,11 @@
 		"intent": "property_buildings_homes.responsibility.bed_bugs"
 	},
 	{
-		"text": "Does my landlord pay for bed bug extermination?",
+		"text": "Who must pay for bed bug extermination in an apartment?",
 		"intent": "property_buildings_homes.responsibility.bed_bugs"
 	},
 	{
-		"text": "Who must pay for bed bug extermination in an apartment?",
+		"text": "Does my landlord pay for bed bug extermination?",
 		"intent": "property_buildings_homes.responsibility.bed_bugs"
 	},
 	{
@@ -1211,10 +1211,6 @@
 		"intent": "property_buildings_homes.responsibility.furnace"
 	},
 	{
-		"text": "When does my landlord have to turn my heat on?",
-		"intent": "property_buildings_homes.responsibility.heat"
-	},
-	{
 		"text": "Is heating supposed to be provided by a landlord?",
 		"intent": "property_buildings_homes.responsibility.heat",
 		"entities": [
@@ -1227,7 +1223,7 @@
 		]
 	},
 	{
-		"text": "Is working heating for apartments required?",
+		"text": "When does my landlord have to turn my heat on?",
 		"intent": "property_buildings_homes.responsibility.heat"
 	},
 	{
@@ -1239,16 +1235,36 @@
 		"intent": "property_buildings_homes.responsibility.heat"
 	},
 	{
+		"text": "Is working heating for apartments required?",
+		"intent": "property_buildings_homes.responsibility.heat"
+	},
+	{
 		"intent": "property_buildings_homes.sewage.backup",
 		"text": "How do I resolve a sewer backup?"
+	},
+	{
+		"intent": "property_buildings_homes.sewage.backup",
+		"text": "What do I do if sewage is backing up in my basement?"
 	},
 	{
 		"intent": "property_buildings_homes.sewage.backup",
 		"text": "Sewage is backing up into my basement"
 	},
 	{
-		"intent": "property_buildings_homes.sewage.backup",
-		"text": "What do I do if sewage is backing up in my basement?"
+		"text": "I have sewage backup",
+		"intent": "property_buildings_homes.sewage.backup"
+	},
+	{
+		"text": "Report sewage backup",
+		"intent": "property_buildings_homes.sewage.backup"
+	},
+	{
+		"text": "How do I switch to a sewer connection?",
+		"intent": "property_buildings_homes.sewer_connection"
+	},
+	{
+		"text": "How do I get a sewer connection",
+		"intent": "property_buildings_homes.sewer_connection"
 	},
 	{
 		"text": "How do I change from septic to sewer?",
@@ -1263,15 +1279,7 @@
 		]
 	},
 	{
-		"text": "How do I get a sewer connection",
-		"intent": "property_buildings_homes.sewer_connection"
-	},
-	{
 		"text": "I want a sewer connection",
-		"intent": "property_buildings_homes.sewer_connection"
-	},
-	{
-		"text": "How do I switch to a sewer connection?",
 		"intent": "property_buildings_homes.sewer_connection"
 	},
 	{
@@ -1288,7 +1296,11 @@
 	},
 	{
 		"intent": "property_buildings_homes.squatting",
-		"text": "Someone is squatting in my building"
+		"text": "How do I report someone living in a vacant building?"
+	},
+	{
+		"intent": "property_buildings_homes.squatting",
+		"text": "What do I do about squatters?"
 	},
 	{
 		"intent": "property_buildings_homes.squatting",
@@ -1296,11 +1308,7 @@
 	},
 	{
 		"intent": "property_buildings_homes.squatting",
-		"text": "How do I report someone living in a vacant building?"
-	},
-	{
-		"intent": "property_buildings_homes.squatting",
-		"text": "What do I do about squatters?"
+		"text": "Someone is squatting in my building"
 	},
 	{
 		"text": "As a tenant do I have any rights?",
@@ -1316,6 +1324,10 @@
 	},
 	{
 		"intent": "property_buildings_homes.violation.housing.illegal_apartments",
+		"text": "There are more people than allowed living in a house"
+	},
+	{
+		"intent": "property_buildings_homes.violation.housing.illegal_apartments",
 		"text": "How do I report an illegal renting?"
 	},
 	{
@@ -1323,12 +1335,8 @@
 		"text": "How do I report an illegal rental of living space?"
 	},
 	{
-		"intent": "property_buildings_homes.violation.housing.illegal_apartments",
-		"text": "There are more people than allowed living in a house"
-	},
-	{
 		"intent": "property_buildings_homes.violation.housing.repairs",
-		"text": "How do I report a maintenance problem in my apartment building?"
+		"text": "The landlord isn't taking care of the apartment building"
 	},
 	{
 		"intent": "property_buildings_homes.violation.housing.repairs",
@@ -1336,11 +1344,7 @@
 	},
 	{
 		"intent": "property_buildings_homes.violation.housing.repairs",
-		"text": "The landlord isn't taking care of the apartment building"
-	},
-	{
-		"text": "My city apartment is falling apart",
-		"intent": "property_buildings_homes.violation.housing.repairs.public"
+		"text": "How do I report a maintenance problem in my apartment building?"
 	},
 	{
 		"text": "The city isn't taking care of my building",
@@ -1348,6 +1352,10 @@
 	},
 	{
 		"text": "How do I report a maintenance problem in my NYCHA building?",
+		"intent": "property_buildings_homes.violation.housing.repairs.public"
+	},
+	{
+		"text": "My city apartment is falling apart",
 		"intent": "property_buildings_homes.violation.housing.repairs.public"
 	},
 	{
@@ -1367,12 +1375,12 @@
 		"text": "How do I report a Water Main Break?"
 	},
 	{
-		"intent": "property_buildings_homes.water.pressure",
-		"text": "How do I report Low Water Pressure?"
+		"text": "Water mane broke",
+		"intent": "property_buildings_homes.water.main_break"
 	},
 	{
 		"intent": "property_buildings_homes.water.pressure",
-		"text": "How do I report low water pressure in my apartment?"
+		"text": "The water pressure seems low"
 	},
 	{
 		"intent": "property_buildings_homes.water.pressure",
@@ -1380,35 +1388,47 @@
 	},
 	{
 		"intent": "property_buildings_homes.water.pressure",
-		"text": "The water pressure seems low"
+		"text": "How do I report low water pressure in my apartment?"
 	},
 	{
-		"intent": "property_buildings_homes.water.quality",
-		"text": "Why is the water brown?"
+		"intent": "property_buildings_homes.water.pressure",
+		"text": "How do I report Low Water Pressure?"
 	},
 	{
 		"intent": "property_buildings_homes.water.quality",
 		"text": "our water is brown"
 	},
 	{
-		"text": "How do I measure how hard the water is?",
-		"intent": "property_buildings_homes.water_hardness"
+		"intent": "property_buildings_homes.water.quality",
+		"text": "Why is the water brown?"
 	},
 	{
 		"text": "What is my water hardness?",
 		"intent": "property_buildings_homes.water_hardness"
 	},
 	{
-		"intent": "property_buildings_homes.water_meter",
-		"text": "How do I report my meter box is full of water?"
+		"text": "How do I measure how hard the water is?",
+		"intent": "property_buildings_homes.water_hardness"
 	},
 	{
 		"intent": "property_buildings_homes.water_meter",
 		"text": "My water meter must be broken, the reading is too high."
 	},
 	{
+		"intent": "property_buildings_homes.water_meter",
+		"text": "How do I report my meter box is full of water?"
+	},
+	{
 		"intent": "property_buildings_homes.water_meter.guide",
 		"text": "How do I get a final water meter reading?"
+	},
+	{
+		"text": "What water company does our town use?",
+		"intent": "property_buildings_homes.water_supplier"
+	},
+	{
+		"text": "What company does the town contract for its water?",
+		"intent": "property_buildings_homes.water_supplier"
 	},
 	{
 		"text": "Who provides us with water?",
@@ -1420,14 +1440,6 @@
 	},
 	{
 		"text": "Where is the water coming from?",
-		"intent": "property_buildings_homes.water_supplier"
-	},
-	{
-		"text": "What water company does our town use?",
-		"intent": "property_buildings_homes.water_supplier"
-	},
-	{
-		"text": "What company does the town contract for its water?",
 		"intent": "property_buildings_homes.water_supplier"
 	}
 ]
