@@ -8,6 +8,7 @@ import EmailService from '../services/email';
 import { runFeed } from '../feeds/helpers';
 import * as KNOWLEDGE_CONST from '../constants/knowledge-base';
 import { ShoutOutTrigger } from '../shouts/models';
+import ShoutOuts from '../shouts/logic';
 
 export const incrementTimesAsked = (questionId, orgId) => {
   if (!questionId || !orgId) return;
@@ -453,6 +454,12 @@ export const deleteContact = (contact) => {
     });
 };
 
+/**
+ * Get knowledge base questions/answers as rows for a CSV
+ * @param {Number} params.label
+ * @param {Number} params.answered
+ * @param {Object} params.shout_outs
+ */
 export function getQuestionsAsTable(params = {}) {
   const questionFilter = {};
   if (params.knowledge_category_id) {
@@ -468,7 +475,14 @@ export function getQuestionsAsTable(params = {}) {
       : questionsCollection.toJSON();
     const finalResults = [];
     questionJSON.forEach((q) => {
+      // Aborting Filters
       if (!q.label) return;
+      if (q.label.includes('personality')) return
+      if (params.shout_outs === 'false') {
+        if (ShoutOuts.all[q.label]) return;
+      } else if (params.shout_outs === 'true') {
+        if (!ShoutOuts.all[q.label]) return;
+      }
       // If has answers, do one thing
       let answer = null;
       if (q.answers && q.answers.length > 0) {
