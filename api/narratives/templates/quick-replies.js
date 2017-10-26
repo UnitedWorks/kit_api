@@ -43,8 +43,8 @@ export const evalHelpfulAnswer = [
 export const allNotificationsOn = { content_type: 'text', title: 'Turn On Reminders', payload: 'Turn on notifications' };
 export const allNotificationsOff = { content_type: 'text', title: 'Turn Off Reminders', payload: 'Turn off notifications' };
 
-export const sanitationOn = { content_type: 'text', title: '♻ On', payload: 'Turn on sanitation notifications' };
-export const sanitationOff = { content_type: 'text', title: '♻ Off', payload: 'Turn off sanitation notifications' };
+export const sanitationOn = { content_type: 'text', title: 'Turn On ♻', payload: 'Turn on sanitation notifications' };
+export const sanitationOff = { content_type: 'text', title: 'Turn Off ♻', payload: 'Turn off sanitation notifications' };
 export const sanitationNotification = [
   sanitationOn,
   sanitationOff,

@@ -94,8 +94,11 @@ export async function runFeed(feedObj, options = { filterPast: true }) {
       // Obj to array
       .map(v => ics[v])
       // Filter out events that have passed unless default is overriden
-      .filter(v => (options.filterPast && v.end ?
-        new Date(v.end) > Date.now() : options.filterPast && true))
+      .filter((v) => {
+        if (!options.filterPast) return false;
+        const diff = moment(new Date(v.start)).diff(moment(), 'h');
+        return diff > -3;
+      })
       // Refromat to our standard
       .map(event => veventToKnowledgeEvent({ ...event, organization_id: feed.organization_id }));
     return { events };

@@ -57,7 +57,7 @@ async function todaysEvents() {
     if (!eventDeck[e.organization_id]) eventDeck[e.organization_id] = [];
     // If passes check, push
     const diff = moment(new Date(e.availabilitys[0].t_start)).diff(moment(), 'h');
-    const passes = diff <= 16 && diff > -2;
+    const passes = diff <= 18 && diff > -4;
     if (passes) eventDeck[e.organization_id].push(e);
   });
   return eventDeck;
@@ -150,7 +150,7 @@ export function scheduledJobs() {
 
   // Constituent Notification: Evening - Services
   const constituentNotificationsEvenings = schedule.scheduleJob('0 30 19 * * *', () => {
-    NarrativeSession.fetchAll({ withRelated: ['organization'] }).then((s) => {
+    NarrativeSession.fetchAll({ withRelated: ['organization', 'constituent', 'constituent.facebookEntry', 'constituent.smsEntry'] }).then((s) => {
       // Get sanitation answers for each org
       const sessions = s.toJSON().filter(session => session.organization &&
         session.organization.type === ORG_CONST.GOVERNMENT);
@@ -178,7 +178,7 @@ export function scheduledJobs() {
         answerClusters.filter(c => c).forEach(cluster =>
           (orgAnswerSet[Object.keys(cluster)[0]] = cluster[Object.keys(cluster)[0]]));
         // Run Notifciation on Sessions
-        sessions.forEach((session) => {
+        sessions.forEach((session, index) => {
           // Check if org even has answers
           if (orgAnswerSet.hasOwnProperty(session.organization_id)) {
             if (session.data_store && !session.data_store.notifications) session.data_store.notifications = {};
@@ -205,13 +205,11 @@ export function scheduledJobs() {
             } else if (hasRecycling && hasTrash) {
               messageInsert = 'trash and recycling';
             }
-            // If wants notification, check availability for tomorrow, and send
-            if (messageInsert && session.data_store.notifications.sanitation_collection === true) {
+            const client = getPreferredClient(session.constituent);
+            if (messageInsert && session.data_store.notifications.sanitation_collection === true && client) {
               const reminderMessage = `Tomorrow is ${messageInsert} collection. Remember to set out after 4pm!`;
-              messageConstituent(session.constituent_id, reminderMessage);
-            // If we haven't asked yet, request permission
+              client.send(reminderMessage, [QUICK_REPLIES.sanitationOff]);
             }
-            // Otherwise the person has said they don't want it
           }
         });
       });
