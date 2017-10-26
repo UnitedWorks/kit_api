@@ -468,18 +468,24 @@ export function getQuestionsAsTable(params = {}) {
       : questionsCollection.toJSON();
     const finalResults = [];
     questionJSON.forEach((q) => {
-      let textAnswer = q.answers.filter(a => a.text);
-      if (textAnswer.length === 1) {
-        textAnswer = textAnswer[0].text;
-      } else {
-        textAnswer = '';
+      if (!q.label) return;
+      // If has answers, do one thing
+      let answer = null;
+      if (q.answers && q.answers.length > 0) {
+        const textAnswers = q.answers.filter(a => a.text);
+        if (textAnswers.length === 1) {
+          answer = textAnswers[0].text;
+        }
       }
-      finalResults.push({
-        question_id: q.id,
-        category: q.category.label,
-        question: q.question,
-        answer: textAnswer,
-      });
+      const baseResult = { question_id: q.id, question: q.question };
+      if (params.label === 'true') baseResult.label = q.label;
+      if (!params.hasOwnProperty('answered')) {
+        finalResults.push({ ...baseResult, answer: answer || '' });
+      } else if (params.hasOwnProperty('answered') && params.answered === 'false' && !answer) {
+        finalResults.push({ ...baseResult, answer: '' });
+      } else if (params.hasOwnProperty('answered') && params.answered === 'true' && answer) {
+        finalResults.push({ ...baseResult, answer });
+      }
     });
     return { rows: finalResults };
   });
