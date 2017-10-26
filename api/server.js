@@ -56,13 +56,15 @@ app.use('/tasks', require('./tasks/routes'));
 app.use('/feeds', require('./feeds/routes'));
 
 // Log Viewing
-app.get('/logs/info', (req, res) => {
+app.get('/logs/info', (req, res, next) => {
   fs.readFile(path.join(__dirname, '..', 'logs/info.log'), 'utf8', (err, data) => {
+    if (err) next(err);
     res.status(200).json(data);
   });
 });
-app.get('/logs/error', (req, res) => {
+app.get('/logs/error', (req, res, next) => {
   fs.readFile(path.join(__dirname, '..', 'logs/error.log'), 'utf8', (err, data) => {
+    if (err) next(err);
     res.status(200).json(data);
   });
 });
