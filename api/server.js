@@ -38,10 +38,6 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-app.get('/', (req, res) => {
-  res.status(200).send();
-});
-
 // API
 app.use('/auth', require('./auth/routes'));
 app.use('/accounts', require('./accounts/routes'));
