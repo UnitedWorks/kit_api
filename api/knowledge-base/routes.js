@@ -248,7 +248,7 @@ router.get('/questions', (req, res, next) => {
     .catch(error => next(error));
 });
 
-router.get('/questions/download', requireAuth, (req, res, next) => {
+router.get('/questions/download', (req, res, next) => {
   try {
     getQuestionsAsTable(req.query).then((data) => {
       res.status(200).send({ questions: data });
