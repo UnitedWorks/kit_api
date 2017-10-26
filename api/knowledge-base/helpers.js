@@ -477,7 +477,7 @@ export function getQuestionsAsTable(params = {}) {
     questionJSON.forEach((q) => {
       // Aborting Filters
       if (!q.label) return;
-      if (q.label.includes('personality')) return
+      if (q.label.includes('personality') || q.label.includes('search')) return
       if (params.shout_outs === 'false') {
         if (ShoutOuts.all[q.label]) return;
       } else if (params.shout_outs === 'true') {
