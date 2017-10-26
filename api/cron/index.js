@@ -8,7 +8,7 @@ import { Feed } from '../feeds/models';
 import { runWatcher, runFeed } from '../feeds/helpers';
 import { getAnswers } from '../knowledge-base/helpers';
 import { NarrativeSession } from '../narratives/models';
-import { messageConstituent, getPreferredClient } from '../conversations/helpers';
+import { getPreferredClient } from '../conversations/helpers';
 import KitClient from '../narratives/clients/kit-client';
 import * as QUICK_REPLIES from '../narratives/templates/quick-replies';
 import { Organization } from '../accounts/models';
@@ -86,7 +86,7 @@ async function todaysWeather() {
 
 export function scheduledJobs() {
   // Constituent Notification Signup
-  const constituentNotifications = schedule.scheduleJob('0 15 13 * * 1', () => {
+  schedule.scheduleJob('0 15 13 * * 1', () => {
     NarrativeSession.fetchAll({ withRelated: ['constituent', 'constituent.facebookEntry', 'constituent.smsEntry', 'organization'] })
       .then((s) => {
         s.toJSON().filter(session => session.organization &&
@@ -103,7 +103,7 @@ export function scheduledJobs() {
   });
 
   // Constituent Notification: Morning - Weather, Events, Alerts
-  const constituentNotificationsMornings = schedule.scheduleJob('0 15 12 * * *', () => {
+  schedule.scheduleJob('0 15 12 * * *', () => {
     NarrativeSession.fetchAll({ withRelated: ['constituent', 'constituent.facebookEntry', 'constituent.smsEntry', 'organization'] }).then((s) => {
       todaysWeather().then((weather) => {
         todaysEvents().then((events) => {
@@ -149,7 +149,7 @@ export function scheduledJobs() {
   });
 
   // Constituent Notification: Evening - Services
-  const constituentNotificationsEvenings = schedule.scheduleJob('0 30 19 * * *', () => {
+  schedule.scheduleJob('0 30 19 * * *', () => {
     NarrativeSession.fetchAll({ withRelated: ['organization', 'constituent', 'constituent.facebookEntry', 'constituent.smsEntry'] }).then((s) => {
       // Get sanitation answers for each org
       const sessions = s.toJSON().filter(session => session.organization &&
