@@ -48,6 +48,10 @@ export default {
       }
       return 'conclude';
     },
+    action() {
+      // On webview, the "nevermind quick reply always aims for this state"
+      return this.input('message');
+    },
     async message() {
       if (!this.get('action')) return this.getBaseState();
       const steps = this.get('action').params;
@@ -55,7 +59,7 @@ export default {
         this.delete('action');
         return this.getBaseState();
       }
-      const nlpData = await nlp.message(this.snapshot.input.payload.text).then(n => n);
+      const nlpData = await nlp.message(this.snapshot.input.payload.text || this.snapshot.input.payload.payload).then(n => n);
       if (nlpData.entities.intent && nlpData.entities.intent[0].value === 'speech.escape') {
         this.messagingClient.send('Ok! Let me know if there\'s something else I can answer or report for you.', replyTemplates.whatCanIAsk);
         this.delete('action');

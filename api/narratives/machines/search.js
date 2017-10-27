@@ -81,9 +81,10 @@ export default {
         if (!q.value.toLowerCase().includes('event')) searchStrings.push(q.value);
       });
     }
+    let finalEventGrouping = [];
     // If strings exist, run filter
     if (allEvents.length > 0 && searchStrings.length > 0) {
-      const filteredEvents = allEvents.filter((event) => {
+      finalEventGrouping = allEvents.filter((event) => {
         let passes = false;
         searchStrings.forEach((string) => {
           passes = passes || stringSimilarity.compareTwoStrings(string, event.name) > 0.32;
@@ -91,16 +92,17 @@ export default {
         return passes;
       }).sort((a, b) => a.availabilitys[0].t_start - b.availabilitys[0].t_start)
         .slice(0, 10).map(event => ({ type: 'event', payload: event }));
-      this.messagingClient.addAll(
-        KitClient.genericTemplateFromEntities(filteredEvents), replyTemplates.evalHelpfulAnswer);
     } else if (allEvents.length > 0) {
-      this.messagingClient.addAll(
-        KitClient.genericTemplateFromEntities(allEvents
-          .sort((a, b) => a.availabilitys[0].t_start - b.availabilitys[0].t_start)
-          .slice(0, 10).map(event => ({ type: 'event', payload: event }))),
-        replyTemplates.evalHelpfulAnswer);
+      finalEventGrouping = allEvents.sort((a, b) =>
+        a.availabilitys[0].t_start - b.availabilitys[0].t_start)
+        .slice(0, 10).map(event => ({ type: 'event', payload: event }));
+    }
+    if (!finalEventGrouping || finalEventGrouping.length === 0) {
+      this.messagingClient.addToQuene('Sorry, I was unable to find anything upcoming.');
     } else {
-      this.messagingClient.addToQuene('Sorry, I was unable to find upcoming events for you.');
+      this.messagingClient.addAll(
+        KitClient.genericTemplateFromEntities(finalEventGrouping),
+        replyTemplates.evalHelpfulAnswer);
     }
     return this.messagingClient.runQuene().then(() => this.getBaseState());
   },
