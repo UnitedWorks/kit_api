@@ -108,7 +108,7 @@ export default {
           new SlackService({
             username: 'Message',
             icon: 'envelope',
-          }).send(`> *${this.snapshot.constituent_id}:* "${this.snapshot.input.payload.text}"`);
+          }).send(`> *C ${this.snapshot.constituent_id}:* "${this.snapshot.input.payload.text}"`);
           // Return Answer
           return Promise.resolve(intentMap[entities.intent[0].value] ||
             fetchAnswers(entities.intent[0].value, this));
