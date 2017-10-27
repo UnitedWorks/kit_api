@@ -113,7 +113,7 @@
   },
   {
     "text": "Who tests for HIV",
-    "intent": "health_medicine.screening.std",
+    "intent": "health_medicine.std.screening",
     "entities": [
       {
         "start": 14,
@@ -125,15 +125,15 @@
   },
   {
     "text": "How do I know if I have a STD",
-    "intent": "health_medicine.screening.std"
+    "intent": "health_medicine.std.screening"
   },
   {
     "text": "Where can I get confidential health screenings or testing for STDs?",
-    "intent": "health_medicine.screening.std"
+    "intent": "health_medicine.std.screening"
   },
   {
     "text": "Where do I get STD testing",
-    "intent": "health_medicine.screening.std",
+    "intent": "health_medicine.std.screening",
     "entities": [
       {
         "start": 15,
@@ -145,11 +145,11 @@
   },
   {
     "text": "how much is a TB test?",
-    "intent": "health_medicine.screening.tb"
+    "intent": "health_medicine.tb.screening"
   },
   {
     "text": "How much does TB testing cost at a City clinic or hospital?",
-    "intent": "health_medicine.screening.tb",
+    "intent": "health_medicine.tb.screening",
     "entities": [
       {
         "start": 14,
