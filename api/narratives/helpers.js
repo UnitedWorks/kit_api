@@ -2,6 +2,7 @@ import { pointPolygonCollision, pointCircleCollision } from '../utils/collision'
 import * as PROVIDERS from '../constants/providers';
 import KitClient from './clients/kit-client';
 import * as TAGS from '../constants/nlp-tagging';
+import * as INTEGRATIONS from '../constants/integrations';
 import * as elementTemplates from './templates/elements';
 import * as replyTemplates from './templates/quick-replies';
 import { i18n } from './templates/messages';
@@ -12,6 +13,7 @@ import * as env from '../env';
 import { shuffle } from '../utils';
 import shoutOutLogic from '../shouts/logic';
 import { paramsToPromptSteps } from '../shouts/helpers';
+import { getIntegrations } from '../integrations/helpers';
 
 /* TODO(nicksahler): Declare in machine, automatically route */
 export function getBaseState(providerName, section) {
@@ -79,20 +81,35 @@ export async function fetchAnswers(intent, session) {
     session.messagingClient.addToQuene('Can you give me a bit more detail? For example:');
     session.messagingClient.addToQuene(randomPick(altQuestions, 4).map(a => a.question).join(' '));
     return session.messagingClient.runQuene().then(() => session.getBaseState());
-  // If no answers, run fallback
+  // If no answers, run default shout out, integration, or fallback
   } else if (!answers || (!answers.text && !answers.actions && !answers.facilities &&
     !answers.services && !answers.contacts && !answers.feeds)) {
-    const fallback = await getCategoryFallback([intent.split('.')[0]], session.get('organization').id).then(fbd => fbd);
     const shoutOutTemplate = shoutOutLogic.ready[intent];
-    // If a default shout out exists, run it
+    const fallback = await getCategoryFallback([intent.split('.')[0]], session.get('organization').id).then(fbd => fbd);
+    // Check Shout Out
     if (shoutOutTemplate) {
+      // If Integration Overriding Shout Out Exists, run it
+      const hasSeeClickFix = await getIntegrations({ organization: { id: session.get('organization').id } })
+        .then((ints) => {
+          const filtered = ints.filter(i => i.label === INTEGRATIONS.SEE_CLICK_FIX);
+          return filtered[0] && filtered[0].enabled;
+        });
+      if (hasSeeClickFix) {
+        session.messagingClient.addAll([
+          i18n('see_click_fix'),
+          elementTemplates.SeeClickFixTemplate,
+        ], replyTemplates.evalHelpfulAnswer);
+        session.messagingClient.runQuene();
+        return session.getBaseState();
+      // If a default Shout Out exists, run it
+      }
       const actionObj = { shout_out: intent, params: paramsToPromptSteps(shoutOutTemplate.params) };
       session.set('action', actionObj);
       missingQuestionEmail(fallback.representatives, session, question);
-      EventTracker('answer_sent', { session, question }, { status: 'fallback' });
       return 'action.waiting_for_response';
+    }
     // See if we have fallback contacts
-    } else if (fallback.contacts.length === 0) {
+    if (fallback.contacts.length === 0) {
       session.messagingClient.addToQuene(i18n('dont_know'));
       EventTracker('answer_sent', { session, question }, { status: 'failed' });
     } else {

@@ -133,6 +133,7 @@ const updateOperations = [
   { from: 'property_buildings_homes.property_boiler_register', to: 'property_buildings_homes.registration.boiler' },
   { delete: 'property_buildings_homes.property_change_use' },
   { delete: 'property_buildings_homes.change_use' },
+  { delete: 'property_buildings_homes.graffiti.report' },
   { from: 'property_buildings_homes.property_demolition_requirements', to: 'property_buildings_homes.permit_license_permission.demolition' },
   { from: 'property_buildings_homes.property_distressed_animal', to: 'property_buildings_homes.animal.distressed' },
   { from: 'property_buildings_homes.property_district.check', to: 'property_buildings_homes.district' },

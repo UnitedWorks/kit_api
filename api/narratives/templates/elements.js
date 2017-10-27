@@ -140,6 +140,24 @@ export const genericBusiness = {
   }],
 };
 
+export const SeeClickFixElement = {
+  title: 'SeeClickFix',
+  subtitle: 'Online Reporting for Issues and Suggestions',
+  buttons: [{
+    type: 'web_url',
+    title: 'Web Reporter',
+    url: 'https://seeclickfix.com/report',
+  }, {
+    type: 'element_share',
+  }],
+};
+
+export const SeeClickFixTemplate = {
+  type: 'template',
+  templateType: 'generic',
+  elements: [SeeClickFixElement],
+};
+
 export function genericContact(contact) {
   const element = {
     title: contact.name,

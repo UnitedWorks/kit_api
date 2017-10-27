@@ -108,7 +108,7 @@ export default {
           new SlackService({
             username: 'Message',
             icon: 'envelope',
-          }).send(`> *C ${this.snapshot.constituent_id}:* "${this.snapshot.input.payload.text}"`);
+          }).send(`>*Con. ${this.snapshot.constituent_id}:* "${this.snapshot.input.payload.text}"`);
           // Return Answer
           return Promise.resolve(intentMap[entities.intent[0].value] ||
             fetchAnswers(entities.intent[0].value, this));
@@ -150,7 +150,7 @@ export default {
     new SlackService({
       username: 'Misunderstood Request',
       icon: 'question',
-    }).send(`>*Request Message*: ${this.snapshot.input.payload.text}\n>*Org*: ${this.snapshot.data_store.organization.name} / *Interface*: ${this.snapshot.constituent.facebookEntry ? 'Facebook' : 'Web'}`);
+    }).send(`>*Con. ${this.snapshot.constituent_id}:* "${this.snapshot.input.payload.text}"\n>*Org*: ${this.snapshot.data_store.organization.name} -- *Interface*: ${this.snapshot.constituent.facebookEntry ? 'Facebook' : 'Web'}`);
     EventTracker('constituent_input_failure', { session: this });
     // Handle Failure
     const firstFailMessage = randomPick([

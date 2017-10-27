@@ -5,9 +5,9 @@ import { logger } from '../../logger';
 export default {
   answer_helpful() {
     new SlackService({
-      username: 'Answer Helpful!',
+      username: 'Helpful',
       icon: 'raised_hands',
-    }).send(`>*Constituent ID*: ${this.snapshot.constituent.id}`);
+    }).send(`>*Con. ${this.snapshot.constituent.id}*`);
     try {
       EventTracker('answer_feedback', { session: this }, { helpful: 5 });
     } catch (e) {
@@ -17,15 +17,15 @@ export default {
   },
   answer_not_helpful() {
     new SlackService({
-      username: 'Answer Not Helpful',
+      username: 'Not Helpful',
       icon: 'disappointed',
-    }).send(`>*Constituent ID*: ${this.snapshot.constituent.id}`);
+    }).send(`>*Con. ${this.snapshot.constituent.id}*`);
     try {
       EventTracker('answer_feedback', { session: this }, { helpful: 0 });
     } catch (e) {
       logger.error(e);
     }
-    return this.messagingClient.send('Sorry about that. My little bot brain is doing its best :/ Hope I can do better next time!')
+    return this.messagingClient.send('Sorry about that :/ Hope I can do better next time!')
       .then(() => this.getBaseState());
   },
 };
