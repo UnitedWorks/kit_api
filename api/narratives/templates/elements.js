@@ -147,6 +147,7 @@ export const SeeClickFixElement = {
     type: 'web_url',
     title: 'Web Reporter',
     url: 'https://seeclickfix.com/report',
+    webview_height_ratio: 'tall',
   }, {
     type: 'element_share',
   }],
