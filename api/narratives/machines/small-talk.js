@@ -104,6 +104,12 @@ export default {
         };
 
         if (entities.intent && entities.intent[0]) {
+          // Ping each message so if we get a thumbs down, we know what it references
+          new SlackService({
+            username: 'Message',
+            icon: 'envelope',
+          }).send(`> *${this.snapshot.constituent_id}:* "${this.snapshot.input.payload.text}"`);
+          // Return Answer
           return Promise.resolve(intentMap[entities.intent[0].value] ||
             fetchAnswers(entities.intent[0].value, this));
         }
@@ -144,7 +150,7 @@ export default {
     new SlackService({
       username: 'Misunderstood Request',
       icon: 'question',
-    }).send(`>*Request Message*: ${this.snapshot.input.payload.text}\n>*Constituent ID*: ${this.snapshot.constituent.id}`);
+    }).send(`>*Request Message*: ${this.snapshot.input.payload.text}\n>*Org*: ${this.snapshot.data_store.organization.name} / *Interface*: ${this.snapshot.constituent.facebookEntry ? 'Facebook' : 'Web'}`);
     EventTracker('constituent_input_failure', { session: this });
     // Handle Failure
     const firstFailMessage = randomPick([
