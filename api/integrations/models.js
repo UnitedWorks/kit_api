@@ -3,9 +3,9 @@ import * as KnowledgeModels from '../knowledge-base/models';
 
 export const Integration = bookshelf.Model.extend({
   tableName: 'integrations',
-  locations: function () {
+  locations() {
     return this.belongsToMany(KnowledgeModels.Location, 'integrations_locations');
-  }
+  },
 });
 
 export const OrganizationIntegrations = bookshelf.Model.extend({

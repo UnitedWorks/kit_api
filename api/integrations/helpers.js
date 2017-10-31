@@ -8,57 +8,61 @@ export const getIntegrations = (params, options = { returnJSON: true }) => {
   if (params.organization.id) {
     return Integration.fetchAll({ withRelated: ['locations'] }).then((integrationModels) => {
       return Organization.where({ id: params.organization.id }).fetch({ withRelated: ['integrations', 'location'] }).then((orgModel) => {
-        const mappedIntegrations = integrationModels.toJSON();
-        // Diff integrations an organization has, and set 'enabled'/'available' booleans
-        return mappedIntegrations.map((baseIntegration) => {
-          const updatedIntegration = baseIntegration;
-          updatedIntegration.enabled = false;
-          updatedIntegration.available = false;
-          // Set 'enabled' flag
-          orgModel.toJSON().integrations.forEach((orgIntegration) => {
-            // Found relationship in table 'organizations_integrations'
-            if (updatedIntegration.id === orgIntegration.id) {
-              updatedIntegration.enabled = true;
-            }
-          });
-          // If government, set 'available' flag - check org city against integration locations
-          if (orgModel.toJSON().type === 'government') {
-          const orgLocation = orgModel.toJSON().location;
-            updatedIntegration.locations.forEach((whiteListedLocation) => {
-              if (whiteListedLocation.country_code === orgLocation.country_code) {
-                if (!whiteListedLocation.address.state) {
-                  updatedIntegration.available = true;
-                } else if (whiteListedLocation.address.state ===
-                    orgLocation.address.state) {
-                  // If county or city dont exist, its good. If more details, do more checks
-                  if (!whiteListedLocation.address.county ||
-                      !whiteListedLocation.city) {
-                    updatedIntegration.available = true;
-                  } else {
-                    // If county is specified, check for match
-                    if (whiteListedLocation.address.county) {
-                      updatedIntegration.available = (
-                        whiteListedLocation.address.county ===
-                        orgLocation.address.county);
-                      // If county matched, city may still be different and a city
-                      if (updatedIntegration.available && whiteListedLocation.city) {
-                        // Check if cities match
-                        updatedIntegration.available = whiteListedLocation.city === orgLocation.city;
-                      }
-                    // If county wasn't specified, still check city
-                    } else if (whiteListedLocation.city) {
-                      updatedIntegration.available = (
-                        whiteListedLocation.address.county ===
-                        orgLocation.address.county);
-                    }
-                  }
-                }
+        return OrganizationIntegrations.where({ organization_id: params.organization.id }).fetchAll().then((junctionRows) => {
+          const mappedIntegrations = integrationModels.toJSON();
+          const junctions = junctionRows.toJSON();
+          // Diff integrations an organization has, and set 'enabled'/'available' booleans
+          return mappedIntegrations.map((baseIntegration) => {
+            const updatedIntegration = baseIntegration;
+            updatedIntegration.enabled = false;
+            updatedIntegration.available = false;
+            // Set 'enabled' flag
+            junctions.forEach((junction) => {
+              // Found relationship in table 'organizations_integrations'
+              if (updatedIntegration.id === junction.integration_id) {
+                updatedIntegration.enabled = true;
+                updatedIntegration.config = junction.config;
               }
             });
-          } else if (orgModel.toJSON().type === 'provider') {
-            updatedIntegration.available = true;
-          }
-          return updatedIntegration;
+            // If government, set 'available' flag - check org city against integration locations
+            if (orgModel.toJSON().type === 'government') {
+              const orgLocation = orgModel.toJSON().location;
+              updatedIntegration.locations.forEach((whiteListedLocation) => {
+                if (whiteListedLocation.country_code === orgLocation.country_code) {
+                  if (!whiteListedLocation.address.state) {
+                    updatedIntegration.available = true;
+                  } else if (whiteListedLocation.address.state ===
+                    orgLocation.address.state) {
+                      // If county or city dont exist, its good. If more details, do more checks
+                      if (!whiteListedLocation.address.county ||
+                        !whiteListedLocation.city) {
+                          updatedIntegration.available = true;
+                        } else {
+                          // If county is specified, check for match
+                          if (whiteListedLocation.address.county) {
+                            updatedIntegration.available = (
+                              whiteListedLocation.address.county ===
+                              orgLocation.address.county);
+                              // If county matched, city may still be different and a city
+                              if (updatedIntegration.available && whiteListedLocation.city) {
+                                // Check if cities match
+                                updatedIntegration.available = whiteListedLocation.city === orgLocation.city;
+                              }
+                              // If county wasn't specified, still check city
+                            } else if (whiteListedLocation.city) {
+                              updatedIntegration.available = (
+                                whiteListedLocation.address.county ===
+                                orgLocation.address.county);
+                              }
+                            }
+                          }
+                        }
+                      });
+                    } else if (orgModel.toJSON().type === 'provider') {
+                      updatedIntegration.available = true;
+                    }
+                    return updatedIntegration;
+                  });
         });
       }).catch(error => error);
     }).catch(error => error);
@@ -69,7 +73,7 @@ export const getIntegrations = (params, options = { returnJSON: true }) => {
 };
 
 export const checkIntegration = (organization, integration) => {
-  return Integration.where(integration).fetch().then((integrationModel) => {
+  return Integration.where({ id: integration.id }).fetch().then((integrationModel) => {
     return OrganizationIntegrations.where({
       organization_id: organization.id,
       integration_id: integrationModel.get('id'),
@@ -133,7 +137,7 @@ export const deleteIntegration = (params) => {
   return Integration.where({ id: params.integration.id }).destroy({ required: true });
 };
 
-export const setForOrganization = (params) => {
+export function setForOrganization(params) {
   return getIntegrations(params).then((orgIntegrations) => {
     const integrationToBeSet = orgIntegrations.filter(
       integration => integration.id === params.integration.id)[0];
@@ -142,12 +146,29 @@ export const setForOrganization = (params) => {
       throw Error('Integration Unavailable for this Organization');
     } else {
       if (params.integration.enabled) {
-        return OrganizationIntegrations.forge({
-          organization_id: params.organization.id,
-          integration_id: integrationToBeSet.id,
-        }).save().then(() => {
-          integrationToBeSet.enabled = true;
-          return integrationToBeSet;
+        // If we're enabling, check if it already exists (Update vs. Save)
+        return checkIntegration(params.organization, params.integration).then((active) => {
+          if (!active) {
+            return OrganizationIntegrations.forge({
+              organization_id: params.organization.id,
+              integration_id: integrationToBeSet.id,
+              config: params.integration.config,
+            }).save().then(() => {
+              integrationToBeSet.enabled = true;
+              return integrationToBeSet;
+            });
+          }
+          return OrganizationIntegrations.where({
+            organization_id: params.organization.id,
+            integration_id: integrationToBeSet.id,
+          }).save({
+            organization_id: params.organization.id,
+            integration_id: integrationToBeSet.id,
+            config: params.integration.config,
+          }, { method: 'update' }).then(() => {
+            integrationToBeSet.enabled = true;
+            return integrationToBeSet;
+          });
         });
       }
       return OrganizationIntegrations.where({
@@ -159,4 +180,4 @@ export const setForOrganization = (params) => {
       });
     }
   });
-};
+}
