@@ -16,37 +16,43 @@ exports.seed = function(knex, Promise) {
     // Add Ask Darcel Source
     const askDarcelInsert = knex('integrations').insert({
       name: 'AskDarcel',
-      type: 'info',
+      type: 'knowledge',
       label: 'askDarcel',
       description: 'A collection of service information for the unhoused.',
       url: 'https://askdarcel.org',
     }, 'id').then(ids => ids[0]);
     const voteFoundationInsert = knex('integrations').insert({
       name: 'US Vote Foundation',
-      type: 'info',
+      type: 'knowledge',
       label: 'voteFoundation',
       description: 'Voter registraiton information.',
       url: 'https://www.usvotefoundation.org',
     });
-    const benefitKitchen = knex('integrations').insert({
+    const benefitKitchenInsert = knex('integrations').insert({
       name: 'Benefit Kitchen',
-      type: 'info',
+      type: 'knowledge',
       label: 'benefitKitchen',
       description: 'Benefit calculators for state/federal programs.',
       url: 'http://benefitkitchen.com',
     });
-    const seeClickFix = knex('integrations').insert({
+    const seeClickFixInsert = knex('integrations').insert({
       name: 'See Click Fix',
       type: 'cases',
       label: 'seeClickFix',
       description: 'Request and case management system',
       url: 'https://seeclickfix.com',
     });
-    const sfSelect = knex.select().where('name', 'San Francisco').from('organizations').then((rows) => {
-      return rows[0].id;
+    const staeInsert = knex('integrations').insert({
+      name: 'Stae',
+      type: 'knowledge',
+      label: 'stae',
+      description: 'Realtime Data Streams',
+      url: 'https://seeclickfix.com',
     });
+    const sfSelect = knex.select().where('name', 'San Francisco').from('organizations')
+      .then(rows => rows[0].id);
     return Promise.join(
-      askDarcelInsert, sfSelect, voteFoundationInsert, benefitKitchen, seeClickFix,
+      askDarcelInsert, sfSelect, voteFoundationInsert, benefitKitchenInsert, seeClickFixInsert, staeInsert
       (askDarcelId, sfId) => {
         idsObj.sourceIds = {
           askDarcel: askDarcelId,

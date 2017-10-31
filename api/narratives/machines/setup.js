@@ -23,7 +23,6 @@ export default {
         });
 
         logger.info(validResults);
-
         // If more than one location is matched with our geolocation look up, ask for detail
         if (validResults.length > 1) {
           const quickReplies = validResults.map((location) => {
@@ -57,9 +56,8 @@ export default {
               }
               return 'waiting_organization_confirm';
             });
-        } else {
-          return 'waiting_organization_confirm';
         }
+        return 'waiting_organization_confirm';
       });
     },
   },
