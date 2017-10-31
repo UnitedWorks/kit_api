@@ -1,6 +1,5 @@
 import moment from 'moment';
 import schedule from 'node-schedule';
-import axios from 'axios';
 import * as ORG_CONST from '../constants/organizations';
 import * as FEED_CONST from '../constants/feeds';
 import { nlp } from '../services/nlp';
@@ -10,6 +9,7 @@ import { getAnswers } from '../knowledge-base/helpers';
 import { NarrativeSession } from '../narratives/models';
 import { getPreferredClient } from '../conversations/helpers';
 import KitClient from '../narratives/clients/kit-client';
+import WeatherClient from '../narratives/clients/weather-client';
 import * as QUICK_REPLIES from '../narratives/templates/quick-replies';
 import { Organization } from '../accounts/models';
 
@@ -63,22 +63,13 @@ async function todaysEvents() {
   return eventDeck;
 }
 
-async function todaysWeather() {
+async function todaysForecast() {
   const organizations = await Organization.fetchAll({ withRelated: ['location'] }).then(o => o.toJSON());
   const weatherDeck = {};
   for (let i = 0; i < organizations.length; i += 1) {
     if (organizations[i].location) {
-      const locForecast = await axios.get('http://api.openweathermap.org/data/2.5/weather', { params: {
-        APPID: process.env.OPEN_WEATHER_MAP_KEY,
-        lat: organizations[i].location.lat,
-        lon: organizations[i].location.lon,
-        units: 'imperial',
-      } }).then(r => r.data);
-      weatherDeck[organizations[i].id] = {
-        min: locForecast.main.temp_min,
-        max: locForecast.main.temp_max,
-        weather: locForecast.weather,
-      };
+      weatherDeck[organizations[i].id] = await new WeatherClient().dayForecast(
+        organizations[i].location.lat, organizations[i].location.lon).then(f => f);
     }
   }
   return weatherDeck;
@@ -86,6 +77,7 @@ async function todaysWeather() {
 
 export function scheduledJobs() {
   // Constituent Notification Signup
+  // Default: 0 15 13 * * 1
   schedule.scheduleJob('0 15 13 * * 1', () => {
     NarrativeSession.fetchAll({ withRelated: ['constituent', 'constituent.facebookEntry', 'constituent.smsEntry', 'organization'] })
       .then((s) => {
@@ -103,9 +95,10 @@ export function scheduledJobs() {
   });
 
   // Constituent Notification: Morning - Weather, Events, Alerts
+  // Default: 0 15 12 * * *
   schedule.scheduleJob('0 15 12 * * *', () => {
     NarrativeSession.fetchAll({ withRelated: ['constituent', 'constituent.facebookEntry', 'constituent.smsEntry', 'organization'] }).then((s) => {
-      todaysWeather().then((weather) => {
+      todaysForecast().then((forecast) => {
         todaysEvents().then((events) => {
           todaysAlerts().then((alerts) => {
             // Run Notifciation on Sessions
@@ -115,9 +108,9 @@ export function scheduledJobs() {
               const client = getPreferredClient(session.constituent);
               if (!client || !session.data_store.notifications) return;
               // Weather
-              if (session.data_store.notifications.weather && weather[session.organization_id]) {
+              if (session.data_store.notifications.weather && forecast[session.organization_id]) {
                 quickReplies.push(QUICK_REPLIES.weatherOff);
-                client.addToQuene(`Today's weather will have a low of ${weather[session.organization_id].min}° and a high of ${weather[session.organization_id].max}°. ${weather[session.organization_id].weather[0] ? `Looks like we're going to have ${weather[session.organization_id].weather[0].description}s.` : ''}`, quickReplies);
+                client.addToQuene(`${WeatherClient.emojiMap[forecast[session.organization_id].weather.id] || ''} Looks like today will have a low of ${forecast[session.organization_id].min}° and a high of ${forecast[session.organization_id].max}°${forecast[session.organization_id].weather.description ? ` with ${forecast[session.organization_id].weather.description}.` : ''}`, quickReplies);
               } else if (session.data_store.notifications.weather === false) {
                 quickReplies.push(QUICK_REPLIES.weatherOn);
               }
@@ -125,7 +118,7 @@ export function scheduledJobs() {
               if (session.data_store.notifications.events && events[session.organization_id]
                 && events[session.organization_id].length > 0) {
                 quickReplies.push(QUICK_REPLIES.eventsOff);
-                client.addToQuene('Here is whats happening today!');
+                client.addToQuene('📅 Your town has events going on today!');
                 client.addAll(KitClient.genericTemplateFromEntities(
                   events[session.organization_id].map(event => ({ type: 'event', payload: event }))),
                   quickReplies);
@@ -136,7 +129,7 @@ export function scheduledJobs() {
                 && alerts[session.organization_id].length > 0) {
                 quickReplies.push(QUICK_REPLIES.alertsOff);
                 const alertsMessage = alerts[session.organization_id].map(u => `"${u.text.length > 40 ? `${u.text.slice(0, 40)}...` : u.text}"(${u.url}) `);
-                client.addToQuene(`Notices that may impact your day: ${alertsMessage}`, quickReplies);
+                client.addToQuene(`🚨 Notices that may impact your day: ${alertsMessage}`, quickReplies);
               } else if (session.data_store.notifications.alerts === false) {
                 quickReplies.push(QUICK_REPLIES.alertsOn);
               }

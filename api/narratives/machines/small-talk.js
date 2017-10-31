@@ -228,7 +228,7 @@ export default {
     } else {
       if (notificationType === 'weather') {
         notifications.weather = newState === 'on';
-        this.messagingClient.send(`Weather updates are ${notifications.weather ? 'on. I\'ll do my best to keep you dry and warm ☀' : 'off. Let me know if you want weahter updates again.'}`, !notifications.weather ? [replyTemplates.weatherOn] : null);
+        this.messagingClient.send(`Weather updates are ${notifications.weather ? 'on. I\'ll help you stay dry ☀' : 'off. Let me know if you want weahter updates again.'}`, !notifications.weather ? [replyTemplates.weatherOn] : null);
       } else if (notificationType === 'sanitation_collection') {
         notifications.sanitation_collection = newState === 'on';
         this.messagingClient.send(`Garbage/recycling reminders are ${notifications.sanitation_collection ? 'on. Collection day wont catch you by surprise again!' : 'off. Let me know when you want collection reminders again.'}`, !notifications.sanitation_collection ? [replyTemplates.sanitationOn] : null);
