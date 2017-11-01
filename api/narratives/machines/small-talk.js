@@ -1,6 +1,8 @@
 import { logger } from '../../logger';
 import { nlp } from '../../services/nlp';
 import { getConstituentTasks } from '../../tasks/helpers';
+import { hasIntegration } from '../../integrations/helpers';
+import * as INTEGRATIONS from '../../constants/integrations';
 import SlackService from '../../services/slack';
 import { EventTracker } from '../../services/event-tracking';
 import { fetchAnswers, randomPick } from '../helpers';
@@ -145,7 +147,7 @@ export default {
     });
   },
 
-  failed_request() {
+  async failed_request() {
     // Analytics & Notifications
     new SlackService({
       username: 'Misunderstood Request',
@@ -154,8 +156,7 @@ export default {
     EventTracker('constituent_input_failure', { session: this });
     // Handle Failure
     const firstFailMessage = randomPick([
-      'Oops! My circuits went haywire. Can you say that a different way?',
-      'Hmm, I\'m not following. Can you rephrase that?',
+      'Hmm, I didn\'t connect that to an answer. Can you rephrase that?',
     ]);
     // If first failure, ask for a repeat of question
     if (this.snapshot.state_machine_previous_state !== 'failed_request') {
@@ -168,30 +169,29 @@ export default {
     } else {
       this.snapshot.nlp.entities.category_keywords.forEach(entity => labels.push(entity.value));
     }
+    const hasSeeClickFix = await hasIntegration(this.get('organization'), INTEGRATIONS.SEE_CLICK_FIX).then(bool => bool);
     return getCategoryFallback(labels, this.snapshot.organization_id).then((fallbackData) => {
       // See if we have fallback contacts
       if (fallbackData.contacts.length === 0) {
-        this.messagingClient.addToQuene(i18n('dont_know'));
+        this.messagingClient.addToQuene(hasSeeClickFix ? `${i18n('dont_know')} If this is something you want to report, please use SeeClickFix and select the appropriate category.` : i18n('dont_know'));
+        if (hasSeeClickFix) {
+          this.messagingClient.addToQuene({
+            type: 'template',
+            templateType: 'generic',
+            elements: [elementTemplates.SeeClickFixElement],
+          }, replyTemplates.evalHelpfulAnswer);
+        }
       } else {
         // If we do, templates!
-        this.messagingClient.addToQuene(i18n('dont_know'));
-        // Compile names to look nice
-        let compiledContacts = 'Until then please contact my colleagues for more help: ';
-        fallbackData.contacts.forEach((contact, index, arr) => {
-          if (index === 0) {
-            compiledContacts = compiledContacts.concat(`${contact.name}${contact.phone_number ? ` (${contact.phone_number})` : ''}`);
-          } else if (index === arr.length - 1) {
-            compiledContacts = compiledContacts.concat(`, and ${contact.name}${contact.phone_number ? ` (${contact.phone_number})` : ''}.`);
-          } else {
-            compiledContacts = compiledContacts.concat(`, ${contact.name}${contact.phone_number ? ` (${contact.phone_number})` : ''}`);
-          }
-        });
-        this.messagingClient.addToQuene(compiledContacts);
+        this.messagingClient.addToQuene(hasSeeClickFix ? `${i18n('dont_know')} If this is an issue you want to report, please use SeeClickFix and select the appropriate category.` : i18n('dont_know'));
         // Give templates
+        let contactElements = fallbackData.contacts.map(
+          contact => elementTemplates.genericContact(contact));
+        if (hasSeeClickFix) contactElements = contactElements.concat(elementTemplates.SeeClickFixElement);
         this.messagingClient.addToQuene({
           type: 'template',
           templateType: 'generic',
-          elements: fallbackData.contacts.map(contact => elementTemplates.genericContact(contact)),
+          elements: contactElements,
         }, replyTemplates.evalHelpfulAnswer);
       }
       return this.messagingClient.runQuene().then(() => 'start');

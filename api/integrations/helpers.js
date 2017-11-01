@@ -72,15 +72,16 @@ export const getIntegrations = (params, options = { returnJSON: true }) => {
   });
 };
 
-export const checkIntegration = (organization, integration) => {
-  return Integration.where({ id: integration.id }).fetch().then((integrationModel) => {
+export const checkIntegration = (organization, integration = {}) => {
+  const integrationParams = {};
+  if (integration.id) integrationParams.id = integration.id;
+  if (integration.label) integrationParams.label = integration.label;
+  return Integration.where(integrationParams).fetch().then((integrationModel) => {
     return OrganizationIntegrations.where({
       organization_id: organization.id,
       integration_id: integrationModel.get('id'),
     }).fetch().then((foundIntegration) => {
-      if (foundIntegration) {
-        return true;
-      }
+      if (foundIntegration) return true;
       return false;
     });
   });
