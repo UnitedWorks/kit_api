@@ -558,12 +558,18 @@ SO['transportation_streets_sidewalks.construction.noise'] = {
   params: basicReport,
 };
 
-// SO['transportation_streets_sidewalks.bicycle.racks'] = {};
+SO['transportation_streets_sidewalks.bicycle.racks'] = {
+  tags: ['transportation_streets_sidewalks', 'bicycle', 'racks'],
+  params: basicReport,
+};
 SO['transportation_streets_sidewalks.bicycle.lanes'] = {
   tags: ['transportation_streets_sidewalks', 'bicycle', 'lanes'],
   params: basicReport,
 };
-// SO['transportation_streets_sidewalks.bicycle.sharing'] = {};
+SO['transportation_streets_sidewalks.bicycle.sharing'] = {
+  tags: ['transportation_streets_sidewalks', 'bicycle', 'sharing'],
+  params: basicReport,
+};
 SO['transportation_streets_sidewalks.bicycle.abandoned'] = {
   tags: ['transportation_streets_sidewalks', 'bicycle', 'abandoned'],
   params: basicReport,
