@@ -5,6 +5,7 @@ import * as TAGS from '../../constants/nlp-tagging';
 import SlackService from '../../services/slack';
 import { getGovernmentOrganizationAtLocation } from '../../accounts/helpers';
 import { i18n } from '../templates/messages';
+import * as replyTemplates from '../templates/quick-replies';
 
 export default {
   reset_organization() {
@@ -101,12 +102,14 @@ export default {
   },
 
   async default_location() {
-    if (!this.snapshot.nlp || (this.snapshot.nlp.entities && !(this.snapshot.nlp.entities[TAGS.LOCATION] || this.snapshot.nlp.entities[TAGS.SEARCH_QUERY]))) {
-      this.messagingClient.send('Sorry, I didn\'t catch an address. Did you mention a city and state?');
+    const nlpEntities = this.snapshot.nlp ? this.snapshot.nlp.entities : await nlp.message(this.snapshot.input.payload.text).then(n => n.entities);
+    // They want to bounce
+    if (nlpEntities.intent && nlpEntities.intent[0].value === 'speech.escape') {
+      this.messagingClient.send('Ok!', replyTemplates.whatCanIAsk);
       return this.getBaseState();
     }
-    // I hate this random string joining so much
-    const formedString = `${this.snapshot.nlp.entities[TAGS.LOCATION] ? this.snapshot.nlp.entities[TAGS.LOCATION][0].value : ''}`;
+    // Go through with Setting Location
+    const formedString = nlpEntities[TAGS.LOCATION] ? nlpEntities[TAGS.LOCATION][0].value : this.snapshot.input.payload.text;
     const geoData = await geocoder(formedString, [], this.get('organization').location.address).then(gd => gd[0]);
     if (geoData) {
       this.set('attributes', {

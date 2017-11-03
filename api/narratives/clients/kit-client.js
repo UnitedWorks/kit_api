@@ -101,18 +101,13 @@ export default class KitClient {
     return entityContactText.length > 0 ? entityContactText : null;
   }
 
-  static entityAvailabilityToText(type, entity, { datetime, constituentAttributes = {} }) {
+  static entityAvailabilityToText(type, entity, { datetime, constituentAttributes = {} } = {}) {
     let entityAvailabilityText = '';
-    // Check if a entity's availabilitys use geo and constituent home address is available.
-    // If none available, send back message asking for default_address
-    if (entity.availabilitys && entity.availabilitys.filter(o => o.geo).length > 0 && !constituentAttributes.default_location) {
-      return i18n('get_default_location', { name: entity.name });
-    }
     // Describe General Schedule (even if no datetime, mention schedule)
     if (!datetime && entity.availabilitys) {
       entity.availabilitys.forEach((availability, index, array) => {
         // Geo Check
-        if (availability.geo && availability.geo[0] && !geoCheck(availability.geo, [constituentAttributes.default_location.lat, constituentAttributes.default_location.lon])) return;
+        if (constituentAttributes.default_location && availability.geo && availability.geo[0] && !geoCheck(availability.geo, [constituentAttributes.default_location.lat, constituentAttributes.default_location.lon])) return;
         // Analyize RRules/Times
         const rule = new RRule(RRule.parseString(availability.rrule));
         const timeStart = moment(availability.t_start, 'HH-mm-ss');
@@ -120,6 +115,10 @@ export default class KitClient {
         entityAvailabilityText = entityAvailabilityText.concat(
           `${rule.toText()}${availability.t_start && availability.t_end ? ` (${timeStart.format('h:mm A')} - ${timeEnd.format('h:mm A')})` : ' (No Hours Listed)'}${index !== array.length - 1 ? ' / ' : ''}`);
       });
+    // Check if a entity's availabilitys use geo and constituent home address is available.
+    // If none available, send back message asking for default_address
+    } else if (entity.availabilitys && entity.availabilitys.filter(o => o.geo).length > 0 && !constituentAttributes.default_location) {
+      return i18n('get_default_location', { name: entity.name });
     // Speak to Specific Day Availability
     } else if (datetime[0].grain === 'day' && entity.availabilitys) {
       entity.availabilitys.forEach((availability) => {
@@ -144,7 +143,7 @@ export default class KitClient {
     /* TODO Get Next Availability (how does this trigger? action?) */
     if (entityAvailabilityText.length > 0) {
       if (type === 'service') {
-        return `${entity.name} is operating in your area ${entityAvailabilityText}`;
+        return `${entity.name} is available ${entityAvailabilityText}`;
       } else if (type === 'facility') {
         return `${entity.name} is open ${entityAvailabilityText}`;
       }
