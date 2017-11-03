@@ -154,30 +154,33 @@ export async function fetchAnswers(intent, session) {
   let requestLocation = false;
   const timelyServices = (answers.services || []).filter(s => s.availabilitys && s.availabilitys.length > 0);
   const timelyFacilities = (answers.facilities || []).filter(s => s.availabilitys && s.availabilitys.length > 0);
+  console.log('------')
+  console.log(answers)
+  console.log('------')
   // If any services/facilities with availabilitys are in
   if (timelyServices.length > 0 || timelyFacilities.length > 0) {
+    // If we have text, don't forget to include still
     // and we have datetime, validate whether or not its available
     const availableEntities = answers.services.filter(entity => KitClient.entityAvailabilityToText('service', entity, { datetime: entities[TAGS.DATETIME], constituentAttributes: session.get('attributes') }))
       .concat(answers.facilities.filter(entity => KitClient.entityAvailabilityToText('facility', entity, { datetime: entities[TAGS.DATETIME], constituentAttributes: session.get('attributes') })));
     const locationServices = timelyServices.filter(s => s.availabilitys.filter(a => a.geo).length > 0);
+    // If we're going to need a location, abort entirely and set default constituent location
     if (locationServices.length > 0 && !session.get('attributes').default_location) {
       session.messagingClient.addToQuene(i18n('get_default_location', { name: locationServices[0].name }), [replyTemplates.exit]);
       requestLocation = true;
     } else {
-      if (entities[TAGS.DATETIME] && availableEntities.length === 0) {
-        session.messagingClient.addAll(KitClient.genericTemplateFromAnswers({
-          ...answers,
-          services: answers.services.filter(entity => KitClient.entityAvailabilityToText('service', entity, { datetime: entities[TAGS.DATETIME], constituentAttributes: session.get('attributes') })),
-          facilities: answers.facilities.filter(entity => KitClient.entityAvailabilityToText('facility', entity, { datetime: entities[TAGS.DATETIME], constituentAttributes: session.get('attributes') })),
-        }), replyTemplates.evalHelpfulAnswer);
       // and we dont have datetime or nothing available, mention availiabilities on each entity
-      }
+      session.messagingClient.addAll(KitClient.genericTemplateFromAnswers({
+        ...answers,
+        services: answers.services,
+        facilities: answers.facilities,
+      }), replyTemplates.evalHelpfulAnswer);
       // If none available, say ___ is unavailable at that time (and then articulate schedules)
       const entityAvailabilities = [
-        (entities[TAGS.DATETIME] ? "I don't see anything available then" : null),
-        ...answers.services.map(entity => KitClient.entityAvailabilityToText('service', entity, { constituentAttributes: session.get('attributes') })),
-        ...answers.facilities.map(entity => KitClient.entityAvailabilityToText('facility', entity, { constituentAttributes: session.get('attributes') })),
-      ].filter(t => t);
+        (availableEntities.length === 0 ? "I don't see anything available then" : null),
+        ...answers.services.map(entity => KitClient.entityAvailabilityToText('service', entity, { datetime: entities[TAGS.DATETIME], constituentAttributes: session.get('attributes') }) || `${entity.name} is not available.`),
+        ...answers.facilities.map(entity => KitClient.entityAvailabilityToText('facility', entity, { datetime: entities[TAGS.DATETIME], constituentAttributes: session.get('attributes') }) || `${entity.name} is not open.`),
+      ].filter(text => text);
       if (entityAvailabilities.length > 0) session.messagingClient.addToQuene(entityAvailabilities.join('. '), replyTemplates.evalHelpfulAnswer);
     }
   // Otherwise, mention all assets as usual
