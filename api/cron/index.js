@@ -142,7 +142,7 @@ export function scheduledJobs() {
   });
 
   // Constituent Notification: Evening - Services
-  schedule.scheduleJob('0 30 19 * * *', () => {
+  schedule.scheduleJob('0 30 22 * * *', () => {
     NarrativeSession.fetchAll({ withRelated: ['organization', 'constituent', 'constituent.facebookEntry', 'constituent.smsEntry'] }).then((s) => {
       // Get sanitation answers for each org
       const sessions = s.toJSON().filter(session => session.organization &&
@@ -200,7 +200,7 @@ export function scheduledJobs() {
             }
             const client = getPreferredClient(session.constituent);
             if (messageInsert && session.data_store.notifications.sanitation_collection === true && client) {
-              const reminderMessage = `Tomorrow is ${messageInsert} collection. Remember to set out after 4pm!`;
+              const reminderMessage = `Tomorrow is ${messageInsert} collection. Remember to set out after 7pm!`;
               client.send(reminderMessage, [QUICK_REPLIES.sanitationOff]);
             }
           }

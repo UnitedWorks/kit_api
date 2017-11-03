@@ -154,9 +154,6 @@ export async function fetchAnswers(intent, session) {
   let requestLocation = false;
   const timelyServices = (answers.services || []).filter(s => s.availabilitys && s.availabilitys.length > 0);
   const timelyFacilities = (answers.facilities || []).filter(s => s.availabilitys && s.availabilitys.length > 0);
-  console.log('------')
-  console.log(answers)
-  console.log('------')
   // If any services/facilities with availabilitys are in
   if (timelyServices.length > 0 || timelyFacilities.length > 0) {
     // If we have text, don't forget to include still
