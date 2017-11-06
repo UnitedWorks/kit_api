@@ -24,6 +24,18 @@
 		"intent": "public_safety_law.activity.suspicious"
 	},
 	{
+		"text": "I think a politician is taking bribes",
+		"intent": "public_safety_law.bribery"
+	},
+	{
+		"text": "how do report an officer taking bribes",
+		"intent": "public_safety_law.bribery"
+	},
+	{
+		"text": "an politicina is taking money from contractors",
+		"intent": "public_safety_law.bribery"
+	},
+	{
 		"text": "The police took my stuff",
 		"intent": "public_safety_law.corrections.belongings"
 	},
@@ -48,7 +60,31 @@
 		"intent": "public_safety_law.corrections.belongings"
 	},
 	{
+		"text": "Did my sister get arrested?",
+		"intent": "public_safety_law.corrections.holdings.search"
+	},
+	{
+		"text": "Where are people who just get arrested?",
+		"intent": "public_safety_law.corrections.holdings.search"
+	},
+	{
+		"text": "Is my daughter in prison?",
+		"intent": "public_safety_law.corrections.holdings.search",
+		"entities": [
+			{
+				"start": 18,
+				"end": 24,
+				"value": "public_safety_law",
+				"entity": "category_keywords"
+			}
+		]
+	},
+	{
 		"text": "My friend was arrested. Where is he?",
+		"intent": "public_safety_law.corrections.holdings.search"
+	},
+	{
+		"text": "I’m looking for a relative.  How can I find out if they are in the Chula Vista jail?",
 		"intent": "public_safety_law.corrections.holdings.search"
 	},
 	{
@@ -68,10 +104,6 @@
 		"intent": "public_safety_law.corrections.holdings.search"
 	},
 	{
-		"text": "Did my sister get arrested?",
-		"intent": "public_safety_law.corrections.holdings.search"
-	},
-	{
 		"text": "How do I find someone who was recently arrested?",
 		"intent": "public_safety_law.corrections.holdings.search",
 		"entities": [
@@ -84,27 +116,7 @@
 		]
 	},
 	{
-		"text": "Where are people who just get arrested?",
-		"intent": "public_safety_law.corrections.holdings.search"
-	},
-	{
-		"text": "Is my daughter in prison?",
-		"intent": "public_safety_law.corrections.holdings.search",
-		"entities": [
-			{
-				"start": 18,
-				"end": 24,
-				"value": "public_safety_law",
-				"entity": "category_keywords"
-			}
-		]
-	},
-	{
-		"text": "I’m looking for a relative.  How can I find out if they are in the Chula Vista jail?",
-		"intent": "public_safety_law.corrections.holdings.search"
-	},
-	{
-		"text": "When do I show up to trial?",
+		"text": "When do I need to be in court?",
 		"intent": "public_safety_law.court.date"
 	},
 	{
@@ -116,7 +128,7 @@
 		"intent": "public_safety_law.court.date"
 	},
 	{
-		"text": "When do I need to be in court?",
+		"text": "When do I show up to trial?",
 		"intent": "public_safety_law.court.date"
 	},
 	{
@@ -144,7 +156,7 @@
 		]
 	},
 	{
-		"text": "What should I bring to my trial?",
+		"text": "Whats needed for court?",
 		"intent": "public_safety_law.court.guide"
 	},
 	{
@@ -152,7 +164,7 @@
 		"intent": "public_safety_law.court.guide"
 	},
 	{
-		"text": "Whats needed for court?",
+		"text": "What should I bring to my trial?",
 		"intent": "public_safety_law.court.guide"
 	},
 	{
@@ -208,19 +220,19 @@
 		"intent": "public_safety_law.crime.status"
 	},
 	{
-		"text": "Where can I take shelter in an emergency?",
-		"intent": "public_safety_law.emergency.shelter"
-	},
-	{
 		"text": "If I lose electricity during a major storm, where should I go for help?",
 		"intent": "public_safety_law.emergency.shelter"
 	},
 	{
-		"text": "Where can I take shelter during a major storm?",
+		"text": "When a storm comes, where should I go?",
 		"intent": "public_safety_law.emergency.shelter"
 	},
 	{
-		"text": "When a storm comes, where should I go?",
+		"text": "Where can I take shelter in an emergency?",
+		"intent": "public_safety_law.emergency.shelter"
+	},
+	{
+		"text": "Where can I take shelter during a major storm?",
 		"intent": "public_safety_law.emergency.shelter"
 	},
 	{
@@ -264,11 +276,7 @@
 		"intent": "public_safety_law.event.check"
 	},
 	{
-		"text": "What is required to host a block party?",
-		"intent": "public_safety_law.event.guide"
-	},
-	{
-		"text": "If I want to throw a public event, what do I do?",
+		"text": "I want a party on my street",
 		"intent": "public_safety_law.event.guide"
 	},
 	{
@@ -276,7 +284,11 @@
 		"intent": "public_safety_law.event.guide"
 	},
 	{
-		"text": "I want a party on my street",
+		"text": "What is required to host a block party?",
+		"intent": "public_safety_law.event.guide"
+	},
+	{
+		"text": "If I want to throw a public event, what do I do?",
 		"intent": "public_safety_law.event.guide"
 	},
 	{
@@ -332,10 +344,6 @@
 		]
 	},
 	{
-		"text": "How can I report a hate crime?",
-		"intent": "public_safety_law.hate_crime"
-	},
-	{
 		"text": "I'm being discriminated against",
 		"intent": "public_safety_law.hate_crime",
 		"entities": [
@@ -346,6 +354,10 @@
 				"entity": "category_keywords"
 			}
 		]
+	},
+	{
+		"text": "How can I report a hate crime?",
+		"intent": "public_safety_law.hate_crime"
 	},
 	{
 		"text": "How do I report identity theft?",
@@ -360,7 +372,7 @@
 		"intent": "public_safety_law.identity_theft"
 	},
 	{
-		"text": "My grandma is missing",
+		"text": "I can't find my daughter",
 		"intent": "public_safety_law.missing_person"
 	},
 	{
@@ -368,7 +380,7 @@
 		"intent": "public_safety_law.missing_person"
 	},
 	{
-		"text": "I can't find my daughter",
+		"text": "My grandma is missing",
 		"intent": "public_safety_law.missing_person"
 	},
 	{
@@ -492,6 +504,10 @@
 		"intent": "public_safety_law.regulation_requirements.public_assembly"
 	},
 	{
+		"text": "What is a Public Assembly permit?",
+		"intent": "public_safety_law.regulation_requirements.public_assembly"
+	},
+	{
 		"text": "Do I need a permit to protest?",
 		"intent": "public_safety_law.regulation_requirements.public_assembly"
 	},
@@ -504,27 +520,11 @@
 		"intent": "public_safety_law.regulation_requirements.public_assembly"
 	},
 	{
-		"text": "What is a Public Assembly permit?",
-		"intent": "public_safety_law.regulation_requirements.public_assembly"
-	},
-	{
 		"text": "How do I obtain a rescue report?",
 		"intent": "public_safety_law.rescue_report.request"
 	},
 	{
 		"text": "I need a restraining order",
-		"intent": "public_safety_law.restraining_order"
-	},
-	{
-		"text": "How do I keep someone away from me",
-		"intent": "public_safety_law.restraining_order"
-	},
-	{
-		"text": "My ex isn't leaving me alone",
-		"intent": "public_safety_law.restraining_order"
-	},
-	{
-		"text": "I think my ex is stalking me",
 		"intent": "public_safety_law.restraining_order"
 	},
 	{
@@ -541,6 +541,18 @@
 	},
 	{
 		"text": "Where and how can I get a restraining order?",
+		"intent": "public_safety_law.restraining_order"
+	},
+	{
+		"text": "How do I keep someone away from me",
+		"intent": "public_safety_law.restraining_order"
+	},
+	{
+		"text": "My ex isn't leaving me alone",
+		"intent": "public_safety_law.restraining_order"
+	},
+	{
+		"text": "I think my ex is stalking me",
 		"intent": "public_safety_law.restraining_order"
 	},
 	{

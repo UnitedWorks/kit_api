@@ -375,6 +375,10 @@ SO['public_safety_law.activity.suspicious'] = {
   tags: ['public_safety_law', 'activity', 'suspicious'],
   params: basicReport,
 };
+SO['public_safety_law.bribery'] = {
+  tags: ['public_safety_law', 'bribery'],
+  params: basicReport,
+};
 
 // Transportation
 SO['transportation_streets_sidewalks.street'] = {
