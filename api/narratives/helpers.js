@@ -162,7 +162,7 @@ export async function fetchAnswers(intent, session) {
       .concat(answers.facilities.filter(entity => KitClient.entityAvailabilityToText('facility', entity, { datetime: entities[TAGS.DATETIME], constituentAttributes: session.get('attributes') })));
     const locationServices = timelyServices.filter(s => s.availabilitys.filter(a => a.geo).length > 0);
     // If we're going to need a location, abort entirely and set default constituent location
-    if (locationServices.length > 0 && !session.get('attributes').default_location) {
+    if (locationServices.length > 0 && (!session.get('attributes') || !session.get('attributes').default_location)) {
       session.messagingClient.addToQuene(i18n('get_default_location', { name: locationServices[0].name }), [replyTemplates.exit]);
       requestLocation = true;
     } else {
