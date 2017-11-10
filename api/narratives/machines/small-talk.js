@@ -71,6 +71,7 @@ export default {
           'personality.has_question': 'personality.has_question',
           'personality.makers': 'personality.makers',
           'personality.age': 'personality.age',
+          'personality.weather': 'personality.weather',
 
           // benefits_internet: 'benefits-internet.init',
 
@@ -102,8 +103,8 @@ export default {
           'search.knowledge_entity': 'search.knowledge_entity',
           'search.event': 'search.event',
 
-          'settings.locality.change': 'setup.reset_organization',
-          'settings.default_location': 'setup.default_location',
+          'settings.locality.update': 'setup.reset_organization', // Do we need this?
+          'settings.default_location': 'setup.default_location', // Should there be an attribute setting machine?
         };
 
         if (entities.intent && entities.intent[0]) {

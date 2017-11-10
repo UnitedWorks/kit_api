@@ -1,6 +1,8 @@
 import moment from 'moment';
 import { randomPick } from '../helpers';
 import { basicRequestQuickReplies } from '../templates/quick-replies';
+import WeatherClient from '../clients/weather-client';
+import * as QUICK_REPLIES from '../templates/quick-replies';
 
 export default {
   what_am_i() {
@@ -60,6 +62,16 @@ export default {
     ];
     const youreWelcome = youreWelcomes[Math.floor(Math.random() * youreWelcomes.length)];
     this.messagingClient.send(youreWelcome);
+    return this.getBaseState();
+  },
+  async weather() {
+    const forecast = await new WeatherClient().dayForecast(
+      this.get('organization').location.lat, this.get('organization').location.lon).then(f => f);
+    const quickReplies = [];
+    if (this.get('notifications') && !this.get('notifications').weather) {
+      quickReplies.push(QUICK_REPLIES.weatherOn);
+    }
+    this.messagingClient.send(`${WeatherClient.emojiMap[forecast.weather.id] || ''} Looks like today will have a low of ${forecast.min}° and a high of ${forecast.max}°${forecast.weather.description ? ` with ${forecast.weather.description}.` : ''}`, quickReplies);
     return this.getBaseState();
   },
 };

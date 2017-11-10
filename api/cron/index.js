@@ -63,7 +63,7 @@ async function todaysEvents() {
   return eventDeck;
 }
 
-async function todaysForecast() {
+export async function todaysForecast() {
   const organizations = await Organization.fetchAll({ withRelated: ['location'] }).then(o => o.toJSON());
   const weatherDeck = {};
   for (let i = 0; i < organizations.length; i += 1) {
