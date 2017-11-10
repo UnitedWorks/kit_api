@@ -19,10 +19,6 @@
 		"text": "there's a thick smog"
 	},
 	{
-		"text": "What should I know about black bears?",
-		"intent": "environment_sanitation.bear.guide"
-	},
-	{
 		"text": "Do do you have any information about black bears?",
 		"intent": "environment_sanitation.bear.guide",
 		"entities": [
@@ -33,6 +29,10 @@
 				"entity": "category_keywords"
 			}
 		]
+	},
+	{
+		"text": "What should I know about black bears?",
+		"intent": "environment_sanitation.bear.guide"
 	},
 	{
 		"text": "Can I use a blue recycling bin instead of the standard ones?",
@@ -55,20 +55,16 @@
 		"text": "How do I report a catch basin clean-out?"
 	},
 	{
-		"text": "Catch basin needs cleaning",
+		"text": "This catch basin needs to be cleaned",
 		"intent": "environment_sanitation.catch_basin.cleaning"
 	},
 	{
-		"text": "This catch basin needs to be cleaned",
+		"text": "Catch basin needs cleaning",
 		"intent": "environment_sanitation.catch_basin.cleaning"
 	},
 	{
 		"intent": "environment_sanitation.catch_basin.repairs",
 		"text": "How do I report a catch basin repair?"
-	},
-	{
-		"text": "Request a catch basin",
-		"intent": "environment_sanitation.catch_basin.request"
 	},
 	{
 		"text": "How do I request a catch basin",
@@ -85,6 +81,10 @@
 	{
 		"intent": "environment_sanitation.catch_basin.request",
 		"text": "How do I get a catch basin?"
+	},
+	{
+		"text": "Request a catch basin",
+		"intent": "environment_sanitation.catch_basin.request"
 	},
 	{
 		"intent": "environment_sanitation.collection_missed",
@@ -132,7 +132,7 @@
 		}
 	},
 	{
-		"text": "How do I get rid of an air conditioner?",
+		"text": "I want to thow out an air conditioner",
 		"intent": "environment_sanitation.disposal.appliance"
 	},
 	{
@@ -152,14 +152,6 @@
 		"intent": "environment_sanitation.disposal.appliance"
 	},
 	{
-		"text": "I want to thow out an air conditioner",
-		"intent": "environment_sanitation.disposal.appliance"
-	},
-	{
-		"text": "I want to get rid of appliances",
-		"intent": "environment_sanitation.disposal.appliance"
-	},
-	{
 		"text": "How do I dispose of appliances?",
 		"intent": "environment_sanitation.disposal.appliance",
 		"entities": [
@@ -170,6 +162,14 @@
 				"entity": "category_keywords"
 			}
 		]
+	},
+	{
+		"text": "I want to get rid of appliances",
+		"intent": "environment_sanitation.disposal.appliance"
+	},
+	{
+		"text": "How do I get rid of an air conditioner?",
+		"intent": "environment_sanitation.disposal.appliance"
 	},
 	{
 		"text": "What do I need to do about throwing out batteries",
@@ -188,6 +188,10 @@
 		"intent": "environment_sanitation.disposal.bulk_pickup.request"
 	},
 	{
+		"text": "How can I request bulk item pickup?",
+		"intent": "environment_sanitation.disposal.bulk_pickup.request"
+	},
+	{
 		"text": "I need bulk pickup",
 		"intent": "environment_sanitation.disposal.bulk_pickup.request"
 	},
@@ -197,10 +201,6 @@
 	},
 	{
 		"text": "How do I get bulk pickup?",
-		"intent": "environment_sanitation.disposal.bulk_pickup.request"
-	},
-	{
-		"text": "How can I request bulk item pickup?",
 		"intent": "environment_sanitation.disposal.bulk_pickup.request"
 	},
 	{
@@ -220,11 +220,11 @@
 		"intent": "environment_sanitation.disposal.carpet"
 	},
 	{
-		"text": "How do I throw out a Christmas Tree?",
+		"text": "Who do I contact to dispose of my Christmas Tree?",
 		"intent": "environment_sanitation.disposal.christmas_tree"
 	},
 	{
-		"text": "Who do I contact to dispose of my Christmas Tree?",
+		"text": "How do I throw out a Christmas Tree?",
 		"intent": "environment_sanitation.disposal.christmas_tree"
 	},
 	{
@@ -236,11 +236,11 @@
 		"intent": "environment_sanitation.disposal.couch"
 	},
 	{
-		"text": "Where can I dispose of electronics?",
+		"text": "When is New Haven's electronic recycling? Not posted on the NH website and I can';'t get a hold of anyone in public works.",
 		"intent": "environment_sanitation.disposal.electronics"
 	},
 	{
-		"text": "When is New Haven's electronic recycling? Not posted on the NH website and I can';'t get a hold of anyone in public works.",
+		"text": "Where can I dispose of electronics?",
 		"intent": "environment_sanitation.disposal.electronics"
 	},
 	{
@@ -276,7 +276,23 @@
 		"intent": "environment_sanitation.disposal.leaf"
 	},
 	{
-		"text": "How should leaves be handled?",
+		"text": "When is leaf collection?",
+		"intent": "environment_sanitation.disposal.leaf"
+	},
+	{
+		"text": "How do I dispose of leaves",
+		"intent": "environment_sanitation.disposal.leaf"
+	},
+	{
+		"text": "Where can I get leaf bags?",
+		"intent": "environment_sanitation.disposal.leaf.guide"
+	},
+	{
+		"text": "Where do I get a leaf bag?",
+		"intent": "environment_sanitation.disposal.leaf.guide"
+	},
+	{
+		"text": "Do I need to bag my leaves?",
 		"intent": "environment_sanitation.disposal.leaf.guide"
 	},
 	{
@@ -284,11 +300,7 @@
 		"intent": "environment_sanitation.disposal.leaf.guide"
 	},
 	{
-		"text": "Where can I get leaf bags?",
-		"intent": "environment_sanitation.disposal.leaf.guide"
-	},
-	{
-		"text": "Do I need to bag my leaves?",
+		"text": "How should leaves be handled?",
 		"intent": "environment_sanitation.disposal.leaf.guide"
 	},
 	{
@@ -328,15 +340,15 @@
 		"intent": "environment_sanitation.disposal.piano"
 	},
 	{
-		"text": "Where do I throw out used syringes??",
-		"intent": "environment_sanitation.disposal.syringes"
-	},
-	{
 		"text": "Where do I dispose used syringes?",
 		"intent": "environment_sanitation.disposal.syringes"
 	},
 	{
 		"text": "i need to get rid of syringes",
+		"intent": "environment_sanitation.disposal.syringes"
+	},
+	{
+		"text": "Where do I throw out used syringes??",
 		"intent": "environment_sanitation.disposal.syringes"
 	},
 	{
@@ -349,11 +361,11 @@
 	},
 	{
 		"intent": "environment_sanitation.dumping",
-		"text": "Someone is dumping trash behind our house"
+		"text": "There is an RV dumping at Malipardis park"
 	},
 	{
 		"intent": "environment_sanitation.dumping",
-		"text": "There is an RV dumping at Malipardis park"
+		"text": "Someone is dumping trash behind our house"
 	},
 	{
 		"intent": "environment_sanitation.litter",
@@ -388,11 +400,11 @@
 		"intent": "environment_sanitation.park.barbecue"
 	},
 	{
-		"text": "Can dogs be at the park?",
+		"text": "Is it ok to bring a dog to the park?",
 		"intent": "environment_sanitation.park.pet"
 	},
 	{
-		"text": "Is it ok to bring a dog to the park?",
+		"text": "Can dogs be at the park?",
 		"intent": "environment_sanitation.park.pet"
 	},
 	{
@@ -447,6 +459,10 @@
 		"text": "My recycling didnt get picked up this morning"
 	},
 	{
+		"text": "What do I recycle in Jersey city?",
+		"intent": "environment_sanitation.recycling.guide"
+	},
+	{
 		"text": "Can recycling be mixed?",
 		"intent": "environment_sanitation.recycling.guide",
 		"entities": [
@@ -459,7 +475,7 @@
 		]
 	},
 	{
-		"text": "What do I recycle in Jersey city?",
+		"text": "Where can I find a printed Recycling Guide?",
 		"intent": "environment_sanitation.recycling.guide"
 	},
 	{
@@ -467,15 +483,11 @@
 		"intent": "environment_sanitation.recycling.guide"
 	},
 	{
-		"text": "Where can I find a printed Recycling Guide?",
+		"text": "What plastics are recycable?",
 		"intent": "environment_sanitation.recycling.guide"
 	},
 	{
 		"text": "Can I recycle plastic #5 in Jersey City?",
-		"intent": "environment_sanitation.recycling.guide"
-	},
-	{
-		"text": "What plastics are recycable?",
 		"intent": "environment_sanitation.recycling.guide"
 	},
 	{
@@ -485,18 +497,6 @@
 	{
 		"text": "Where do I bring recycling?",
 		"intent": "environment_sanitation.recycling.location"
-	},
-	{
-		"text": "What is the recycling schedule?",
-		"intent": "environment_sanitation.recycling.schedule"
-	},
-	{
-		"text": "When is recycling next month?",
-		"intent": "environment_sanitation.recycling.schedule"
-	},
-	{
-		"text": "Is there recycling next week?",
-		"intent": "environment_sanitation.recycling.schedule"
 	},
 	{
 		"text": "Is recycling next Wednesday?",
@@ -523,20 +523,32 @@
 		"intent": "environment_sanitation.recycling.schedule"
 	},
 	{
-		"text": "Where can I find a copy of the garbage and trash holiday schedule?",
-		"intent": "environment_sanitation.schedule.exceptions"
+		"text": "What is the recycling schedule?",
+		"intent": "environment_sanitation.recycling.schedule"
+	},
+	{
+		"text": "When is recycling next month?",
+		"intent": "environment_sanitation.recycling.schedule"
+	},
+	{
+		"text": "Is there recycling next week?",
+		"intent": "environment_sanitation.recycling.schedule"
 	},
 	{
 		"text": "Does recylcing and trash pickup happen on holidays?",
 		"intent": "environment_sanitation.schedule.exceptions"
 	},
 	{
-		"intent": "environment_sanitation.trails",
-		"text": "How can I find maps of hiking trails in the area?"
+		"text": "Where can I find a copy of the garbage and trash holiday schedule?",
+		"intent": "environment_sanitation.schedule.exceptions"
 	},
 	{
 		"intent": "environment_sanitation.trails",
 		"text": "What trails are available to hike and bike on?"
+	},
+	{
+		"intent": "environment_sanitation.trails",
+		"text": "How can I find maps of hiking trails in the area?"
 	},
 	{
 		"text": "i have garbage",
@@ -570,11 +582,35 @@
 		"intent": "environment_sanitation.trash.location"
 	},
 	{
+		"text": "Where can I find the trash pick-up schedule for New Haven?",
+		"intent": "environment_sanitation.trash.schedule"
+	},
+	{
 		"text": "What is my solid waste collection day?",
 		"intent": "environment_sanitation.trash.schedule"
 	},
 	{
-		"text": "Where can I find the trash pick-up schedule for New Haven?",
+		"text": "my garbage schedule",
+		"intent": "environment_sanitation.trash.schedule"
+	},
+	{
+		"text": "What is the trash schedule?",
+		"intent": "environment_sanitation.trash.schedule"
+	},
+	{
+		"text": "When is trash pickup?",
+		"intent": "environment_sanitation.trash.schedule"
+	},
+	{
+		"text": "Is there trash pickup next week?",
+		"intent": "environment_sanitation.trash.schedule"
+	},
+	{
+		"text": "What day is trash? ",
+		"intent": "environment_sanitation.trash.schedule"
+	},
+	{
+		"text": "Garbage Schedule",
 		"intent": "environment_sanitation.trash.schedule"
 	},
 	{
@@ -610,28 +646,8 @@
 		"intent": "environment_sanitation.trash.schedule"
 	},
 	{
-		"text": "Garbage Schedule",
-		"intent": "environment_sanitation.trash.schedule"
-	},
-	{
-		"text": "What day is trash? ",
-		"intent": "environment_sanitation.trash.schedule"
-	},
-	{
-		"text": "my garbage schedule",
-		"intent": "environment_sanitation.trash.schedule"
-	},
-	{
-		"text": "What is the trash schedule?",
-		"intent": "environment_sanitation.trash.schedule"
-	},
-	{
-		"text": "When is trash pickup?",
-		"intent": "environment_sanitation.trash.schedule"
-	},
-	{
-		"text": "Is there trash pickup next week?",
-		"intent": "environment_sanitation.trash.schedule"
+		"text": "A tree is blocking the street",
+		"intent": "environment_sanitation.tree.down"
 	},
 	{
 		"text": "There's a tree down outside my house",
@@ -646,16 +662,12 @@
 		"intent": "environment_sanitation.tree.down"
 	},
 	{
-		"text": "A tree is blocking the street",
-		"intent": "environment_sanitation.tree.down"
+		"intent": "environment_sanitation.tree.inspection",
+		"text": "Who do I report a dead city tree to?"
 	},
 	{
 		"intent": "environment_sanitation.tree.inspection",
 		"text": "The tree outside my house looks dead"
-	},
-	{
-		"intent": "environment_sanitation.tree.inspection",
-		"text": "Who do I report a dead city tree to?"
 	},
 	{
 		"text": "Can I just plant a tree?",
@@ -666,16 +678,20 @@
 		"intent": "environment_sanitation.tree.planting"
 	},
 	{
-		"intent": "environment_sanitation.tree.planting",
-		"text": "Can we get a new tree on the corner of George Street and College Ave?"
+		"text": "I want a tree planted. Anything I need to do?",
+		"intent": "environment_sanitation.tree.planting"
 	},
 	{
 		"text": "Is anything required to plant a tree?",
 		"intent": "environment_sanitation.tree.planting"
 	},
 	{
-		"text": "I want a tree planted. Anything I need to do?",
-		"intent": "environment_sanitation.tree.planting"
+		"intent": "environment_sanitation.tree.planting",
+		"text": "Can we get a new tree on the corner of George Street and College Ave?"
+	},
+	{
+		"intent": "environment_sanitation.tree.pruning",
+		"text": "Will you trim or remove my tree?"
 	},
 	{
 		"intent": "environment_sanitation.tree.pruning",
@@ -688,10 +704,6 @@
 	{
 		"intent": "environment_sanitation.tree.pruning",
 		"text": "I think a tree needs pruning"
-	},
-	{
-		"intent": "environment_sanitation.tree.pruning",
-		"text": "Will you trim or remove my tree?"
 	},
 	{
 		"intent": "environment_sanitation.tree.pruning",

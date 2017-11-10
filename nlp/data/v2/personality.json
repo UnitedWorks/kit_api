@@ -4,20 +4,20 @@
 		"intent": "personality.age"
 	},
 	{
-		"text": "how long have you been around",
+		"text": "how long have you been around?",
 		"intent": "personality.age"
 	},
 	{
-		"text": "this is broken",
-		"intent": "personality.broken"
+		"text": "how long have you been around",
+		"intent": "personality.age"
 	},
 	{
 		"text": "are you working?",
 		"intent": "personality.broken"
 	},
 	{
-		"text": "Gov chatbots?!?",
-		"intent": "personality.chatbot_curiosity"
+		"text": "this is broken",
+		"intent": "personality.broken"
 	},
 	{
 		"text": "What is a chat bot?",
@@ -29,6 +29,10 @@
 	},
 	{
 		"text": "What's a chatbot?",
+		"intent": "personality.chatbot_curiosity"
+	},
+	{
+		"text": "Gov chatbots?!?",
 		"intent": "personality.chatbot_curiosity"
 	},
 	{
@@ -48,11 +52,11 @@
 		"intent": "personality.feeling.negative"
 	},
 	{
-		"text": "well!",
+		"text": "I'm doing great",
 		"intent": "personality.feeling.positive"
 	},
 	{
-		"text": "I'm doing great",
+		"text": "well!",
 		"intent": "personality.feeling.positive"
 	},
 	{
