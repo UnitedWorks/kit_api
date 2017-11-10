@@ -70,6 +70,7 @@ export default {
           'personality.chatbot_curiosity': 'personality.chatbot_curiosity',
           'personality.has_question': 'personality.has_question',
           'personality.makers': 'personality.makers',
+          'personality.age': 'personality.age',
 
           // benefits_internet: 'benefits-internet.init',
 

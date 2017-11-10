@@ -1,27 +1,36 @@
+import moment from 'moment';
 import { randomPick } from '../helpers';
 import { basicRequestQuickReplies } from '../templates/quick-replies';
 
 export default {
   what_am_i() {
     const message = randomPick([
-      '🤖 I\'m a chatbot!',
       '🤖 I\'m a chatbot trying to get you in touch with the right folks in gov!',
     ]);
-    return this.messagingClient.send(message).then(() => this.getBaseState());
+    this.messagingClient.send(message);
+    return this.getBaseState();
   },
   chatbot_curiosity() {
     const message = 'Chatbots are automated assistants 🤖. They\'ve been around for decades, but they\'re very new to government! I\'m one of the only in the world :)';
-    return this.messagingClient.send(message).then(() => this.getBaseState());
+    this.messagingClient.send(message);
+    return this.getBaseState();
   },
   has_question() {
-    return this.messagingClient.send('What\'s your question?').then(() => this.getBaseState());
+    this.messagingClient.send('What\'s your question?');
+    return this.getBaseState();
   },
   makers() {
     const message = randomPick([
       `${this.get('organization').name} working with Hey Mayor! (https://mayor.chat)`,
       'Mark and Nick! 📷 → instagram.com/heymayor',
     ]);
-    return this.messagingClient.send(message).then(() => this.getBaseState());
+    this.messagingClient.send(message);
+    return this.getBaseState();
+  },
+  age() {
+    const age = moment([2017, 10, 30]).fromNow(true);
+    this.messagingClient.send(`I've been around for ${age}!`);
+    return this.getBaseState();
   },
   handle_greeting() {
     const greetings = [
