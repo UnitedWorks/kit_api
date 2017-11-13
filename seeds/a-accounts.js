@@ -6,7 +6,6 @@ exports.seed = (knex, Promise) => {
     // Clear relationships between orgs and other entities
     knex('organizations_integrations').del(),
     knex('narrative_sessions').del(),
-    knex('organizations_cases').del(),
   ])
   .then(() => {
     // Clearing knowledge entities in a particular order because of relationships
@@ -22,7 +21,6 @@ exports.seed = (knex, Promise) => {
       knex('knowledge_questions').del(),
       knex('knowledge_answers').del(),
       knex('representatives').del(),
-      knex('cases').del(),
     ]);
   })
   .then(() => {

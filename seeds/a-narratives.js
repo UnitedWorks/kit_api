@@ -37,7 +37,7 @@ exports.seed = function(knex, Promise) {
     });
     const seeClickFixInsert = knex('integrations').insert({
       name: 'See Click Fix',
-      type: 'cases',
+      type: 'tasks',
       label: 'seeClickFix',
       description: 'Request and case management system',
       url: 'https://seeclickfix.com',
@@ -52,7 +52,7 @@ exports.seed = function(knex, Promise) {
     const sfSelect = knex.select().where('name', 'San Francisco').from('organizations')
       .then(rows => rows[0].id);
     return Promise.join(
-      askDarcelInsert, sfSelect, voteFoundationInsert, benefitKitchenInsert, seeClickFixInsert, staeInsert
+      askDarcelInsert, sfSelect, voteFoundationInsert, benefitKitchenInsert, seeClickFixInsert, staeInsert,
       (askDarcelId, sfId) => {
         idsObj.sourceIds = {
           askDarcel: askDarcelId,

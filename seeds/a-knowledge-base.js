@@ -7,7 +7,7 @@ exports.seed = function(knex, Promise) {
     const categoryInserts = [];
     KnowledgeConstants.CATEGORIES.forEach((category) => {
       categoryInserts.push(knex('knowledge_categorys').insert({
-        label: category,
+        name: category,
       }, 'id'));
     });
     return Promise.all(categoryInserts).then((data) => {
