@@ -77,8 +77,8 @@ export async function todaysForecast() {
 
 export function scheduledJobs() {
   // Constituent Notification Signup
-  // Default: 0 15 13 * * 1
-  schedule.scheduleJob('0 15 13 * * 1', () => {
+  // Default: 0 15 13 27 * *
+  schedule.scheduleJob('0 15 13 27 * *', () => {
     NarrativeSession.fetchAll({ withRelated: ['constituent', 'constituent.facebookEntry', 'constituent.smsEntry', 'organization'] })
       .then((s) => {
         s.toJSON().filter(session => session.organization &&
