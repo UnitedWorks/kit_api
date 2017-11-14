@@ -6,6 +6,7 @@ export default class WeatherClient {
     this.apiKey = config.apiKey || process.env.OPEN_WEATHER_MAP_KEY;
   }
   static emojiMap = {
+    500: '☔',
     800: '☀',
     801: '⛅',
     802: '☁',
