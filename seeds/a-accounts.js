@@ -64,8 +64,8 @@ exports.seed = (knex, Promise) => {
       },
     }, 'id');
     const seedHighlandPark = knex('locations').insert({
-      lat: 40.828898,
-      lon: -74.449686,
+      lat: 40.4973,
+      lon: -74.4242,
       display_name: 'Highland Park, Middlesex County, New Jersey, United States of America',
       address: {
         city: 'Highland Park',

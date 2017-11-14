@@ -139,5 +139,4 @@ export const AVAILABILITY_SCHEDULE = 'availability.schedule';
 export const CONTACT = 'contact';
 export const CONTACT_PHONE = 'contact.phone';
 export const CONTACT_EMAIL = 'contact.email';
-// export const LOCATION = 'location';
-export const LOCATION_ADDRESS = 'location.address';
+// export const LOCATION = 'location'; // Already exporting

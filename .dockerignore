@@ -1,6 +1,5 @@
 .git
 node_modules
-logs/info.log
-logs/error.log
-logs/warning.log
+logs
 yarn.lock
+yarn-error.log

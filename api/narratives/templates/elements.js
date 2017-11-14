@@ -165,18 +165,18 @@ export function genericContact(contact) {
     subtitle: `${contact.title ? `${contact.title} - ` : ''}${contact.responsibilities}`,
   };
   const buttons = [];
+  if (contact.location) {
+    buttons.push({
+      type: 'web_url',
+      title: 'View on Map',
+      url: getPlacesUrl(contact.location.display_name),
+    });
+  }
   if (contact.phone_number) {
     buttons.push({
       type: 'phone_number',
       title: contact.phone_number,
       payload: contact.phone_number,
-    });
-  }
-  if (contact.email) {
-    buttons.push({
-      type: 'email',
-      title: contact.email,
-      email: contact.email,
     });
   }
   if (contact.url) {
@@ -185,6 +185,13 @@ export function genericContact(contact) {
       title: contact.url,
       url: contact.url,
       webview_height_ratio: 'tall',
+    });
+  }
+  if (contact.email) {
+    buttons.push({
+      type: 'email',
+      title: contact.email,
+      email: contact.email,
     });
   }
   if (buttons.length < 3) buttons.push({ type: 'element_share' });
@@ -201,7 +208,7 @@ export function genericFacility(facility) {
   if (facility.hasOwnProperty('location') && facility.location.display_name != null) {
     buttons.push({
       type: 'web_url',
-      title: facility.location.display_name,
+      title: 'View on Map',
       url: getPlacesUrl(facility.location.display_name),
     });
   }
@@ -282,7 +289,7 @@ export function genericEvent(event) {
   if (event.hasOwnProperty('location') && event.location.display_name != null) {
     buttons.push({
       type: 'web_url',
-      title: event.location.display_name,
+      title: 'View on Map',
       url: getPlacesUrl(event.location.display_name),
     });
   }

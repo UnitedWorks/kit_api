@@ -101,6 +101,13 @@ export default class KitClient {
     return entityContactText.length > 0 ? entityContactText : null;
   }
 
+  static entityLocationToText(entity) {
+    if (entity.location && entity.location.display_name) {
+      return `${entity.name} is located at ${entity.location.display_name}`;
+    }
+    return null;
+  }
+
   static entityAvailabilityToText(type, entity, { datetime, constituentAttributes = {} } = {}) {
     let entityAvailabilityText = '';
     // Describe General Schedule (even if no datetime, mention schedule)

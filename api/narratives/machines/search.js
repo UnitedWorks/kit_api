@@ -12,13 +12,14 @@ import { runFeed } from '../../feeds/helpers';
 export default {
   async knowledge_entity() {
     let entityString = null;
+    if (!this.snapshot.nlp) return this.getBaseState();
     if (this.snapshot.nlp.entities.search_query && this.snapshot.nlp.entities.search_query[0]) {
       entityString = this.snapshot.nlp.entities.search_query[0].value;
     } else if (this.snapshot.nlp.entities.location && this.snapshot.nlp.entities.location[0]) {
       entityString = this.snapshot.nlp.entities.location[0].value;
     }
     if (!entityString) {
-      this.messagingClient.send('I didn\'t catch the name of something you\'re looking up. Sorry! Can you try again for me?');
+      this.messagingClient.send('I didn\'t catch the name of something you\'re looking up. Sorry! Can you say differently for me?');
       return this.getBaseState();
     }
     const knowledgeEntities = await searchKnowledgeEntities({
@@ -34,7 +35,7 @@ export default {
       } catch (e) {
         logger.error(e);
       }
-      this.messagingClient.send('Hmm, I wasn\'t able to find any relevant facilities, services, or contacts. Sorry about that.');
+      this.messagingClient.send('I wasn\'t able to find relevant facilities, services, or contacts. Sorry about that.');
       return this.getBaseState();
     }
     // Produce entities from search
@@ -51,7 +52,7 @@ export default {
         } else if (lookupType === LOOKUP.CONTACT) {
           return KitClient.entityContactToText(entity.payload);
         } else if (lookupType === LOOKUP.LOCATION) {
-          // return KitClient.entityLocationToText(entity.payload, 'location');
+          return KitClient.entityLocationToText(entity.payload);
         }
         return null;
       }).filter(text => text), replyTemplates.evalHelpfulAnswer);
