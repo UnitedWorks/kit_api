@@ -75,8 +75,8 @@ export async function getAnswers(params = {}, options = { returnJSON: true }) {
 export async function searchKnowledgeEntities(params = {}, options = { returnJSON: true, limit: 10 }) {
   // Postgres UNION ALL could make this more efficient... but hit a snag with results columns
   const results = await Promise.all([
-    knex.select(knex.raw(`*, similarity(name, '${params.text}') as similarity`)).from('knowledge_services').where('organization_id', '=', params.organization_id).orderBy('similarity', 'desc').limit(10).join('locations', 'knowledge_services.location_id', '=', 'locations.id'),
-    knex.select(knex.raw(`*, similarity(name, '${params.text}') as similarity`)).from('knowledge_facilitys').where('organization_id', '=', params.organization_id).orderBy('similarity', 'desc').limit(10).join('locations', 'knowledge_facilitys.location_id', '=', 'locations.id'),
+    knex.select(knex.raw(`*, similarity(name, '${params.text}') as similarity`)).from('knowledge_services').where('organization_id', '=', params.organization_id).orderBy('similarity', 'desc').limit(10).leftJoin('locations', 'knowledge_services.location_id', '=', 'locations.id'),
+    knex.select(knex.raw(`*, similarity(name, '${params.text}') as similarity`)).from('knowledge_facilitys').where('organization_id', '=', params.organization_id).orderBy('similarity', 'desc').limit(10).leftJoin('locations', 'knowledge_facilitys.location_id', '=', 'locations.id'),
     knex.select(knex.raw(`*, similarity(name, '${params.text}') as similarity`)).from('knowledge_contacts').where('organization_id', '=', params.organization_id).orderBy('similarity', 'desc').limit(10),
     knex.select(knex.raw(`*, similarity(title, '${params.text}') as similarity`)).from('knowledge_contacts').where('organization_id', '=', params.organization_id).orderBy('similarity', 'desc').limit(10),
   ]).then((d) => {

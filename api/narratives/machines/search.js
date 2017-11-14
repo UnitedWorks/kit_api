@@ -13,10 +13,10 @@ export default {
   async knowledge_entity() {
     let entityString = null;
     if (!this.snapshot.nlp) return this.getBaseState();
-    if (this.snapshot.nlp.entities.search_query && this.snapshot.nlp.entities.search_query[0]) {
-      entityString = this.snapshot.nlp.entities.search_query[0].value;
-    } else if (this.snapshot.nlp.entities.location && this.snapshot.nlp.entities.location[0]) {
+    if (this.snapshot.nlp.entities.location && this.snapshot.nlp.entities.location[0]) {
       entityString = this.snapshot.nlp.entities.location[0].value;
+    } else if (this.snapshot.nlp.entities.search_query && this.snapshot.nlp.entities.search_query[0]) {
+      entityString = this.snapshot.nlp.entities.search_query[0].value;
     }
     if (!entityString) {
       this.messagingClient.send('I didn\'t catch the name of something you\'re looking up. Sorry! Can you say differently for me?');
