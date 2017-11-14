@@ -297,16 +297,15 @@ export async function updateFacility(facility, options) {
     phone_number: facility.phone_number,
     url: facility.url,
     availabilitys: facility.availabilitys,
+    location_id: facility.location_id,
   };
-  // Set Location
-  if (!facility.location.id) {
+  // Create location if it was passed without an ID
+  if (facility.location && !facility.location.id) {
     const locationJSON = await createLocation(facility.location, { returnJSON: true });
     if (locationJSON) compiledFacility.location_id = locationJSON.id;
-  } else {
-    compiledFacility.location_id = null;
   }
   return KnowledgeFacility.forge(compiledFacility).save(null, { method: 'update' })
-    .then((facilityData) => (options.returnJSON ? facilityData.toJSON() : facilityData))
+    .then(facilityData => (options.returnJSON ? facilityData.toJSON() : facilityData))
     .catch(err => err);
 }
 
@@ -348,13 +347,12 @@ export async function updateService(service, options) {
     phone_number: service.phone_number,
     url: service.url,
     availabilitys: service.availabilitys,
+    location_id: service.location_id,
   };
-  // Set Location
+  // Create location if it was passed without an ID
   if (service.location && !service.location.id) {
     const locationJSON = await createLocation(service.location, { returnJSON: true });
     if (locationJSON) compiledService.location_id = locationJSON.id;
-  } else {
-    compiledService.location_id = null;
   }
   return KnowledgeService.forge(compiledService).save(null, { method: 'update' })
     .then(serviceData => (options.returnJSON ? serviceData.toJSON() : serviceData))
