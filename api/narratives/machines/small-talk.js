@@ -185,7 +185,7 @@ export default {
         }
       } else {
         // If we do, templates!
-        this.messagingClient.addToQuene(hasSeeClickFix ? `${i18n('dont_know')} If this is an issue you want to report, please use SeeClickFix and select the appropriate category.` : i18n('dont_know'));
+        this.messagingClient.addToQuene(hasSeeClickFix ? `${i18n('dont_know')} If this is an issue you want to report, please use SeeClickFix and select the appropriate category. Here's who I've found that you can get in touch with.` : i18n('dont_know'));
         // Give templates
         let contactElements = fallbackData.contacts.map(
           contact => elementTemplates.genericContact(contact));

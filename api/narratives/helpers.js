@@ -119,7 +119,7 @@ export async function fetchAnswers(intent, session) {
       EventTracker('answer_sent', { session, question }, { status: 'failed' });
     } else {
       // If we have fallback, list names and templates
-      let compiledContacts = `${i18n('dont_know')} Until then please contact my colleagues for more help: `;
+      let compiledContacts = '';
       fallback.contacts.forEach((contact, index, arr) => {
         if (index === 0) {
           compiledContacts = compiledContacts.concat(contact.name);
@@ -129,7 +129,7 @@ export async function fetchAnswers(intent, session) {
           compiledContacts = compiledContacts.concat(`, ${contact.name}`);
         }
       });
-      session.messagingClient.addToQuene(compiledContacts);
+      session.messagingClient.addToQuene(i18n('dont_know', { tryContacting: compiledContacts }));
       // Give templates
       session.messagingClient.addToQuene({
         type: 'template',
