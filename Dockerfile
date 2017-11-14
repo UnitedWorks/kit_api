@@ -1,11 +1,12 @@
 FROM node:6.9.2
 
 RUN mkdir -p /usr/src/kit_api
-WORKDIR /usr/src/kit_api
+ADD package.json /usr/src/kit_api/package.json
 
+RUN cd /usr/src/kit_api && npm install && npm install knex -g
+
+WORKDIR /usr/src/kit_api
 COPY . /usr/src/kit_api
-RUN npm install
-RUN npm install knex -g
 
 EXPOSE 5000
 
