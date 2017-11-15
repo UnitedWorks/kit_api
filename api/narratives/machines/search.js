@@ -25,7 +25,7 @@ export default {
     const knowledgeEntities = await searchKnowledgeEntities({
       text: entityString,
       organization_id: this.snapshot.organization_id,
-    }, { limit: 3 });
+    }, { limit: 9 });
     if (knowledgeEntities.length === 0) {
       try {
         new SlackService({
