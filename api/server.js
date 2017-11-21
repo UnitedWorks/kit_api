@@ -50,6 +50,7 @@ app.use('/prompts', require('./prompts/routes'));
 app.use('/shouts', require('./shouts/routes'));
 app.use('/tasks', require('./tasks/routes'));
 app.use('/feeds', require('./feeds/routes'));
+app.use('/vehicles', require('./vehicles/routes'));
 
 // Log Viewing
 app.get('/logs/info', (req, res, next) => {
