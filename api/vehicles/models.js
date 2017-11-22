@@ -13,7 +13,10 @@ export const Vehicle = bookshelf.Model.extend({
     if (attrs.location) {
       const b = new Buffer(attrs.location, 'hex');
       const c = wkx.Geometry.parse(b);
-      attrs.location = [c.x, c.y];
+      attrs.location = {
+        type: 'Point',
+        coordinates: [c.x, c.y],
+      };
     }
     return attrs;
   },

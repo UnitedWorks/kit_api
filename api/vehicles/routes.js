@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { bookshelf } from '../orm';
+import { bookshelf, knex } from '../orm';
 import { Vehicle } from './models';
 
 const router = new Router();
@@ -24,11 +24,11 @@ router.route('/')
   })
   .put((req, res, next) => {
     const newProps = req.body.vehicle;
-    if (!newProps.location || newProps.location.length !== 2) newProps.location = null;
     Vehicle.where({ id: req.body.vehicle.id })
       .save({
         ...newProps,
-        location: bookshelf.knex.raw(`ST_SetSRID(ST_Point(${newProps.location[0]},${newProps.location[1]}) , 4326)`),
+        location: newProps.location && newProps.location.length === 2 ? bookshelf.knex.raw(`ST_SetSRID(ST_Point(${newProps.location[0]},${newProps.location[1]}) , 4326)`) : null,
+        updated_at: knex.raw('now()'),
       }, { method: 'update', patch: true })
       .then((updated) => {
         updated.refresh().then((refreshedVehicle) => {
