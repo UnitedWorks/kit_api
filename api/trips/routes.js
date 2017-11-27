@@ -3,12 +3,15 @@ import { bookshelf, st } from '../orm';
 import { Trip } from './models';
 
 const router = new Router();
+
 router.route('/')
   .post((req, res, next) => {
     const tripProps = req.body.trip;
     Trip.forge({
       ...tripProps,
-      path: tripProps.path && tripProps.path.length > 1 ? bookshelf.knex.raw(`ST_SetSRID(ST_MakeLine(${tripProps.path.map(c => `ST_MakePoint(${c[0]},${c[1]})`).join(', ')}),4326)`) : null,
+      path: tripProps.path && tripProps.path.length > 1
+        ? bookshelf.knex.raw(`ST_GeomFromText('LineString(${tripProps.path.map(c => `${c[0]} ${c[1]}`).join(',')}',4326)`)
+        : null,
     })
     .save(null, { method: 'insert' })
     .then((forgedTrip) => {
