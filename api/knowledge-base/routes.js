@@ -204,7 +204,7 @@ router.route('/contacts')
       next(e);
     }
   })
-  .post(requireAuth, (req, res, next) => {
+  .post((req, res, next) => {
     try {
       createContact(req.body, { returnJSON: true })
         .then(contacts => res.status(200).send({ contacts }))
@@ -213,7 +213,7 @@ router.route('/contacts')
       next(e);
     }
   })
-  .put(requireAuth, (req, res, next) => {
+  .put((req, res, next) => {
     try {
       updateContact(req.body.contact, { returnJSON: true })
         .then(contacts => res.status(200).send({ contacts }))
@@ -222,7 +222,7 @@ router.route('/contacts')
       next(e);
     }
   })
-  .delete(requireAuth, (req, res, next) => {
+  .delete((req, res, next) => {
     try {
       deleteContact({ id: req.query.contact_id }, { returnJSON: true })
         .then(contacts => res.status(200).send({ contacts }))
