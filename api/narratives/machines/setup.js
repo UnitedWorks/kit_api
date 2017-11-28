@@ -116,13 +116,17 @@ export default {
         ...this.get('attributes'),
         default_location: geoData,
       });
-      this.messagingClient.send(`Thanks! I've set your default location to ${this.get('attributes').default_location.display_name}`);
+      let defaultLocationStr = '';
+      const addressObj = this.get('attributes').default_location.address;
+      if (addressObj.house_number) defaultLocationStr += `${addressObj.house_number} `;
+      if (addressObj.road) defaultLocationStr += `${addressObj.road}`;
+      if (addressObj.city) defaultLocationStr += `, ${addressObj.city}`;
+      this.messagingClient.send(`Thanks! I've set your default location to ${defaultLocationStr}`);
       // If we had a previous input, run it
       if (this.get('last_input')) return this.runLastInput();
       // Otherwise, just return to base state
       return this.getBaseState();
-    } else {
-      this.messagingClient.send('Sorry, I didn\'t catch an address. Can you say that again?');
     }
+    this.messagingClient.send('Sorry, I didn\'t catch an address. Can you say that again?', [replyTemplates.exit]);
   },
 };
