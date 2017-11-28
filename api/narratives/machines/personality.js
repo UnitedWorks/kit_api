@@ -1,6 +1,5 @@
 import moment from 'moment';
 import { randomPick } from '../helpers';
-import { basicRequestQuickReplies } from '../templates/quick-replies';
 import WeatherClient from '../clients/weather-client';
 import * as QUICK_REPLIES from '../templates/quick-replies';
 
@@ -38,17 +37,16 @@ export default {
     const greetings = [
       'Hello neighbor!',
       '👋 Howdy!',
-      'Hey there! :) What can I help you with?',
+      'Hey there! What can I help you with?',
     ];
     const greeting = greetings[Math.floor(Math.random() * greetings.length)];
-    this.messagingClient.send(greeting, basicRequestQuickReplies);
+    this.messagingClient.send(greeting, QUICK_REPLIES.basicRequestQuickReplies);
     return this.getBaseState();
   },
   handle_praise() {
     const thanks = [
       'Thank you!',
-      'Thanks!!! :D',
-      '<3',
+      'Thanks!',
     ];
     const thank = thanks[Math.floor(Math.random() * thanks.length)];
     this.messagingClient.send(thank);
@@ -58,7 +56,6 @@ export default {
     const youreWelcomes = [
       'You are very welcome!',
       'No problem!',
-      'Np :)',
     ];
     const youreWelcome = youreWelcomes[Math.floor(Math.random() * youreWelcomes.length)];
     this.messagingClient.send(youreWelcome);
