@@ -62,9 +62,6 @@ export const KnowledgeService = bookshelf.Model.extend({
   events() {
     return this.hasMany(KnowledgeEvent, 'knowledge_service_id');
   },
-  facility() {
-    return this.belongsTo(KnowledgeFacility, 'knowledge_facility_id');
-  },
   location() {
     return this.belongsTo(Location, 'location_id');
   },

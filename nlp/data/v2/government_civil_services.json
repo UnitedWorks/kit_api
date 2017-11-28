@@ -61,6 +61,10 @@
     "intent": "government_civil_services.council"
   },
   {
+    "text": "Who is my council person?",
+    "intent": "government_civil_services.council"
+  },
+  {
     "text": "How to access the Council Agenda?",
     "intent": "government_civil_services.council.agenda"
   },
@@ -397,6 +401,18 @@
   {
     "text": "What is the mayor's agenda?",
     "intent": "government_civil_services.agenda"
+  },
+  {
+    "text": "where is the budget document?",
+    "intent": "government_civil_services.budget"
+  },
+  {
+    "text": "What is the city's budget?",
+    "intent": "government_civil_services.budget"
+  },
+  {
+    "text": "What is the budget for the transportation department?",
+    "intent": "government_civil_services.budget"
   },
   {
     "text": "Is anyone in your office bi-lingual?",

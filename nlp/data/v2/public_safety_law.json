@@ -220,6 +220,14 @@
 		"intent": "public_safety_law.crime.status"
 	},
 	{
+		"text": "does the city have an emergency alert system?",
+		"intent": "public_safety_law.emergency.notifications"
+	},
+	{
+		"text": "emergency alerts?",
+		"intent": "public_safety_law.emergency.notifications"
+	},
+	{
 		"text": "If I lose electricity during a major storm, where should I go for help?",
 		"intent": "public_safety_law.emergency.shelter"
 	},

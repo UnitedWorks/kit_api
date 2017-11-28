@@ -23,7 +23,8 @@ export const CATEGORIES = [TRANSPORTATION, ENVIRONMENT, PROPERTY, EDUCATION, BUS
 // FAQ Category Labels
 export const GENERAL_LABEL = 'general';
 
-// Facility Types
+// Entity Types (think it makes sense only for facilitys to have these?)
+// From Open311
 export const AFTER_SCHOOL = 'After School Program';
 export const BEACH = 'Beach';
 export const BUSINESS_SOLUTION_CENTER = 'Business Solution Center';
@@ -53,14 +54,19 @@ export const SUMMER_MEAL_PROGRAM = 'Summer Meal Program';
 export const PRE_K = 'Universal Pre-K';
 export const WORKFORCE_CENTER = 'Workforce Career Center';
 export const YOUTH_EMPLOYMENT = 'Youth Employment';
+// My addons
+export const EMERGENCY_SHELTER = 'Emergency Shelter';
+export const HOMELESS_SHELTER = 'Homeless Shelter';
+export const WARMING_CENTER = 'Warming Center';
 
-export const FACILITY_TYPES = [AFTER_SCHOOL, BEACH,
+export const ENTITY_FUNCTIONS = [AFTER_SCHOOL, BEACH,
   BUSINESS_SOLUTION_CENTER, CHILD_CARE, CLINIC, COMMUNITY_BOARD,
   CULTURAL_INSTITUTION, TAX_ASSISTANCE, FINANCIAL_EDUCATION, FOOD_PROVIDER,
   FOOD_STAMP_CENTER, MARKET, HOSPITAL, IMMIGRATION_SERVICES,
   JAIL_RELEASE_SERVICES, LIBRARY, MEDICAID, MEDICARE, NONPROFIT, PARK, POOL,
   PRECINCT, REC_CENTER, SCHOOL, SCHOOL_DISTRICT, SUMMER_MEAL_PROGRAM, PRE_K,
-  WORKFORCE_CENTER, YOUTH_EMPLOYMENT];
+  WORKFORCE_CENTER, YOUTH_EMPLOYMENT,
+  EMERGENCY_SHELTER, HOMELESS_SHELTER, WARMING_CENTER];
 
 // Media Types
 export const IMAGE = 'image';

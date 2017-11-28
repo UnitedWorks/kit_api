@@ -52,7 +52,7 @@ router.route('/facilities')
   .get((req, res) => {
     const whereFilters = {};
     if (req.query.organization_id) whereFilters.organization_id = req.query.organization_id;
-    KnowledgeFacility.where(whereFilters).fetchAll({ withRelated: ['category', 'location', 'services'] })
+    KnowledgeFacility.where(whereFilters).fetchAll({ withRelated: ['category', 'location'] })
       .then((facilityArray) => {
         res.status(200).send({ facilities: facilityArray });
       });
@@ -100,7 +100,7 @@ router.route('/events')
    * @return {Array}
    */
   .get((req, res) => {
-    KnowledgeEvent.fetchAll({ withRelated: ['category', 'facility', 'location', 'service'] })
+    KnowledgeEvent.fetchAll()
       .then((eventsArray) => {
         res.status(200).send({ events: eventsArray });
       });
@@ -154,7 +154,7 @@ router.route('/services')
   .get((req, res, next) => {
     const whereFilters = {};
     if (req.query.organization_id) whereFilters.organization_id = req.query.organization_id;
-    KnowledgeService.where(whereFilters).fetchAll({ withRelated: ['category', 'facility', 'location'] })
+    KnowledgeService.where(whereFilters).fetchAll({ withRelated: ['category', 'location'] })
       .then(serviceArray => res.status(200).send({ services: serviceArray }))
       .catch(err => next(err));
   })
