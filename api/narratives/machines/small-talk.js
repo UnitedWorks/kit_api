@@ -61,10 +61,14 @@ export default {
 
         const entities = nlpData.entities;
         const intentMap = {
-          'speech.help': 'what_can_i_do',
-          'speech.greeting': 'personality.handle_greeting',
-          'speech.thanks': 'personality.handle_thank_you',
-          'speech.praise': 'personality.handle_praise',
+
+          // benefits_internet: 'benefits-internet.init',
+
+          'education_employment.employment_job_training': 'employment.waiting_job_training',
+
+          'health_medicine.clinics': 'health.waiting_clinic_search',
+
+          'interaction.tasks.status': 'get_tasks',
 
           'personality.what_am_i': 'personality.what_am_i',
           'personality.chatbot_curiosity': 'personality.chatbot_curiosity',
@@ -73,7 +77,24 @@ export default {
           'personality.age': 'personality.age',
           'personality.weather': 'personality.weather',
 
-          // benefits_internet: 'benefits-internet.init',
+          'search.knowledge_entity': 'search.knowledge_entity',
+          'search.event': 'search.event',
+
+          'settings.locality.update': 'setup.reset_organization', // Do we need this?
+          'settings.default_location': 'setup.default_location', // Should there be an attribute setting machine?
+
+          'social_services.shelters': 'socialServices.waiting_shelter_search',
+          'social_services.food_assistance': 'socialServices.waiting_food_search',
+          'social_services.hygiene': 'socialServices.waiting_hygiene_search',
+
+          'speech.help': 'what_can_i_do',
+          'speech.greeting': 'personality.handle_greeting',
+          'speech.thanks': 'personality.handle_thank_you',
+          'speech.praise': 'personality.handle_praise',
+
+          'transportation_streets_sidewalks.plowing.schedule': 'status.plowing',
+
+          'notifications': 'notifications',
 
           'voting_elections_participation.absentee_ballot': 'voting_elections_participation.absentee_ballot',
           'voting_elections_participation.deadlines': 'voting_elections_participation.deadlines',
@@ -88,23 +109,6 @@ export default {
           'voting_elections_participation.blocking': 'voting_elections_participation.blocking',
           'voting_elections_participation.assistance': 'voting_elections_participation.assistance',
 
-          'social_services.shelters': 'socialServices.waiting_shelter_search',
-          'social_services.food_assistance': 'socialServices.waiting_food_search',
-          'social_services.hygiene': 'socialServices.waiting_hygiene_search',
-
-          'health_medicine.clinics': 'health.waiting_clinic_search',
-
-          'education_employment.employment_job_training': 'employment.waiting_job_training',
-
-          'interaction.tasks.status': 'get_tasks',
-
-          'notifications': 'notifications',
-
-          'search.knowledge_entity': 'search.knowledge_entity',
-          'search.event': 'search.event',
-
-          'settings.locality.update': 'setup.reset_organization', // Do we need this?
-          'settings.default_location': 'setup.default_location', // Should there be an attribute setting machine?
         };
 
         if (entities.intent && entities.intent[0]) {

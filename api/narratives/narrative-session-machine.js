@@ -11,6 +11,7 @@ import HealthMachine from './machines/health';
 import PersonalityMachine from './machines/personality';
 import SearchMachine from './machines/search';
 import SetupMachine from './machines/setup';
+import StatusMachine from './machines/status';
 import SocialServicesMachine from './machines/social-services';
 import ActionMachine from './machines/action';
 import VotingElectionsParticipationMachine from './machines/voting-elections-participation';
@@ -33,6 +34,7 @@ export const stateMachines = {
   setup: SetupMachine,
   smallTalk: SmallTalkMachine,
   socialServices: SocialServicesMachine,
+  status: StatusMachine,
   usVoteFoundation: USVoteFoundationMachine,
   voting_elections_participation: VotingElectionsParticipationMachine,
 };

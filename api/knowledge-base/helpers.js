@@ -3,6 +3,7 @@ import * as env from '../env';
 import { Representative } from '../accounts/models';
 import { KnowledgeAnswer, KnowledgeCategory, KnowledgeFacility, KnowledgeService,
   KnowledgeQuestion, KnowledgeContact, Location } from './models';
+import { Vehicle } from '../vehicles/models';
 import geocoder from '../services/geocoder';
 import EmailService from '../services/email';
 import { runFeed } from '../feeds/helpers';
@@ -667,4 +668,18 @@ export function approveAnswers(answers = []) {
   return Promise.all(answers.map((answer) => {
     return knex('knowledge_answers').where({ id: answer.id }).update({ approved_at: knex.raw('now()') }).returning('id');
   })).then(results => ({ answers: results }));
+}
+
+export async function lookupActiveVehicles(vehicleFunction, orgId, coordinates) {
+  const params = {
+    organization_id: orgId,
+  };
+  if (vehicleFunction) params.function = vehicleFunction;
+  const vehicles = await Vehicle.query((qb) => {
+    qb.where(params)
+      .andWhere(knex.raw("DATE_PART('Day',now() - last_active_at::timestamptz) < 1"));
+  }).fetchAll().then(v => v.toJSON());
+  return {
+    vehicles,
+  };
 }
