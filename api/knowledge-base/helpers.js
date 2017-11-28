@@ -72,19 +72,24 @@ export async function getAnswers(params = {}, options = { returnJSON: true }) {
   return { question: questionJSON, answers: answerJSON };
 }
 
-export async function searchKnowledgeEntities(params = {}, options = { returnJSON: true, limit: 10 }) {
+export async function searchKnowledgeEntities(strings = [], organizationId, options = { returnJSON: true, limit: 10 }) {
+  if (strings.length === 0) return [];
   // Postgres UNION ALL could make this more efficient... but hit a snag with results columns
-  const results = await Promise.all([
-    knex.select(knex.raw(`*, similarity(name, '${params.text}') as similarity`)).from('knowledge_services').where('organization_id', '=', params.organization_id).orderBy('similarity', 'desc').limit(10).leftJoin('locations', 'knowledge_services.location_id', '=', 'locations.id'),
-    knex.select(knex.raw(`*, similarity(name, '${params.text}') as similarity`)).from('knowledge_facilitys').where('organization_id', '=', params.organization_id).orderBy('similarity', 'desc').limit(10).leftJoin('locations', 'knowledge_facilitys.location_id', '=', 'locations.id'),
-    knex.select(knex.raw(`*, similarity(name, '${params.text}') as similarity`)).from('knowledge_contacts').where('organization_id', '=', params.organization_id).orderBy('similarity', 'desc').limit(10),
-    knex.select(knex.raw(`*, similarity(title, '${params.text}') as similarity`)).from('knowledge_contacts').where('organization_id', '=', params.organization_id).orderBy('similarity', 'desc').limit(10),
-  ]).then((d) => {
-    return [].concat(d[0].map(s => ({ type: 'service', payload: { ...s, location: { display_name: s.display_name, address: s.address } } })).filter(s => s.payload.similarity > 0.3))
-      .concat(d[1].map(f => ({ type: 'facility', payload: { ...f, location: { display_name: f.display_name, address: f.address } } })).filter(f => f.payload.similarity > 0.3))
-      .concat(d[2].concat(d[3]).map(c => ({ type: 'contact', payload: c })).filter(c => c.payload.similarity > 0.3))
-      .sort((a, b) => a.payload.similarity < b.payload.similarity)
-      .slice(0, options.limit);
+  const searchFunctions = [];
+  strings.forEach((str) => {
+    searchFunctions.push(knex.select(knex.raw(`*, similarity(name, '${str}') as similarity`)).from('knowledge_services').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10).leftJoin('locations', 'knowledge_services.location_id', '=', 'locations.id')
+      .then(d => d.map(s => ({ type: 'service', payload: { ...s, location: { display_name: s.display_name, address: s.address } } })).filter(s => s.payload.similarity > 0.3)));
+    searchFunctions.push(knex.select(knex.raw(`*, similarity(name, '${str}') as similarity`)).from('knowledge_facilitys').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10).leftJoin('locations', 'knowledge_facilitys.location_id', '=', 'locations.id')
+      .then(d => d.map(f => ({ type: 'facility', payload: { ...f, location: { display_name: f.display_name, address: f.address } } })).filter(f => f.payload.similarity > 0.3)));
+    searchFunctions.push(knex.select(knex.raw(`*, similarity(name, '${str}') as similarity`)).from('knowledge_contacts').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10)
+      .then(d => d.map(c => ({ type: 'contact', payload: c })).filter(c => c.payload.similarity > 0.3)));
+    searchFunctions.push(knex.select(knex.raw(`*, similarity(title, '${str}') as similarity`)).from('knowledge_contacts').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10)
+      .then(d => d.map(c => ({ type: 'contact', payload: c })).filter(c => c.payload.similarity > 0.3)));
+  });
+  const results = await Promise.all(searchFunctions).then((data) => {
+    const allEntities = [];
+    data.forEach(entities => entities.forEach(e => allEntities.push(e)));
+    return allEntities.sort((a, b) => a.payload.similarity < b.payload.similarity).slice(0, options.limit);
   });
   return options.returnJSON ? JSON.parse(JSON.stringify(results)) : results;
 }

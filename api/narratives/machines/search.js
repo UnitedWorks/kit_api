@@ -11,21 +11,19 @@ import { runFeed } from '../../feeds/helpers';
 
 export default {
   async knowledge_entity() {
-    let entityString = null;
+    const entityStrings = [];
     if (!this.snapshot.nlp) return this.getBaseState();
-    if (this.snapshot.nlp.entities.location && this.snapshot.nlp.entities.location[0]) {
-      entityString = this.snapshot.nlp.entities.location[0].value;
-    } else if (this.snapshot.nlp.entities.search_query && this.snapshot.nlp.entities.search_query[0]) {
-      entityString = this.snapshot.nlp.entities.search_query[0].value;
+    if (this.snapshot.nlp.entities.location && this.snapshot.nlp.entities.location.length > 0) {
+      entityStrings.push(this.snapshot.nlp.entities.location[0].value);
     }
-    if (!entityString) {
+    if (this.snapshot.nlp.entities.search_query && this.snapshot.nlp.entities.search_query.length > 0) {
+      this.snapshot.nlp.entities.search_query.forEach(q => entityStrings.push(q.value));
+    }
+    if (entityStrings.length === 0) {
       this.messagingClient.send('I didn\'t catch the name of something you\'re looking up. Sorry! Can you say differently for me?');
       return this.getBaseState();
     }
-    const knowledgeEntities = await searchKnowledgeEntities({
-      text: entityString,
-      organization_id: this.snapshot.organization_id,
-    }, { limit: 9 });
+    const knowledgeEntities = await searchKnowledgeEntities(entityStrings, this.snapshot.organization_id, { limit: 9 });
     if (knowledgeEntities.length === 0) {
       try {
         new SlackService({
