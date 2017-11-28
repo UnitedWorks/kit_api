@@ -23,24 +23,36 @@ router.route('/')
       }).catch(err => next(err));
   })
   .put((req, res, next) => {
-    const newProps = req.body.vehicle;
-    Vehicle.where({ id: req.body.vehicle.id })
-      .save({
-        ...newProps,
-        location: newProps.location && newProps.location.length === 2 ? bookshelf.knex.raw(`ST_SetSRID(ST_Point(${newProps.location[0]},${newProps.location[1]}) , 4326)`) : null,
-        updated_at: knex.raw('now()'),
-      }, { method: 'update', patch: true })
-      .then((updated) => {
-        updated.refresh().then((refreshedVehicle) => {
-          res.status(200).send({ vehicle: refreshedVehicle.toJSON() });
-        });
-      }).catch(err => next(err));
+    Vehicle.where({ id: req.body.vehicle.id }).save({
+      ...req.body.vehicle,
+      updated_at: knex.raw('now()'),
+    }, { method: 'update', patch: true })
+    .then((updated) => {
+      updated.refresh().then((refreshedVehicle) => {
+        res.status(200).send({ vehicle: refreshedVehicle.toJSON() });
+      });
+    }).catch(err => next(err));
   })
   .delete((req, res, next) => {
     Vehicle.forge({ id: req.query.vehicle_id }).destroy()
       .then(() => {
         res.status(200).send({ vehicle: { id: req.query.id } });
       }).catch(err => next(err));
+  });
+
+router.route('/activity')
+  .put((req, res, next) => {
+    const props = req.body.vehicle;
+    Vehicle.where({ id: req.body.vehicle.id }).save({
+      function: props.function,
+      location: props.location && props.location.length === 2 ? bookshelf.knex.raw(`ST_SetSRID(ST_Point(${props.location[0]},${props.location[1]}) , 4326)`) : null,
+      last_active_at: knex.raw('now()'),
+    }, { method: 'update', patch: true })
+    .then((updated) => {
+      updated.refresh().then((refreshedVehicle) => {
+        res.status(200).send({ vehicle: refreshedVehicle.toJSON() });
+      });
+    }).catch(err => next(err));
   });
 
 module.exports = router;
