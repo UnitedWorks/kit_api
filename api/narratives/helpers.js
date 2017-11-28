@@ -192,9 +192,7 @@ export async function fetchAnswers(intent, session) {
   return session.messagingClient.runQuene().then(() => {
     // If we need a location, push user to setup machine
     if (requestLocation) {
-      session.snapshot.state_machine_name = 'setup';
-      session.current = 'default_location';
-      session.save();
+      session.requestLocation();
       return;
     // If we have a shout out, run it
     } else if (answers.actions && answers.actions.shout_out) {

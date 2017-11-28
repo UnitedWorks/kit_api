@@ -11,7 +11,7 @@ export default {
       return this.messagingClient.send(aux.message || `I can help you with ${`"${this.get('action').name}"` || 'this'}, but I need to ask a few questions. Is that ok?`, replyTemplates.sureNoThanks);
     },
     message() {
-      return nlp.message(this.snapshot.input.payload.text).then((nlpData) => {
+      return nlp.message(this.snapshot.input.payload.text || this.snapshot.input.payload.payload).then((nlpData) => {
         this.snapshot.nlp = nlpData;
         const entities = nlpData.entities;
         if (entities.intent && entities.intent[0]) {

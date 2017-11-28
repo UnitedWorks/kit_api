@@ -145,6 +145,22 @@ export class NarrativeSessionMachine extends StateMachine {
     super.setState(s);
   }
 
+  requestLocation() {
+    this.snapshot.state_machine_name = 'setup';
+    this.current = 'default_location';
+    this.set('last_input', this.snapshot.input);
+    this.save();
+  }
+
+  runLastInput() {
+    this.states = SmallTalkMachine;
+    this.snapshot.state_machine_name = 'smallTalk';
+    this.current = 'start';
+    this.snapshot.input = Object.assign({}, this.get('last_input'));
+    this.delete('last_input');
+    this.fire('start', 'message');
+  }
+
   // TODO(nicksahler): Proper SQL update
   save() {
     const self = this;

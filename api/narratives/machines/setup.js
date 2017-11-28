@@ -102,7 +102,7 @@ export default {
   },
 
   async default_location() {
-    const nlpEntities = this.snapshot.nlp ? this.snapshot.nlp.entities : await nlp.message(this.snapshot.input.payload.text).then(n => n.entities);
+    const nlpEntities = this.snapshot.nlp ? this.snapshot.nlp.entities : await nlp.message(this.snapshot.input.payload.text || this.snapshot.input.payload.payload).then(n => n.entities);
     // They want to bounce
     if (nlpEntities.intent && nlpEntities.intent[0].value === 'speech.escape') {
       this.messagingClient.send('Ok!', replyTemplates.whatCanIAsk);
@@ -117,9 +117,12 @@ export default {
         default_location: geoData,
       });
       this.messagingClient.send(`Thanks! I've set your default location to ${this.get('attributes').default_location.display_name}`);
+      // If we had a previous input, run it
+      if (this.get('last_input')) return this.runLastInput();
+      // Otherwise, just return to base state
+      return this.getBaseState();
     } else {
       this.messagingClient.send('Sorry, I didn\'t catch an address. Can you say that again?');
     }
-    return this.getBaseState();
   },
 };
