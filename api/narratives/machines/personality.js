@@ -29,7 +29,7 @@ export default {
     return this.getBaseState();
   },
   age() {
-    const age = moment([2017, 10, 30]).fromNow(true);
+    const age = moment([2017, 9, 30]).fromNow(true);
     this.messagingClient.send(`I've been around for ${age}!`);
     return this.getBaseState();
   },
