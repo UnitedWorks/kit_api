@@ -32,7 +32,7 @@ export default {
     }
     const similarEntities = await searchEntitiesBySimilarity(entityStrings, this.snapshot.organization_id, { limit: 9, confidence: functionChecks.length > 0 ? 0.65 : 0.3 });
     // If no similar enities, but we had facility/service functions, get those
-    const entitiesByFunction = await getEntitiesByFunction(functionChecks, this.snapshot.organization_id);
+    const entitiesByFunction = await getEntitiesByFunction(functionChecks, this.snapshot.organization_id, { sortStrings: entityStrings });
     // Join em
     const joinedEntities = [].concat(similarEntities).concat(entitiesByFunction);
     if (joinedEntities.length === 0) {

@@ -1,3 +1,4 @@
+import stringSimilarity from 'string-similarity';
 import { knex } from '../orm';
 import * as env from '../env';
 import { Representative } from '../accounts/models';
@@ -95,18 +96,29 @@ export async function searchEntitiesBySimilarity(strings = [], organizationId, o
   return options.returnJSON ? JSON.parse(JSON.stringify(results)) : results;
 }
 
-export async function getEntitiesByFunction(strings = []) {
+export async function getEntitiesByFunction(strings = [], organizationId, options = {}) {
   if (strings.length === 0) return [];
   const getFunctions = [];
   strings.forEach((str) => {
-    getFunctions.push(KnowledgeFacility.query(qb => qb.whereRaw(`'${str}' = ANY(knowledge_facilitys.functions)`))
+    getFunctions.push(KnowledgeFacility.query(qb => qb.whereRaw(`'${str}' = ANY(knowledge_facilitys.functions)`).andWhere('organization_id', '=', organizationId))
       .fetchAll({ withRelated: ['location'] }).then(d => d.toJSON().map(f => ({ type: 'facility', payload: f }))));
-    getFunctions.push(KnowledgeService.query(qb => qb.whereRaw(`'${str}' = ANY(knowledge_services.functions)`))
+    getFunctions.push(KnowledgeService.query(qb => qb.whereRaw(`'${str}' = ANY(knowledge_services.functions)`).andWhere('organization_id', '=', organizationId))
       .fetchAll({ withRelated: ['location'] }).then(d => d.toJSON().map(s => ({ type: 'service', payload: s }))));
   });
   const results = await Promise.all(getFunctions)
     .then(data => [...data[0], ...data[1]]);
-  return results;
+  return options.sortStrings
+    ? results.sort((a, b) => {
+      let aSimHigh = null;
+      let bSimHigh = null;
+      options.sortStrings.forEach((str) => {
+        const aScore = stringSimilarity.compareTwoStrings(str, a.payload.name || '');
+        const bScore = stringSimilarity.compareTwoStrings(str, b.payload.name || '');
+        if (!aSimHigh || aScore > aSimHigh) aSimHigh = aScore;
+        if (!bSimHigh || bScore > bSimHigh) bSimHigh = bScore;
+      });
+      return bSimHigh - aSimHigh;
+    }) : results;
 }
 
 export const getQuestions = (params = {}, options = {}) => {
