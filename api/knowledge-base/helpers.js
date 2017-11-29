@@ -309,6 +309,7 @@ export async function createFacility(facility, organization, location, options) 
     organization_id: organization.id,
     availabilitys: facility.availabilitys,
     functions: facility.functions,
+    alternate_names: facility.alternate_names,
   };
   // Set Location
   if (location) {
@@ -332,6 +333,7 @@ export async function updateFacility(facility, options) {
     availabilitys: facility.availabilitys,
     location_id: facility.location_id,
     functions: facility.functions,
+    alternate_names: facility.alternate_names,
   };
   // Create location if it was passed without an ID
   if (facility.location && !facility.location.id) {
@@ -361,6 +363,7 @@ export async function createService(service, organization, location, options) {
     organization_id: organization.id,
     availabilitys: service.availabilitys,
     functions: service.functions,
+    alternate_names: service.alternate_names,
   };
   // Set Location
   if (location) {
@@ -384,6 +387,7 @@ export async function updateService(service, options) {
     availabilitys: service.availabilitys,
     location_id: service.location_id,
     functions: service.functions,
+    alternate_names: service.alternate_names,
   };
   // Create location if it was passed without an ID
   if (service.location && !service.location.id) {
