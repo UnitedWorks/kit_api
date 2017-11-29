@@ -1,28 +1,3 @@
-// Entity Types
-export const FACILITY = 'facility';
-export const EVENT = 'event';
-export const SERVICE = 'service';
-export const CONTACT = 'contact';
-export const ANSWER = 'answer';
-export const ENTITIES = [FACILITY, EVENT, SERVICE, ANSWER, CONTACT];
-
-// FAQ Categories
-export const TRANSPORTATION = 'Transportation, Streets, and Sidewalks';
-export const ENVIRONMENT = 'Environment and Sanitation';
-export const PROPERTY = 'Property, Buildings, and Homes';
-export const EDUCATION = 'Education and Employment';
-export const BUSINESS = 'Business and Finance';
-export const SOCIAL_SERVICES = 'Social Services';
-export const HEALTH = 'Health and Medicine';
-export const PUBLIC_SAFETY = 'Public Safety and Law';
-export const GOVERNMENT = 'Government and Civil Services';
-export const GENERAL = 'General';
-export const CATEGORIES = [TRANSPORTATION, ENVIRONMENT, PROPERTY, EDUCATION, BUSINESS,
-  SOCIAL_SERVICES, HEALTH, PUBLIC_SAFETY, GOVERNMENT, GENERAL];
-
-// FAQ Category Labels
-export const GENERAL_LABEL = 'general';
-
 // Entity Types (think it makes sense only for facilitys to have these?)
 // From Open311
 export const AFTER_SCHOOL = 'After School Program';
@@ -30,7 +5,6 @@ export const BEACH = 'Beach';
 export const BUSINESS_SOLUTION_CENTER = 'Business Solution Center';
 export const CHILD_CARE = 'Child Care Center';
 export const CLINIC = 'Clinic';
-export const COMMUNITY_BOARD = 'Community Board';
 export const CULTURAL_INSTITUTION = 'Cultural Institution';
 export const TAX_ASSISTANCE = 'EITC Assistance Center';
 export const FINANCIAL_EDUCATION = 'Financial Education Site';
@@ -43,7 +17,7 @@ export const JAIL_RELEASE_SERVICES = 'Jail Release Services';
 export const LIBRARY = 'Library';
 export const MEDICAID = 'Medicaid Office';
 export const MEDICARE = 'Medicare Drug Counseling';
-export const NONPROFIT = 'Non-Profit Organization';
+export const NON_PROFIT = 'Non-Profit Organization';
 export const PARK = 'Park';
 export const POOL = 'Pool';
 export const PRECINCT = 'Precinct';
@@ -59,19 +33,30 @@ export const EMERGENCY_SHELTER = 'Emergency Shelter';
 export const HOMELESS_SHELTER = 'Homeless Shelter';
 export const WARMING_CENTER = 'Warming Center';
 
-export const ENTITY_FUNCTIONS = [AFTER_SCHOOL, BEACH,
-  BUSINESS_SOLUTION_CENTER, CHILD_CARE, CLINIC, COMMUNITY_BOARD,
+export const FACILITY_FUNCTIONS = [AFTER_SCHOOL, BEACH,
+  BUSINESS_SOLUTION_CENTER, CHILD_CARE, CLINIC,
   CULTURAL_INSTITUTION, TAX_ASSISTANCE, FINANCIAL_EDUCATION, FOOD_PROVIDER,
   FOOD_STAMP_CENTER, MARKET, HOSPITAL, IMMIGRATION_SERVICES,
-  JAIL_RELEASE_SERVICES, LIBRARY, MEDICAID, MEDICARE, NONPROFIT, PARK, POOL,
+  JAIL_RELEASE_SERVICES, LIBRARY, MEDICAID, MEDICARE, NON_PROFIT, PARK, POOL,
   PRECINCT, REC_CENTER, SCHOOL, SCHOOL_DISTRICT, SUMMER_MEAL_PROGRAM, PRE_K,
   WORKFORCE_CENTER, YOUTH_EMPLOYMENT,
   EMERGENCY_SHELTER, HOMELESS_SHELTER, WARMING_CENTER];
 
-// Media Types
-export const IMAGE = 'image';
-export const AUDIO = 'audio';
-export const VIDEO = 'video';
-export const FILE = 'file';
+// Services (Picked them from Healthify Category)
+export const COMMUNITY = 'Community';
+export const EDUCATION = 'Education';
+export const EMERGENCY = 'Emergency';
+export const FAMILY = 'Family';
+export const FINANCIAL_SUPPORT = 'Financial Support';
+export const FOOD = 'Food';
+export const GOODS = 'Goods';
+export const HEALTH = 'Health';
+export const HOUSING = 'Housing';
+export const LEGAL = 'Legal';
+export const MENTAL_HEALTH = 'Mental Health';
+export const TRANSPORTATION = 'Transportation';
+export const WORK = 'Work';
 
-export const MEDIA_TYPES = [IMAGE, AUDIO, VIDEO, FILE];
+export const SERVICE_FUNCTIONS = [COMMUNITY, EDUCATION, EMERGENCY, FAMILY,
+  FINANCIAL_SUPPORT, FOOD, GOODS, HEALTH, HOUSING, LEGAL, MENTAL_HEALTH,
+  TRANSPORTATION, WORK];

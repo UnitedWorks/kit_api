@@ -1,5 +1,5 @@
 import stringSimilarity from 'string-similarity';
-import { searchKnowledgeEntities } from '../../knowledge-base/helpers';
+import { searchEntitiesBySimilarity, getEntitiesByFunction } from '../../knowledge-base/helpers';
 import KitClient from '../clients/kit-client';
 import * as replyTemplates from '../templates/quick-replies';
 import * as LOOKUP from '../../constants/nlp-tagging';
@@ -23,8 +23,19 @@ export default {
       this.messagingClient.send('I didn\'t catch the name of something you\'re looking up. Sorry! Can you say differently for me?');
       return this.getBaseState();
     }
-    const knowledgeEntities = await searchKnowledgeEntities(entityStrings, this.snapshot.organization_id, { limit: 9 });
-    if (knowledgeEntities.length === 0) {
+    const functionChecks = [];
+    if (this.snapshot.nlp.entities.service_function) {
+      this.snapshot.nlp.entities.service_function.forEach(f => functionChecks.push(f.value));
+    }
+    if (this.snapshot.nlp.entities.facility_function) {
+      this.snapshot.nlp.entities.facility_function.forEach(f => functionChecks.push(f.value));
+    }
+    const similarEntities = await searchEntitiesBySimilarity(entityStrings, this.snapshot.organization_id, { limit: 9, confidence: functionChecks.length > 0 ? 0.65 : 0.3 });
+    // If no similar enities, but we had facility/service functions, get those
+    const entitiesByFunction = await getEntitiesByFunction(functionChecks, this.snapshot.organization_id);
+    // Join em
+    const joinedEntities = [].concat(similarEntities).concat(entitiesByFunction);
+    if (joinedEntities.length === 0) {
       try {
         new SlackService({
           username: 'Entity Search Returned Nothing',
@@ -38,11 +49,11 @@ export default {
     }
     // Produce entities from search
     this.messagingClient.addToQuene('Here is what I found for you!');
-    this.messagingClient.addAll(KitClient.genericTemplateFromEntities(knowledgeEntities), replyTemplates.evalHelpfulAnswer);
+    this.messagingClient.addAll(KitClient.genericTemplateFromEntities(joinedEntities), replyTemplates.evalHelpfulAnswer);
     // Pick off information based on the request (phone, schedule, etc.)
     if (this.snapshot.nlp.entities && this.snapshot.nlp.entities.entity_property && this.snapshot.nlp.entities.entity_property[0]) {
       const lookupType = this.snapshot.nlp.entities.entity_property[0].value;
-      this.messagingClient.addAll(knowledgeEntities.map((entity) => {
+      this.messagingClient.addAll(joinedEntities.map((entity) => {
         if (lookupType === LOOKUP.AVAILABILITY_SCHEDULE) {
           return KitClient.entityAvailabilityToText(entity.type, entity.payload, { constituentAttributes: this.get('attributes') })
         } else if (lookupType === LOOKUP.CONTACT_PHONE) {

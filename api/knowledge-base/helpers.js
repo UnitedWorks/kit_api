@@ -73,19 +73,19 @@ export async function getAnswers(params = {}, options = { returnJSON: true }) {
   return { question: questionJSON, answers: answerJSON };
 }
 
-export async function searchKnowledgeEntities(strings = [], organizationId, options = { returnJSON: true, limit: 10 }) {
+export async function searchEntitiesBySimilarity(strings = [], organizationId, options = { returnJSON: true, limit: 10, confidence: 0.3 }) {
   if (strings.length === 0) return [];
   // Postgres UNION ALL could make this more efficient... but hit a snag with results columns
   const searchFunctions = [];
   strings.forEach((str) => {
     searchFunctions.push(knex.select(knex.raw(`*, similarity(name, '${str}') as similarity`)).from('knowledge_services').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10).leftJoin('locations', 'knowledge_services.location_id', '=', 'locations.id')
-      .then(d => d.map(s => ({ type: 'service', payload: { ...s, location: { display_name: s.display_name, address: s.address } } })).filter(s => s.payload.similarity > 0.3)));
+      .then(d => d.map(s => ({ type: 'service', payload: { ...s, location: { display_name: s.display_name, address: s.address } } })).filter(s => s.payload.similarity > options.confidence)));
     searchFunctions.push(knex.select(knex.raw(`*, similarity(name, '${str}') as similarity`)).from('knowledge_facilitys').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10).leftJoin('locations', 'knowledge_facilitys.location_id', '=', 'locations.id')
-      .then(d => d.map(f => ({ type: 'facility', payload: { ...f, location: { display_name: f.display_name, address: f.address } } })).filter(f => f.payload.similarity > 0.3)));
+      .then(d => d.map(f => ({ type: 'facility', payload: { ...f, location: { display_name: f.display_name, address: f.address } } })).filter(f => f.payload.similarity > options.confidence)));
     searchFunctions.push(knex.select(knex.raw(`*, similarity(name, '${str}') as similarity`)).from('knowledge_contacts').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10)
-      .then(d => d.map(c => ({ type: 'contact', payload: c })).filter(c => c.payload.similarity > 0.3)));
+      .then(d => d.map(c => ({ type: 'contact', payload: c })).filter(c => c.payload.similarity > options.confidence)));
     searchFunctions.push(knex.select(knex.raw(`*, similarity(title, '${str}') as similarity`)).from('knowledge_contacts').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10)
-      .then(d => d.map(c => ({ type: 'contact', payload: c })).filter(c => c.payload.similarity > 0.3)));
+      .then(d => d.map(c => ({ type: 'contact', payload: c })).filter(c => c.payload.similarity > options.confidence)));
   });
   const results = await Promise.all(searchFunctions).then((data) => {
     const allEntities = [];
@@ -93,6 +93,20 @@ export async function searchKnowledgeEntities(strings = [], organizationId, opti
     return allEntities.sort((a, b) => a.payload.similarity < b.payload.similarity).slice(0, options.limit);
   });
   return options.returnJSON ? JSON.parse(JSON.stringify(results)) : results;
+}
+
+export async function getEntitiesByFunction(strings = []) {
+  if (strings.length === 0) return [];
+  const getFunctions = [];
+  strings.forEach((str) => {
+    getFunctions.push(KnowledgeFacility.query(qb => qb.whereRaw(`'${str}' = ANY(knowledge_facilitys.functions)`))
+      .fetchAll({ withRelated: ['location'] }).then(d => d.toJSON().map(f => ({ type: 'facility', payload: f }))));
+    getFunctions.push(KnowledgeService.query(qb => qb.whereRaw(`'${str}' = ANY(knowledge_services.functions)`))
+      .fetchAll({ withRelated: ['location'] }).then(d => d.toJSON().map(s => ({ type: 'service', payload: s }))));
+  });
+  const results = await Promise.all(getFunctions)
+    .then(data => [...data[0], ...data[1]]);
+  return results;
 }
 
 export const getQuestions = (params = {}, options = {}) => {

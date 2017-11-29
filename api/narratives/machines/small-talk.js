@@ -111,16 +111,17 @@ export default {
 
         };
 
+        // Run if we have intent
         if (entities.intent && entities.intent[0]) {
-          // Ping each message so if we get a thumbs down, we know what it references
-          new SlackService({
-            username: 'Message',
-            icon: 'envelope',
-          }).send(`>*Con. ${this.snapshot.constituent_id}:* "${this.snapshot.input.payload.text}"`);
-          // Return Answer
-          return Promise.resolve(intentMap[entities.intent[0].value] ||
-            fetchAnswers(entities.intent[0].value, this));
+          new SlackService({ username: 'Message', icon: 'envelope' })
+            .send(`>*Con. ${this.snapshot.constituent_id}:* "${this.snapshot.input.payload.text}"`);
+          return Promise.resolve(intentMap[entities.intent[0].value]
+            || fetchAnswers(entities.intent[0].value, this));
+        // If no intent but have facility/search functions, return related entities
+        } else if (entities.facility_function || entities.service_function) {
+          return Promise.resolve(intentMap['search.knowledge_entity']);
         }
+        // Otherwise just fail
         return 'failed_request';
       });
     },
