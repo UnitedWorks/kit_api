@@ -40,7 +40,7 @@ export default {
       ? this.snapshot.nlp.entities.entity_property[0].value
       : null;
     // Check for user location, and ask for it if we don't have it
-    if (lookupType === LOOKUP.LOCATION_CLOSEST && (!this.get('attributes') || !this.get('attributes').current_location)) {
+    if (lookupType === LOOKUP.LOCATION_CLOSEST) {
       this.messagingClient.send('Where are you currently located?', [replyTemplates.location, replyTemplates.exit]);
       return this.requestClosestLocation();
     }
