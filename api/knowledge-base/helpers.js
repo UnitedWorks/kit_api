@@ -81,17 +81,32 @@ export async function searchEntitiesBySimilarity(strings = [], organizationId, o
   strings.forEach((str) => {
     searchFunctions.push(knex.select(knex.raw(`*, similarity(name, '${str}') as similarity`)).from('knowledge_services').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10).leftJoin('locations', 'knowledge_services.location_id', '=', 'locations.id')
       .then(d => d.map(s => ({ type: 'service', payload: { ...s, location: { display_name: s.display_name, address: s.address } } })).filter(s => s.payload.similarity > options.confidence)));
+    searchFunctions.push(knex.select(knex.raw(`*, similarity(unnest(alternate_names), '${str}') AS similarity`)).from('knowledge_services').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10).leftJoin('locations', 'knowledge_services.location_id', '=', 'locations.id')
+      .then(d => d.map(s => ({ type: 'service', payload: { ...s, location: { display_name: s.display_name, address: s.address } } })).filter(s => s.payload.similarity > options.confidence)));
+
     searchFunctions.push(knex.select(knex.raw(`*, similarity(name, '${str}') as similarity`)).from('knowledge_facilitys').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10).leftJoin('locations', 'knowledge_facilitys.location_id', '=', 'locations.id')
       .then(d => d.map(f => ({ type: 'facility', payload: { ...f, location: { display_name: f.display_name, address: f.address } } })).filter(f => f.payload.similarity > options.confidence)));
+    searchFunctions.push(knex.select(knex.raw(`*, similarity(unnest(alternate_names), '${str}') AS similarity`)).from('knowledge_facilitys').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10).leftJoin('locations', 'knowledge_facilitys.location_id', '=', 'locations.id')
+      .then(d => d.map(f => ({ type: 'facility', payload: { ...f, location: { display_name: f.display_name, address: f.address } } })).filter(f => f.payload.similarity > options.confidence)));
+
     searchFunctions.push(knex.select(knex.raw(`*, similarity(name, '${str}') as similarity`)).from('knowledge_contacts').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10)
+      .then(d => d.map(c => ({ type: 'contact', payload: c })).filter(c => c.payload.similarity > options.confidence)));
+    searchFunctions.push(knex.select(knex.raw(`*, similarity(unnest(alternate_names), '${str}') AS similarity`)).from('knowledge_contacts').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10)
       .then(d => d.map(c => ({ type: 'contact', payload: c })).filter(c => c.payload.similarity > options.confidence)));
     searchFunctions.push(knex.select(knex.raw(`*, similarity(title, '${str}') as similarity`)).from('knowledge_contacts').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10)
       .then(d => d.map(c => ({ type: 'contact', payload: c })).filter(c => c.payload.similarity > options.confidence)));
   });
   const results = await Promise.all(searchFunctions).then((data) => {
     const allEntities = [];
-    data.forEach(entities => entities.forEach(e => allEntities.push(e)));
-    return allEntities.sort((a, b) => a.payload.similarity < b.payload.similarity).slice(0, options.limit);
+    data.forEach(entities => entities.forEach((e) => {
+      let entityListed = false;
+      for (let i = 0; i < allEntities.length; i += 1) {
+        if (allEntities[i].name === e.name && allEntities[i].id === e.id) entityListed = true;
+      }
+      if (!entityListed) allEntities.push(e);
+    }));
+    return allEntities.sort((a, b) => a.payload.similarity
+      < b.payload.similarity).slice(0, options.limit);
   });
   return options.returnJSON ? JSON.parse(JSON.stringify(results)) : results;
 }
