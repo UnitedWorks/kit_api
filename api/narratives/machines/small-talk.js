@@ -81,7 +81,7 @@ export default {
           'search.event': 'search.event',
 
           'settings.locality.update': 'setup.reset_organization', // Do we need this?
-          'settings.default_location': 'setup.default_location', // Should there be an attribute setting machine?
+          'settings.location': 'setup.location', // Should there be an attribute setting machine?
 
           'social_services.shelters': 'socialServices.waiting_shelter_search',
           'social_services.food_assistance': 'socialServices.waiting_food_search',

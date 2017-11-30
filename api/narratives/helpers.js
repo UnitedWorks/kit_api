@@ -163,7 +163,7 @@ export async function fetchAnswers(intent, session) {
     const locationServices = timelyServices.filter(s => s.availabilitys.filter(a => a.geo).length > 0);
     // If we're going to need a location, abort entirely and set default constituent location
     if (locationServices.length > 0 && (!session.get('attributes') || !session.get('attributes').default_location)) {
-      session.messagingClient.addToQuene(i18n('get_default_location', { name: locationServices[0].name }), [replyTemplates.exit]);
+      session.messagingClient.addToQuene(i18n('get_home_location', { name: locationServices[0].name }), [replyTemplates.location, replyTemplates.exit]);
       requestLocation = true;
     } else {
       // and we dont have datetime or nothing available, mention availiabilities on each entity

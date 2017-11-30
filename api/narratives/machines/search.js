@@ -40,11 +40,12 @@ export default {
       ? this.snapshot.nlp.entities.entity_property[0].value
       : null;
     // Check for user location, and ask for it if we don't have it
-    if (lookupType === LOOKUP.LOCATION_CLOSEST && (!this.get('attributes') || !this.get('attributes').default_location)) {
-      return this.requestLocation();
+    if (lookupType === LOOKUP.LOCATION_CLOSEST && (!this.get('attributes') || !this.get('attributes').current_location)) {
+      this.messagingClient.send('Where are you currently located?', [replyTemplates.location, replyTemplates.exit]);
+      return this.requestClosestLocation();
     }
     const sortedEntities = (lookupType === LOOKUP.LOCATION_CLOSEST)
-      ? KitClient.sortEntitiesByPoint(joinedEntities, [this.get('attributes').default_location.lat, this.get('attributes').default_location.lon])
+      ? KitClient.sortEntitiesByPoint(joinedEntities, [this.get('attributes').current_location.lat, this.get('attributes').current_location.lon])
       : joinedEntities;
     // Check if we actually have any entities
     if (sortedEntities.length === 0) {

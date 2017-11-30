@@ -7,7 +7,8 @@ export const i18n = (key, inserts = {}) => {
     setup_ask_city: 'Ok! What\'s your CITY and STATE?  Ex) "New Brunswick, NJ"',
     setup_invalid_location: 'Hmm, I wasn\'t able to find anything. Can you try giving me a CITY and STATE again? Ex) "New Brunswick, NJ"',
     us_vote_attribution: 'Voting/election info provided by the U.S. Vote Foundation',
-    get_default_location: inserts.name ? `${inserts.name} depends on your home address. Where do you currently live?` : 'For relevant alerts and service updates, I just need a home address. What is your current address?',
+    get_home_location: inserts.name ? `${inserts.name} depends on your home address. Where do you currently live?` : 'For relevant alerts and service updates, I just need a home address. What is your current address?',
+    get_current_location: 'Where are you currently located?',
     see_click_fix: 'Can you report this issue in See Click Fix? We will start working on it as soon as you submit!',
   };
   return translations[key];

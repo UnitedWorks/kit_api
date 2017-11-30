@@ -26,7 +26,7 @@ export async function broadcastMessage(broadcast, organization) {
     if (broadcast.availability && broadcast.availability.geo) {
       // Check for default address. If none exists, ask to set
       if (!session.data_store.attributes || (session.data_store.attributes && !session.data_store.attributes.default_location)) {
-        client.send(i18n('get_default_location'));
+        client.send(i18n('get_home_location'));
       } else {
         const constituentPosition = session.data_store.attributes.default_location;
         const constituentIncluded = geoCheck(broadcast.availability.geo,

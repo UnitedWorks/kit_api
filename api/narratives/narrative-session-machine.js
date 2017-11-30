@@ -149,7 +149,14 @@ export class NarrativeSessionMachine extends StateMachine {
 
   requestLocation() {
     this.snapshot.state_machine_name = 'setup';
-    this.current = 'default_location';
+    this.current = 'location';
+    this.set('last_input', this.snapshot.input);
+    this.save();
+  }
+
+  requestClosestLocation() {
+    this.snapshot.state_machine_name = 'setup';
+    this.current = 'location_closest';
     this.set('last_input', this.snapshot.input);
     this.save();
   }

@@ -9,7 +9,7 @@
   },
   {
     "text": "I live at 11 Juniper Drive, Cedar Knolls NJ",
-    "intent": "settings.default_location",
+    "intent": "settings.location",
     "entities": [
       {
         "start": 10,
@@ -21,7 +21,7 @@
   },
   {
     "text": "I live at 221 S 5th Ave, Highland Park, NJ 08904",
-    "intent": "settings.default_location",
+    "intent": "settings.location",
     "entities": [
       {
         "start": 10,
@@ -33,7 +33,7 @@
   },
   {
     "text": "i live at 616 W 184th street new york city",
-    "intent": "settings.default_location",
+    "intent": "settings.location",
     "entities": [
       {
         "start": 10,
@@ -45,7 +45,7 @@
   },
   {
     "text": "my home is at 616 West 184th Street, New York City, New York",
-    "intent": "settings.default_location",
+    "intent": "settings.location",
     "entities": [
       {
         "start": 14,
@@ -57,11 +57,11 @@
   },
   {
     "text": "Change my default address",
-    "intent": "settings.default_location"
+    "intent": "settings.location"
   },
   {
     "text": "my home address is 55 duke street new brunswick nj",
-    "intent": "settings.default_location",
+    "intent": "settings.location",
     "entities": [
       {
         "start": 19,
@@ -73,11 +73,11 @@
   },
   {
     "text": "my address is 616 W 184th street",
-    "intent": "settings.default_location"
+    "intent": "settings.location"
   },
   {
     "text": "I live at 221 S 5th Ave, Highland Park, NJ",
-    "intent": "settings.default_location",
+    "intent": "settings.location",
     "entities": [
       {
         "start": 10,
@@ -89,7 +89,7 @@
   },
   {
     "text": "I just moved to 309 Lincoln Ave, Highland Park, NJ 08904",
-    "intent": "settings.default_location",
+    "intent": "settings.location",
     "entities": [
       {
         "start": 16,
@@ -101,7 +101,7 @@
   },
   {
     "text": "my address is 309 Lincoln Ave, Highland Park, NJ 08904",
-    "intent": "settings.default_location",
+    "intent": "settings.location",
     "entities": [
       {
         "start": 14,
@@ -113,6 +113,6 @@
   },
   {
     "text": "I dont live there",
-    "intent": "settings.default_location"
+    "intent": "settings.location"
   }
 ]

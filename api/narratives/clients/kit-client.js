@@ -126,7 +126,7 @@ export default class KitClient {
     // Check if a entity's availabilitys use geo and constituent home address is available.
     // If none available, send back message asking for default_address
     } else if (entity.availabilitys && entity.availabilitys.filter(o => o.geo).length > 0 && !constituentAttributes.default_location) {
-      return i18n('get_default_location', { name: entity.name });
+      return i18n('get_home_location', { name: entity.name });
     // Speak to Specific Day Availability
     } else if (datetime[0].grain === 'day' && entity.availabilitys) {
       entity.availabilitys.forEach((availability) => {

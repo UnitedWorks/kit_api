@@ -63,7 +63,6 @@ export default {
     },
   },
 
-
   waiting_organization_confirm: {
     enter() {
       const location = this.get('location');
@@ -101,10 +100,11 @@ export default {
     },
   },
 
-  async default_location() {
+  async location() {
     const nlpEntities = this.snapshot.nlp ? this.snapshot.nlp.entities : await nlp.message(this.snapshot.input.payload.text || this.snapshot.input.payload.payload).then(n => n.entities);
     // They want to bounce
     if (nlpEntities.intent && nlpEntities.intent[0].value === 'speech.escape') {
+      this.delete('last_input');
       this.messagingClient.send('Ok!', replyTemplates.whatCanIAsk);
       return this.getBaseState();
     }
@@ -127,6 +127,36 @@ export default {
       // Otherwise, just return to base state
       return this.getBaseState();
     }
-    this.messagingClient.send('Sorry, I didn\'t catch an address. Can you say that again?', [replyTemplates.exit]);
+    this.messagingClient.send('Sorry, I didn\'t catch an address. Can you say that again?', [replyTemplates.location, replyTemplates.exit]);
+  },
+
+  async location_closest() {
+    const nlpEntities = this.snapshot.nlp ? this.snapshot.nlp.entities : await nlp.message(this.snapshot.input.payload.text || this.snapshot.input.payload.payload).then(n => n.entities);
+    // They want to bounce
+    if (nlpEntities.intent && nlpEntities.intent[0].value === 'speech.escape') {
+      this.delete('last_input');
+      this.messagingClient.send('Ok!', replyTemplates.whatCanIAsk);
+      return this.getBaseState();
+    }
+    // Go through with Setting Location
+    const formedString = nlpEntities[TAGS.LOCATION] ? nlpEntities[TAGS.LOCATION][0].value : this.snapshot.input.payload.text;
+    const geoData = await geocoder(formedString, [], this.get('organization').location.address).then(gd => gd[0]);
+    if (geoData) {
+      this.set('attributes', {
+        ...this.get('attributes'),
+        current_location: geoData,
+      });
+      let defaultLocationStr = '';
+      const addressObj = this.get('attributes').current_location.address;
+      if (addressObj.house_number) defaultLocationStr += `${addressObj.house_number} `;
+      if (addressObj.road) defaultLocationStr += `${addressObj.road}`;
+      if (addressObj.city) defaultLocationStr += `, ${addressObj.city}`;
+      this.messagingClient.send(`Thanks! I've set your current location to ${defaultLocationStr}`);
+      // If we had a previous input, run it
+      if (this.get('last_input')) return this.runLastInput();
+      // Otherwise, just return to base state
+      return this.getBaseState();
+    }
+    this.messagingClient.send('Sorry, I didn\'t catch an address. Can you say that again?', [replyTemplates.location, replyTemplates.exit]);
   },
 };
