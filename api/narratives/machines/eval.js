@@ -33,7 +33,7 @@ export default {
         username: 'Not Helpful',
         icon: 'disappointed',
       }).send(`>*Con. ${this.snapshot.constituent.id}*  Feedback - ${this.snapshot.input.payload.text}`);
-      return this.messagingClient.send('Thank you for the feedback. Will make not of that and try improving.')
+      return this.messagingClient.send('Thank you for the feedback. I will make a note of this for next time.')
         .then(() => this.getBaseState());
     },
   },
