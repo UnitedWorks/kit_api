@@ -140,3 +140,4 @@ export const CONTACT = 'contact';
 export const CONTACT_PHONE = 'contact.phone';
 export const CONTACT_EMAIL = 'contact.email';
 // export const LOCATION = 'location'; // Already exporting
+export const LOCATION_CLOSEST = 'location.closest'; // Already exporting

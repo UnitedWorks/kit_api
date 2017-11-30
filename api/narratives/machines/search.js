@@ -35,7 +35,19 @@ export default {
     const entitiesByFunction = await getEntitiesByFunction(functionChecks, this.snapshot.organization_id, { sortStrings: entityStrings });
     // Join em
     const joinedEntities = [].concat(similarEntities).concat(entitiesByFunction);
-    if (joinedEntities.length === 0) {
+    // Sort Entities if looking for closest
+    const lookupType = (this.snapshot.nlp.entities && this.snapshot.nlp.entities.entity_property && this.snapshot.nlp.entities.entity_property[0])
+      ? this.snapshot.nlp.entities.entity_property[0].value
+      : null;
+    // Check for user location, and ask for it if we don't have it
+    if (lookupType === LOOKUP.LOCATION_CLOSEST && (!this.get('attributes') || !this.get('attributes').default_location)) {
+      return this.requestLocation();
+    }
+    const sortedEntities = (lookupType === LOOKUP.LOCATION_CLOSEST)
+      ? KitClient.sortEntitiesByPoint(joinedEntities, [this.get('attributes').default_location.lat, this.get('attributes').default_location.lon])
+      : joinedEntities;
+    // Check if we actually have any entities
+    if (sortedEntities.length === 0) {
       try {
         new SlackService({
           username: 'Entity Search Returned Nothing',
@@ -49,18 +61,17 @@ export default {
     }
     // Produce entities from search
     this.messagingClient.addToQuene('Here is what I found for you!');
-    this.messagingClient.addAll(KitClient.genericTemplateFromEntities(joinedEntities), replyTemplates.evalHelpfulAnswer);
+    this.messagingClient.addAll(KitClient.genericTemplateFromEntities(sortedEntities), replyTemplates.evalHelpfulAnswer);
     // Pick off information based on the request (phone, schedule, etc.)
-    if (this.snapshot.nlp.entities && this.snapshot.nlp.entities.entity_property && this.snapshot.nlp.entities.entity_property[0]) {
-      const lookupType = this.snapshot.nlp.entities.entity_property[0].value;
-      this.messagingClient.addAll(joinedEntities.map((entity) => {
+    if (lookupType) {
+      this.messagingClient.addAll(sortedEntities.map((entity) => {
         if (lookupType === LOOKUP.AVAILABILITY_SCHEDULE) {
-          return KitClient.entityAvailabilityToText(entity.type, entity.payload, { constituentAttributes: this.get('attributes') })
+          return KitClient.entityAvailabilityToText(entity.type, entity.payload, { constituentAttributes: this.get('attributes') });
         } else if (lookupType === LOOKUP.CONTACT_PHONE) {
           return KitClient.entityContactToText(entity.payload, 'phone');
         } else if (lookupType === LOOKUP.CONTACT) {
           return KitClient.entityContactToText(entity.payload);
-        } else if (lookupType === LOOKUP.LOCATION) {
+        } else if (lookupType === LOOKUP.LOCATION || lookupType === LOOKUP.LOCATION_CLOSEST) {
           return KitClient.entityLocationToText(entity.payload);
         }
         return null;
