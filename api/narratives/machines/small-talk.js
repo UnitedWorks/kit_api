@@ -92,7 +92,7 @@ export default {
           'speech.thanks': 'personality.handle_thank_you',
           'speech.praise': 'personality.handle_praise',
 
-          'transportation_streets_sidewalks.plowing.schedule': 'status.plowing',
+          'transportation_streets_sidewalks.snow.plowing': 'status.plowing',
 
           'notifications': 'notifications',
 

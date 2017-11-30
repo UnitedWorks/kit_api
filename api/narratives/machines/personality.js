@@ -71,4 +71,11 @@ export default {
     this.messagingClient.send(`${WeatherClient.emojiMap[forecast.weather.id] || ''} Looks like today will have a low of ${forecast.min}° and a high of ${forecast.max}°${forecast.weather.description ? ` with ${forecast.weather.description}.` : ''}`, quickReplies);
     return this.getBaseState();
   },
+  math() {
+    const message = randomPick([
+      "I'm made of 1s and 0s, but that doesn't mean I know how to add them together!",
+    ]);
+    this.messagingClient.send(message);
+    return this.getBaseState();
+  },
 };

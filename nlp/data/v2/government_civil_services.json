@@ -411,6 +411,10 @@
     "intent": "government_civil_services.budget"
   },
   {
+    "text": "Is the 2017 budget available?",
+    "intent": "government_civil_services.budget"
+  },
+  {
     "text": "What is the budget for the transportation department?",
     "intent": "government_civil_services.budget"
   },

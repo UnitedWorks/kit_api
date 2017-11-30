@@ -1,0 +1,26 @@
+[
+  {
+    "text": "When was this municipality founded?",
+    "intent": "locale.founded"
+  },
+  {
+    "text": "When was Jersey City started?",
+    "intent": "locale.founded"
+  },
+  {
+    "text": "How old is morristown?",
+    "intent": "locale.founded"
+  },
+  {
+    "text": "Who founded this municipality?",
+    "intent": "locale.founder"
+  },
+  {
+    "text": "Who was the first mayor?",
+    "intent": "locale.founder"
+  },
+  {
+    "text": "Who started this city?",
+    "intent": "locale.founder"
+  }
+]

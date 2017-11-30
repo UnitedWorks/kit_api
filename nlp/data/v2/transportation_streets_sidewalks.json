@@ -452,28 +452,36 @@
 		"intent": "transportation_streets_sidewalks.paving.schedule"
 	},
 	{
+		"text": "Who can help me shovel my snow?",
+		"intent": "transportation_streets_sidewalks.snow.shoveling"
+	},
+	{
+		"text": "I'm a senior citizen in need of help shoveling snow?",
+		"intent": "transportation_streets_sidewalks.snow.shoveling"
+	},
+	{
 		"text": "My street needs to be plowed",
-		"intent": "transportation_streets_sidewalks.plowing"
+		"intent": "transportation_streets_sidewalks.snow.plowing"
 	},
 	{
 		"text": "How do I report my street not being plowed?",
-		"intent": "transportation_streets_sidewalks.plowing"
+		"intent": "transportation_streets_sidewalks.snow.plowing"
 	},
 	{
 		"text": "Whens my street getting plowed",
-		"intent": "transportation_streets_sidewalks.plowing.schedule"
+		"intent": "transportation_streets_sidewalks.snow.plowing"
 	},
 	{
 		"text": "How often do snow plows come by?",
-		"intent": "transportation_streets_sidewalks.plowing.schedule"
+		"intent": "transportation_streets_sidewalks.snow.plowing"
 	},
 	{
 		"text": "My street hasn't been plowed yet",
-		"intent": "transportation_streets_sidewalks.plowing.schedule"
+		"intent": "transportation_streets_sidewalks.snow.plowing"
 	},
 	{
 		"text": "When does the snow plow come?",
-		"intent": "transportation_streets_sidewalks.plowing.schedule",
+		"intent": "transportation_streets_sidewalks.snow.plowing",
 		"entities": [
 			{
 				"start": 14,
@@ -485,7 +493,7 @@
 	},
 	{
 		"text": "When will you plow my street?",
-		"intent": "transportation_streets_sidewalks.plowing.schedule",
+		"intent": "transportation_streets_sidewalks.snow.plowing",
 		"entities": [
 			{
 				"start": 14,

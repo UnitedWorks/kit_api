@@ -283,6 +283,8 @@ const updateOperations = [
   { delete: 'transportation_streets_sidewalks.parking_violation.meter' },
   { from: 'business_finance.procurement.how_to', to: 'business_finance.procurement.guide' },
   { delete: 'property_buildings_homes.district' },
+  { from: 'transportation_streets_sidewalks.plowing.schedule', to: 'transportation_streets_sidewalks.snow.plowing' },
+  { delete: 'transportation_streets_sidewalks.plowing' },
 ].map((modification) => {
   // Simply update the label
   if (modification.from && modification.to) {

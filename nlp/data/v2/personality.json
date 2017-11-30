@@ -118,5 +118,17 @@
 	{
 		"text": "What are you?",
 		"intent": "personality.what_am_i"
+	},
+	{
+		"text": "What is 10 divided by 2?",
+		"intent": "personality.math"
+	},
+	{
+		"text": "2 + 2",
+		"intent": "personality.math"
+	},
+	{
+		"text": "8*8",
+		"intent": "personality.math"
 	}
 ]

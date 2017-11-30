@@ -272,16 +272,12 @@
     "intent": "social_services.mental_impairment"
   },
   {
+    "text": "What social services does the city provide to residents?",
+    "intent": "social_services.assistance"
+  },
+  {
     "text": "How do I apply for public assistance?",
-    "intent": "social_services.assistance",
-    "entities": [
-      {
-        "start": 19,
-        "end": 36,
-        "value": "social_services",
-        "entity": "category_keywords"
-      }
-    ]
+    "intent": "social_services.assistance"
   },
   {
     "text": "What is public assistance",
@@ -290,13 +286,6 @@
   {
     "text": "What assistance does the city provide?",
     "intent": "social_services.assistance"
-  },
-  {
-    "intent": "social_services.assistance",
-    "text": "I need housing assistance",
-    "meta": {
-      "vague": true
-    }
   },
   {
     "text": "I need help making rent",
