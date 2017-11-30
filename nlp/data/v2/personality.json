@@ -130,5 +130,13 @@
 	{
 		"text": "8*8",
 		"intent": "personality.math"
+	},
+	{
+		"text": "Do you know any jokes?",
+		"intent": "personality.jokes"
+	},
+	{
+		"text": "Tell me a joke!",
+		"intent": "personality.jokes"
 	}
 ]

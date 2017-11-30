@@ -373,6 +373,10 @@
 	},
 	{
 		"intent": "environment_sanitation.litter",
+		"text": "There's trash in front of my house"
+	},
+	{
+		"intent": "environment_sanitation.litter",
 		"text": "Who do I report abandoned trash to?"
 	},
 	{
@@ -568,6 +572,14 @@
 	{
 		"intent": "environment_sanitation.trash.animal",
 		"text": "Rodents keep eating my garbage"
+	},
+	{
+		"intent": "environment_sanitation.trash.collection_missed",
+		"text": "My trash was not picked up last night"
+	},
+	{
+		"intent": "environment_sanitation.trash.collection_missed",
+		"text": "Who do I call about missed garbage pickup?"
 	},
 	{
 		"intent": "environment_sanitation.trash.collection_missed",

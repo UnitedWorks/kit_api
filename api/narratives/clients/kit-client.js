@@ -109,6 +109,10 @@ export default class KitClient {
     return null;
   }
 
+  static entityURLToText(entity) {
+    return entity.url ? `${entity.name}'s website is ${entity.url}` : null;
+  }
+
   static entityAvailabilityToText(type, entity, { datetime, constituentAttributes = {} } = {}) {
     let entityAvailabilityText = '';
     // Describe General Schedule (even if no datetime, mention schedule)

@@ -503,6 +503,10 @@
     "intent": "government_civil_services.taxes.senior_discount"
   },
   {
+    "text": "Where can I get information on my property taxes?",
+    "intent": "government_civil_services.taxes.property"
+  },
+  {
     "text": "How is property tax calculated?",
     "intent": "government_civil_services.taxes.property"
   },

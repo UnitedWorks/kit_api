@@ -800,7 +800,11 @@
 		"intent": "transportation_streets_sidewalks.ticket.contested"
 	},
 	{
-		"text": "Can and how do I contest a ticket?",
+		"text": "Can and how do I contest a ticket/parking ticket?",
+		"intent": "transportation_streets_sidewalks.ticket.contested"
+	},
+	{
+		"text": "How do I dispute a parking ticket?",
 		"intent": "transportation_streets_sidewalks.ticket.contested"
 	},
 	{
@@ -1070,6 +1074,10 @@
 	{
 		"intent": "transportation_streets_sidewalks.violation.parking.school_zone",
 		"text": "There is someone taking up a school zone"
+	},
+	{
+		"text": "There's a power line down in front of my house",
+		"intent": "transportation_streets_sidewalks.wire.down"
 	},
 	{
 		"text": "there is a wire down",

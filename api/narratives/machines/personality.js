@@ -78,4 +78,12 @@ export default {
     this.messagingClient.send(message);
     return this.getBaseState();
   },
+  jokes() {
+    const message = randomPick([
+      // "I don't know any, but I know some that run for office!",
+      "I'm working on being a helpful public servant before I start my stand up career :P",
+    ]);
+    this.messagingClient.send(message);
+    return this.getBaseState();
+  },
 };

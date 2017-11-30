@@ -74,6 +74,8 @@ export default {
           return KitClient.entityContactToText(entity.payload);
         } else if (lookupType === LOOKUP.LOCATION || lookupType === LOOKUP.LOCATION_CLOSEST) {
           return KitClient.entityLocationToText(entity.payload);
+        } else if (lookupType === LOOKUP.URL) {
+          return KitClient.entityURLToText(entity.payload);
         }
         return null;
       }).filter(text => text), replyTemplates.evalHelpfulAnswer);

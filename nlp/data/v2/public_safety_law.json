@@ -590,5 +590,17 @@
 	{
 		"text": "I think I may have a warrant, what do I do now?",
 		"intent": "public_safety_law.warrant.guide"
+	},
+	{
+		"text": "How do I report a robbery?",
+		"intent": "public_safety_law.theft"
+	},
+	{
+		"text": "Where do I report a robbery?",
+		"intent": "public_safety_law.theft"
+	},
+	{
+		"text": "I've been robbed",
+		"intent": "public_safety_law.theft"
 	}
 ]

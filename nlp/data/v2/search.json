@@ -672,5 +672,21 @@
         "entity": "wit$search_query"
       }
     ]
+  },
+  {
+    "text": "What's the link to see click fix?",
+    "intent": "search.knowledge_entity",
+    "entities": [
+      {
+        "start": 19,
+        "end": 32,
+        "value": "see click fix",
+        "entity": "wit$search_query"
+      },
+      {
+        "value": "url",
+        "entity": "entity_property"
+      }
+    ]
   }
 ]

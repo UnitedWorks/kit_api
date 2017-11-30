@@ -899,6 +899,14 @@
 		]
 	},
 	{
+		"text": "How do I get a certificate of occupancy?",
+		"intent": "property_buildings_homes.permit_license_permission.occupancy"
+	},
+	{
+		"text": "What department do i call to get a certificate of occupancy?",
+		"intent": "property_buildings_homes.permit_license_permission.occupancy"
+	},
+	{
 		"text": "Is outdoor burning, like a campfire for firepit, allowed?",
 		"intent": "property_buildings_homes.permit_license_permission.outdoor_burning"
 	},
@@ -1441,5 +1449,21 @@
 	{
 		"text": "Where is the water coming from?",
 		"intent": "property_buildings_homes.water_supplier"
+	},
+	{
+		"text": "How do I pay my water bill?",
+		"intent": "property_buildings_homes.water_bill.payment"
+	},
+	{
+		"text": "Where can I pay my water bill?",
+		"intent": "property_buildings_homes.water_bill.payment"
+	},
+	{
+		"text": "pay water bill",
+		"intent": "property_buildings_homes.water_bill.payment"
+	},
+	{
+		"text": "Make payment on water bill",
+		"intent": "property_buildings_homes.water_bill.payment"
 	}
 ]
