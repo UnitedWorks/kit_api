@@ -148,6 +148,10 @@ SO['environment_sanitation.catch_basin.request'] = {
   tags: ['environment_sanitation', 'catch_basin', 'request'],
   params: basicReport,
 };
+SO['environment_sanitation.catch_basin.adopt'] = {
+  tags: ['environment_sanitation', 'catch_basin', 'adopt'],
+  params: basicReport,
+};
 
 SO['environment_sanitation.dumping'] = {
   tags: ['environment_sanitation', 'dumping'],
@@ -381,6 +385,10 @@ SO['public_safety_law.bribery'] = {
 };
 
 // Transportation
+SO['transportation_streets_sidewalks.highway.adopt'] = {
+  tags: ['transportation_streets_sidewalks', 'highway', 'adopt'],
+  params: basicReport,
+};
 SO['transportation_streets_sidewalks.street'] = {
   tags: ['transportation_streets_sidewalks', 'street'],
   params: basicReport,

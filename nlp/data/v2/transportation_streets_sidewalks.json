@@ -1,7 +1,7 @@
 [
 	{
 		"text": "How do I adopt a highway?",
-		"intent": "transportation_streets_sidewalks.adopt_a_highway"
+		"intent": "transportation_streets_sidewalks.highway.adopt"
 	},
 	{
 		"intent": "transportation_streets_sidewalks.bicycle.abandoned",
@@ -732,7 +732,7 @@
 		"text": "Report street light"
 	},
 	{
-		"intent": "A streetlight on my block doesn’t work",
+		"intent": "transportation_streets_sidewalks.street_light",
 		"text": "Report street light"
 	},
 	{
