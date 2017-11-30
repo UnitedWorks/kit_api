@@ -6,7 +6,7 @@
 				"start": 1,
 				"end": 10,
 				"value": "education_employment",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -17,7 +17,7 @@
 				"start": 1,
 				"end": 12,
 				"value": "education_employment",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -53,7 +53,7 @@
 				"start": 28,
 				"end": 31,
 				"value": "education_employment",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -97,13 +97,13 @@
 				"start": 5,
 				"end": 8,
 				"value": "education_employment",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			},
 			{
 				"start": 9,
 				"end": 19,
 				"value": "education_employment",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -115,7 +115,7 @@
 				"start": 22,
 				"end": 28,
 				"value": "education_employment",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -127,7 +127,7 @@
 				"start": 13,
 				"end": 16,
 				"value": "education_employment",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -139,7 +139,7 @@
 				"start": 16,
 				"end": 28,
 				"value": "education_employment",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -151,7 +151,7 @@
 				"start": 50,
 				"end": 58,
 				"value": "education_employment",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -167,7 +167,7 @@
 				"start": 16,
 				"end": 20,
 				"value": "education_employment",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -179,13 +179,13 @@
 				"start": 36,
 				"end": 44,
 				"value": "education_employment",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			},
 			{
 				"start": 49,
 				"end": 61,
 				"value": "education_employment",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -205,7 +205,7 @@
 				"start": 27,
 				"end": 33,
 				"value": "education_employment",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},

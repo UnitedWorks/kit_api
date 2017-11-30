@@ -114,13 +114,13 @@
 				"start": 12,
 				"end": 15,
 				"value": "transportation_streets_sidewalks",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			},
 			{
 				"start": 16,
 				"end": 22,
 				"value": "transportation_streets_sidewalks",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -207,7 +207,7 @@
 				"start": 41,
 				"end": 55,
 				"value": "transportation_streets_sidewalks",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -223,7 +223,7 @@
 				"start": 8,
 				"end": 30,
 				"value": "transportation_streets_sidewalks",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -235,7 +235,7 @@
 				"start": 14,
 				"end": 28,
 				"value": "transportation_streets_sidewalks",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -247,7 +247,7 @@
 				"start": 8,
 				"end": 23,
 				"value": "transportation_streets_sidewalks",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -259,7 +259,7 @@
 				"start": 8,
 				"end": 23,
 				"value": "transportation_streets_sidewalks",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -275,7 +275,7 @@
 				"start": 0,
 				"end": 15,
 				"value": "transportation_streets_sidewalks",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -287,7 +287,7 @@
 				"start": 26,
 				"end": 29,
 				"value": "transportation_streets_sidewalks",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -387,7 +387,7 @@
 				"start": 22,
 				"end": 28,
 				"value": "transportation_streets_sidewalks",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -411,7 +411,7 @@
 				"start": 29,
 				"end": 36,
 				"value": "transportation_streets_sidewalks",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -487,7 +487,7 @@
 				"start": 14,
 				"end": 23,
 				"value": "transportation_streets_sidewalks",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -499,7 +499,7 @@
 				"start": 14,
 				"end": 18,
 				"value": "transportation_streets_sidewalks",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -543,7 +543,7 @@
 				"start": 22,
 				"end": 28,
 				"value": "transportation_streets_sidewalks",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -779,7 +779,7 @@
 				"start": 22,
 				"end": 26,
 				"value": "transportation_streets_sidewalks",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -835,7 +835,7 @@
 				"start": 5,
 				"end": 19,
 				"value": "transportation_streets_sidewalks",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -855,7 +855,7 @@
 				"start": 29,
 				"end": 43,
 				"value": "transportation_streets_sidewalks",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -951,7 +951,7 @@
 				"start": 15,
 				"end": 20,
 				"value": "transportation_streets_sidewalks",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -979,7 +979,7 @@
 				"start": 23,
 				"end": 39,
 				"value": "transportation_streets_sidewalks",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},

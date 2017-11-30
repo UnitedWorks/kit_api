@@ -43,7 +43,7 @@
 				"start": 29,
 				"end": 39,
 				"value": "general",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -55,7 +55,7 @@
 				"start": 17,
 				"end": 24,
 				"value": "general",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -67,7 +67,7 @@
 				"start": 0,
 				"end": 10,
 				"value": "general",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},

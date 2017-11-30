@@ -45,7 +45,7 @@ export default {
       return this.requestClosestLocation();
     }
     const sortedEntities = (lookupType === LOOKUP.LOCATION_CLOSEST)
-      ? KitClient.sortEntitiesByPoint(joinedEntities, [this.get('attributes').current_location.lat, this.get('attributes').current_location.lon])
+      ? KitClient.sortEntitiesByDistance(joinedEntities, [this.get('attributes').current_location.lat, this.get('attributes').current_location.lon])
       : joinedEntities;
     // Check if we actually have any entities
     if (sortedEntities.length === 0) {

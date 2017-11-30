@@ -6,7 +6,7 @@
         "start": 1,
         "end": 8,
         "value": "government_civil_services",
-        "entity": "category_keywords"
+        "entity": "category_labels"
       }
     ]
   },
@@ -17,7 +17,7 @@
         "start": 1,
         "end": 8,
         "value": "government_civil_services",
-        "entity": "category_keywords"
+        "entity": "category_labels"
       }
     ]
   },
@@ -28,7 +28,7 @@
         "start": 1,
         "end": 9,
         "value": "government_civil_services",
-        "entity": "category_keywords"
+        "entity": "category_labels"
       }
     ]
   },
@@ -52,7 +52,7 @@
         "start": 19,
         "end": 26,
         "value": "government_civil_services",
-        "entity": "category_keywords"
+        "entity": "category_labels"
       }
     ]
   },
@@ -76,13 +76,13 @@
         "start": 12,
         "end": 21,
         "value": "government_civil_services",
-        "entity": "category_keywords"
+        "entity": "category_labels"
       },
       {
         "start": 22,
         "end": 28,
         "value": "government_civil_services",
-        "entity": "category_keywords"
+        "entity": "category_labels"
       }
     ]
   },
@@ -94,13 +94,13 @@
         "start": 18,
         "end": 32,
         "value": "government_civil_services",
-        "entity": "category_keywords"
+        "entity": "category_labels"
       },
       {
         "start": 38,
         "end": 55,
         "value": "government_civil_services",
-        "entity": "category_keywords"
+        "entity": "category_labels"
       }
     ]
   },
@@ -112,7 +112,7 @@
         "start": 16,
         "end": 33,
         "value": "government_civil_services",
-        "entity": "category_keywords"
+        "entity": "category_labels"
       }
     ]
   },
@@ -148,7 +148,7 @@
         "start": 38,
         "end": 55,
         "value": "government_civil_services",
-        "entity": "category_keywords"
+        "entity": "category_labels"
       }
     ]
   },
@@ -164,13 +164,13 @@
         "start": 25,
         "end": 40,
         "value": "government_civil_services",
-        "entity": "category_keywords"
+        "entity": "category_labels"
       },
       {
         "start": 44,
         "end": 48,
         "value": "government_civil_services",
-        "entity": "category_keywords"
+        "entity": "category_labels"
       }
     ]
   },
@@ -234,7 +234,7 @@
         "start": 26,
         "end": 42,
         "value": "government_civil_services",
-        "entity": "category_keywords"
+        "entity": "category_labels"
       }
     ]
   },
@@ -246,7 +246,7 @@
         "start": 16,
         "end": 39,
         "value": "government_civil_services",
-        "entity": "category_keywords"
+        "entity": "category_labels"
       }
     ]
   },
@@ -262,7 +262,7 @@
         "start": 16,
         "end": 36,
         "value": "government_civil_services",
-        "entity": "category_keywords"
+        "entity": "category_labels"
       }
     ]
   },
@@ -302,7 +302,7 @@
         "start": 15,
         "end": 26,
         "value": "government_civil_services",
-        "entity": "category_keywords"
+        "entity": "category_labels"
       }
     ]
   },
@@ -326,7 +326,7 @@
         "start": 10,
         "end": 36,
         "value": "government_civil_services",
-        "entity": "category_keywords"
+        "entity": "category_labels"
       }
     ]
   },
@@ -358,7 +358,7 @@
         "start": 15,
         "end": 23,
         "value": "government_civil_services",
-        "entity": "category_keywords"
+        "entity": "category_labels"
       }
     ]
   },
@@ -378,7 +378,7 @@
         "start": 12,
         "end": 14,
         "value": "government_civil_services",
-        "entity": "category_keywords"
+        "entity": "category_labels"
       }
     ]
   },
@@ -462,7 +462,7 @@
         "start": 18,
         "end": 28,
         "value": "government_civil_services",
-        "entity": "category_keywords"
+        "entity": "category_labels"
       }
     ]
   },
@@ -482,7 +482,7 @@
         "start": 16,
         "end": 21,
         "value": "government_civil_services",
-        "entity": "category_keywords"
+        "entity": "category_labels"
       }
     ]
   },

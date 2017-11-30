@@ -1,3 +1,36 @@
+// Entity Types
+export const FACILITY = 'facility';
+export const EVENT = 'event';
+export const SERVICE = 'service';
+export const CONTACT = 'contact';
+export const ANSWER = 'answer';
+export const ENTITIES = [FACILITY, EVENT, SERVICE, ANSWER, CONTACT];
+
+// FAQ Categories
+export const TRANSPORTATION_CATEGORY = 'Transportation, Streets, and Sidewalks';
+export const ENVIRONMENT_CATEGORY = 'Environment and Sanitation';
+export const PROPERTY_CATEGORY = 'Property, Buildings, and Homes';
+export const EDUCATION_CATEGORY = 'Education and Employment';
+export const BUSINESS_CATEGORY = 'Business and Finance';
+export const SOCIAL_SERVICES_CATEGORY = 'Social Services';
+export const HEALTH_CATEGORY = 'Health and Medicine';
+export const PUBLIC_SAFETY_CATEGORY = 'Public Safety and Law';
+export const GOVERNMENT_CATEGORY = 'Government and Civil Services';
+export const GENERAL_CATEGORY = 'General';
+export const GENERAL_CATEGORY_LABEL = 'general';
+export const CATEGORIES = [TRANSPORTATION_CATEGORY, ENVIRONMENT_CATEGORY, PROPERTY_CATEGORY,
+  EDUCATION_CATEGORY, BUSINESS_CATEGORY, SOCIAL_SERVICES_CATEGORY, HEALTH_CATEGORY,
+  PUBLIC_SAFETY_CATEGORY, GOVERNMENT_CATEGORY, GENERAL_CATEGORY];
+
+// Media Types
+export const IMAGE = 'image';
+export const AUDIO = 'audio';
+export const VIDEO = 'video';
+export const FILE = 'file';
+
+export const MEDIA_TYPES = [IMAGE, AUDIO, VIDEO, FILE];
+
+
 // Entity Types (think it makes sense only for facilitys to have these?)
 // From Open311
 export const AFTER_SCHOOL = 'After School Program';

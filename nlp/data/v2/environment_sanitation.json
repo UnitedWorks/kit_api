@@ -6,7 +6,7 @@
 				"start": 1,
 				"end": 7,
 				"value": "environment_sanitation",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -26,7 +26,7 @@
 				"start": 43,
 				"end": 48,
 				"value": "environment_sanitation",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -143,7 +143,7 @@
 				"start": 9,
 				"end": 18,
 				"value": "environment_sanitation",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -159,7 +159,7 @@
 				"start": 9,
 				"end": 16,
 				"value": "environment_sanitation",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -315,7 +315,7 @@
 				"start": 14,
 				"end": 24,
 				"value": "environment_sanitation",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -387,7 +387,7 @@
 				"start": 27,
 				"end": 31,
 				"value": "environment_sanitation",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -446,7 +446,7 @@
 				"start": 18,
 				"end": 22,
 				"value": "environment_sanitation",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -470,7 +470,7 @@
 				"start": 4,
 				"end": 13,
 				"value": "environment_sanitation",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -621,7 +621,7 @@
 				"start": 3,
 				"end": 10,
 				"value": "environment_sanitation",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -633,7 +633,7 @@
 				"start": 12,
 				"end": 17,
 				"value": "environment_sanitation",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},

@@ -51,7 +51,7 @@
         "start": 18,
         "end": 25,
         "value": "health_medicine",
-        "entity": "category_keywords"
+        "entity": "category_labels"
       }
     ]
   },
@@ -67,7 +67,7 @@
         "start": 9,
         "end": 15,
         "value": "health_medicine",
-        "entity": "category_keywords"
+        "entity": "category_labels"
       }
     ]
   },
@@ -87,7 +87,7 @@
         "start": 5,
         "end": 12,
         "value": "health_medicine",
-        "entity": "category_keywords"
+        "entity": "category_labels"
       }
     ]
   },
@@ -119,7 +119,7 @@
         "start": 14,
         "end": 17,
         "value": "health_medicine",
-        "entity": "category_keywords"
+        "entity": "category_labels"
       }
     ]
   },
@@ -139,7 +139,7 @@
         "start": 15,
         "end": 18,
         "value": "health_medicine",
-        "entity": "category_keywords"
+        "entity": "category_labels"
       }
     ]
   },
@@ -155,7 +155,7 @@
         "start": 14,
         "end": 16,
         "value": "health_medicine",
-        "entity": "category_keywords"
+        "entity": "category_labels"
       }
     ]
   },
@@ -187,7 +187,7 @@
         "start": 16,
         "end": 25,
         "value": "health_medicine",
-        "entity": "category_keywords"
+        "entity": "category_labels"
       }
     ]
   },
@@ -199,7 +199,7 @@
         "start": 33,
         "end": 43,
         "value": "health_medicine",
-        "entity": "category_keywords"
+        "entity": "category_labels"
       }
     ]
   },
@@ -211,7 +211,7 @@
         "start": 5,
         "end": 13,
         "value": "health_medicine",
-        "entity": "category_keywords"
+        "entity": "category_labels"
       }
     ]
   },

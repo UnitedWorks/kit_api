@@ -82,6 +82,7 @@ export default {
 
           'settings.locality.update': 'setup.reset_organization', // Do we need this?
           'settings.location': 'setup.location', // Should there be an attribute setting machine?
+          'settings.default_location': 'setup.location', // Temp while wit updates
 
           'social_services.shelters': 'socialServices.waiting_shelter_search',
           'social_services.food_assistance': 'socialServices.waiting_food_search',
@@ -171,10 +172,10 @@ export default {
     }
     // If second failure, fetch resources to assist
     const labels = [];
-    if (!this.snapshot.nlp.entities.category_keywords || this.snapshot.nlp.entities.category_keywords.length === 0) {
-      labels.push(KNOWLEDGE_CONST.GENERAL_LABEL);
+    if (!this.snapshot.nlp.entities.category_labels || this.snapshot.nlp.entities.category_labels.length === 0) {
+      labels.push(KNOWLEDGE_CONST.GENERAL_CATEGORY_LABEL);
     } else {
-      this.snapshot.nlp.entities.category_keywords.forEach(entity => labels.push(entity.value));
+      this.snapshot.nlp.entities.category_labels.forEach(entity => labels.push(entity.value));
     }
     const hasSeeClickFix = await hasIntegration(this.get('organization'), INTEGRATIONS.SEE_CLICK_FIX).then(bool => bool);
     return getCategoryFallback(labels, this.snapshot.organization_id).then((fallbackData) => {

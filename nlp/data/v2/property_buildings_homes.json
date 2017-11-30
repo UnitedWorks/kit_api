@@ -6,7 +6,7 @@
 				"start": 1,
 				"end": 4,
 				"value": "property_buildings_homes",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -70,7 +70,7 @@
 				"start": 38,
 				"end": 43,
 				"value": "property_buildings_homes",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -170,7 +170,7 @@
 				"start": 19,
 				"end": 30,
 				"value": "property_buildings_homes",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -186,7 +186,7 @@
 				"start": 10,
 				"end": 29,
 				"value": "property_buildings_homes",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -218,7 +218,7 @@
 				"start": 12,
 				"end": 16,
 				"value": "property_buildings_homes",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -230,7 +230,7 @@
 				"start": 12,
 				"end": 20,
 				"value": "property_buildings_homes",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -326,7 +326,7 @@
 				"start": 24,
 				"end": 32,
 				"value": "property_buildings_homes",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -358,7 +358,7 @@
 				"start": 33,
 				"end": 44,
 				"value": "property_buildings_homes",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -382,7 +382,7 @@
 				"start": 9,
 				"end": 16,
 				"value": "property_buildings_homes",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -394,7 +394,7 @@
 				"start": 57,
 				"end": 67,
 				"value": "property_buildings_homes",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -410,7 +410,7 @@
 				"start": 18,
 				"end": 27,
 				"value": "property_buildings_homes",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -426,7 +426,7 @@
 				"start": 10,
 				"end": 20,
 				"value": "property_buildings_homes",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -458,13 +458,13 @@
 				"start": 8,
 				"end": 12,
 				"value": "property_buildings_homes",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			},
 			{
 				"start": 20,
 				"end": 35,
 				"value": "property_buildings_homes",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -492,19 +492,19 @@
 				"start": 27,
 				"end": 38,
 				"value": "property_buildings_homes",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			},
 			{
 				"start": 46,
 				"end": 53,
 				"value": "property_buildings_homes",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			},
 			{
 				"start": 60,
 				"end": 71,
 				"value": "property_buildings_homes",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -520,7 +520,7 @@
 				"start": 22,
 				"end": 38,
 				"value": "property_buildings_homes",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -588,7 +588,7 @@
 				"start": 19,
 				"end": 23,
 				"value": "property_buildings_homes",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -604,13 +604,13 @@
 				"start": 49,
 				"end": 53,
 				"value": "property_buildings_homes",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			},
 			{
 				"start": 57,
 				"end": 62,
 				"value": "property_buildings_homes",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -642,7 +642,7 @@
 				"start": 36,
 				"end": 44,
 				"value": "property_buildings_homes",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -654,7 +654,7 @@
 				"start": 30,
 				"end": 38,
 				"value": "property_buildings_homes",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -666,7 +666,7 @@
 				"start": 17,
 				"end": 26,
 				"value": "property_buildings_homes",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -782,7 +782,7 @@
 				"start": 21,
 				"end": 29,
 				"value": "property_buildings_homes",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -814,7 +814,7 @@
 				"start": 15,
 				"end": 23,
 				"value": "property_buildings_homes",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -826,7 +826,7 @@
 				"start": 21,
 				"end": 29,
 				"value": "property_buildings_homes",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -866,7 +866,7 @@
 				"start": 16,
 				"end": 36,
 				"value": "property_buildings_homes",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -894,7 +894,7 @@
 				"start": 28,
 				"end": 39,
 				"value": "property_buildings_homes",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -934,7 +934,7 @@
 				"start": 25,
 				"end": 29,
 				"value": "property_buildings_homes",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -1006,7 +1006,7 @@
 				"start": 20,
 				"end": 26,
 				"value": "property_buildings_homes",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -1042,7 +1042,7 @@
 				"start": 39,
 				"end": 51,
 				"value": "property_buildings_homes",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -1078,7 +1078,7 @@
 				"start": 6,
 				"end": 10,
 				"value": "property_buildings_homes",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -1094,7 +1094,7 @@
 				"start": 56,
 				"end": 64,
 				"value": "property_buildings_homes",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -1106,7 +1106,7 @@
 				"start": 53,
 				"end": 73,
 				"value": "property_buildings_homes",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -1118,7 +1118,7 @@
 				"start": 35,
 				"end": 44,
 				"value": "property_buildings_homes",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -1202,7 +1202,7 @@
 				"start": 3,
 				"end": 10,
 				"value": "property_buildings_homes",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -1218,7 +1218,7 @@
 				"start": 3,
 				"end": 10,
 				"value": "property_buildings_homes",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},
@@ -1274,7 +1274,7 @@
 				"start": 21,
 				"end": 27,
 				"value": "property_buildings_homes",
-				"entity": "category_keywords"
+				"entity": "category_labels"
 			}
 		]
 	},

@@ -160,7 +160,7 @@ export default class KitClient {
     return null;
   }
 
-  static sortEntitiesByPoint(entities, coordinates) {
+  static sortEntitiesByDistance(entities, coordinates) {
     return entities.filter(e => e.payload.location && e.payload.location.lat).sort((a, b) => {
       return geolib.getDistance({ latitude: a.payload.lat, longitude: a.payload.lon }, { latitude: coordinates[0], longitude: coordinates[1] }) - geolib.getDistance({ latitude: b.payload.lat, longitude: b.payload.lon }, { latitude: coordinates[0], longitude: coordinates[1] });
     });

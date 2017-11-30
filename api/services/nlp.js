@@ -22,8 +22,8 @@ export const nlp = {
       if (nlpData.entities && nlpData.entities.intent) {
         nlpData.entities.intent = nlpData.entities.intent.filter(i => !i.suggested);
       }
-      if (nlpData.entities && nlpData.entities.category_keywords) {
-        nlpData.entities.category_keywords = nlpData.entities.category_keywords.filter(i => !i.suggested);
+      if (nlpData.entities && nlpData.entities.category_labels) {
+        nlpData.entities.category_labels = nlpData.entities.category_labels.filter(i => !i.suggested);
       }
       return nlpData;
     });

@@ -633,12 +633,12 @@ export async function getCategoryFallback(labels, orgId) {
   });
   // If no contacts, look farther up
   if (mergedContacts.length === 0) {
-    await KnowledgeCategory.where({ label: KNOWLEDGE_CONST.GENERAL_LABEL }).fetch({
+    await KnowledgeCategory.where({ label: KNOWLEDGE_CONST.GENERAL_CATEGORY_LABEL }).fetch({
       withRelated: [{
         contacts: q => q.where('knowledge_contacts.organization_id', '=', orgId),
       }],
     }).then((generalData) => {
-      fallbackObj.labels = [KNOWLEDGE_CONST.GENERAL_LABEL];
+      fallbackObj.labels = [KNOWLEDGE_CONST.GENERAL_CATEGORY_LABEL];
       fallbackObj.fellback = true;
       fallbackObj.contacts = (generalData) ? generalData.toJSON().contacts : [];
     });
