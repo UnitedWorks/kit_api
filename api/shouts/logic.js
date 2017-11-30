@@ -406,6 +406,10 @@ SO['transportation_streets_sidewalks.driveway'] = {
   tags: ['transportation_streets_sidewalks', 'driveway'],
   params: basicReport,
 };
+SO['transportation_streets_sidewalks.road_markings'] = {
+  tags: ['transportation_streets_sidewalks', 'driveway'],
+  params: basicReport,
+};
 SO['transportation_streets_sidewalks.sidewalk'] = {
   tags: ['transportation_streets_sidewalks', 'sidewalk'],
   params: basicReport,
@@ -568,6 +572,10 @@ SO['transportation_streets_sidewalks.bicycle.racks'] = {
 };
 SO['transportation_streets_sidewalks.bicycle.lanes'] = {
   tags: ['transportation_streets_sidewalks', 'bicycle', 'lanes'],
+  params: basicReport,
+};
+SO['transportation_streets_sidewalks.bicycle.lanes.blocking'] = {
+  tags: ['transportation_streets_sidewalks', 'bicycle', 'lanes', 'blocking'],
   params: basicReport,
 };
 SO['transportation_streets_sidewalks.bicycle.sharing'] = {

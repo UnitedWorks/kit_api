@@ -204,6 +204,10 @@
     "intent": "voting_elections_participation.polls.search"
   },
   {
+    "text": "where do i vote?",
+    "intent": "voting_elections_participation.polls.search"
+  },
+  {
     "text": "Where do I go to vote?",
     "intent": "voting_elections_participation.polls.search"
   },

@@ -254,5 +254,21 @@
 	{
 		"text": "thank you so much",
 		"intent": "speech.thanks"
+	},
+	{
+		"text": "why dont you know addresses of important buildings, like police stations, fire stations, public works, etc",
+		"intent": "speech.frustration"
+	},
+	{
+		"text": "you're useless",
+		"intent": "speech.frustration"
+	},
+	{
+		"text": "fuck this",
+		"intent": "speech.frustration"
+	},
+	{
+		"text": "you suck",
+		"intent": "speech.frustration"
 	}
 ]

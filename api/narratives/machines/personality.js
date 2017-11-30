@@ -61,6 +61,10 @@ export default {
     this.messagingClient.send(youreWelcome);
     return this.getBaseState();
   },
+  handle_frustration() {
+    this.messagingClient.send("Sorry, I can't do a better job :( There are people improving my abilities every day. I hope I can do a better job for you tomorrow.");
+    return this.getBaseState();
+  },
   async weather() {
     const forecast = await new WeatherClient().dayForecast(
       this.get('organization').location.lat, this.get('organization').location.lon).then(f => f);
@@ -69,13 +73,6 @@ export default {
       quickReplies.push(QUICK_REPLIES.weatherOn);
     }
     this.messagingClient.send(`${WeatherClient.emojiMap[forecast.weather.id] || ''} Looks like today will have a low of ${forecast.min}° and a high of ${forecast.max}°${forecast.weather.description ? ` with ${forecast.weather.description}.` : ''}`, quickReplies);
-    return this.getBaseState();
-  },
-  math() {
-    const message = randomPick([
-      "I'm made of 1s and 0s, but that doesn't mean I know how to add them together!",
-    ]);
-    this.messagingClient.send(message);
     return this.getBaseState();
   },
   jokes() {

@@ -92,6 +92,7 @@ export default {
           'speech.greeting': 'personality.handle_greeting',
           'speech.thanks': 'personality.handle_thank_you',
           'speech.praise': 'personality.handle_praise',
+          'speech.frustration': 'personality.handle_frustration',
 
           'transportation_streets_sidewalks.snow.plowing': 'status.plowing',
 

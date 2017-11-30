@@ -195,11 +195,15 @@
 		"intent": "property_buildings_homes.district_zoning.historical"
 	},
 	{
-		"text": "What political districts am I in?",
+		"text": "What council, ward, or political districts am I in?",
 		"intent": "property_buildings_homes.district_zoning.political"
 	},
 	{
 		"text": "What Council District do I live in?",
+		"intent": "property_buildings_homes.district_zoning.political"
+	},
+	{
+		"text": "what ward do i live in?",
 		"intent": "property_buildings_homes.district_zoning.political"
 	},
 	{
@@ -793,6 +797,10 @@
 	{
 		"intent": "property_buildings_homes.over_growth",
 		"text": "My neighbor's lawn is overgrown"
+	},
+	{
+		"intent": "property_buildings_homes.over_growth",
+		"text": "tall grass issue"
 	},
 	{
 		"intent": "property_buildings_homes.over_growth",

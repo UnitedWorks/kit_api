@@ -36,6 +36,10 @@
 		"intent": "transportation_streets_sidewalks.bicycle.lanes"
 	},
 	{
+		"text": "A bike lane is blocked",
+		"intent": "transportation_streets_sidewalks.bicycle.lanes.blocking"
+	},
+	{
 		"intent": "transportation_streets_sidewalks.bicycle.racks",
 		"text": "This bike rack is clogged up"
 	},
@@ -547,6 +551,14 @@
 			}
 		]
 	},
+  {
+    "text": "Road markings are faded and need repainting",
+    "intent": "transportation_streets_sidewalks.road_markings"
+  },
+  {
+    "text": "crosswalk lines are faded",
+    "intent": "transportation_streets_sidewalks.road_markings"
+  },
 	{
 		"intent": "transportation_streets_sidewalks.sidewalk",
 		"text": "How do I request a sidewalk inspection to remove a violation?"
@@ -720,6 +732,10 @@
 		"text": "Report street light"
 	},
 	{
+		"intent": "A streetlight on my block doesn’t work",
+		"text": "Report street light"
+	},
+	{
 		"intent": "transportation_streets_sidewalks.street_light.always_on",
 		"text": "The street light is on throughout the day"
 	},
@@ -730,6 +746,10 @@
 	{
 		"intent": "transportation_streets_sidewalks.street_light.burnt_out",
 		"text": "the light outside my apartment is out"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.street_light.burnt_out",
+		"text": "there is a street light out"
 	},
 	{
 		"intent": "transportation_streets_sidewalks.street_light.burnt_out",

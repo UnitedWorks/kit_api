@@ -103,8 +103,16 @@ export default class KitClient {
   }
 
   static entityLocationToText(entity) {
-    if (entity.location && entity.location.display_name) {
-      return `${entity.name} is located at ${entity.location.display_name}`;
+    if (entity.location && (entity.location.display_name || entity.location.address)) {
+      if (entity.location.display_name && !entity.location.address) {
+        return `${entity.name} is located at ${entity.location.display_name}`;
+      }
+      const addressObj = entity.location.address;
+      let defaultLocationStr = '';
+      if (addressObj.house_number) defaultLocationStr += `${addressObj.house_number} `;
+      if (addressObj.road) defaultLocationStr += `${addressObj.road}`;
+      if (addressObj.city) defaultLocationStr += `, ${addressObj.city}`;
+      return `${entity.name} is located at ${defaultLocationStr}`;
     }
     return null;
   }
