@@ -7,10 +7,10 @@ function formattedFeedObj(bodyFeed) {
   const cleanObj = bodyFeed;
   if (cleanObj.format !== 'twitter') {
     cleanObj.watcher = false;
-    delete cleanObj.config.twitter_handle;
+    if (cleanObj.config) delete cleanObj.config.twitter_handle;
   }
-  if (cleanObj.format !== 'ics' && cleanObj.format !== 'rss') delete cleanObj.config.url;
-  if (cleanObj.format !== 'scraped') cleanObj.script = null;
+  if (cleanObj.format !== 'ics' && cleanObj.format !== 'rss' && cleanObj.config) delete cleanObj.config.url;
+  if (cleanObj.format !== 'script') cleanObj.script = null;
   return cleanObj;
 }
 

@@ -4,7 +4,7 @@ module.exports = {
       // ...require('./v2/business_finance'),
       // ...require('./v2/constituent_attributes'),
       // ...require('./v2/education_employment'),
-      ...require('./v2/environment_sanitation'),
+      // ...require('./v2/environment_sanitation'),
       // ...require('./v2/escalate'),
       // ...require('./v2/general'),
       // ...require('./v2/government_civil_services'),

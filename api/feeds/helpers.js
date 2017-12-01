@@ -16,52 +16,28 @@ Nightmare is funky to use with Docker because missing binaries for Electron
 Cheerio is probably the better route though
 Example Feed script code:
 (function(axios, cheerio) {
-  return axios.get('http://www.cityofjerseycity.com/meetings-calendar.aspx').then(r => {
-    // Capture Events on Page
-    const events = [];
-    const $ = cheerio.load(r.data);
-    // Construct Event Info
-    $('.mv_dayBorder').filter((i, elem) => {
-      return $(elem).text().trim().length > 5;
-    }).each((i, elem) => {
-      let date = null;
-      const event = {
-        url: 'http://www.cityofjerseycity.com/meetings-calendar.aspx',
-        availabilitys: [{}],
-      };
-      $(elem).find('tbody').children().each((i, tr) => {
-        if (i === 0) {
-          // If first TR, we're looking at date
-          const searchResults = /,'(.*)'.*$/.exec($(tr).find('a').attr('onclick'));
-          if (searchResults.length > 1) date = searchResults[1];
-          delete event.name;
-          delete event.location;
-          event.availabilitys = [{}];
-        } else {
-          // Otherwise we're grabbing an event
-          $(tr).find('.mv_TodayCell').find('tr').each((dataIndex, data) => {
-            if (dataIndex === 0) {
-              // Name
-              event.name = $(data).text();
-            } else if (dataIndex === 1) {
-              // Location
-              const locRegex = /Location:(.*)/.exec($(data).text())[1];
-              if (locRegex) event.location = { display_name: locRegex };
-            } else if (dataIndex === 2) {
-              // Start Date/Time
-              event.availabilitys[0].t_start = new Date(`${/Start:(.*)/.exec($(data).text())[1]}${date}`);
-            } else if (dataIndex === 3) {
-              // End Date/Time
-              event.availabilitys[0].t_end = new Date(`${/End:(.*)/.exec($(data).text())[1]}${date}`);
-            }
-          });
-          // Only push if we got at least a title
-        }
-      });
-      if (event.name && event.availabilitys[0].t_start > Date.now()) events.push(event);
+  return axios('http://www.jerseycitynj.gov/common/controls/WorkspaceCalendar/ws/WorkspaceCalendarWS.asmx/GetEventList', {
+    method: 'post',
+    headers: {
+      "content-type": "application/json",
+      "cache-control": "no-cache",
+    },
+    data: `{\n\t\"calendarIds\": [6210138],\n\t\"endDate\": \"\\/Date(${Date.now() + 2601000000})\\/\",\n\t\"enumFilter\": [],\n\t\"startDate\": \"\\/Date(${Date.now()})\\/\",\n\t\"stringFieldSet\": [],\n\t\"stringSearchValue\": \"\",\n\t\"stringSelectedField\": null\n}`
+  }).then(({ data }) => {
+    return (data.d.Result || []).map((e) => {
+      return {
+        url: 'http://www.jerseycitynj.gov/calendar',
+        name: e.Title,
+        location: {
+          display_name: e.Location,
+        },
+        availabilitys: [{
+          t_start: new Date(`${e.StartHour}:${e.StartMinute} ${e.StartMonth}/${e.StartDayOfMonth}/${e.StartYear}`),
+          t_end: new Date(`${e.EndHour}:${e.EndMinute} ${e.EndMonth}/${e.EndDayOfMonth}/${e.EndYear}`)
+        }]
+      }
     });
-    return events;
-  });
+  }).catch(() => []);
 })
 */
 
@@ -102,7 +78,7 @@ export async function runFeed(feedObj, options = { filterPast: true }) {
       // Refromat to our standard
       .map(event => veventToKnowledgeEvent({ ...event, organization_id: feed.organization_id }));
     return { events };
-  } else if (feed.format === FEED_CONSTANTS.SCRAPED) {
+  } else if (feed.format === FEED_CONSTANTS.SCRIPT) {
     const results = await scrapeEvents(feed.script).then(r => r);
     return {
       events: results.map(e => ({ ...e, organization_id: feed.organization_id })),

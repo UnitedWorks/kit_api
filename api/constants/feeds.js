@@ -1,9 +1,9 @@
 // FORMATS
 export const ICS = 'ics';
 export const RSS = 'rss';
-export const SCRAPED = 'scraped';
+export const SCRIPT = 'script';
 export const TWITTER = 'twitter';
-export const FEED_FORMATS = [ICS, RSS, SCRAPED, TWITTER];
+export const FEED_FORMATS = [ICS, RSS, SCRIPT, TWITTER];
 
 // ENTITY
 export const EVENT = 'event';
