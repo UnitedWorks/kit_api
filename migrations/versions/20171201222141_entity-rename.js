@@ -49,17 +49,6 @@ exports.up = function(knex, Promise) {
     .renameTable('knowledge_categorys_knowledge_contacts', 'knowledge_categorys_persons');
 };
 
-// .createTable('phones', (table) => {
-//   table.increments().primary();
-//   table.string('description');
-//   table.string('number');
-//   table.string('extension');
-//   table.boolean('fax');
-//   table.specificType('languages', 'text[]');
-// });
-// holding off on resources table for this migration
-
-
 exports.down = function(knex, Promise) {
   return knex.schema
     .renameTable('places', 'knowledge_facilitys')

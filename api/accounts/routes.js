@@ -28,7 +28,7 @@ router.get('/organizations', requireAuth, (req, res) => {
  * @param {String} address - Provided string to find, create, and associate a location
  * @param {Object} organization - Organiation object
  * @param {String} organization.name - Formal organization name (ex: City of New Brunswick)
- * @param {String} [organization.website] - General website
+ * @param {String} [organization.url] - General website
  * @param {String} [organization.email] - General person email
  * @param {String} [organization.phone] - General person phone
  * @param {String} organization.category - Enum: 'public', 'private', 'ngo'

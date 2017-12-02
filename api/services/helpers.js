@@ -30,7 +30,6 @@ export async function updateService(service, options) {
     name: service.name,
     brief_description: service.brief_description,
     description: service.description,
-    eligibility_information: service.eligibility_information,
     phone_number: service.phone_number,
     url: service.url,
     availabilitys: service.availabilitys,

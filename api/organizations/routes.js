@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { knex } from '../orm';
 import { Organization } from '../accounts/models';
 
 const router = new Router();
@@ -10,7 +11,7 @@ router.route('/')
   .get((req, res, next) => {
     try {
       if (!req.query || !req.query.organization_id) throw new Error('Need Organization ID');
-      Organization.where({ parent_organization_id: req.query.organization_id }).fetchAll()
+      Organization.where({ parent_organization_id: req.query.organization_id }).fetchAll({ withRelated: ['places', 'persons', 'services', 'vehicles'] })
         .then(orgs => res.status(200).send({ organizations: orgs.toJSON() }));
     } catch (e) {
       next(e);
@@ -44,5 +45,27 @@ router.route('/')
       next(e);
     }
   });
+
+router.post('/associations', (req, res, next) => {
+  try {
+    if (!req.body.hasOwnProperty('associate')) throw new Error('No association state defined');
+    if (!req.body.hasOwnProperty('organization_id')) throw new Error('No organization state defined');
+    if (Object.keys(req.body).length != 3) throw new Error('Missing properties');
+    const params = req.body;
+    // If associating, do one knex operation
+    if (params.associate) {
+      delete params.associate;
+      knex('organizations_entity_associations').insert(params)
+        .then(() => res.status(200).send());
+    } else {
+      delete params.associate;
+    // If diassociating, do another
+      knex('organizations_entity_associations').where(params).del()
+        .then(() => res.status(200).send());
+    }
+  } catch (e) {
+    next(e);
+  }
+});
 
 module.exports = router;

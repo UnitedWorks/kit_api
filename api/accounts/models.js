@@ -4,6 +4,10 @@ import * as KnowledgeModels from '../knowledge-base/models';
 import { Task } from '../tasks/models';
 import * as IntegrationModels from '../integrations/models';
 import * as ConversationModels from '../conversations/models';
+import { Service } from '../services/models';
+import { Place } from '../places/models';
+import { Person } from '../persons/models';
+import { Vehicle } from '../vehicles/models';
 
 export const Representative = bookshelf.Model.extend({
   tableName: 'representatives',
@@ -32,9 +36,6 @@ export const Representative = bookshelf.Model.extend({
 
 export const Constituent = bookshelf.Model.extend({
   tableName: 'constituents',
-  organizations() {
-    return this.belongsToMany(Organization, 'organizations_constituents');
-  },
   tasks() {
     return this.hasMany(Task, 'constituent_id');
   },
@@ -51,9 +52,6 @@ export const Organization = bookshelf.Model.extend({
   representatives() {
     return this.hasMany(Representative, 'organization_id');
   },
-  constituents() {
-    return this.belongsToMany(Constituent, 'organizations_constiuents');
-  },
   integrations() {
     return this.belongsToMany(IntegrationModels.Integration, 'organizations_integrations');
   },
@@ -63,4 +61,19 @@ export const Organization = bookshelf.Model.extend({
   messageEntries() {
     return this.hasMany(ConversationModels.MessageEntry, 'organization_id');
   },
+  services() {
+    return this.belongsToMany(Service, 'organizations_entity_associations');
+  },
+  places() {
+    return this.belongsToMany(Place, 'organizations_entity_associations');
+  },
+  persons() {
+    return this.belongsToMany(Person, 'organizations_entity_associations');
+  },
+  vehicles() {
+    return this.belongsToMany(Vehicle, 'organizations_entity_associations');
+  },
+  // phones() {
+  //   return this.belongsToMany(Phone, 'organizations_entity_associations');
+  // },
 });
