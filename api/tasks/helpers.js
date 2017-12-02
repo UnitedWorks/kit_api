@@ -5,7 +5,7 @@ import { Person } from '../knowledge-base/models';
 import SeeClickFixClient from './clients/see-click-fix-client';
 import * as TASK_CONST from '../constants/tasks';
 import * as INTEGRATIONS from '../constants/integrations';
-import EmailService from '../services/email';
+import EmailService from '../utils/email';
 import { messageConstituent } from '../conversations/helpers';
 import { getIntegrations } from '../integrations/helpers';
 

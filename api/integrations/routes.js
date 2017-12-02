@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import * as helpers from './helpers';
-import { requireAuth } from '../services/passport';
+import { requireAuth } from '../utils/passport';
 
 const router = Router();
 

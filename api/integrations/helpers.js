@@ -1,7 +1,7 @@
 import { Organization } from '../accounts/models';
 import { saveLocation } from '../knowledge-base/helpers';
 import { Integration, IntegrationsLocations, OrganizationIntegrations } from './models';
-import geocode from '../services/geocoder';
+import geocode from '../utils/geocoder';
 import { logger } from '../logger';
 
 export const getIntegrations = (params, options = { returnJSON: true }) => {

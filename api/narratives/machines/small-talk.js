@@ -1,10 +1,10 @@
 import { logger } from '../../logger';
-import { nlp } from '../../services/nlp';
+import { nlp } from '../../utils/nlp';
 import { getConstituentTasks } from '../../tasks/helpers';
 import { hasIntegration } from '../../integrations/helpers';
 import * as INTEGRATIONS from '../../constants/integrations';
-import SlackService from '../../services/slack';
-import { EventTracker } from '../../services/event-tracking';
+import SlackService from '../../utils/slack';
+import { EventTracker } from '../../utils/event-tracking';
 import { fetchAnswers, randomPick } from '../helpers';
 import { getCategoryFallback } from '../../knowledge-base/helpers';
 import * as elementTemplates from '../templates/elements';

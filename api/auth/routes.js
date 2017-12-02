@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { requireSignIn } from '../services/passport';
+import { requireSignIn } from '../utils/passport';
 import { tokenForUser } from './helpers';
-import SlackService from '../services/slack';
+import SlackService from '../utils/slack';
 import { logger } from '../logger';
 import { createRepresentative } from '../accounts/helpers';
 

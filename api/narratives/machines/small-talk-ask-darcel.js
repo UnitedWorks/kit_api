@@ -1,6 +1,6 @@
 import { logger } from '../../logger';
-import { nlp } from '../../services/nlp';
-import SlackService from '../../services/slack';
+import { nlp } from '../../utils/nlp';
+import SlackService from '../../utils/slack';
 
 const baseQuickReplies = [
   { content_type: 'text', title: 'Nearby Shelters', payload: 'Nearby Shelters' },

@@ -1,7 +1,7 @@
 import { NarrativeSession } from './models';
 import { getBaseState, getOrgNameFromConstituentEntry } from './helpers';
 import StateMachine from './state-machine';
-import { EventTracker } from '../services/event-tracking';
+import { EventTracker } from '../utils/event-tracking';
 
 // Base Machines
 import BenefitsInternetMachine from './machines/benefits-internet';

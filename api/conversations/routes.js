@@ -5,7 +5,7 @@ import * as process from './process';
 import * as verify from './verify';
 import * as helpers from './helpers';
 import * as conversationClient from '../constants/interfaces';
-import { requireAuth } from '../services/passport';
+import { requireAuth } from '../utils/passport';
 
 const router = new Router();
 

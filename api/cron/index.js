@@ -2,7 +2,7 @@ import moment from 'moment';
 import schedule from 'node-schedule';
 import * as ORG_CONST from '../constants/organizations';
 import * as FEED_CONST from '../constants/feeds';
-import { nlp } from '../services/nlp';
+import { nlp } from '../utils/nlp';
 import { Feed } from '../feeds/models';
 import { runWatcher, runFeed } from '../feeds/helpers';
 import { getAnswers } from '../knowledge-base/helpers';

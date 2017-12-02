@@ -1,8 +1,8 @@
-import geocoder from '../../services/geocoder';
+import geocoder from '../../utils/geocoder';
 import { logger } from '../../logger';
-import { nlp } from '../../services/nlp';
+import { nlp } from '../../utils/nlp';
 import * as TAGS from '../../constants/nlp-tagging';
-import SlackService from '../../services/slack';
+import SlackService from '../../utils/slack';
 import { getGovernmentOrganizationAtLocation } from '../../accounts/helpers';
 import { i18n } from '../templates/messages';
 import * as replyTemplates from '../templates/quick-replies';

@@ -1,4 +1,4 @@
-import { nlp } from '../../services/nlp';
+import { nlp } from '../../utils/nlp';
 import * as PROMPT_CONSTANTS from '../../constants/prompts';
 import * as replyTemplates from '../templates/quick-replies';
 import { createShoutOut, promptStepsToParamValues } from '../../shouts/helpers';

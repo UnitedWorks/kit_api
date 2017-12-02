@@ -3,16 +3,16 @@ import { knex } from '../orm';
 import * as env from '../env';
 import { Representative } from '../accounts/models';
 import { KnowledgeAnswer, KnowledgeCategory, Place, Service,
-  KnowledgeQuestion, Person, Location } from './models';
+  KnowledgeQuestion, Location } from './models';
 import { Vehicle } from '../vehicles/models';
-import geocoder from '../services/geocoder';
-import EmailService from '../services/email';
+import geocoder from '../utils/geocoder';
+import EmailService from '../utils/email';
 import { runFeed } from '../feeds/helpers';
 import * as KNOWLEDGE_CONST from '../constants/knowledge-base';
 import { ShoutOutTrigger } from '../shouts/models';
 import ShoutOuts from '../shouts/logic';
 
-export const incrementTimesAsked = (questionId, orgId) => {
+export function incrementTimesAsked(questionId, orgId) {
   if (!questionId || !orgId) return;
   return knex('knowledge_questions_stats')
     .where('knowledge_question_id', '=', questionId)
@@ -27,7 +27,7 @@ export const incrementTimesAsked = (questionId, orgId) => {
         }).into('knowledge_questions_stats');
       }
     });
-};
+}
 
 export async function getAnswers(params = {}, options = { returnJSON: true }) {
   const data = await KnowledgeQuestion.where({ label: params.label }).fetch({
@@ -136,7 +136,7 @@ export async function getEntitiesByFunction(strings = [], organizationId, option
     }) : results;
 }
 
-export const getQuestions = (params = {}, options = {}) => {
+export function getQuestions(params = {}, options = {}) {
   if (!params.organization_id) throw new Error('No Organization ID Provided');
   // Get Questions with Answers
   return KnowledgeQuestion.query((qb) => {
@@ -175,9 +175,9 @@ export const getQuestions = (params = {}, options = {}) => {
         });
       });
   });
-};
+}
 
-export const getCategories = (params = {}) => {
+export function getCategories(params = {}) {
   if (params.organization_id) {
     return KnowledgeCategory.fetchAll({
       withRelated: {
@@ -205,9 +205,9 @@ export const getCategories = (params = {}) => {
   return KnowledgeCategory.fetchAll().then((data) => {
     return data.toJSON();
   }).catch(error => error);
-};
+}
 
-export const setCategoryFallback = ({ organization, category, persons = [] }) => {
+export function setCategoryFallback({ organization, category, persons = [] }) {
   if (!organization.id) throw new Error('No Organization ID');
   if (!category.id) throw new Error('No Category Provided');
   const relationshipInserts = [];
@@ -224,9 +224,9 @@ export const setCategoryFallback = ({ organization, category, persons = [] }) =>
     .andWhere('organization_id', '=', organization.id)
     .del()
     .then(() => Promise.all(relationshipInserts));
-};
+}
 
-export const setCategoryRepresentatives = ({ organization, category, representatives = [] }) => {
+export function setCategoryRepresentatives({ organization, category, representatives = [] }) {
   if (!organization.id) throw new Error('No Organization ID');
   if (!category.id) throw new Error('No Category Provided');
   const repInserts = [];
@@ -243,9 +243,9 @@ export const setCategoryRepresentatives = ({ organization, category, representat
     .andWhere('organization_id', '=', organization.id)
     .del()
     .then(() => Promise.all(repInserts));
-};
+}
 
-export const makeAnswer = (organization, question, answer, options = { returnJSON: true }) => {
+export function makeAnswer(organization, question, answer, options = { returnJSON: true }) {
   const newAnswerModel = {
     ...answer,
     knowledge_question_id: question.id,
@@ -254,9 +254,9 @@ export const makeAnswer = (organization, question, answer, options = { returnJSO
   return KnowledgeAnswer.forge(newAnswerModel).save(null, { method: 'insert' })
     .then(data => options.returnJSON ? data.toJSON() : data)
     .catch(error => error);
-};
+}
 
-export const saveLocation = (location, options = {}) => {
+export function saveLocation(location, options = {}) {
   const locationObj = {};
   if (typeof location === 'string') {
     locationObj.display_name = location;
@@ -270,9 +270,9 @@ export const saveLocation = (location, options = {}) => {
   return Location.forge(locationObj).save()
     .then(data => options.returnJSON ? data.toJSON() : data)
     .catch(error => error);
-};
+}
 
-export const createLocation = (location, options = {}) => {
+export function createLocation(location, options = {}) {
   let geocodeString = '';
   if (typeof location === 'string') {
     geocodeString = location;
@@ -294,15 +294,15 @@ export const createLocation = (location, options = {}) => {
       .then(newLocation => newLocation)
       .catch(err => err);
   }).catch(err => err);
-};
+}
 
-export const deleteAnswer = (answerId) => {
+export function deleteAnswer(answerId) {
   return KnowledgeAnswer.forge({ id: answerId }).destroy().then(() => {
     return { id: answerId };
   }).catch(err => err);
-};
+}
 
-export const updateAnswer = (answer, options) => {
+export function updateAnswer(answer, options) {
   if (((typeof answer.text === 'string' && answer.text.length === 0) || !answer.text)
     && !answer.person_id && !answer.event_id && !answer.place_id
     && !answer.service_id) {
@@ -311,118 +311,9 @@ export const updateAnswer = (answer, options) => {
   return KnowledgeAnswer.forge(answer).save(null, { method: 'update' })
     .then(data => options.returnJSON ? data.toJSON() : data)
     .catch(err => err);
-};
-
-export async function createPlace(place, organization, location, options) {
-  const composedPlace = {
-    name: place.name,
-    brief_description: place.brief_description,
-    description: place.description,
-    eligibility_information: place.eligibility_information,
-    phone_number: place.phone_number,
-    url: place.url,
-    organization_id: organization.id,
-    availabilitys: place.availabilitys,
-    functions: place.functions,
-    alternate_names: place.alternate_names,
-  };
-  // Set Location
-  if (location) {
-    const locationJSON = await createLocation(location, { returnJSON: true });
-    if (locationJSON) composedPlace.location_id = locationJSON.id;
-  }
-  return Place.forge(composedPlace).save(null, { method: 'insert' })
-    .then(placeData => (options.returnJSON ? placeData.toJSON() : placeData))
-    .catch(err => err);
 }
 
-export async function updatePlace(place, options) {
-  const compiledPlace = {
-    id: place.id,
-    name: place.name,
-    brief_description: place.brief_description,
-    description: place.description,
-    eligibility_information: place.eligibility_information,
-    phone_number: place.phone_number,
-    url: place.url,
-    availabilitys: place.availabilitys,
-    location_id: place.location_id,
-    functions: place.functions,
-    alternate_names: place.alternate_names,
-  };
-  // Create location if it was passed without an ID
-  if (place.location && !place.location.id) {
-    const locationJSON = await createLocation(place.location, { returnJSON: true });
-    if (locationJSON) compiledPlace.location_id = locationJSON.id;
-  }
-  return Place.forge(compiledPlace).save(null, { method: 'update' })
-    .then(placeData => (options.returnJSON ? placeData.toJSON() : placeData))
-    .catch(err => err);
-}
-
-export const deletePlace = (placeId) => {
-  return KnowledgeAnswer.where({ place_id: placeId }).destroy().then(() => {
-    return Place.forge({ id: placeId }).destroy().then(() => {
-      return { id: placeId };
-    }).catch(err => err);
-  }).catch(err => err);
-};
-
-export async function createService(service, organization, location, options) {
-  const composedService = {
-    name: service.name,
-    brief_description: service.brief_description,
-    description: service.description,
-    phone_number: service.phone_number,
-    url: service.url,
-    organization_id: organization.id,
-    availabilitys: service.availabilitys,
-    functions: service.functions,
-    alternate_names: service.alternate_names,
-  };
-  // Set Location
-  if (location) {
-    const locationJSON = await createLocation(location, { returnJSON: true });
-    if (locationJSON) composedService.location_id = locationJSON.id;
-  }
-  return Service.forge(composedService).save(null, { method: 'insert' })
-    .then(serviceData => (options.returnJSON ? serviceData.toJSON() : serviceData))
-    .catch(err => err);
-}
-
-export async function updateService(service, options) {
-  const compiledService = {
-    id: service.id,
-    name: service.name,
-    brief_description: service.brief_description,
-    description: service.description,
-    eligibility_information: service.eligibility_information,
-    phone_number: service.phone_number,
-    url: service.url,
-    availabilitys: service.availabilitys,
-    location_id: service.location_id,
-    functions: service.functions,
-    alternate_names: service.alternate_names,
-  };
-  // Create location if it was passed without an ID
-  if (service.location && !service.location.id) {
-    const locationJSON = await createLocation(service.location, { returnJSON: true });
-    if (locationJSON) compiledService.location_id = locationJSON.id;
-  }
-  return Service.forge(compiledService).save(null, { method: 'update' })
-    .then(serviceData => (options.returnJSON ? serviceData.toJSON() : serviceData))
-    .catch(err => err);
-}
-
-export const deleteService = (serviceId) => {
-  return KnowledgeAnswer.where({ service_id: serviceId }).destroy().then(() => {
-    return Service.forge({ id: serviceId }).destroy().then(() => {
-      return { id: serviceId };
-    }).catch(err => err);
-  }).catch(err => err);
-};
-
-export const makeQuestion = (label, question, categoryId, options = {}) => {
+export function makeQuestion(label, question, categoryId, options = {}) {
   if (!label) throw new Error('Missing Label');
   if (!question) throw new Error('Missing Question');
   if (!categoryId) throw new Error('Missing Category ID');
@@ -456,56 +347,15 @@ export const makeQuestion = (label, question, categoryId, options = {}) => {
       return data;
     }).catch(error => error);
   });
-};
+}
 
-export const deleteQuestion = (label) => {
+export function deleteQuestion(label) {
   if (!label) throw new Error('Missing Label');
   return KnowledgeQuestion.where({ label }).fetch().then((foundModel) => {
     if (foundModel) return foundModel.destroy().then(() => 'DELETED');
     return null;
   }).catch(error => error);
-};
-
-export const getPersons = (params, options = {}) => {
-  return Person.where(params).fetchAll({ withRelated: ['knowledgeCategories'] })
-    .then((data) => {
-      return options.returnJSON ? data.toJSON() : data;
-    }).catch(error => error);
-};
-
-export const createPerson = (data, options = {}) => {
-  const person = {
-    ...data.person,
-    organization_id: data.organization.id,
-  };
-  return Person.forge(person)
-    .save(null, { method: 'insert' })
-    .then((personModel) => {
-      return options.returnJSON ? personModel.toJSON() : personModel;
-    }).catch(error => error);
-};
-
-export const updatePerson = (person, options = {}) => {
-  const cleanedPerson = person;
-  delete cleanedPerson.knowledgeCategories;
-  return Person.where({ id: person.id })
-    .save(cleanedPerson, { method: 'update' })
-    .then((personModel) => {
-      return options.returnJSON ? personModel.toJSON() : personModel;
-    }).catch(error => error);
-};
-
-export const deletePerson = (person) => {
-  return knex('knowledge_categorys_persons')
-    .where('person_id', '=', person.id)
-    .del().then(() => {
-      return Person.where({ id: person.id }).destroy().then(() => {
-        return {
-          id: person.id,
-        };
-      }).catch(error => error);
-    });
-};
+}
 
 /**
  * Get knowledge base questions/answers as rows for a CSV

@@ -3,6 +3,7 @@ import { Organization, Representative } from '../accounts/models';
 import { Media } from '../media/models';
 import { Feed } from '../feeds/models';
 import { Prompt } from '../prompts/models';
+import { Person } from '../persons/models';
 
 // Information Entries - Referenced in knowledge and non-knowledge base tables
 export const Location = bookshelf.Model.extend({
@@ -20,35 +21,6 @@ export const KnowledgeCategory = bookshelf.Model.extend({
   },
   representatives() {
     return this.belongsToMany(Representative, 'knowledge_categorys_representatives', 'knowledge_category_id');
-  },
-});
-
-export const Person = bookshelf.Model.extend({
-  tableName: 'persons',
-  hasTimestamps: true,
-  organization() {
-    return this.belongsTo(Organization, 'organization_id');
-  },
-});
-
-export const Place = bookshelf.Model.extend({
-  tableName: 'places',
-  location() {
-    return this.belongsTo(Location, 'location_id');
-  },
-});
-
-export const Service = bookshelf.Model.extend({
-  tableName: 'services',
-  location() {
-    return this.belongsTo(Location, 'location_id');
-  },
-});
-
-export const Event = bookshelf.Model.extend({
-  tableName: 'events',
-  location() {
-    return this.hasOne(Location, 'id');
   },
 });
 

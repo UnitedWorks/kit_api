@@ -1,5 +1,5 @@
 import { logger } from '../../logger';
-import { nlp } from '../../services/nlp';
+import { nlp } from '../../utils/nlp';
 import BenefitKitchen from '../clients/benefit-kitchen'
 
 export default {

@@ -1,12 +1,12 @@
 import { Router } from 'express';
-import geocoder from '../services/geocoder';
+import geocoder from '../utils/geocoder';
 import * as OSM from '../constants/open-street-maps';
 import * as helpers from './helpers';
 import { logger } from '../logger';
 import { saveLocation } from '../knowledge-base/helpers';
 import { Representative, Organization } from './models';
-import { requireAuth } from '../services/passport';
-import SlackService from '../services/slack';
+import { requireAuth } from '../utils/passport';
+import SlackService from '../utils/slack';
 
 const router = new Router();
 

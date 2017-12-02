@@ -3,7 +3,7 @@ import { searchEntitiesBySimilarity, getEntitiesByFunction } from '../../knowled
 import KitClient from '../clients/kit-client';
 import * as replyTemplates from '../templates/quick-replies';
 import * as LOOKUP from '../../constants/nlp-tagging';
-import SlackService from '../../services/slack';
+import SlackService from '../../utils/slack';
 import { logger } from '../../logger';
 import { Feed } from '../../feeds/models';
 import * as FEED_CONSTANTS from '../../constants/feeds';

@@ -2,7 +2,7 @@ import * as INTEGRATIONS from '../../constants/integrations';
 import { hasIntegration } from '../../integrations/helpers';
 import AskDarcelClient from '../clients/ask-darcel-client';
 import KitClient from '../clients/kit-client';
-import { messageToGeodata } from '../../services/nlp';
+import { messageToGeodata } from '../../utils/nlp';
 
 export default {
   waiting_clinic_search: {

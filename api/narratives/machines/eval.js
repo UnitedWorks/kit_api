@@ -1,5 +1,5 @@
-import { EventTracker } from '../../services/event-tracking';
-import SlackService from '../../services/slack';
+import { EventTracker } from '../../utils/event-tracking';
+import SlackService from '../../utils/slack';
 import { logger } from '../../logger';
 
 export default {

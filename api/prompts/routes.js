@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { requireAuth } from '../services/passport';
+import { requireAuth } from '../utils/passport';
 import { getPrompts, createPrompt, updatePrompt, deletePrompt, getPromptResponsesAsTable } from './helpers';
 
 const router = new Router();

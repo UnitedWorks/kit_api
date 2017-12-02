@@ -3,7 +3,7 @@ import { logger } from '../logger';
 import * as interfaces from '../constants/interfaces';
 import { NarrativeSession } from '../narratives/models';
 import { Constituent, Organization } from '../accounts/models';
-import AWSClient from '../services/aws';
+import AWSClient from '../utils/aws';
 import { getBaseState, getOrgNameFromConstituentEntry } from '../narratives/helpers';
 
 import * as clients from '../conversations/clients';
