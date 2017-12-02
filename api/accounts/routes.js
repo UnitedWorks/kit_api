@@ -4,7 +4,7 @@ import * as OSM from '../constants/open-street-maps';
 import * as helpers from './helpers';
 import { logger } from '../logger';
 import { saveLocation } from '../knowledge-base/helpers';
-import { Constituent, Representative, Organization } from './models';
+import { Representative, Organization } from './models';
 import { requireAuth } from '../services/passport';
 import SlackService from '../services/slack';
 
@@ -142,13 +142,6 @@ router.put('/representative/change-password', requireAuth, (req, res) => {
 router.get('/representatives', (req, res) => {
   Representative.where(req.query).fetchAll({ withRelated: ['organization'] })
     .then(representatives => res.status(200).send({ representatives }))
-    .catch(error => res.status(400).send({ error }));
-});
-
-// Constituents
-router.get('/constituents', (req, res) => {
-  Constituent.fetchAll()
-    .then(cons => res.status(200).send(cons))
     .catch(error => res.status(400).send({ error }));
 });
 

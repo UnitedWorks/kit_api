@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { logger } from '../logger';
+import { Organization } from '../accounts/models';
 import { KnowledgeEvent, KnowledgeFacility, KnowledgeService } from './models';
 import { getAnswers, getCategories, getContacts, createContact, updateContact, deleteContact,
   getQuestions, makeAnswer, updateAnswer, deleteAnswer, deleteService, createFacility,
@@ -11,14 +12,13 @@ import { requireAuth } from '../services/passport';
 const router = new Router();
 
 /**
- * Get knowledge base categories
- * @return {Array}
+ * Knowledge Base Categories
  */
 router.get('/categories', (req, res) => {
   logger.info('Pinged: knowledge-base/categories');
   getCategories(req.query)
     .then(categories => res.status(200).send({ categories }))
-    .catch(error => res.status(400).send({ error }))
+    .catch(error => res.status(400).send({ error }));
 });
 
 router.post('/categories/fallback', requireAuth, (req, res, next) => {
@@ -42,13 +42,51 @@ router.post('/categories/representatives', requireAuth, (req, res, next) => {
 });
 
 /**
+ * Organizations/Divisions Endpoint
+ */
+router.route('/organizations')
+  .get((req, res, next) => {
+    try {
+      if (!req.query || !req.query.organization_id) throw new Error('Need Organization ID');
+      Organization.where({ parent_organization_id: req.query.organization_id }).fetchAll()
+        .then(orgs => res.status(200).send({ organizations: orgs.toJSON() }));
+    } catch (e) {
+      next(e);
+    }
+  })
+  .post((req, res, next) => {
+    try {
+      if (!req.body.organization) throw new Error('Must have organization');
+      if (!req.body.organization.parent_organization_id) throw new Error('Must belong to an organization');
+      Organization.forge(req.body.organization).save(null, { method: 'insert' })
+        .then(orgs => res.status(200).send({ organizations: orgs.toJSON() }));
+    } catch (e) {
+      next(e);
+    }
+  })
+  .put((req, res, next) => {
+    try {
+      if (!req.body.organization || !req.body.organization.id) throw new Error('Organization must already have an ID');
+      Organization.where({ id: req.body.organization.id }).save(req.body.organization, { patch: true, method: 'update' })
+        .then(orgs => res.status(200).send({ organizations: orgs.toJSON() }));
+    } catch (e) {
+      next(e);
+    }
+  })
+  .delete((req, res, next) => {
+    try {
+      if (!req.query.organization_id) throw new Error('Must provide ID');
+      Organization.forge({ id: req.query.organization_id }).destroy()
+        .then(() => res.status(200).send({ organization: { id: req.query.organization_id } }));
+    } catch (e) {
+      next(e);
+    }
+  });
+
+/**
  * Facilities Endpoint
  */
 router.route('/facilities')
-  /**
-   * Get Facilities
-   * @return {Array}
-   */
   .get((req, res) => {
     const whereFilters = {};
     if (req.query.organization_id) whereFilters.organization_id = req.query.organization_id;
@@ -57,34 +95,17 @@ router.route('/facilities')
         res.status(200).send({ facilities: facilityArray });
       });
   })
-  /**
-   * Create Facilities
-   * @param {Object} facility - Facility object to be created
-   * @param {Object} organization - Organization to associate facility with
-   * @return {Object}
-   */
   .post((req, res, next) => {
     createFacility(req.body.facility, req.body.organization, req.body.facility.location,
       { returnJSON: true })
       .then(facility => res.status(200).send({ facility }))
       .catch(err => next(err));
   })
-  /**
-   * Update Facilities
-   * @param {Object} facility - Facility object containing updates
-   * @param {Number} facility.id - Required: Id of updated object
-   * @return {Object}
-   */
    .put((req, res, next) => {
      updateFacility(req.body.facility, { returnJSON: true })
        .then(updated => res.status(200).send({ facility: updated }))
        .catch(err => next(err));
    })
-   /**
-    * Delete facilities
-    * @param {Number} id - Id of the facility to be removed
-    * @return {Object}
-    */
   .delete((req, res, next) => {
     deleteFacility(req.query.facility_id)
       .then(facility => res.status(200).send({ facility }))
@@ -95,20 +116,12 @@ router.route('/facilities')
  * Events Endpoint
  */
 router.route('/events')
-  /**
-   * Get events
-   * @return {Array}
-   */
   .get((req, res) => {
     KnowledgeEvent.fetchAll()
       .then((eventsArray) => {
         res.status(200).send({ events: eventsArray });
       });
   })
-  /**
-   * Create event
-   * @return {Object}
-   */
   .post((req, res) => {
     KnowledgeEvent.forge(req.body.event).save(null, { method: 'insert' })
       .then((saved) => {
@@ -117,10 +130,6 @@ router.route('/events')
         res.status(400).send({ error: err });
       });
   })
-  /**
-   * Update event
-   * @return {Object}
-   */
   .put((req, res) => {
     KnowledgeEvent.forge(req.body.event).save(null, { method: 'update' })
       .then((updated) => {
@@ -129,11 +138,6 @@ router.route('/events')
         res.status(400).send({ error: err });
       });
   })
-  /**
-   * Delete event
-   * @param {Number} id - Id of the event to be removed
-   * @return {Object}
-   */
   .delete((req, res) => {
     KnowledgeEvent.forge({ id: req.query.id }).destroy()
       .then(() => {
@@ -147,10 +151,6 @@ router.route('/events')
  * Services Endpoint
  */
 router.route('/services')
-  /**
-   * Get services
-   * @return {Array}
-   */
   .get((req, res, next) => {
     const whereFilters = {};
     if (req.query.organization_id) whereFilters.organization_id = req.query.organization_id;
@@ -158,33 +158,17 @@ router.route('/services')
       .then(serviceArray => res.status(200).send({ services: serviceArray }))
       .catch(err => next(err));
   })
-  /**
-   * Create service
-   * @param {Object} service - Object for service creation
-   * @param {Object} organization - Organization to associate service with
-   * @return {Object}
-   */
   .post((req, res, next) => {
     createService(req.body.service, req.body.organization, req.body.service.location,
       { returnJSON: true })
       .then(saved => res.status(200).send({ service: saved }))
       .catch(err => next(err));
   })
-  /**
-   * Update service
-   * @param {Object} service - Object for service update
-   * @return {Object}
-   */
   .put((req, res, next) => {
     updateService(req.body.service, { returnJSON: true })
       .then(saved => res.status(200).send({ service: saved }))
       .catch(err => next(err));
   })
-  /**
-   * Delete Service
-   * @param {Number} id - Id of the service to be deleted
-   * @return {Object}
-   */
   .delete((req, res, next) => {
     deleteService(req.query.service_id)
       .then(service => res.status(200).send({ service }))
@@ -262,10 +246,6 @@ router.get('/questions/download', (req, res, next) => {
  * Answers Endpoint
  */
 router.route('/answers')
-  /**
-   * Get answers
-   * @return {Array}
-   */
   .get((req, res) => {
     const params = req.query;
     getAnswers(params, {}).then(({ answers }) => {
@@ -274,10 +254,6 @@ router.route('/answers')
       });
     });
   })
-  /**
-   * Create Answer
-   * @return {Object}
-   */
   .post((req, res, next) => {
     try {
       makeAnswer(req.body.organization, req.body.question, req.body.answer, { returnJSON: true })
@@ -287,20 +263,11 @@ router.route('/answers')
       next(e);
     }
   })
-  /**
-   * Update Answer
-   * @return {Object}
-   */
   .put((req, res, next) => {
     updateAnswer(req.body.answer, { returnJSON: true })
       .then(answerModel => res.status(200).send({ answer: answerModel }))
       .catch(err => next(err));
   })
-  /**
-   * Delete Answer
-   * @param {Number} id - Id of the answer to be deleted
-   * @return {Object}
-   */
   .delete((req, res, next) => {
     deleteAnswer(req.query.answer_id)
       .then(answer => res.status(200).send({ answer }))
