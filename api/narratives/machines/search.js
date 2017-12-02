@@ -27,11 +27,11 @@ export default {
     if (this.snapshot.nlp.entities.service_function) {
       this.snapshot.nlp.entities.service_function.forEach(f => functionChecks.push(f.value));
     }
-    if (this.snapshot.nlp.entities.facility_function) {
-      this.snapshot.nlp.entities.facility_function.forEach(f => functionChecks.push(f.value));
+    if (this.snapshot.nlp.entities.place_function) {
+      this.snapshot.nlp.entities.place_function.forEach(f => functionChecks.push(f.value));
     }
     const similarEntities = await searchEntitiesBySimilarity(entityStrings, this.snapshot.organization_id, { limit: 9, confidence: functionChecks.length > 0 ? 0.65 : 0.3 });
-    // If no similar enities, but we had facility/service functions, get those
+    // If no similar enities, but we had place/service functions, get those
     const entitiesByFunction = await getEntitiesByFunction(functionChecks, this.snapshot.organization_id, { sortStrings: entityStrings });
     // Join em
     const joinedEntities = [].concat(similarEntities).concat(entitiesByFunction);
@@ -57,7 +57,7 @@ export default {
       } catch (e) {
         logger.error(e);
       }
-      this.messagingClient.send('I wasn\'t able to find relevant facilities, services, or contacts. Sorry about that.');
+      this.messagingClient.send('I wasn\'t able to find relevant places, services, or persons. Sorry about that.');
       return this.getBaseState();
     }
     // Produce entities from search
@@ -68,10 +68,10 @@ export default {
       this.messagingClient.addAll(sortedEntities.map((entity) => {
         if (lookupType === LOOKUP.AVAILABILITY_SCHEDULE) {
           return KitClient.entityAvailabilityToText(entity.type, entity.payload, { constituentAttributes: this.get('attributes') });
-        } else if (lookupType === LOOKUP.CONTACT_PHONE) {
-          return KitClient.entityContactToText(entity.payload, 'phone');
-        } else if (lookupType === LOOKUP.CONTACT) {
-          return KitClient.entityContactToText(entity.payload);
+        } else if (lookupType === LOOKUP.PERSON_PHONE) {
+          return KitClient.entityPersonToText(entity.payload, 'phone');
+        } else if (lookupType === LOOKUP.PERSON) {
+          return KitClient.entityPersonToText(entity.payload);
         } else if (lookupType === LOOKUP.LOCATION || lookupType === LOOKUP.LOCATION_CLOSEST) {
           return KitClient.entityLocationToText(entity.payload);
         } else if (lookupType === LOOKUP.URL) {

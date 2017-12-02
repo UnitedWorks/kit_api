@@ -15,93 +15,62 @@ export const KnowledgeCategory = bookshelf.Model.extend({
   questions() {
     return this.hasMany(KnowledgeQuestion, 'knowledge_category_id');
   },
-  contacts() {
-    return this.belongsToMany(KnowledgeContact, 'knowledge_categorys_knowledge_contacts', 'knowledge_category_id');
+  persons() {
+    return this.belongsToMany(Person, 'knowledge_categorys_persons', 'knowledge_category_id');
   },
   representatives() {
     return this.belongsToMany(Representative, 'knowledge_categorys_representatives', 'knowledge_category_id');
   },
 });
 
-export const KnowledgeContact = bookshelf.Model.extend({
-  tableName: 'knowledge_contacts',
+export const Person = bookshelf.Model.extend({
+  tableName: 'persons',
   hasTimestamps: true,
-  hidden: ['_pivot_knowledge_category_id', '_pivot_knowledge_contact_id'],
-  photo() {
-    return this.hasOne(Media, 'photo_id');
-  },
-  knowledgeCategories() {
-    return this.belongsToMany(KnowledgeCategory, 'knowledge_categorys_knowledge_contacts', 'knowledge_contact_id');
-  },
   organization() {
     return this.belongsTo(Organization, 'organization_id');
   },
 });
 
-export const KnowledgeFacility = bookshelf.Model.extend({
-  tableName: 'knowledge_facilitys',
-  category() {
-    return this.belongsTo(KnowledgeCategory, 'knowledge_category_id');
-  },
-  location() {
-    return this.belongsTo(Location, 'location_id');
-  },
-  events() {
-    return this.hasMany(KnowledgeEvent, 'knowledge_facility_id');
-  },
-  services() {
-    return this.hasMany(KnowledgeService, 'knowledge_facility_id');
-  },
-});
-
-export const KnowledgeService = bookshelf.Model.extend({
-  tableName: 'knowledge_services',
-  category() {
-    return this.belongsTo(KnowledgeCategory, 'knowledge_category_id');
-  },
-  events() {
-    return this.hasMany(KnowledgeEvent, 'knowledge_service_id');
-  },
+export const Place = bookshelf.Model.extend({
+  tableName: 'places',
   location() {
     return this.belongsTo(Location, 'location_id');
   },
 });
 
-export const KnowledgeEvent = bookshelf.Model.extend({
-  tableName: 'knowledge_events',
-  category() {
-    return this.belongsTo(KnowledgeCategory, 'knowledge_category_id');
+export const Service = bookshelf.Model.extend({
+  tableName: 'services',
+  location() {
+    return this.belongsTo(Location, 'location_id');
   },
-  facility() {
-    return this.hasOne(KnowledgeFacility, 'id');
-  },
+});
+
+export const Event = bookshelf.Model.extend({
+  tableName: 'events',
   location() {
     return this.hasOne(Location, 'id');
   },
-  service() {
-    return this.belongsTo(KnowledgeService, 'knowledge_service_id');
-  },
 });
 
-export const KnowledgeQuestionStats = bookshelf.Model.extend({
-  tableName: 'knowledge_question_stats',
-  hidden: ['id', 'question_id', 'organization_id'],
+export const KnowledgeQuestionsStats = bookshelf.Model.extend({
+  tableName: 'knowledge_questions_stats',
+  hidden: ['id', 'knowledge_question_id', 'organization_id'],
 });
 
 export const KnowledgeQuestion = bookshelf.Model.extend({
   tableName: 'knowledge_questions',
   hasTimestamps: true,
   answers() {
-    return this.hasMany(KnowledgeAnswer, 'question_id');
+    return this.hasMany(KnowledgeAnswer, 'knowledge_question_id');
   },
   answer() {
-    return this.hasOne(KnowledgeAnswer, 'question_id');
+    return this.hasOne(KnowledgeAnswer, 'knowledge_question_id');
   },
   category() {
     return this.belongsTo(KnowledgeCategory, 'knowledge_category_id');
   },
   stats() {
-    return this.hasOne(KnowledgeQuestionStats, 'question_id');
+    return this.hasOne(KnowledgeQuestionsStats, 'knowledge_question_id');
   },
 });
 
@@ -112,16 +81,16 @@ export const KnowledgeAnswer = bookshelf.Model.extend({
     return this.belongsTo(Organization);
   },
   question() {
-    return this.belongsTo(KnowledgeQuestion, 'question_id');
+    return this.belongsTo(KnowledgeQuestion, 'knowledge_question_id');
   },
   events() {
-    return this.hasOne(KnowledgeEvent, 'id', 'knowledge_event_id');
+    return this.hasOne(Event, 'id', 'event_id');
   },
-  facility() {
-    return this.hasOne(KnowledgeFacility, 'id', 'knowledge_facility_id');
+  place() {
+    return this.hasOne(Place, 'id', 'place_id');
   },
   service() {
-    return this.hasOne(KnowledgeService, 'id', 'knowledge_service_id');
+    return this.hasOne(Service, 'id', 'service_id');
   },
   media() {
     return this.hasOne(Media, 'id', 'media_id');
@@ -129,8 +98,8 @@ export const KnowledgeAnswer = bookshelf.Model.extend({
   feed() {
     return this.hasOne(Feed, 'id', 'feed_id');
   },
-  contact() {
-    return this.hasOne(KnowledgeContact, 'id', 'knowledge_contact_id');
+  person() {
+    return this.hasOne(Person, 'id', 'person_id');
   },
   prompt() {
     return this.hasOne(Prompt, 'id', 'prompt_id');

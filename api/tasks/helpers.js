@@ -1,7 +1,7 @@
 import moment from 'moment';
 import * as env from '../env';
 import { Task } from './models';
-import { KnowledgeContact } from '../knowledge-base/models';
+import { Person } from '../knowledge-base/models';
 import SeeClickFixClient from './clients/see-click-fix-client';
 import * as TASK_CONST from '../constants/tasks';
 import * as INTEGRATIONS from '../constants/integrations';
@@ -9,13 +9,13 @@ import EmailService from '../services/email';
 import { messageConstituent } from '../conversations/helpers';
 import { getIntegrations } from '../integrations/helpers';
 
-export async function taskNotification(type, contacts, fields) {
-  // Reformat Contacts for Sending
-  const knowledgeContacts = await Promise.all(contacts.knowledge_contacts
-    .map(kc => KnowledgeContact.where({ id: kc.id }).fetch()
+export async function taskNotification(type, personsArray, fields) {
+  // Reformat Persons for Sending
+  const persons = await Promise.all(personsArray
+      .map(kc => Person.where({ id: kc.id }).fetch()
       .then(fc => ({ name: fc.get('name'), email: fc.get('email') }))));
   // Send Email
-  if (knowledgeContacts) {
+  if (persons) {
     // Subject Line
     let emailSubject;
     if (fields.subject) {
@@ -33,7 +33,7 @@ export async function taskNotification(type, contacts, fields) {
       }
     });
     emailMessage = emailMessage.concat(`<br/><br/>Is it finished? <a href="${env.getDashboardRoot()}/tasks/${fields.task_id}">Click here to mark it "Completed"</a>`);
-    new EmailService().send(emailSubject, emailMessage, knowledgeContacts, {}, { email: 'task@email.kit.community', name: 'Hey Mayor!' });
+    new EmailService().send(emailSubject, emailMessage, persons, {}, { email: 'task@email.kit.community', name: 'Hey Mayor!' });
   }
 }
 

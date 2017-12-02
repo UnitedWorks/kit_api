@@ -119,8 +119,8 @@ export default {
             .send(`>*Con. ${this.snapshot.constituent_id}:* "${this.snapshot.input.payload.text}"`);
           return Promise.resolve(intentMap[entities.intent[0].value]
             || fetchAnswers(entities.intent[0].value, this));
-        // If no intent but have facility/search functions, return related entities
-        } else if (entities.facility_function || entities.service_function) {
+        // If no intent but have place/search functions, return related entities
+        } else if (entities.place_function || entities.service_function) {
           return Promise.resolve(intentMap['search.knowledge_entity']);
         }
         // Otherwise just fail
@@ -180,8 +180,8 @@ export default {
     }
     const hasSeeClickFix = await hasIntegration(this.get('organization'), INTEGRATIONS.SEE_CLICK_FIX).then(bool => bool);
     return getCategoryFallback(labels, this.snapshot.organization_id).then((fallbackData) => {
-      // See if we have fallback contacts
-      if (fallbackData.contacts.length === 0) {
+      // See if we have fallback persons
+      if (fallbackData.persons.length === 0) {
         this.messagingClient.addToQuene(hasSeeClickFix ? `${i18n('dont_know')} If this is something you want to report, please use SeeClickFix and select the appropriate category.` : i18n('dont_know'));
         if (hasSeeClickFix) {
           this.messagingClient.addToQuene({
@@ -194,13 +194,13 @@ export default {
         // If we do, templates!
         this.messagingClient.addToQuene(hasSeeClickFix ? `${i18n('dont_know')} If this is an issue you want to report, please use SeeClickFix and select the appropriate category. Here's who I've found that you can get in touch with.` : i18n('dont_know'));
         // Give templates
-        let contactElements = fallbackData.contacts.map(
-          contact => elementTemplates.genericContact(contact));
-        if (hasSeeClickFix) contactElements = contactElements.concat(elementTemplates.SeeClickFixElement);
+        let personElements = fallbackData.persons.map(
+          person => elementTemplates.genericPerson(person));
+        if (hasSeeClickFix) personElements = personElements.concat(elementTemplates.SeeClickFixElement);
         this.messagingClient.addToQuene({
           type: 'template',
           templateType: 'generic',
-          elements: contactElements,
+          elements: personElements,
         }, replyTemplates.evalHelpfulAnswer);
       }
       return this.messagingClient.runQuene().then(() => 'start');

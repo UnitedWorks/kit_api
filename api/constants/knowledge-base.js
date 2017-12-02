@@ -1,10 +1,10 @@
 // Entity Types
-export const FACILITY = 'facility';
+export const PLACE = 'place';
 export const EVENT = 'event';
 export const SERVICE = 'service';
-export const CONTACT = 'contact';
+export const PERSON = 'person';
 export const ANSWER = 'answer';
-export const ENTITIES = [FACILITY, EVENT, SERVICE, ANSWER, CONTACT];
+export const ENTITIES = [PLACE, EVENT, SERVICE, ANSWER, PERSON];
 
 // FAQ Categories
 export const TRANSPORTATION_CATEGORY = 'Transportation, Streets, and Sidewalks';
@@ -31,7 +31,7 @@ export const FILE = 'file';
 export const MEDIA_TYPES = [IMAGE, AUDIO, VIDEO, FILE];
 
 
-// Entity Types (think it makes sense only for facilitys to have these?)
+// Entity Types (think it makes sense only for places to have these?)
 // From Open311
 export const AFTER_SCHOOL = 'After School Program';
 export const BEACH = 'Beach';

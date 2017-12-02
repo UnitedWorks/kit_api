@@ -8,8 +8,8 @@ export const FEED_FORMATS = [ICS, RSS, SCRIPT, TWITTER];
 // ENTITY
 export const EVENT = 'event';
 export const SERVICE = 'service';
-export const FACILITY = 'facility';
-export const FEED_TYPES = [EVENT, SERVICE, FACILITY];
+export const PLACE = 'place';
+export const FEED_TYPES = [EVENT, SERVICE, PLACE];
 
 // TOPIC
 export const MEETINGS_PUBLIC = 'meetings.public';

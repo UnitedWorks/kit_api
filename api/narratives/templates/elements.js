@@ -73,7 +73,7 @@ export const genericCommuter = {
 
 export const genericDirectory = {
   title: 'Directory',
-  subtitle: 'Get hours and contact information for departments.',
+  subtitle: 'Get hours and person information for departments.',
   image_url: ILLUSTRATION_URLS.asking,
   buttons: [{
     type: 'postback',
@@ -159,39 +159,39 @@ export const SeeClickFixTemplate = {
   elements: [SeeClickFixElement],
 };
 
-export function genericContact(contact) {
+export function genericPerson(person) {
   const element = {
-    title: contact.name,
-    subtitle: `${contact.title ? `${contact.title} - ` : ''}${contact.responsibilities}`,
+    title: person.name,
+    subtitle: `${person.title ? `${person.title} - ` : ''}${person.responsibilities}`,
   };
   const buttons = [];
-  if (contact.location) {
+  if (person.location) {
     buttons.push({
       type: 'web_url',
       title: 'View on Map',
-      url: getPlacesUrl(contact.location.display_name),
+      url: getPlacesUrl(person.location.display_name),
     });
   }
-  if (contact.phone_number) {
+  if (person.phone_number) {
     buttons.push({
       type: 'phone_number',
-      title: contact.phone_number,
-      payload: contact.phone_number,
+      title: person.phone_number,
+      payload: person.phone_number,
     });
   }
-  if (contact.url) {
+  if (person.url) {
     buttons.push({
       type: 'web_url',
-      title: contact.url,
-      url: contact.url,
+      title: person.url,
+      url: person.url,
       webview_height_ratio: 'tall',
     });
   }
-  if (contact.email) {
+  if (person.email) {
     buttons.push({
       type: 'email',
-      title: contact.email,
-      email: contact.email,
+      title: person.email,
+      email: person.email,
     });
   }
   if (buttons.length < 3) buttons.push({ type: 'element_share' });
@@ -199,39 +199,39 @@ export function genericContact(contact) {
   return element;
 }
 
-export function genericFacility(facility) {
+export function genericPlace(place) {
   const element = {
-    title: `${facility.name} (Facility)`,
-    subtitle: `${facility.brief_description}`,
+    title: `${place.name} (Place)`,
+    subtitle: `${place.brief_description}`,
   };
   const buttons = [];
-  if (facility.hasOwnProperty('location') && facility.location.display_name != null) {
+  if (place.hasOwnProperty('location') && place.location.display_name != null) {
     buttons.push({
       type: 'web_url',
       title: 'View on Map',
-      url: getPlacesUrl(facility.location.display_name),
+      url: getPlacesUrl(place.location.display_name),
     });
   }
-  if (facility.phone_number) {
+  if (place.phone_number) {
     buttons.push({
       type: 'phone_number',
-      title: facility.phone_number,
-      payload: facility.phone_number,
+      title: place.phone_number,
+      payload: place.phone_number,
     });
   }
-  if (facility.url) {
+  if (place.url) {
     buttons.push({
       type: 'web_url',
-      title: facility.url,
-      url: facility.url,
+      title: place.url,
+      url: place.url,
       webview_height_ratio: 'tall',
     });
   }
-  if (facility.email && buttons.length < 3) {
+  if (place.email && buttons.length < 3) {
     buttons.push({
       type: 'email',
-      title: facility.email,
-      email: facility.email,
+      title: place.email,
+      email: place.email,
     });
   }
   if (buttons.length < 3) buttons.push({ type: 'element_share' });

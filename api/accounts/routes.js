@@ -29,8 +29,8 @@ router.get('/organizations', requireAuth, (req, res) => {
  * @param {Object} organization - Organiation object
  * @param {String} organization.name - Formal organization name (ex: City of New Brunswick)
  * @param {String} [organization.website] - General website
- * @param {String} [organization.email] - General contact email
- * @param {String} [organization.phone] - General contact phone
+ * @param {String} [organization.email] - General person email
+ * @param {String} [organization.phone] - General person phone
  * @param {String} organization.category - Enum: 'public', 'private', 'ngo'
  * @param {String} [organization.type] - Enum: 'government', 'provider'
  * @return {Object} Organization document on 'organization'

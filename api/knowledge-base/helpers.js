@@ -2,8 +2,8 @@ import stringSimilarity from 'string-similarity';
 import { knex } from '../orm';
 import * as env from '../env';
 import { Representative } from '../accounts/models';
-import { KnowledgeAnswer, KnowledgeCategory, KnowledgeFacility, KnowledgeService,
-  KnowledgeQuestion, KnowledgeContact, Location } from './models';
+import { KnowledgeAnswer, KnowledgeCategory, Place, Service,
+  KnowledgeQuestion, Person, Location } from './models';
 import { Vehicle } from '../vehicles/models';
 import geocoder from '../services/geocoder';
 import EmailService from '../services/email';
@@ -14,17 +14,17 @@ import ShoutOuts from '../shouts/logic';
 
 export const incrementTimesAsked = (questionId, orgId) => {
   if (!questionId || !orgId) return;
-  return knex('knowledge_question_stats')
-    .where('question_id', '=', questionId)
+  return knex('knowledge_questions_stats')
+    .where('knowledge_question_id', '=', questionId)
     .andWhere('organization_id', '=', orgId)
     .increment('times_asked', 1)
     .then((rows) => {
       if (rows === 0) {
         return knex.insert({
-          question_id: questionId,
+          knowledge_question_id: questionId,
           organization_id: orgId,
           times_asked: 1,
-        }).into('knowledge_question_stats');
+        }).into('knowledge_questions_stats');
       }
     });
 };
@@ -33,8 +33,8 @@ export async function getAnswers(params = {}, options = { returnJSON: true }) {
   const data = await KnowledgeQuestion.where({ label: params.label }).fetch({
     withRelated: [{
       answers: q => q.where('organization_id', params.organization_id).whereNotNull('approved_at'),
-    }, 'category', 'answers.facility', 'answers.facility.location', 'answers.service',
-      'answers.service.location', 'answers.contact', 'answers.feed', 'answers.media'],
+    }, 'category', 'answers.place', 'answers.place.location', 'answers.service',
+      'answers.service.location', 'answers.person', 'answers.feed', 'answers.media'],
   }).then(d => d);
   if (!options.returnJSON) return data.get('answers');
   if (data == null) return {};
@@ -52,9 +52,9 @@ export async function getAnswers(params = {}, options = { returnJSON: true }) {
     // Reformat Answers
     const answerGrouped = {
       category: questionJSON.category,
-      facilities: answerJSON.filter(a => a.knowledge_facility_id).map(a => a.facility),
-      services: answerJSON.filter(a => a.knowledge_service_id).map(a => a.service),
-      contacts: answerJSON.filter(a => a.knowledge_contact_id).map(a => a.contact),
+      places: answerJSON.filter(a => a.place_id).map(a => a.place),
+      services: answerJSON.filter(a => a.service_id).map(a => a.service),
+      persons: answerJSON.filter(a => a.person_id).map(a => a.person),
       events: await Promise.all(answerJSON.filter(a => a.feed_id)
         .map(answer => runFeed(answer.feed).then(found => found.events)))
         .then((feed) => {
@@ -79,22 +79,22 @@ export async function searchEntitiesBySimilarity(strings = [], organizationId, o
   // Postgres UNION ALL could make this more efficient... but hit a snag with results columns
   const searchFunctions = [];
   strings.forEach((str) => {
-    searchFunctions.push(knex.select(knex.raw(`*, similarity(name, '${str}') as similarity`)).from('knowledge_services').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10).leftJoin('locations', 'knowledge_services.location_id', '=', 'locations.id')
+    searchFunctions.push(knex.select(knex.raw(`*, similarity(name, '${str}') as similarity`)).from('services').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10).leftJoin('locations', 'services.location_id', '=', 'locations.id')
       .then(d => d.map(s => ({ type: 'service', payload: { ...s, location: { display_name: s.display_name, address: s.address } } })).filter(s => s.payload.similarity > options.confidence)));
-    searchFunctions.push(knex.select(knex.raw(`*, similarity(unnest(alternate_names), '${str}') AS similarity`)).from('knowledge_services').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10).leftJoin('locations', 'knowledge_services.location_id', '=', 'locations.id')
+    searchFunctions.push(knex.select(knex.raw(`*, similarity(unnest(alternate_names), '${str}') AS similarity`)).from('services').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10).leftJoin('locations', 'services.location_id', '=', 'locations.id')
       .then(d => d.map(s => ({ type: 'service', payload: { ...s, location: { display_name: s.display_name, address: s.address } } })).filter(s => s.payload.similarity > options.confidence)));
 
-    searchFunctions.push(knex.select(knex.raw(`*, similarity(name, '${str}') as similarity`)).from('knowledge_facilitys').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10).leftJoin('locations', 'knowledge_facilitys.location_id', '=', 'locations.id')
-      .then(d => d.map(f => ({ type: 'facility', payload: { ...f, location: { display_name: f.display_name, address: f.address } } })).filter(f => f.payload.similarity > options.confidence)));
-    searchFunctions.push(knex.select(knex.raw(`*, similarity(unnest(alternate_names), '${str}') AS similarity`)).from('knowledge_facilitys').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10).leftJoin('locations', 'knowledge_facilitys.location_id', '=', 'locations.id')
-      .then(d => d.map(f => ({ type: 'facility', payload: { ...f, location: { display_name: f.display_name, address: f.address } } })).filter(f => f.payload.similarity > options.confidence)));
+    searchFunctions.push(knex.select(knex.raw(`*, similarity(name, '${str}') as similarity`)).from('places').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10).leftJoin('locations', 'places.location_id', '=', 'locations.id')
+      .then(d => d.map(f => ({ type: 'place', payload: { ...f, location: { display_name: f.display_name, address: f.address } } })).filter(f => f.payload.similarity > options.confidence)));
+    searchFunctions.push(knex.select(knex.raw(`*, similarity(unnest(alternate_names), '${str}') AS similarity`)).from('places').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10).leftJoin('locations', 'places.location_id', '=', 'locations.id')
+      .then(d => d.map(f => ({ type: 'place', payload: { ...f, location: { display_name: f.display_name, address: f.address } } })).filter(f => f.payload.similarity > options.confidence)));
 
-    searchFunctions.push(knex.select(knex.raw(`*, similarity(name, '${str}') as similarity`)).from('knowledge_contacts').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10)
-      .then(d => d.map(c => ({ type: 'contact', payload: c })).filter(c => c.payload.similarity > options.confidence)));
-    searchFunctions.push(knex.select(knex.raw(`*, similarity(unnest(alternate_names), '${str}') AS similarity`)).from('knowledge_contacts').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10)
-      .then(d => d.map(c => ({ type: 'contact', payload: c })).filter(c => c.payload.similarity > options.confidence)));
-    searchFunctions.push(knex.select(knex.raw(`*, similarity(title, '${str}') as similarity`)).from('knowledge_contacts').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10)
-      .then(d => d.map(c => ({ type: 'contact', payload: c })).filter(c => c.payload.similarity > options.confidence)));
+    searchFunctions.push(knex.select(knex.raw(`*, similarity(name, '${str}') as similarity`)).from('persons').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10)
+      .then(d => d.map(c => ({ type: 'person', payload: c })).filter(c => c.payload.similarity > options.confidence)));
+    searchFunctions.push(knex.select(knex.raw(`*, similarity(unnest(alternate_names), '${str}') AS similarity`)).from('persons').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10)
+      .then(d => d.map(c => ({ type: 'person', payload: c })).filter(c => c.payload.similarity > options.confidence)));
+    searchFunctions.push(knex.select(knex.raw(`*, similarity(title, '${str}') as similarity`)).from('persons').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10)
+      .then(d => d.map(c => ({ type: 'person', payload: c })).filter(c => c.payload.similarity > options.confidence)));
   });
   const results = await Promise.all(searchFunctions).then((data) => {
     const allEntities = [];
@@ -115,9 +115,9 @@ export async function getEntitiesByFunction(strings = [], organizationId, option
   if (strings.length === 0) return [];
   const getFunctions = [];
   strings.forEach((str) => {
-    getFunctions.push(KnowledgeFacility.query(qb => qb.whereRaw(`'${str}' = ANY(knowledge_facilitys.functions)`).andWhere('organization_id', '=', organizationId))
-      .fetchAll({ withRelated: ['location'] }).then(d => d.toJSON().map(f => ({ type: 'facility', payload: f }))));
-    getFunctions.push(KnowledgeService.query(qb => qb.whereRaw(`'${str}' = ANY(knowledge_services.functions)`).andWhere('organization_id', '=', organizationId))
+    getFunctions.push(Place.query(qb => qb.whereRaw(`'${str}' = ANY(places.functions)`).andWhere('organization_id', '=', organizationId))
+      .fetchAll({ withRelated: ['location'] }).then(d => d.toJSON().map(f => ({ type: 'place', payload: f }))));
+    getFunctions.push(Service.query(qb => qb.whereRaw(`'${str}' = ANY(services.functions)`).andWhere('organization_id', '=', organizationId))
       .fetchAll({ withRelated: ['location'] }).then(d => d.toJSON().map(s => ({ type: 'service', payload: s }))));
   });
   const results = await Promise.all(getFunctions)
@@ -141,12 +141,12 @@ export const getQuestions = (params = {}, options = {}) => {
   // Get Questions with Answers
   return KnowledgeQuestion.query((qb) => {
     qb.select(['knowledge_questions.id', 'knowledge_questions.question', 'knowledge_questions.label',
-      'knowledge_questions.knowledge_category_id', 'knowledge_question_stats.times_asked'])
-      .leftOuterJoin('knowledge_question_stats', function() {
-        this.on('knowledge_questions.id', '=', 'knowledge_question_stats.question_id');
+      'knowledge_questions.knowledge_category_id', 'knowledge_questions_stats.times_asked'])
+      .leftOuterJoin('knowledge_questions_stats', function() {
+        this.on('knowledge_questions.id', '=', 'knowledge_questions_stats.knowledge_question_id');
       })
-      .where('knowledge_question_stats.organization_id', '=', params.organization_id)
-      .orWhereNull('knowledge_question_stats.organization_id')
+      .where('knowledge_questions_stats.organization_id', '=', params.organization_id)
+      .orWhereNull('knowledge_questions_stats.organization_id')
       .orderByRaw('times_asked DESC NULLS LAST');
   }).fetchAll({
     withRelated: {
@@ -181,7 +181,7 @@ export const getCategories = (params = {}) => {
   if (params.organization_id) {
     return KnowledgeCategory.fetchAll({
       withRelated: {
-        contacts: q => q.where('knowledge_contacts.organization_id', params.organization_id),
+        persons: q => q.where('persons.organization_id', params.organization_id),
         representatives: q => q.where('representatives.organization_id', params.organization_id),
         questions: q => q,
         'questions.answers': q => q.where('knowledge_answers.organization_id', params.organization_id),
@@ -207,19 +207,19 @@ export const getCategories = (params = {}) => {
   }).catch(error => error);
 };
 
-export const setCategoryFallback = ({ organization, category, contacts = [] }) => {
+export const setCategoryFallback = ({ organization, category, persons = [] }) => {
   if (!organization.id) throw new Error('No Organization ID');
   if (!category.id) throw new Error('No Category Provided');
   const relationshipInserts = [];
-  contacts.forEach((contact) => {
-    relationshipInserts.push(knex('knowledge_categorys_knowledge_contacts').insert({
+  persons.forEach((person) => {
+    relationshipInserts.push(knex('knowledge_categorys_persons').insert({
       knowledge_category_id: category.id,
-      knowledge_contact_id: contact.id,
+      person_id: person.id,
       organization_id: organization.id,
     }));
   });
-  // Delete relationships this org's contacts have with this category
-  return knex.select('*').from('knowledge_categorys_knowledge_contacts')
+  // Delete relationships this org's persons have with this category
+  return knex.select('*').from('knowledge_categorys_persons')
     .where('knowledge_category_id', '=', category.id)
     .andWhere('organization_id', '=', organization.id)
     .del()
@@ -248,7 +248,7 @@ export const setCategoryRepresentatives = ({ organization, category, representat
 export const makeAnswer = (organization, question, answer, options = { returnJSON: true }) => {
   const newAnswerModel = {
     ...answer,
-    question_id: question.id,
+    knowledge_question_id: question.id,
     organization_id: organization.id,
   };
   return KnowledgeAnswer.forge(newAnswerModel).save(null, { method: 'insert' })
@@ -304,8 +304,8 @@ export const deleteAnswer = (answerId) => {
 
 export const updateAnswer = (answer, options) => {
   if (((typeof answer.text === 'string' && answer.text.length === 0) || !answer.text)
-    && !answer.knowledge_contact_id && !answer.knowledge_event_id && !answer.knowledge_facility_id
-    && !answer.knowledge_service_id) {
+    && !answer.person_id && !answer.event_id && !answer.place_id
+    && !answer.service_id) {
     return deleteAnswer(answer.id);
   }
   return KnowledgeAnswer.forge(answer).save(null, { method: 'update' })
@@ -313,57 +313,57 @@ export const updateAnswer = (answer, options) => {
     .catch(err => err);
 };
 
-export async function createFacility(facility, organization, location, options) {
-  const composedFacility = {
-    name: facility.name,
-    brief_description: facility.brief_description,
-    description: facility.description,
-    eligibility_information: facility.eligibility_information,
-    phone_number: facility.phone_number,
-    url: facility.url,
+export async function createPlace(place, organization, location, options) {
+  const composedPlace = {
+    name: place.name,
+    brief_description: place.brief_description,
+    description: place.description,
+    eligibility_information: place.eligibility_information,
+    phone_number: place.phone_number,
+    url: place.url,
     organization_id: organization.id,
-    availabilitys: facility.availabilitys,
-    functions: facility.functions,
-    alternate_names: facility.alternate_names,
+    availabilitys: place.availabilitys,
+    functions: place.functions,
+    alternate_names: place.alternate_names,
   };
   // Set Location
   if (location) {
     const locationJSON = await createLocation(location, { returnJSON: true });
-    if (locationJSON) composedFacility.location_id = locationJSON.id;
+    if (locationJSON) composedPlace.location_id = locationJSON.id;
   }
-  return KnowledgeFacility.forge(composedFacility).save(null, { method: 'insert' })
-    .then(facilityData => (options.returnJSON ? facilityData.toJSON() : facilityData))
+  return Place.forge(composedPlace).save(null, { method: 'insert' })
+    .then(placeData => (options.returnJSON ? placeData.toJSON() : placeData))
     .catch(err => err);
 }
 
-export async function updateFacility(facility, options) {
-  const compiledFacility = {
-    id: facility.id,
-    name: facility.name,
-    brief_description: facility.brief_description,
-    description: facility.description,
-    eligibility_information: facility.eligibility_information,
-    phone_number: facility.phone_number,
-    url: facility.url,
-    availabilitys: facility.availabilitys,
-    location_id: facility.location_id,
-    functions: facility.functions,
-    alternate_names: facility.alternate_names,
+export async function updatePlace(place, options) {
+  const compiledPlace = {
+    id: place.id,
+    name: place.name,
+    brief_description: place.brief_description,
+    description: place.description,
+    eligibility_information: place.eligibility_information,
+    phone_number: place.phone_number,
+    url: place.url,
+    availabilitys: place.availabilitys,
+    location_id: place.location_id,
+    functions: place.functions,
+    alternate_names: place.alternate_names,
   };
   // Create location if it was passed without an ID
-  if (facility.location && !facility.location.id) {
-    const locationJSON = await createLocation(facility.location, { returnJSON: true });
-    if (locationJSON) compiledFacility.location_id = locationJSON.id;
+  if (place.location && !place.location.id) {
+    const locationJSON = await createLocation(place.location, { returnJSON: true });
+    if (locationJSON) compiledPlace.location_id = locationJSON.id;
   }
-  return KnowledgeFacility.forge(compiledFacility).save(null, { method: 'update' })
-    .then(facilityData => (options.returnJSON ? facilityData.toJSON() : facilityData))
+  return Place.forge(compiledPlace).save(null, { method: 'update' })
+    .then(placeData => (options.returnJSON ? placeData.toJSON() : placeData))
     .catch(err => err);
 }
 
-export const deleteFacility = (facilityId) => {
-  return KnowledgeAnswer.where({ knowledge_facility_id: facilityId }).destroy().then(() => {
-    return KnowledgeFacility.forge({ id: facilityId }).destroy().then(() => {
-      return { id: facilityId };
+export const deletePlace = (placeId) => {
+  return KnowledgeAnswer.where({ place_id: placeId }).destroy().then(() => {
+    return Place.forge({ id: placeId }).destroy().then(() => {
+      return { id: placeId };
     }).catch(err => err);
   }).catch(err => err);
 };
@@ -385,7 +385,7 @@ export async function createService(service, organization, location, options) {
     const locationJSON = await createLocation(location, { returnJSON: true });
     if (locationJSON) composedService.location_id = locationJSON.id;
   }
-  return KnowledgeService.forge(composedService).save(null, { method: 'insert' })
+  return Service.forge(composedService).save(null, { method: 'insert' })
     .then(serviceData => (options.returnJSON ? serviceData.toJSON() : serviceData))
     .catch(err => err);
 }
@@ -409,14 +409,14 @@ export async function updateService(service, options) {
     const locationJSON = await createLocation(service.location, { returnJSON: true });
     if (locationJSON) compiledService.location_id = locationJSON.id;
   }
-  return KnowledgeService.forge(compiledService).save(null, { method: 'update' })
+  return Service.forge(compiledService).save(null, { method: 'update' })
     .then(serviceData => (options.returnJSON ? serviceData.toJSON() : serviceData))
     .catch(err => err);
 }
 
 export const deleteService = (serviceId) => {
-  return KnowledgeAnswer.where({ knowledge_service_id: serviceId }).destroy().then(() => {
-    return KnowledgeService.forge({ id: serviceId }).destroy().then(() => {
+  return KnowledgeAnswer.where({ service_id: serviceId }).destroy().then(() => {
+    return Service.forge({ id: serviceId }).destroy().then(() => {
       return { id: serviceId };
     }).catch(err => err);
   }).catch(err => err);
@@ -466,42 +466,42 @@ export const deleteQuestion = (label) => {
   }).catch(error => error);
 };
 
-export const getContacts = (params, options = {}) => {
-  return KnowledgeContact.where(params).fetchAll({ withRelated: ['knowledgeCategories'] })
+export const getPersons = (params, options = {}) => {
+  return Person.where(params).fetchAll({ withRelated: ['knowledgeCategories'] })
     .then((data) => {
       return options.returnJSON ? data.toJSON() : data;
     }).catch(error => error);
 };
 
-export const createContact = (data, options = {}) => {
-  const contact = {
-    ...data.contact,
+export const createPerson = (data, options = {}) => {
+  const person = {
+    ...data.person,
     organization_id: data.organization.id,
   };
-  return KnowledgeContact.forge(contact)
+  return Person.forge(person)
     .save(null, { method: 'insert' })
-    .then((contactModel) => {
-      return options.returnJSON ? contactModel.toJSON() : contactModel;
+    .then((personModel) => {
+      return options.returnJSON ? personModel.toJSON() : personModel;
     }).catch(error => error);
 };
 
-export const updateContact = (contact, options = {}) => {
-  const cleanedContact = contact;
-  delete cleanedContact.knowledgeCategories;
-  return KnowledgeContact.where({ id: contact.id })
-    .save(cleanedContact, { method: 'update' })
-    .then((contactModel) => {
-      return options.returnJSON ? contactModel.toJSON() : contactModel;
+export const updatePerson = (person, options = {}) => {
+  const cleanedPerson = person;
+  delete cleanedPerson.knowledgeCategories;
+  return Person.where({ id: person.id })
+    .save(cleanedPerson, { method: 'update' })
+    .then((personModel) => {
+      return options.returnJSON ? personModel.toJSON() : personModel;
     }).catch(error => error);
 };
 
-export const deleteContact = (contact) => {
-  return knex('knowledge_categorys_knowledge_contacts')
-    .where('knowledge_contact_id', '=', contact.id)
+export const deletePerson = (person) => {
+  return knex('knowledge_categorys_persons')
+    .where('person_id', '=', person.id)
     .del().then(() => {
-      return KnowledgeContact.where({ id: contact.id }).destroy().then(() => {
+      return Person.where({ id: person.id }).destroy().then(() => {
         return {
-          id: contact.id,
+          id: person.id,
         };
       }).catch(error => error);
     });
@@ -544,7 +544,7 @@ export function getQuestionsAsTable(params = {}) {
           answer = textAnswers[0].text;
         }
       }
-      const baseResult = { question_id: q.id, question: q.question };
+      const baseResult = { knowledge_question_id: q.id, question: q.question };
       if (params.label === 'true') baseResult.label = q.label;
       if (!params.hasOwnProperty('answered')) {
         finalResults.push({ ...baseResult, answer: answer || '' });
@@ -560,20 +560,20 @@ export function getQuestionsAsTable(params = {}) {
 
 export function createAnswersFromRows({ answers, organization }, options = { returnJSON: true }) {
   const headerPositions = {
-    question_id: null,
+    knowledge_question_id: null,
     question: null,
     answer: null,
   };
   answers[0].forEach((h, index) => {
-    if (h === 'question_id') {
-      headerPositions.question_id = index;
+    if (h === 'knowledge_question_id') {
+      headerPositions.knowledge_question_id = index;
     } else if (h === 'question') {
       headerPositions.question = index;
     } else if (h === 'answer') {
       headerPositions.answer = index;
     }
   });
-  if (headerPositions.question_id == null) {
+  if (headerPositions.knowledge_question_id == null) {
     throw new Error('Trouble identifying columns');
   }
 
@@ -585,12 +585,12 @@ export function createAnswersFromRows({ answers, organization }, options = { ret
     .map((row) => {
       const rowData = {
         organization_id: organization.id,
-        question_id: row[headerPositions.question_id],
+        knowledge_question_id: row[headerPositions.knowledge_question_id],
         text: row[headerPositions.answer],
       };
       return KnowledgeAnswer.where({
         organization_id: organization.id,
-        question_id: rowData.question_id,
+        knowledge_question_id: rowData.knowledge_question_id,
       }).fetchAll().then((results) => {
         const textResult = results.toJSON().filter(r => r.text);
         if (textResult.length > 0) {
@@ -617,34 +617,34 @@ export async function getCategoryFallback(labels, orgId) {
     categoryFetches.push(KnowledgeCategory.where({ label })
       .fetch({
         withRelated: [{
-          contacts: q => q.where('knowledge_contacts.organization_id', '=', orgId),
+          persons: q => q.where('persons.organization_id', '=', orgId),
           representatives: q => q.where('representatives.organization_id', '=', orgId),
         }],
       }).then(labelData => (labelData ? labelData.toJSON() : [])),
     );
   });
-  let mergedContacts = [];
+  let mergedPersons = [];
   let mergedRepresentatives = [];
   await Promise.all(categoryFetches).then((labelData) => {
     labelData.forEach((label) => {
-      mergedContacts = mergedContacts.concat(label.contacts || []);
+      mergedPersons = mergedPersons.concat(label.persons || []);
       mergedRepresentatives = mergedRepresentatives.concat(label.representatives || []);
     });
   });
-  // If no contacts, look farther up
-  if (mergedContacts.length === 0) {
+  // If no persons, look farther up
+  if (mergedPersons.length === 0) {
     await KnowledgeCategory.where({ label: KNOWLEDGE_CONST.GENERAL_CATEGORY_LABEL }).fetch({
       withRelated: [{
-        contacts: q => q.where('knowledge_contacts.organization_id', '=', orgId),
+        persons: q => q.where('persons.organization_id', '=', orgId),
       }],
     }).then((generalData) => {
       fallbackObj.labels = [KNOWLEDGE_CONST.GENERAL_CATEGORY_LABEL];
       fallbackObj.fellback = true;
-      fallbackObj.contacts = (generalData) ? generalData.toJSON().contacts : [];
+      fallbackObj.persons = (generalData) ? generalData.toJSON().persons : [];
     });
   } else {
     fallbackObj.fellback = false;
-    fallbackObj.contacts = mergedContacts;
+    fallbackObj.persons = mergedPersons;
   }
   // If representatives were assigned, send them an email so we can get an answer
   fallbackObj.representatives = mergedRepresentatives;
@@ -652,7 +652,7 @@ export async function getCategoryFallback(labels, orgId) {
 }
 
 export async function answerQuestion(organization, question, answers) {
-  await knex('knowledge_answers').where({ organization_id: organization.id, question_id: question.id }).del();
+  await knex('knowledge_answers').where({ organization_id: organization.id, knowledge_question_id: question.id }).del();
   const answerInserts = [];
   const idHash = {};
   answers.forEach((answer) => {
@@ -665,7 +665,7 @@ export async function answerQuestion(organization, question, answers) {
       delete cleanedActions.config;
       answerInserts.push(knex('knowledge_answers').insert({
         organization_id: organization.id,
-        question_id: question.id,
+        knowledge_question_id: question.id,
         approved_at: null,
         actions: cleanedActions,
       }));
@@ -692,7 +692,7 @@ export async function answerQuestion(organization, question, answers) {
         answerInserts.push(knex('knowledge_answers').insert({
           ...answer,
           organization_id: organization.id,
-          question_id: question.id,
+          knowledge_question_id: question.id,
           approved_at: null,
         }));
       }
@@ -703,7 +703,7 @@ export async function answerQuestion(organization, question, answers) {
     .then(r => r.toJSON()).filter(r => r.email)
     .map(r => ({ email: r.email, name: r.name }));
   new EmailService().send(`🤖 Answer Needs Approval - "${question.question}"`,
-    `An employee has saved an answer for "${question.question}"! Please <a href="${env.getDashboardRoot()}/answer?organization_id=${organization.id}&question_id=${question.id}" target="_blank">go approve it</a> so we can send it to constituents.<br/><br/>If you have questions, send <a href="mailto:mark@mayor.chat">us</a> an email!`,
+    `An employee has saved an answer for "${question.question}"! Please <a href="${env.getDashboardRoot()}/answer?organization_id=${organization.id}&knowledge_question_id=${question.id}" target="_blank">go approve it</a> so we can send it to constituents.<br/><br/>If you have questions, send <a href="mailto:mark@mayor.chat">us</a> an email!`,
     approvalReps,
   );
   // Conclude

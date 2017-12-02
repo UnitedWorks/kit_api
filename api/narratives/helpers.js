@@ -64,10 +64,10 @@ function missingQuestionEmail(representatives, session, question) {
   representatives.forEach((rep) => {
     repEmails.push({ name: rep.name, email: rep.email });
   });
-  const emailMessage = `<b>"${question.question}"</b> ... was asked by a constituent but we don't seem to have an answer!<br/><br/><a href="${env.getDashboardRoot()}/answer?organization_id=${session.get('organization').id}&question_id=${question.id}" target="_blank">Create an Answer!</a><br><br> If you have questions, send <a href="mailto:mark@mayor.chat">us</a> an email!`;
+  const emailMessage = `<b>"${question.question}"</b> ... was asked by a constituent but we don't seem to have an answer!<br/><br/><a href="${env.getDashboardRoot()}/answer?organization_id=${session.get('organization').id}&knowledge_question_id=${question.id}" target="_blank">Create an Answer!</a><br><br> If you have questions, send <a href="mailto:mark@mayor.chat">us</a> an email!`;
   new EmailService().send(`🤖 Missing Answer for "${question.question}" QID:${question.id} OID:${session.get('organization').id}`, emailMessage, repEmails, {
     organization_id: session.get('organization').id,
-    question_id: question.id,
+    knowledge_question_id: question.id,
   });
 }
 
@@ -87,8 +87,8 @@ export async function fetchAnswers(intent, session) {
   /*
    * If no answers, run default shout out, integration, or fallback
    */
-  } else if (!answers || (!answers.text && !answers.actions && !answers.facilities &&
-    !answers.services && !answers.contacts && !answers.feeds)) {
+  } else if (!answers || (!answers.text && !answers.actions && !answers.places &&
+    !answers.services && !answers.persons && !answers.feeds)) {
     const shoutOutTemplate = shoutOutLogic.ready[intent];
     const fallback = await getCategoryFallback([intent.split('.')[0]], session.get('organization').id).then(fbd => fbd);
     // Check Shout Out
@@ -113,29 +113,29 @@ export async function fetchAnswers(intent, session) {
       missingQuestionEmail(fallback.representatives, session, question);
       return 'action.waiting_for_response';
     }
-    // See if we have fallback contacts
-    if (fallback.contacts.length === 0) {
+    // See if we have fallback persons
+    if (fallback.persons.length === 0) {
       session.messagingClient.addToQuene(i18n('dont_know'));
       EventTracker('answer_sent', { session, question }, { status: 'failed' });
     } else {
       // If we have fallback, list names and templates
-      let compiledContacts = '';
-      fallback.contacts.forEach((contact, index, arr) => {
+      let compiledPersons = '';
+      fallback.persons.forEach((person, index, arr) => {
         if (index === 0) {
-          compiledContacts = compiledContacts.concat(contact.name);
+          compiledPersons = compiledPersons.concat(person.name);
         } else if (arr.length - 1 === index) {
-          compiledContacts = compiledContacts.concat(`, or ${contact.name}`);
+          compiledPersons = compiledPersons.concat(`, or ${person.name}`);
         } else {
-          compiledContacts = compiledContacts.concat(`, ${contact.name}`);
+          compiledPersons = compiledPersons.concat(`, ${person.name}`);
         }
       });
-      session.messagingClient.addToQuene(i18n('dont_know', { tryContacting: compiledContacts }));
+      session.messagingClient.addToQuene(i18n('dont_know', { tryPersoning: compiledPersons }));
       // Give templates
       session.messagingClient.addToQuene({
         type: 'template',
         templateType: 'generic',
-        elements: fallback.contacts.map(
-          contact => elementTemplates.genericContact(contact)),
+        elements: fallback.persons.map(
+          person => elementTemplates.genericPerson(person)),
       });
       EventTracker('answer_sent', { session, question }, { status: 'fallback' });
     }
@@ -153,13 +153,13 @@ export async function fetchAnswers(intent, session) {
    */
   let requestLocation = false;
   const timelyServices = (answers.services || []).filter(s => s.availabilitys && s.availabilitys.length > 0);
-  const timelyFacilities = (answers.facilities || []).filter(s => s.availabilitys && s.availabilitys.length > 0);
-  // If any services/facilities with availabilitys are in
+  const timelyFacilities = (answers.places || []).filter(s => s.availabilitys && s.availabilitys.length > 0);
+  // If any services/places with availabilitys are in
   if (timelyServices.length > 0 || timelyFacilities.length > 0) {
     // If we have text, don't forget to include still
     // and we have datetime, validate whether or not its available
     const availableEntities = answers.services.filter(entity => KitClient.entityAvailabilityToText('service', entity, { datetime: entities[TAGS.DATETIME], constituentAttributes: session.get('attributes') }))
-      .concat(answers.facilities.filter(entity => KitClient.entityAvailabilityToText('facility', entity, { datetime: entities[TAGS.DATETIME], constituentAttributes: session.get('attributes') })));
+      .concat(answers.places.filter(entity => KitClient.entityAvailabilityToText('place', entity, { datetime: entities[TAGS.DATETIME], constituentAttributes: session.get('attributes') })));
     const locationServices = timelyServices.filter(s => s.availabilitys.filter(a => a.geo).length > 0);
     // If we're going to need a location, abort entirely and set default constituent location
     if (locationServices.length > 0 && (!session.get('attributes') || !session.get('attributes').default_location)) {
@@ -170,13 +170,13 @@ export async function fetchAnswers(intent, session) {
       session.messagingClient.addAll(KitClient.genericTemplateFromAnswers({
         ...answers,
         services: answers.services,
-        facilities: answers.facilities,
+        places: answers.places,
       }), replyTemplates.evalHelpfulAnswer);
       // If none available, say ___ is unavailable at that time (and then articulate schedules)
       const entityAvailabilities = [
         (availableEntities.length === 0 ? "I don't see anything available then" : null),
         ...answers.services.map(entity => KitClient.entityAvailabilityToText('service', entity, { datetime: entities[TAGS.DATETIME], constituentAttributes: session.get('attributes') }) || `${entity.name} is not available.`),
-        ...answers.facilities.map(entity => KitClient.entityAvailabilityToText('facility', entity, { datetime: entities[TAGS.DATETIME], constituentAttributes: session.get('attributes') }) || `${entity.name} is not open.`),
+        ...answers.places.map(entity => KitClient.entityAvailabilityToText('place', entity, { datetime: entities[TAGS.DATETIME], constituentAttributes: session.get('attributes') }) || `${entity.name} is not open.`),
       ].filter(text => text);
       if (entityAvailabilities.length > 0) session.messagingClient.addToQuene(entityAvailabilities.join('. '), replyTemplates.evalHelpfulAnswer);
     }

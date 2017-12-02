@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import { logger } from '../logger';
 import { Organization } from '../accounts/models';
-import { KnowledgeEvent, KnowledgeFacility, KnowledgeService } from './models';
-import { getAnswers, getCategories, getContacts, createContact, updateContact, deleteContact,
-  getQuestions, makeAnswer, updateAnswer, deleteAnswer, deleteService, createFacility,
-  updateFacility, deleteFacility, createService, updateService,
+import { Event, Place, Service } from './models';
+import { getAnswers, getCategories, getPersons, createPerson, updatePerson, deletePerson,
+  getQuestions, makeAnswer, updateAnswer, deleteAnswer, deleteService, createPlace,
+  updatePlace, deletePlace, createService, updateService,
   getQuestionsAsTable, createAnswersFromRows, setCategoryFallback,
   setCategoryRepresentatives, answerQuestion, approveAnswers } from './helpers';
 import { requireAuth } from '../services/passport';
@@ -86,29 +86,29 @@ router.route('/organizations')
 /**
  * Facilities Endpoint
  */
-router.route('/facilities')
+router.route('/places')
   .get((req, res) => {
     const whereFilters = {};
     if (req.query.organization_id) whereFilters.organization_id = req.query.organization_id;
-    KnowledgeFacility.where(whereFilters).fetchAll({ withRelated: ['category', 'location'] })
-      .then((facilityArray) => {
-        res.status(200).send({ facilities: facilityArray });
+    Place.where(whereFilters).fetchAll({ withRelated: ['category', 'location'] })
+      .then((placeArray) => {
+        res.status(200).send({ places: placeArray });
       });
   })
   .post((req, res, next) => {
-    createFacility(req.body.facility, req.body.organization, req.body.facility.location,
+    createPlace(req.body.place, req.body.organization, req.body.place.location,
       { returnJSON: true })
-      .then(facility => res.status(200).send({ facility }))
+      .then(place => res.status(200).send({ place }))
       .catch(err => next(err));
   })
    .put((req, res, next) => {
-     updateFacility(req.body.facility, { returnJSON: true })
-       .then(updated => res.status(200).send({ facility: updated }))
+     updatePlace(req.body.place, { returnJSON: true })
+       .then(updated => res.status(200).send({ place: updated }))
        .catch(err => next(err));
    })
   .delete((req, res, next) => {
-    deleteFacility(req.query.facility_id)
-      .then(facility => res.status(200).send({ facility }))
+    deletePlace(req.query.place_id)
+      .then(place => res.status(200).send({ place }))
       .catch(err => next(err));
   });
 
@@ -117,13 +117,13 @@ router.route('/facilities')
  */
 router.route('/events')
   .get((req, res) => {
-    KnowledgeEvent.fetchAll()
+    Event.fetchAll()
       .then((eventsArray) => {
         res.status(200).send({ events: eventsArray });
       });
   })
   .post((req, res) => {
-    KnowledgeEvent.forge(req.body.event).save(null, { method: 'insert' })
+    Event.forge(req.body.event).save(null, { method: 'insert' })
       .then((saved) => {
         res.status(200).send({ event: saved });
       }).catch((err) => {
@@ -131,7 +131,7 @@ router.route('/events')
       });
   })
   .put((req, res) => {
-    KnowledgeEvent.forge(req.body.event).save(null, { method: 'update' })
+    Event.forge(req.body.event).save(null, { method: 'update' })
       .then((updated) => {
         res.status(200).send({ event: updated });
       }).catch((err) => {
@@ -139,7 +139,7 @@ router.route('/events')
       });
   })
   .delete((req, res) => {
-    KnowledgeEvent.forge({ id: req.query.id }).destroy()
+    Event.forge({ id: req.query.id }).destroy()
       .then(() => {
         res.status(200).send();
       }).catch(() => {
@@ -154,7 +154,7 @@ router.route('/services')
   .get((req, res, next) => {
     const whereFilters = {};
     if (req.query.organization_id) whereFilters.organization_id = req.query.organization_id;
-    KnowledgeService.where(whereFilters).fetchAll({ withRelated: ['category', 'location'] })
+    Service.where(whereFilters).fetchAll({ withRelated: ['category', 'location'] })
       .then(serviceArray => res.status(200).send({ services: serviceArray }))
       .catch(err => next(err));
   })
@@ -176,13 +176,13 @@ router.route('/services')
   });
 
 /**
- * Contacts Endpoint
+ * Persons Endpoint
  */
-router.route('/contacts')
+router.route('/persons')
   .get((req, res, next) => {
     try {
-      getContacts(req.query, { returnJSON: true })
-        .then(contacts => res.status(200).send({ contacts }))
+      getPersons(req.query, { returnJSON: true })
+        .then(persons => res.status(200).send({ persons }))
         .catch(error => next(error));
     } catch (e) {
       next(e);
@@ -190,8 +190,8 @@ router.route('/contacts')
   })
   .post((req, res, next) => {
     try {
-      createContact(req.body, { returnJSON: true })
-        .then(contacts => res.status(200).send({ contacts }))
+      createPerson(req.body, { returnJSON: true })
+        .then(persons => res.status(200).send({ persons }))
         .catch(error => next(error));
     } catch (e) {
       next(e);
@@ -199,8 +199,8 @@ router.route('/contacts')
   })
   .put((req, res, next) => {
     try {
-      updateContact(req.body.contact, { returnJSON: true })
-        .then(contacts => res.status(200).send({ contacts }))
+      updatePerson(req.body.person, { returnJSON: true })
+        .then(persons => res.status(200).send({ persons }))
         .catch(error => next(error));
     } catch (e) {
       next(e);
@@ -208,8 +208,8 @@ router.route('/contacts')
   })
   .delete((req, res, next) => {
     try {
-      deleteContact({ id: req.query.contact_id }, { returnJSON: true })
-        .then(contacts => res.status(200).send({ contacts }))
+      deletePerson({ id: req.query.person_id }, { returnJSON: true })
+        .then(persons => res.status(200).send({ persons }))
         .catch(error => next(error));
     } catch (e) {
       next(e);

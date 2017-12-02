@@ -12,7 +12,7 @@ export function EventTracker(label, { question, session }, custom = {}) {
       constituent_id: session.snapshot.constituent.id,
       organization_id: session.get('organization').id,
       knowledge_category_id: question ? question.knowledge_category_id : null,
-      question_id: question ? question.id : null,
+      knowledge_question_id: question ? question.id : null,
       interface: session.messagingClient.provider,
       ...custom,
     });

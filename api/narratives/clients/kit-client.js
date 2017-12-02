@@ -51,8 +51,8 @@ export default class KitClient {
   static genericTemplateFromAnswers(answers) {
     const templateElements = [
       ...answers.services.map(s => elementTemplates.genericService(s)),
-      ...answers.facilities.map(f => elementTemplates.genericFacility(f)),
-      ...answers.contacts.map(c => elementTemplates.genericContact(c)),
+      ...answers.places.map(f => elementTemplates.genericPlace(f)),
+      ...answers.persons.map(c => elementTemplates.genericPerson(c)),
       ...answers.events.map(c => elementTemplates.genericEvent(c)),
     ];
     const answerArray = [];
@@ -79,27 +79,27 @@ export default class KitClient {
       image_aspect_ratio: 'horizontal',
       elements: entityArray.map((e) => {
         if (e.type === 'service') return elementTemplates.genericService(e.payload);
-        if (e.type === 'facility') return elementTemplates.genericFacility(e.payload);
-        if (e.type === 'contact') return elementTemplates.genericContact(e.payload);
+        if (e.type === 'place') return elementTemplates.genericPlace(e.payload);
+        if (e.type === 'person') return elementTemplates.genericPerson(e.payload);
         if (e.type === 'event') return elementTemplates.genericEvent(e.payload);
         return null;
       }).filter(d => d),
     }];
   }
 
-  static entityContactToText(entity, property) {
-    let entityContactText = '';
+  static entityPersonToText(entity, property) {
+    let entityPersonText = '';
     // Return specific info
     if (property === 'phone') {
       if (entity.phone_number) return `${entity.name} can be reached at ${entity.phone_number}.`;
-      entityContactText = `I can't find a phone number for ${entity.name}.`;
-    // Or general contact info
+      entityPersonText = `I can't find a phone number for ${entity.name}.`;
+    // Or general person info
     } else {
       if (entity.phone_number || entity.url) {
-        entityContactText = `${entity.name} is available at ${entity.phone_number}${entity.phone_number && entity.url ? ' / ' : ''}${entity.url}.`;
+        entityPersonText = `${entity.name} is available at ${entity.phone_number}${entity.phone_number && entity.url ? ' / ' : ''}${entity.url}.`;
       }
     }
-    return entityContactText.length > 0 ? entityContactText : null;
+    return entityPersonText.length > 0 ? entityPersonText : null;
   }
 
   static entityLocationToText(entity) {
@@ -164,7 +164,7 @@ export default class KitClient {
     if (entityAvailabilityText.length > 0) {
       if (type === 'service') {
         return `${entity.name} is available ${entityAvailabilityText}`;
-      } else if (type === 'facility') {
+      } else if (type === 'place') {
         return `${entity.name} is open ${entityAvailabilityText}`;
       }
     }

@@ -41,7 +41,7 @@ Example Feed script code:
 })
 */
 
-export function veventToKnowledgeEvent(vevent) {
+export function veventToEvent(vevent) {
   return {
     name: vevent.summary,
     description: vevent.description,
@@ -76,7 +76,7 @@ export async function runFeed(feedObj, options = { filterPast: true }) {
         return diff > -3;
       })
       // Refromat to our standard
-      .map(event => veventToKnowledgeEvent({ ...event, organization_id: feed.organization_id }));
+      .map(event => veventToEvent({ ...event, organization_id: feed.organization_id }));
     return { events };
   } else if (feed.format === FEED_CONSTANTS.SCRIPT) {
     const results = await scrapeEvents(feed.script).then(r => r);
