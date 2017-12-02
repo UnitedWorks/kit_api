@@ -4,6 +4,9 @@ import { Media } from '../media/models';
 import { Feed } from '../feeds/models';
 import { Prompt } from '../prompts/models';
 import { Person } from '../persons/models';
+import { Place } from '../places/models';
+import { Service } from '../services/models';
+import { Event } from '../events/models';
 
 // Information Entries - Referenced in knowledge and non-knowledge base tables
 export const Location = bookshelf.Model.extend({
