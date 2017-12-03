@@ -48,6 +48,7 @@ app.use('/integrations', require('./integrations/routes'));
 app.use('/knowledge', require('./knowledge-base/routes'));
 app.use('/media', require('./media/routes'));
 app.use('/persons', require('./persons/routes'));
+app.use('/phones', require('./phones/routes'));
 app.use('/places', require('./places/routes'));
 app.use('/prompts', require('./prompts/routes'));
 app.use('/organizations', require('./organizations/routes'));

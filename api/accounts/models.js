@@ -8,6 +8,7 @@ import { Service } from '../services/models';
 import { Place } from '../places/models';
 import { Person } from '../persons/models';
 import { Vehicle } from '../vehicles/models';
+import { Phone } from '../phones/models';
 
 export const Representative = bookshelf.Model.extend({
   tableName: 'representatives',
@@ -73,7 +74,7 @@ export const Organization = bookshelf.Model.extend({
   vehicles() {
     return this.belongsToMany(Vehicle, 'organizations_entity_associations');
   },
-  // phones() {
-  //   return this.belongsToMany(Phone, 'organizations_entity_associations');
-  // },
+  phones() {
+    return this.belongsToMany(Phone, 'organizations_entity_associations');
+  },
 });
