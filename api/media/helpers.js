@@ -2,7 +2,7 @@ import { Media } from './models';
 
 export const saveMedia = ({ media, organization }, options = {}) => {
   const newModel = {
-    name: media.name,
+    filename: media.name,
     type: media.type,
     url: media.url,
     organization_id: organization.id,

@@ -39,8 +39,10 @@ router.route('/')
   .delete((req, res, next) => {
     try {
       if (!req.query.organization_id) throw new Error('Must provide ID');
-      Organization.forge({ id: req.query.organization_id }).destroy()
-        .then(() => res.status(200).send({ organization: { id: req.query.organization_id } }));
+      knex('organizations_entity_associations').where({ organization_id: req.query.organization_id }).del().then(() => {
+        Organization.forge({ id: req.query.organization_id }).destroy()
+          .then(() => res.status(200).send({ organization: { id: req.query.organization_id } }));
+      });
     } catch (e) {
       next(e);
     }
@@ -50,7 +52,8 @@ router.post('/associations', (req, res, next) => {
   try {
     if (!req.body.hasOwnProperty('associate')) throw new Error('No association state defined');
     if (!req.body.hasOwnProperty('organization_id')) throw new Error('No organization state defined');
-    if (Object.keys(req.body).length != 3) throw new Error('Missing properties');
+    if (!req.body.service_id && !req.body.person_id && !req.body.place_id
+      && !req.body.vehicle_id && !req.body.phone_id) throw new Error('Missing properties');
     const params = req.body;
     // If associating, do one knex operation
     if (params.associate) {
