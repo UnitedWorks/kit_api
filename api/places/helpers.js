@@ -1,13 +1,13 @@
 import { Place } from './models';
 import { KnowledgeAnswer } from '../knowledge-base/models';
 import { createLocation } from '../knowledge-base/helpers';
+import { crudEntityPhones } from '../phones/helpers';
 
 export async function createPlace(place, organization, location, options) {
   const composedPlace = {
     name: place.name,
     brief_description: place.brief_description,
     description: place.description,
-    phone_number: place.phone_number,
     url: place.url,
     organization_id: organization.id,
     availabilitys: place.availabilitys,
@@ -20,7 +20,10 @@ export async function createPlace(place, organization, location, options) {
     if (locationJSON) composedPlace.location_id = locationJSON.id;
   }
   return Place.forge(composedPlace).save(null, { method: 'insert' })
-    .then(placeData => (options.returnJSON ? placeData.toJSON() : placeData))
+    .then((placeData) => {
+      crudEntityPhones({ place_id: placeData.id }, place.phones);
+      return options.returnJSON ? placeData.toJSON() : placeData;
+    })
     .catch(err => err);
 }
 
@@ -30,7 +33,6 @@ export async function updatePlace(place, options) {
     name: place.name,
     brief_description: place.brief_description,
     description: place.description,
-    phone_number: place.phone_number,
     url: place.url,
     availabilitys: place.availabilitys,
     location_id: place.location_id,
@@ -43,7 +45,10 @@ export async function updatePlace(place, options) {
     if (locationJSON) compiledPlace.location_id = locationJSON.id;
   }
   return Place.forge(compiledPlace).save(null, { method: 'update' })
-    .then(placeData => (options.returnJSON ? placeData.toJSON() : placeData))
+    .then((placeData) => {
+      crudEntityPhones({ place_id: placeData.id }, place.phones);
+      return options.returnJSON ? placeData.toJSON() : placeData;
+    })
     .catch(err => err);
 }
 

@@ -89,6 +89,9 @@ export const LEGAL = 'Legal';
 export const MENTAL_HEALTH = 'Mental Health';
 export const TRANSPORTATION = 'Transportation';
 export const WORK = 'Work';
+// My addons
+export const IMMIGRATION = 'Immigration';
+
 
 export const SERVICE_FUNCTIONS = [COMMUNITY, EDUCATION, EMERGENCY, FAMILY,
   FINANCIAL_SUPPORT, FOOD, GOODS, HEALTH, HOUSING, LEGAL, MENTAL_HEALTH,

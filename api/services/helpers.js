@@ -1,13 +1,13 @@
 import { Service } from './models';
 import { KnowledgeAnswer } from '../knowledge-base/models';
 import { createLocation } from '../knowledge-base/helpers';
+import { crudEntityPhones } from '../phones/helpers';
 
 export async function createService(service, organization, location, options) {
   const composedService = {
     name: service.name,
     brief_description: service.brief_description,
     description: service.description,
-    phone_number: service.phone_number,
     url: service.url,
     organization_id: organization.id,
     availabilitys: service.availabilitys,
@@ -20,7 +20,10 @@ export async function createService(service, organization, location, options) {
     if (locationJSON) composedService.location_id = locationJSON.id;
   }
   return Service.forge(composedService).save(null, { method: 'insert' })
-    .then(serviceData => (options.returnJSON ? serviceData.toJSON() : serviceData))
+    .then((serviceData) => {
+      crudEntityPhones({ service_id: serviceData.id }, service.phones);
+      return options.returnJSON ? serviceData.toJSON() : serviceData;
+    })
     .catch(err => err);
 }
 
@@ -30,7 +33,6 @@ export async function updateService(service, options) {
     name: service.name,
     brief_description: service.brief_description,
     description: service.description,
-    phone_number: service.phone_number,
     url: service.url,
     availabilitys: service.availabilitys,
     location_id: service.location_id,
@@ -43,7 +45,10 @@ export async function updateService(service, options) {
     if (locationJSON) compiledService.location_id = locationJSON.id;
   }
   return Service.forge(compiledService).save(null, { method: 'update' })
-    .then(serviceData => (options.returnJSON ? serviceData.toJSON() : serviceData))
+    .then((serviceData) => {
+      crudEntityPhones({ service_id: serviceData.id }, service.phones);
+      return options.returnJSON ? serviceData.toJSON() : serviceData;
+    })
     .catch(err => err);
 }
 

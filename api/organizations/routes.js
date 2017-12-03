@@ -11,7 +11,7 @@ router.route('/')
   .get((req, res, next) => {
     try {
       if (!req.query || !req.query.organization_id) throw new Error('Need Organization ID');
-      Organization.where({ parent_organization_id: req.query.organization_id }).fetchAll({ withRelated: ['places', 'persons', 'services', 'vehicles', 'phones'] })
+      Organization.where({ parent_organization_id: req.query.organization_id }).fetchAll({ withRelated: ['places', 'persons', 'services', 'phones'] })
         .then(orgs => res.status(200).send({ organizations: orgs.toJSON() }));
     } catch (e) {
       next(e);

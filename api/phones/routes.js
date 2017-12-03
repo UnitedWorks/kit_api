@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { knex } from '../orm';
 import { Phone } from './models';
+import { cleanPhoneFormating } from './helpers';
 
 const router = new Router();
 
@@ -18,14 +19,16 @@ router.route('/')
       }).catch(err => next(err));
   })
   .post((req, res, next) => {
-    Phone.forge({ ...req.body.phone, organization_id: req.body.organization.id }).save(null, { method: 'insert' })
+    const phoneObj = cleanPhoneFormating(req.body.phone);
+    Phone.forge({ ...phoneObj, organization_id: req.body.organization.id }).save(null, { method: 'insert' })
       .then((saved) => {
         res.status(200).send({ phone: saved.toJSON() });
       }).catch(err => next(err));
   })
   .put((req, res, next) => {
+    const phoneObj = cleanPhoneFormating(req.body.phone);
     Phone.where({ id: req.body.phone.id }).save({
-      ...req.body.phone,
+      ...phoneObj,
       updated_at: knex.raw('now()'),
     }, { method: 'update', patch: true })
     .then((updated) => {
