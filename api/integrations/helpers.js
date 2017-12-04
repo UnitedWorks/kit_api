@@ -1,5 +1,5 @@
 import { Organization } from '../accounts/models';
-import { saveLocation } from '../knowledge-base/helpers';
+import { saveLocation } from '../geo/helpers';
 import { Integration, IntegrationsLocations, OrganizationIntegrations } from './models';
 import geocode from '../utils/geocoder';
 import { logger } from '../logger';

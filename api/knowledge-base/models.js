@@ -8,11 +8,6 @@ import { Place } from '../places/models';
 import { Service } from '../services/models';
 import { Event } from '../events/models';
 
-// Information Entries - Referenced in knowledge and non-knowledge base tables
-export const Location = bookshelf.Model.extend({
-  tableName: 'locations',
-});
-
 // Knowledge Base Entities
 export const KnowledgeCategory = bookshelf.Model.extend({
   tableName: 'knowledge_categorys',

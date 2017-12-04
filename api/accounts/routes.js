@@ -3,7 +3,7 @@ import geocoder from '../utils/geocoder';
 import * as OSM from '../constants/open-street-maps';
 import * as helpers from './helpers';
 import { logger } from '../logger';
-import { saveLocation } from '../knowledge-base/helpers';
+import { saveLocation } from '../geo/helpers';
 import { Representative, Organization } from './models';
 import { requireAuth } from '../utils/passport';
 import SlackService from '../utils/slack';

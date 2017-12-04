@@ -1,6 +1,6 @@
 import { Service } from './models';
 import { KnowledgeAnswer } from '../knowledge-base/models';
-import { createLocation } from '../knowledge-base/helpers';
+import { createLocation } from '../geo/helpers';
 import { crudEntityPhones } from '../phones/helpers';
 
 export async function createService(service, organization, location, options) {

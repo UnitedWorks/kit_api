@@ -1,4 +1,4 @@
-import { lookupActiveVehicles } from '../../knowledge-base/helpers';
+import { lookupActiveVehicles } from '../../vehicles/helpers';
 import * as VEHICLE_CONST from '../../constants/vehicles';
 
 export default {

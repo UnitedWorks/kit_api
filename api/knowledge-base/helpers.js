@@ -2,10 +2,7 @@ import stringSimilarity from 'string-similarity';
 import { knex } from '../orm';
 import * as env from '../env';
 import { Representative } from '../accounts/models';
-import { KnowledgeAnswer, KnowledgeCategory, Place, Service,
-  KnowledgeQuestion, Location } from './models';
-import { Vehicle } from '../vehicles/models';
-import geocoder from '../utils/geocoder';
+import { KnowledgeAnswer, KnowledgeCategory, Place, Service, KnowledgeQuestion } from './models';
 import EmailService from '../utils/email';
 import { runFeed } from '../feeds/helpers';
 import * as KNOWLEDGE_CONST from '../constants/knowledge-base';
@@ -254,46 +251,6 @@ export function makeAnswer(organization, question, answer, options = { returnJSO
   return KnowledgeAnswer.forge(newAnswerModel).save(null, { method: 'insert' })
     .then(data => options.returnJSON ? data.toJSON() : data)
     .catch(error => error);
-}
-
-export function saveLocation(location, options = {}) {
-  const locationObj = {};
-  if (typeof location === 'string') {
-    locationObj.display_name = location;
-  } else {
-    locationObj.id = (Object.prototype.hasOwnProperty.call(location, 'id')) ? undefined : location.id;
-    locationObj.lat = location.lat;
-    locationObj.lon = location.lon;
-    locationObj.display_name = location.display_name;
-    locationObj.address = location.address;
-  }
-  return Location.forge(locationObj).save()
-    .then(data => options.returnJSON ? data.toJSON() : data)
-    .catch(error => error);
-}
-
-export function createLocation(location, options = {}) {
-  let geocodeString = '';
-  if (typeof location === 'string') {
-    geocodeString = location;
-  } else if (location.display_name) {
-    geocodeString = location.display_name;
-  } else if (location.lat && location.lon) {
-    geocodeString = `${location.lat}, ${location.lon}`;
-  } else if (location.address && location.address.street_number && location.address.street_name && location.address.city && location.address.country) {
-    geocodeString = `${location.address.street_number} ${location.address.street_name} ${location.address.city} ${location.address.country}`;
-  } else {
-    return null;
-  }
-
-  return geocoder(geocodeString).then((geoData) => {
-    if (geoData.length > 1 || geoData.length === 0) {
-      throw new Error('Location invalid. Please try again.')
-    }
-    return saveLocation(geoData[0], { returnJSON: options.returnJSON })
-      .then(newLocation => newLocation)
-      .catch(err => err);
-  }).catch(err => err);
 }
 
 export function deleteAnswer(answerId) {
@@ -567,18 +524,4 @@ export function approveAnswers(answers = []) {
   return Promise.all(answers.map((answer) => {
     return knex('knowledge_answers').where({ id: answer.id }).update({ approved_at: knex.raw('now()') }).returning('id');
   })).then(results => ({ answers: results }));
-}
-
-export async function lookupActiveVehicles(vehicleFunction, orgId, coordinates) {
-  const params = {
-    organization_id: orgId,
-  };
-  if (vehicleFunction) params.function = vehicleFunction;
-  const vehicles = await Vehicle.query((qb) => {
-    qb.where(params)
-      .andWhere(knex.raw("DATE_PART('Day',now() - last_active_at::timestamptz) < 1"));
-  }).fetchAll().then(v => v.toJSON());
-  return {
-    vehicles,
-  };
 }

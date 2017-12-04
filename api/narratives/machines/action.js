@@ -2,7 +2,7 @@ import { nlp } from '../../utils/nlp';
 import * as PROMPT_CONSTANTS from '../../constants/prompts';
 import * as replyTemplates from '../templates/quick-replies';
 import { createShoutOut, promptStepsToParamValues } from '../../shouts/helpers';
-import { createLocation } from '../../knowledge-base/helpers';
+import { createLocation } from '../../geo/helpers';
 
 export default {
 
