@@ -5,6 +5,7 @@ import { getAnswers as getAnswersHelper } from '../../knowledge-base/helpers';
 import * as elementTemplates from '../templates/elements';
 import { i18n } from '../templates/messages';
 import { geoCheck } from '../helpers';
+import { addressToString } from '../../geo/helpers';
 
 export default class KitClient {
   constructor(config = {}) {
@@ -103,16 +104,10 @@ export default class KitClient {
   }
 
   static entityLocationToText(entity) {
-    if (entity.location && (entity.location.display_name || entity.location.address)) {
-      if (entity.location.display_name && !entity.location.address) {
-        return `${entity.name} is located at ${entity.location.display_name}`;
-      }
-      const addressObj = entity.location.address;
-      let defaultLocationStr = '';
-      if (addressObj.house_number) defaultLocationStr += `${addressObj.house_number} `;
-      if (addressObj.road) defaultLocationStr += `${addressObj.road}`;
-      if (addressObj.city) defaultLocationStr += `, ${addressObj.city}`;
-      return `${entity.name} is located at ${defaultLocationStr}`;
+    if (entity.address && entity.address.address_1 && entity.address.city) {
+      return `${entity.name} is located at ${addressToString(entity.address)}`;
+    } else if (entity.addresses && entity.addresses.length > 0) {
+      return `${entity.name} is located at ${addressToString(entity.addresses[0])}`;
     }
     return null;
   }

@@ -1,14 +1,16 @@
 import stringSimilarity from 'string-similarity';
-import { logger } from '../logger';
 import { knex } from '../orm';
 import * as env from '../env';
 import { Representative } from '../accounts/models';
-import { KnowledgeAnswer, KnowledgeCategory, Place, Service, KnowledgeQuestion } from './models';
+import { KnowledgeAnswer, KnowledgeCategory, KnowledgeQuestion } from './models';
 import EmailService from '../utils/email';
 import { runFeed } from '../feeds/helpers';
 import * as KNOWLEDGE_CONST from '../constants/knowledge-base';
 import { ShoutOutTrigger } from '../shouts/models';
 import ShoutOuts from '../shouts/logic';
+import { Place } from '../places/models';
+import { Service } from '../services/models';
+import { Person } from '../persons/models';
 
 export function incrementTimesAsked(questionId, orgId) {
   if (!questionId || !orgId) return;
@@ -77,34 +79,48 @@ export async function searchEntitiesBySimilarity(strings = [], organizationId, o
   // Postgres UNION ALL could make this more efficient... but hit a snag with results columns
   const searchFunctions = [];
   strings.forEach((str) => {
-    searchFunctions.push(knex.select(knex.raw(`*, similarity(name, '${str}') as similarity`)).from('services').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10)
-      .then(d => d.map(s => ({ type: 'service', payload: { ...s, location: { display_name: s.display_name, address: s.address } } })).filter(s => s.payload.similarity > options.confidence)));
-    searchFunctions.push(knex.select(knex.raw(`*, similarity(unnest(alternate_names), '${str}') AS similarity`)).from('services').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10)
-      .then(d => d.map(s => ({ type: 'service', payload: { ...s, location: { display_name: s.display_name, address: s.address } } })).filter(s => s.payload.similarity > options.confidence)));
-
-    searchFunctions.push(knex.select(knex.raw(`*, similarity(name, '${str}') as similarity`)).from('places').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10)
-      .then(d => d.map(f => ({ type: 'place', payload: { ...f, location: { display_name: f.display_name, address: f.address } } })).filter(f => f.payload.similarity > options.confidence)));
-    searchFunctions.push(knex.select(knex.raw(`*, similarity(unnest(alternate_names), '${str}') AS similarity`)).from('places').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10)
-      .then(d => d.map(f => ({ type: 'place', payload: { ...f, location: { display_name: f.display_name, address: f.address } } })).filter(f => f.payload.similarity > options.confidence)));
-
-    searchFunctions.push(knex.select(knex.raw(`*, similarity(name, '${str}') as similarity`)).from('persons').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10)
-      .then(d => d.map(c => ({ type: 'person', payload: c })).filter(c => c.payload.similarity > options.confidence)));
-    searchFunctions.push(knex.select(knex.raw(`*, similarity(unnest(alternate_names), '${str}') AS similarity`)).from('persons').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10)
-      .then(d => d.map(c => ({ type: 'person', payload: c })).filter(c => c.payload.similarity > options.confidence)));
-    searchFunctions.push(knex.select(knex.raw(`*, similarity(title, '${str}') as similarity`)).from('persons').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10)
-      .then(d => d.map(c => ({ type: 'person', payload: c })).filter(c => c.payload.similarity > options.confidence)));
+    searchFunctions.push(
+      knex.select(knex.raw(`*, similarity(unnest(array_append(alternate_names, name::text)), '${str}') AS similarity`))
+        .from('services')
+        .where('organization_id', '=', organizationId)
+        .orderBy('similarity', 'desc')
+        .limit(10)
+        .then(rows => rows.filter(r => r.similarity > options.confidence).map((s) => {
+          return Service.where({ id: s.id }).fetch({ withRelated: ['addresses', 'phones'] })
+            .then(fetched => ({ type: 'service', payload: { ...fetched.toJSON(), similarity: s.similarity } }));
+        })));
+    searchFunctions.push(
+      knex.select(knex.raw(`*, similarity(unnest(array_append(alternate_names, name::text)), '${str}') AS similarity`))
+        .from('places')
+        .where('organization_id', '=', organizationId)
+        .orderBy('similarity', 'desc')
+        .limit(10)
+        .then(rows => rows.filter(r => r.similarity > options.confidence).map((p) => {
+          return Place.where({ id: p.id }).fetch({ withRelated: ['addresses', 'phones'] })
+            .then(fetched => ({ type: 'place', payload: { ...fetched.toJSON(), similarity: p.similarity } }));
+        })));
+    searchFunctions.push(
+      knex.select(knex.raw(`*, similarity(unnest(array_append(array_append(alternate_names, name::text), title::text)), '${str}') AS similarity`))
+        .from('persons')
+        .where('organization_id', '=', organizationId)
+        .orderBy('similarity', 'desc')
+        .limit(10)
+        .then(rows => rows.filter(r => r.similarity > options.confidence).map((p) => {
+          return Person.where({ id: p.id }).fetch({ withRelated: ['phones'] })
+            .then(fetched => ({ type: 'person', payload: { ...fetched.toJSON(), similarity: p.similarity } }));
+        })));
   });
-  const results = await Promise.all(searchFunctions).then((data) => {
+  const results = await Promise.all(searchFunctions).then(data => Promise.all([...data[0], ...data[1], ...data[2]])).then((data) => {
     const allEntities = [];
-    data.forEach(entities => entities.forEach((e) => {
+    data.forEach((e) => {
       let entityListed = false;
       for (let i = 0; i < allEntities.length; i += 1) {
         if (allEntities[i].name === e.name && allEntities[i].id === e.id) entityListed = true;
       }
       if (!entityListed) allEntities.push(e);
-    }));
-    return allEntities.sort((a, b) => a.payload.similarity
-      < b.payload.similarity).slice(0, options.limit);
+    });
+    return allEntities.sort((a, b) => a.payload.similarity < b.payload.similarity)
+      .slice(0, options.limit);
   });
   return options.returnJSON ? JSON.parse(JSON.stringify(results)) : results;
 }

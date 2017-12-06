@@ -203,7 +203,7 @@ export function genericPlace(place) {
     buttons.push({
       type: 'web_url',
       title: 'View on Map',
-      url: getPlacesUrl(addressToString(place.addresses[0].address)),
+      url: getPlacesUrl(addressToString(place.addresses[0])),
     });
   }
   if (place.phone_number) {
