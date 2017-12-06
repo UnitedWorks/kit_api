@@ -7,8 +7,8 @@ import { messageToGeodata } from '../../utils/nlp';
 export default {
   waiting_job_training: {
     enter() {
-      if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'employment.waiting_job_training');
-      return hasIntegration(this.get('organization'), INTEGRATIONS.ASK_DARCEL)
+      if (!this.get('address')) return this.stateRedirect('location', 'employment.waiting_job_training');
+      return hasIntegration(this.snapshot.organization, INTEGRATIONS.ASK_DARCEL)
         .then((integrated) => {
           if (integrated) {
             this.messagingClient.send('What address are you currently at? I want to make sure I give you locations close by.');
@@ -37,7 +37,7 @@ export default {
             });
         });
       }
-      return new KitClient({ organization: this.get('organization') })
+      return new KitClient({ organization: this.snapshot.organization })
         .getAnswer('employment_job_training').then((answers) => {
           this.messagingClient.addAll(KitClient.genericTemplateFromAnswers(answers));
           return this.messagingClient.runQuene().then(() => {

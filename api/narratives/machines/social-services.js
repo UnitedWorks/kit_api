@@ -7,8 +7,8 @@ import { messageToGeodata } from '../../utils/nlp';
 export default {
   waiting_shelter_search: {
     enter() {
-      if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'socialServices.waiting_shelter_search');
-      return hasIntegration(this.get('organization'), INTEGRATIONS.ASK_DARCEL)
+      if (!this.get('address')) return this.stateRedirect('location', 'socialServices.waiting_shelter_search');
+      return hasIntegration(this.snapshot.organization, INTEGRATIONS.ASK_DARCEL)
         .then((integrated) => {
           if (integrated) {
             this.messagingClient.send('What address are you currently at? I want to make sure I give you locations close by.');
@@ -37,7 +37,7 @@ export default {
             });
         });
       }
-      return new KitClient({ organization: this.get('organization') })
+      return new KitClient({ organization: this.snapshot.organization })
         .getAnswer('social_services_shelters').then((answers) => {
           this.messagingClient.addAll(KitClient.genericTemplateFromAnswers(answers));
           return this.messagingClient.runQuene().then(() => this.getBaseState());
@@ -47,8 +47,8 @@ export default {
 
   waiting_food_search: {
     enter() {
-      if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'socialServices.waiting_food_search');
-      return hasIntegration(this.get('organization'), INTEGRATIONS.ASK_DARCEL)
+      if (!this.get('address')) return this.stateRedirect('location', 'socialServices.waiting_food_search');
+      return hasIntegration(this.snapshot.organization, INTEGRATIONS.ASK_DARCEL)
         .then((integrated) => {
           if (integrated) {
             this.messagingClient.send('What address are you currently at? I want to make sure I give you locations close by.');
@@ -77,7 +77,7 @@ export default {
             });
         });
       }
-      return new KitClient({ organization: this.get('organization') })
+      return new KitClient({ organization: this.snapshot.organization })
         .getAnswer('social_services_food_assistance').then((answers) => {
           this.messagingClient.addAll(KitClient.genericTemplateFromAnswers(answers));
           return this.messagingClient.runQuene().then(() => this.getBaseState());
@@ -86,8 +86,8 @@ export default {
   },
   waiting_hygiene_search: {
     enter() {
-      if (!this.get('location') || !this.get('location').address) return this.stateRedirect('location', 'socialServices.waiting_hygiene_search');
-      return hasIntegration(this.get('organization'), INTEGRATIONS.ASK_DARCEL)
+      if (!this.get('address')) return this.stateRedirect('location', 'socialServices.waiting_hygiene_search');
+      return hasIntegration(this.snapshot.organization, INTEGRATIONS.ASK_DARCEL)
         .then((integrated) => {
           if (integrated) {
             this.messagingClient.send('What address are you currently at? I want to make sure I give you locations close by.');
@@ -116,7 +116,7 @@ export default {
             });
         });
       }
-      return new KitClient({ organization: this.get('organization') })
+      return new KitClient({ organization: this.snapshot.organization })
         .getAnswer('social_services_hygiene').then((answers) => {
           this.messagingClient.addAll(KitClient.genericTemplateFromAnswers(answers));
           return this.messagingClient.runQuene().then(() => this.getBaseState());

@@ -5,7 +5,6 @@ import { NarrativeSession } from '../narratives/models';
 import { Constituent, Organization } from '../accounts/models';
 import AWSClient from '../utils/aws';
 import { getBaseState, getOrgNameFromConstituentEntry } from '../narratives/helpers';
-
 import * as clients from '../conversations/clients';
 import { NarrativeSessionMachine } from '../narratives/narrative-session-machine';
 
@@ -60,9 +59,7 @@ function normalizeInput(conversationClient, input) {
     } else if (conversationClient === interfaces.HTTP) {
       newMessageObject = input;
     }
-
     logger.info(input);
-
     // Output reformatted message after transfering external media to our S3
     if (newMessageObject.payload.attachments) {
       Promise.all(newMessageObject.payload.attachments.map((attachment) => {
@@ -72,7 +69,6 @@ function normalizeInput(conversationClient, input) {
             return attachment;
           });
         }
-
         return attachment;
       })).then((attachments) => {
         newMessageObject.payload.attachments = attachments;
@@ -85,14 +81,16 @@ function normalizeInput(conversationClient, input) {
 }
 
 // TODO(youmustfight, nicksahler): We eventually need to filter interface properties too
-function setupConstituentState(constituent, organization, location) {
+function setupConstituentState(constituent, organization) {
   return NarrativeSession.where({
     constituent_id: constituent.id,
   }).fetch().then((model) => {
     if (model !== null && model.toJSON()) {
-      return (Object.assign({}, model.toJSON(), { constituent }));
+      return (Object.assign({}, model.toJSON(), {
+        constituent,
+        organization,
+      }));
     }
-
     const newConstituentState = {
       session_id: uuid(),
       state_machine_name: getBaseState(getOrgNameFromConstituentEntry(constituent), 'machine'),
@@ -104,9 +102,8 @@ function setupConstituentState(constituent, organization, location) {
     };
     if (organization) {
       newConstituentState.organization_id = organization.id;
-      newConstituentState.data_store.organization = organization;
+      newConstituentState.organization = organization;
     }
-    if (location) newConstituentState.data_store.location = location;
     return newConstituentState;
   });
 }
@@ -125,11 +122,9 @@ function normalizeSessionsFromRequest(req, conversationClient) {
         return Constituent.where({ facebook_id: input.sender.id }).fetch().then((model) => {
           return model || new Constituent({ facebook_id: input.sender.id, facebook_entry_id: input.recipient.id }).save();
         }).then((con) => {
-          return con.refresh({ withRelated: ['facebookEntry', 'facebookEntry.organization', 'facebookEntry.organization.location'] }).then((c) => {
+          return con.refresh({ withRelated: ['facebookEntry', 'facebookEntry.organization', 'facebookEntry.organization.address'] }).then((c) => {
             const refreshedCon = c.toJSON();
-            const pulledOrg = refreshedCon.facebookEntry.organization;
-            const pulledLocation = pulledOrg && pulledOrg.location ? pulledOrg.location : null;
-            return setupConstituentState(refreshedCon, pulledOrg, pulledLocation);
+            return setupConstituentState(refreshedCon, refreshedCon.facebookEntry.organization);
           });
         }).then((state) => {
           // Mark: Gets narrative_state snapshot and adds to data store's context?
@@ -144,11 +139,9 @@ function normalizeSessionsFromRequest(req, conversationClient) {
     return Constituent.where({ phone: input.From }).fetch().then((model) => {
       return model || new Constituent({ phone: input.From, entry_phone_number: input.To }).save();
     }).then((con) => {
-      return con.refresh({ withRelated: ['smsEntry', 'smsEntry.organization', 'smsEntry.organization.location'] }).then((c) => {
+      return con.refresh({ withRelated: ['smsEntry', 'smsEntry.organization', 'smsEntry.organization.address'] }).then((c) => {
         const refreshedCon = c.toJSON();
-        const pulledOrg = refreshedCon.smsEntry.organization;
-        const pulledLocation = pulledOrg && pulledOrg.location ? pulledOrg.location : null;
-        return setupConstituentState(refreshedCon, pulledOrg, pulledLocation);
+        return setupConstituentState(refreshedCon, refreshedCon.smsEntry.organization);
       });
     }).then((state) => {
       return normalizeInput(conversationClient, input).then((normalizedInput) => {
@@ -161,28 +154,28 @@ function normalizeSessionsFromRequest(req, conversationClient) {
     Maybe allow a "callback" argument on this end
   */
   } else if (conversationClient === interfaces.HTTP) {
-    return Organization.where({ id: req.query.organization_id }).fetch({ withRelated: ['location']}).then((org) => {
-      let const_promise;
+    return Organization.where({ id: req.query.organization_id }).fetch({ withRelated: ['address'] }).then((org) => {
+      let constPromise;
       if (req.query.constituent_id) {
-        const_promise = Constituent.where({ id: req.query.constituent_id  }).fetch().then((model)=>{
+        constPromise = Constituent.where({ id: req.query.constituent_id }).fetch().then((model) => {
           return model || new Constituent().save();
         });
       } else {
-        const_promise = new Constituent().save();
+        constPromise = new Constituent().save();
       }
-
-      return const_promise.then((constituent) => {
+      return constPromise.then((constituent) => {
         return {
           constituent: constituent.toJSON(), // TODO(nicksahler): Handle anonymous constituent creation (possibility for spam)
-          organization: org.toJSON()
+          organization: org.toJSON(),
         };
       });
-    }).then((data)=>{
-      return setupConstituentState(data.constituent, data.organization, data.organization.location);
-    }).then((state)=>{
+    }).then((data) => {
+      return setupConstituentState(data.constituent, data.organization);
+    })
+    .then((state) => {
       return normalizeInput(conversationClient, input).then((normalizedInput) => {
         return [].concat(Object.assign(state, { input: normalizedInput }));
-      })
+      });
     });
   }
 }

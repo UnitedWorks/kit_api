@@ -22,7 +22,7 @@ export default {
   },
   makers() {
     const message = randomPick([
-      `${this.get('organization').name} working with Hey Mayor! (https://mayor.chat)`,
+      `${this.snapshot.organization.name} working with Hey Mayor! (https://mayor.chat)`,
       'Mark and Nick! 📷 → instagram.com/heymayor',
     ]);
     this.messagingClient.send(message);
@@ -67,7 +67,7 @@ export default {
   },
   async weather() {
     const forecast = await new WeatherClient().dayForecast(
-      this.get('organization').location.lat, this.get('organization').location.lon).then(f => f);
+      this.snapshot.organization.address.location.coordinates[0], this.snapshot.organization.address.location.coordinates[1]).then(f => f);
     const quickReplies = [];
     if (this.get('notifications') && !this.get('notifications').weather) {
       quickReplies.push(QUICK_REPLIES.weatherOn);

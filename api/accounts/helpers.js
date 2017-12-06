@@ -4,7 +4,7 @@ import { Constituent, Organization, Representative } from './models';
 
 export const createOrganization = (organizationModel, options = {}) => {
   return Organization.forge(organizationModel).save(null, { method: 'insert' }).then((model) => {
-    return model.refresh({ withRelated: ['location', 'integrations'] }).then((refreshedModel) => {
+    return model.refresh({ withRelated: ['address', 'integrations'] }).then((refreshedModel) => {
       return options.returnJSON ? refreshedModel.toJSON() : refreshedModel;
     });
   }).catch(error => error);
@@ -26,7 +26,7 @@ export const getGovernmentOrganizationAtLocation = (geoData, options = {}) => {
       if (res.length === 1) {
         const orgJSON = JSON.parse(JSON.stringify(res[0]));
         return Organization.where({ id: orgJSON.id })
-          .fetch({ withRelated: ['location', 'integrations', 'messageEntries'] })
+          .fetch({ withRelated: ['address', 'integrations', 'messageEntries'] })
           .then(model => (options.returnJSON ? model.toJSON() : model));
       }
       return null;
@@ -36,7 +36,7 @@ export const getGovernmentOrganizationAtLocation = (geoData, options = {}) => {
 
 export const checkForAdminOrganizationAtLocation = (geoData) => {
   let query = knex('organizations').select('*')
-    .join('locations', 'organizations.location_id', 'locations.id');
+    .join('addresss', 'organizations.address_id', 'addresss.id');
   if (geoData.address.city) {
     query = query.whereRaw("address->>'city'=?", geoData.address.city);
   } else if (geoData.address.town) {

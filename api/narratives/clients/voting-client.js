@@ -16,11 +16,11 @@ export default class VotingClient {
       },
     });
     // Setup config variables
-    const city = config.location.address.city || config.location.address.town;
-    const county = config.location.address.county;
-    const state = config.location.address.state;
+    const city = config.address.city || config.address.town;
+    const county = config.address.county;
+    const state = config.address.state;
     this.locations = {
-      original: config.location,
+      original: config.address,
       openStreetMap: {
         county: county ? county.toLowerCase().replace(/\s/g, '_') : null,
         state: state ? state.toLowerCase() : null,

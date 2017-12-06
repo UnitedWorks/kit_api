@@ -29,7 +29,7 @@ Example Feed script code:
         url: 'http://www.jerseycitynj.gov/calendar',
         name: e.Title,
         location: {
-          display_name: e.Location,
+          name: e.Location,
         },
         availabilitys: [{
           t_start: new Date(`${e.StartHour}:${e.StartMinute} ${e.StartMonth}/${e.StartDayOfMonth}/${e.StartYear}`),
@@ -47,8 +47,8 @@ export function veventToEvent(vevent) {
     description: vevent.description,
     organization_id: vevent.organization_id,
     url: vevent.url,
-    location: {
-      display_name: vevent.location,
+    address: {
+      name: vevent.location,
     },
     availabilitys: [{
       t_start: vevent.start,

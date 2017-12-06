@@ -30,7 +30,7 @@ export const nlp = {
   },
 };
 
-export const messageToGeodata = (input, userLocation) => {
+export const messageToGeodata = (input, userAddress) => {
   // Get Text
   return nlp.message(input).then((nlpData) => {
     if (!nlpData.entities.location) return null;
@@ -39,9 +39,9 @@ export const messageToGeodata = (input, userLocation) => {
     return geocoder(locationString).then((geoData) => {
       const geoSuggestion = geoData.length ? geoData[0] : {};
       // If our geodata isn't in the same city, get more specifics
-      if (userLocation && geoSuggestion.address.city !== userLocation.address.city) {
-        logger.info(`Require more specific location. Join user locaiton to provided address = ${locationString}, ${userLocation.address.city} ${userLocation.address.country}`);
-        return geocoder(`${locationString}, ${userLocation.address.city} ${userLocation.address.country}`)
+      if (userAddress && geoSuggestion.city !== userAddress.city) {
+        logger.info(`Require more specific location. Joined user locaiton to provided address = ${locationString}, ${userAddress.city} ${userAddress.country}`);
+        return geocoder(`${locationString}, ${userAddress.city} ${userAddress.country}`)
           .then(refinedGeoData => refinedGeoData[0]);
       }
       return geoSuggestion;

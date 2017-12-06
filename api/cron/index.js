@@ -64,12 +64,12 @@ async function todaysEvents() {
 }
 
 export async function todaysForecast() {
-  const organizations = await Organization.fetchAll({ withRelated: ['location'] }).then(o => o.toJSON());
+  const organizations = await Organization.fetchAll({ withRelated: ['address'] }).then(o => o.toJSON());
   const weatherDeck = {};
   for (let i = 0; i < organizations.length; i += 1) {
-    if (organizations[i].location) {
+    if (organizations[i].address) {
       weatherDeck[organizations[i].id] = await new WeatherClient().dayForecast(
-        organizations[i].location.lat, organizations[i].location.lon).then(f => f);
+        organizations[i].address.location.coordinates[0], organizations[i].address.location.coordinates[1]).then(f => f);
     }
   }
   return weatherDeck;

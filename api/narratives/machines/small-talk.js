@@ -32,9 +32,9 @@ export default {
       let firstName;
       this.messagingClient.addToQuene(i18n('intro_hello', { firstName }));
       this.messagingClient.addToQuene(intoTemplates);
-      this.messagingClient.addToQuene(i18n('intro_information', { organizationName: this.get('organization').name }), [replyTemplates.allNotificationsOn]);
+      this.messagingClient.addToQuene(i18n('intro_information', { organizationName: this.snapshot.organization.name }), [replyTemplates.allNotificationsOn]);
       return this.messagingClient.runQuene().then(() => {
-        if (!this.get('organization')) return this.stateRedirect('location', 'smallTalk.start');
+        if (!this.snapshot.organization) return this.stateRedirect('location', 'smallTalk.start');
         return 'start';
       });
     },
@@ -178,7 +178,7 @@ export default {
     } else {
       this.snapshot.nlp.entities.category_labels.forEach(entity => labels.push(entity.value));
     }
-    const hasSeeClickFix = await hasIntegration(this.get('organization'), INTEGRATIONS.SEE_CLICK_FIX).then(bool => bool);
+    const hasSeeClickFix = await hasIntegration(this.snapshot.organization, INTEGRATIONS.SEE_CLICK_FIX).then(bool => bool);
     return getCategoryFallback(labels, this.snapshot.organization_id).then((fallbackData) => {
       // See if we have fallback persons
       if (fallbackData.persons.length === 0) {

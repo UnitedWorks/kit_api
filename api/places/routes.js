@@ -11,13 +11,13 @@ router.route('/')
   .get((req, res) => {
     const whereFilters = {};
     if (req.query.organization_id) whereFilters.organization_id = req.query.organization_id;
-    Place.where(whereFilters).fetchAll({ withRelated: ['location', 'phones'] })
+    Place.where(whereFilters).fetchAll({ withRelated: ['addresses', 'phones'] })
       .then((placeArray) => {
         res.status(200).send({ places: placeArray });
       });
   })
   .post((req, res, next) => {
-    createPlace(req.body.place, req.body.organization, req.body.place.location,
+    createPlace(req.body.place, req.body.organization,
       { returnJSON: true })
       .then(place => res.status(200).send({ place }))
       .catch(err => next(err));

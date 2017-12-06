@@ -1,4 +1,5 @@
 import stringSimilarity from 'string-similarity';
+import { logger } from '../logger';
 import { knex } from '../orm';
 import * as env from '../env';
 import { Representative } from '../accounts/models';
@@ -30,8 +31,8 @@ export async function getAnswers(params = {}, options = { returnJSON: true }) {
   const data = await KnowledgeQuestion.where({ label: params.label }).fetch({
     withRelated: [{
       answers: q => q.where('organization_id', params.organization_id).whereNotNull('approved_at'),
-    }, 'category', 'answers.place', 'answers.place.location', 'answers.service',
-      'answers.service.location', 'answers.person', 'answers.feed', 'answers.media'],
+    }, 'category', 'answers.place', 'answers.place.addresses', 'answers.service',
+      'answers.service.addresses', 'answers.person', 'answers.feed', 'answers.media'],
   }).then(d => d);
   if (!options.returnJSON) return data.get('answers');
   if (data == null) return {};
@@ -76,14 +77,14 @@ export async function searchEntitiesBySimilarity(strings = [], organizationId, o
   // Postgres UNION ALL could make this more efficient... but hit a snag with results columns
   const searchFunctions = [];
   strings.forEach((str) => {
-    searchFunctions.push(knex.select(knex.raw(`*, similarity(name, '${str}') as similarity`)).from('services').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10).leftJoin('locations', 'services.location_id', '=', 'locations.id')
+    searchFunctions.push(knex.select(knex.raw(`*, similarity(name, '${str}') as similarity`)).from('services').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10)
       .then(d => d.map(s => ({ type: 'service', payload: { ...s, location: { display_name: s.display_name, address: s.address } } })).filter(s => s.payload.similarity > options.confidence)));
-    searchFunctions.push(knex.select(knex.raw(`*, similarity(unnest(alternate_names), '${str}') AS similarity`)).from('services').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10).leftJoin('locations', 'services.location_id', '=', 'locations.id')
+    searchFunctions.push(knex.select(knex.raw(`*, similarity(unnest(alternate_names), '${str}') AS similarity`)).from('services').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10)
       .then(d => d.map(s => ({ type: 'service', payload: { ...s, location: { display_name: s.display_name, address: s.address } } })).filter(s => s.payload.similarity > options.confidence)));
 
-    searchFunctions.push(knex.select(knex.raw(`*, similarity(name, '${str}') as similarity`)).from('places').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10).leftJoin('locations', 'places.location_id', '=', 'locations.id')
+    searchFunctions.push(knex.select(knex.raw(`*, similarity(name, '${str}') as similarity`)).from('places').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10)
       .then(d => d.map(f => ({ type: 'place', payload: { ...f, location: { display_name: f.display_name, address: f.address } } })).filter(f => f.payload.similarity > options.confidence)));
-    searchFunctions.push(knex.select(knex.raw(`*, similarity(unnest(alternate_names), '${str}') AS similarity`)).from('places').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10).leftJoin('locations', 'places.location_id', '=', 'locations.id')
+    searchFunctions.push(knex.select(knex.raw(`*, similarity(unnest(alternate_names), '${str}') AS similarity`)).from('places').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10)
       .then(d => d.map(f => ({ type: 'place', payload: { ...f, location: { display_name: f.display_name, address: f.address } } })).filter(f => f.payload.similarity > options.confidence)));
 
     searchFunctions.push(knex.select(knex.raw(`*, similarity(name, '${str}') as similarity`)).from('persons').where('organization_id', '=', organizationId).orderBy('similarity', 'desc').limit(10)
@@ -476,7 +477,7 @@ export async function answerQuestion(organization, question, answers) {
         approved_at: null,
         actions: cleanedActions,
       }));
-      if (answer.actions.shout_out && cleanedConfig) {
+      if (answer.actions && answer.actions.shout_out && cleanedConfig) {
         answerInserts.push(knex('shout_out_triggers').where({ organization_id: organization.id, label: cleanedActions.shout_out }).del()
           .then(() => knex('shout_out_triggers').insert({
             organization_id: organization.id,

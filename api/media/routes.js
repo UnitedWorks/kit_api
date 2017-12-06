@@ -12,7 +12,7 @@ router.route('/')
     const filters = {};
     if (req.query.media_id) filters.id = req.query.media_id;
     if (req.query.organization_id) filters.organization_id = req.query.organization_id;
-    Media.where(filters).fetchAll({ withRelated: [] })
+    Media.where(filters).fetchAll()
       .then((fetched) => {
         if (fetched) {
           res.status(200).send({ media: fetched.toJSON() });

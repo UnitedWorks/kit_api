@@ -64,9 +64,9 @@ function missingQuestionEmail(representatives, session, question) {
   representatives.forEach((rep) => {
     repEmails.push({ name: rep.name, email: rep.email });
   });
-  const emailMessage = `<b>"${question.question}"</b> ... was asked by a constituent but we don't seem to have an answer!<br/><br/><a href="${env.getDashboardRoot()}/answer?organization_id=${session.get('organization').id}&knowledge_question_id=${question.id}" target="_blank">Create an Answer!</a><br><br> If you have questions, send <a href="mailto:mark@mayor.chat">us</a> an email!`;
-  new EmailService().send(`🤖 Missing Answer for "${question.question}" QID:${question.id} OID:${session.get('organization').id}`, emailMessage, repEmails, {
-    organization_id: session.get('organization').id,
+  const emailMessage = `<b>"${question.question}"</b> ... was asked by a constituent but we don't seem to have an answer!<br/><br/><a href="${env.getDashboardRoot()}/answer?organization_id=${session.snapshot.organization.id}&knowledge_question_id=${question.id}" target="_blank">Create an Answer!</a><br><br> If you have questions, send <a href="mailto:mark@mayor.chat">us</a> an email!`;
+  new EmailService().send(`🤖 Missing Answer for "${question.question}" QID:${question.id} OID:${session.snapshot.organization.id}`, emailMessage, repEmails, {
+    organization_id: session.snapshot.organization.id,
     knowledge_question_id: question.id,
   });
 }
@@ -75,7 +75,7 @@ function missingQuestionEmail(representatives, session, question) {
 export async function fetchAnswers(intent, session) {
   const entities = session.snapshot.nlp.entities;
   /*TODO(nicksahler) Move this higher up (into the filter argument) to clean + validate [wit makes this prone to crashing] */
-  const { question, answers, altQuestions } = await new KitClient({ organization: session.get('organization') }).getAnswer(intent).then(answerGroup => answerGroup);
+  const { question, answers, altQuestions } = await new KitClient({ organization: session.snapshot.organization }).getAnswer(intent).then(answerGroup => answerGroup);
 
   /*
    * If alternative questions, respond with those
@@ -90,11 +90,11 @@ export async function fetchAnswers(intent, session) {
   } else if (!answers || (!answers.text && !answers.actions && !answers.places &&
     !answers.services && !answers.persons && !answers.feeds)) {
     const shoutOutTemplate = shoutOutLogic.ready[intent];
-    const fallback = await getCategoryFallback([intent.split('.')[0]], session.get('organization').id).then(fbd => fbd);
+    const fallback = await getCategoryFallback([intent.split('.')[0]], session.snapshot.organization.id).then(fbd => fbd);
     // Check Shout Out
     if (shoutOutTemplate) {
       // If Integration Overriding Shout Out Exists, run it
-      const hasSeeClickFix = await getIntegrations({ organization: { id: session.get('organization').id } })
+      const hasSeeClickFix = await getIntegrations({ organization: { id: session.snapshot.organization.id } })
         .then((ints) => {
           const filtered = ints.filter(i => i.label === INTEGRATIONS.SEE_CLICK_FIX);
           return filtered[0] && filtered[0].enabled;
@@ -162,7 +162,7 @@ export async function fetchAnswers(intent, session) {
       .concat(answers.places.filter(entity => KitClient.entityAvailabilityToText('place', entity, { datetime: entities[TAGS.DATETIME], constituentAttributes: session.get('attributes') })));
     const locationServices = timelyServices.filter(s => s.availabilitys.filter(a => a.geo).length > 0);
     // If we're going to need a location, abort entirely and set default constituent location
-    if (locationServices.length > 0 && (!session.get('attributes') || !session.get('attributes').default_location)) {
+    if (locationServices.length > 0 && (!session.get('attributes') || !session.get('attributes').address)) {
       session.messagingClient.addToQuene(i18n('get_home_location', { name: locationServices[0].name }), [replyTemplates.location, replyTemplates.exit]);
       requestLocation = true;
     } else {

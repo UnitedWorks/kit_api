@@ -8,7 +8,7 @@ const router = new Router();
  */
 router.route('/')
   .get((req, res) => {
-    Event.fetchAll()
+    Event.fetchAll({ withRelated: ['address'] })
       .then((eventsArray) => {
         res.status(200).send({ events: eventsArray });
       });

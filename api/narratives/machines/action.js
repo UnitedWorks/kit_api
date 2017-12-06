@@ -2,7 +2,7 @@ import { nlp } from '../../utils/nlp';
 import * as PROMPT_CONSTANTS from '../../constants/prompts';
 import * as replyTemplates from '../templates/quick-replies';
 import { createShoutOut, promptStepsToParamValues } from '../../shouts/helpers';
-import { createLocation } from '../../geo/helpers';
+import { createAddress } from '../../geo/helpers';
 
 export default {
 
@@ -99,11 +99,11 @@ export default {
               this.snapshot.input.payload.attachments[0] : null;
             // Is text
             if (!location && this.snapshot.input.payload.text) {
-              location = await createLocation(this.snapshot.input.payload.text,
+              location = await createAddress(this.snapshot.input.payload.text,
                 { returnJSON: true }).then(json => json);
             // Is FB Object Attachment
             } else if (location && location.payload) {
-              location = await createLocation({
+              location = await createAddress({
                 lat: location.payload.coordinates.lat,
                 lon: location.payload.coordinates.long,
               }, { returnJSON: true }).then(json => json);

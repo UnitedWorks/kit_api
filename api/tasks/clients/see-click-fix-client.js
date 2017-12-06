@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { knex } from '../../orm';
 import { PENDING, COMPLETED } from '../../constants/tasks';
+import { addressToString } from '../../geo/helpers';
 
 export default class SeeClickFix {
   constructor() {
@@ -19,7 +20,7 @@ export default class SeeClickFix {
         answers.description = `Image: ${images[0].payload.url}`;
       }
       const payload = {
-        address: location.display_name,
+        address: addressToString(location.address.address),
         lat: String(location.lat),
         lng: String(location.lon),
         answers,

@@ -1,11 +1,11 @@
 import { bookshelf } from '../orm';
-import { Location } from '../knowledge-base/models';
+import { Address } from '../geo/models';
 import { Phone } from '../phones/models';
 
 export const Service = bookshelf.Model.extend({
   tableName: 'services',
-  location() {
-    return this.belongsTo(Location, 'location_id');
+  addresses() {
+    return this.belongsToMany(Address, 'addresss_entity_associations', 'service_id', 'address_id');
   },
   phones() {
     return this.belongsToMany(Phone, 'phones_entity_associations');

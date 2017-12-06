@@ -1,5 +1,4 @@
-import wkx from 'wkx';
-import { bookshelf, knex, st } from '../orm';
+import { bookshelf } from '../orm';
 import { Vehicle } from '../vehicles/models';
 
 export const Trip = bookshelf.Model.extend({

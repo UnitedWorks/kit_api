@@ -1,9 +1,8 @@
 import { Router } from 'express';
 import geocoder from '../utils/geocoder';
-import * as OSM from '../constants/open-street-maps';
 import * as helpers from './helpers';
 import { logger } from '../logger';
-import { saveLocation } from '../geo/helpers';
+import { createAddress } from '../geo/helpers';
 import { Representative, Organization } from './models';
 import { requireAuth } from '../utils/passport';
 import SlackService from '../utils/slack';
@@ -12,13 +11,13 @@ const router = new Router();
 
 // Organizations
 router.get('/organization', (req, res) => {
-  Organization.where({ id: req.query.id }).fetch({ withRelated: ['location', 'integrations', 'messageEntries'] }).then((organization) => {
+  Organization.where({ id: req.query.id }).fetch({ withRelated: ['address', 'addresses', 'integrations', 'messageEntries'] }).then((organization) => {
     res.status(200).send({ organization });
   });
 });
 
 router.get('/organizations', requireAuth, (req, res) => {
-  Organization.fetchAll({ withRelated: ['location', 'integrations', 'messageEntries'] }).then((orgs) => {
+  Organization.fetchAll({ withRelated: ['addresses', 'integrations', 'messageEntries'] }).then((orgs) => {
     res.status(200).send({ organizations: orgs });
   });
 });
@@ -44,7 +43,7 @@ router.post('/organization', requireAuth, (req, res, next) => {
   const organization = req.body.organization;
   if (!organization.type) organization.type = 'government';
   // Get location
-  geocoder(`${address.city}, ${address.state}, ${address.country}`, [OSM.ADMINISTRATIVE, OSM.CITY, OSM.TOWN, OSM.HAMLET])
+  geocoder(`${address.city}, ${address.state}, ${address.country}`)
     .then((geoData) => {
       if (geoData.length === 0) {
         return next('No locations found.');
@@ -53,7 +52,7 @@ router.post('/organization', requireAuth, (req, res, next) => {
         if (orgExists) {
           return next('A city in that state seems to have already been registered.');
         } else {
-          saveLocation(geoData[0], { returnJSON: true }).then((location) => {
+          createAddress(geoData[0], { returnJSON: true }).then((location) => {
             const orgWithLocation = Object.assign(organization, { location_id: location.id });
             // Create organization
             helpers.createOrganization(orgWithLocation, { returnJSON: true })

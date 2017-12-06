@@ -1,6 +1,5 @@
 import bcrypt from 'bcrypt-nodejs';
 import { bookshelf } from '../orm';
-import * as KnowledgeModels from '../knowledge-base/models';
 import { Task } from '../tasks/models';
 import * as IntegrationModels from '../integrations/models';
 import * as ConversationModels from '../conversations/models';
@@ -9,6 +8,7 @@ import { Place } from '../places/models';
 import { Person } from '../persons/models';
 import { Vehicle } from '../vehicles/models';
 import { Phone } from '../phones/models';
+import { Address } from '../geo/models';
 
 export const Representative = bookshelf.Model.extend({
   tableName: 'representatives',
@@ -56,8 +56,11 @@ export const Organization = bookshelf.Model.extend({
   integrations() {
     return this.belongsToMany(IntegrationModels.Integration, 'organizations_integrations');
   },
-  location() {
-    return this.belongsTo(KnowledgeModels.Location, 'location_id');
+  address() {
+    return this.hasOne(Address, 'organization_id');
+  },
+  addresses() {
+    return this.belongsToMany(Address, 'addresss_entity_associations', 'organization_id', 'address_id');
   },
   messageEntries() {
     return this.hasMany(ConversationModels.MessageEntry, 'organization_id');
