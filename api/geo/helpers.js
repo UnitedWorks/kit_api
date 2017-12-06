@@ -3,25 +3,14 @@ import { Address } from './models';
 import geocoder from '../utils/geocoder';
 
 export function addressToString(address) {
-  return `${address.address_1}, ${address.city}${address.region ? `, ${address.region} ` : ' '}${address.state} ${address.country}`;
+  return `${address.address_1}, ${address.city || ''}${address.region ? `, ${address.region} ` : ' '}${address.state || ''} ${address.country || ''}`;
 }
 
-export async function getCoordinatesForAddress(address) {
-  if (!address) return null;
-  const addressObj = address.address ? address.address : address;
-  // Grab LAT/LON for this address and attach
-  const geocoded = await geocoder(addressToString(addressObj)).then(g => g);
-  return {
-    ...address,
-    location: geocoded.lat && geocoded.lon ? [geocoded.lat, geocoded.lon] : null,
-  };
-}
-
-export async function getGeomPointTextForAddress(address) {
-  const coords = !address.lat || !address.lon
-    ? await getCoordinatesForAddress(address).location
-    : [address.lat, address.lon];
-  return `ST_PointFromText('POINT'${coords[0]}, ${coords[1]},4326)`;
+export function getGeomPointTextForAddress(address) {
+  if (address.location && address.location.coordinates) {
+    return `ST_PointFromText('POINT(${address.location.coordinates[0]} ${address.location.coordinates[1]})',4326)`;
+  }
+  return null;
 }
 
 export async function crudEntityAddresses(relation, addresses) {
@@ -37,17 +26,19 @@ export async function crudEntityAddresses(relation, addresses) {
   } else {
     // Create/Update All Addresses, Returning IDs (Delete if no numbers exist)
     const newAddressIds = await Promise.all(addresses.map((address) => {
-      if (address.id) {
-        Address.where({ id: address.id }).save({
+      const pointText = getGeomPointTextForAddress(address);
+      if (pointText) {
+        return Address.where({ id: address.id }).save({
           ...address,
-          location: bookshelf.knex.raw(getGeomPointTextForAddress(address)),
+          location: bookshelf.knex.raw(pointText),
         }, { method: 'update', patch: true }).then(a => a.id);
-      } else {
-        Address.forge({
-          ...address,
-          location: bookshelf.knex.raw(getGeomPointTextForAddress(address)),
-        }).save(null, { method: 'insert' }).then(p => p.id);
       }
+      return geocoder(addressToString(address)).then((newAddress) => {
+        return Address.forge({
+          ...newAddress,
+          location: bookshelf.knex.raw(getGeomPointTextForAddress(newAddress)),
+        }).save(null, { method: 'insert' }).then(p => p.id);
+      });
     })).then(ids => ids.filter(i => i));
     // Create relations between phones/entities
     knex('addresss_entity_associations').where(relation).del()

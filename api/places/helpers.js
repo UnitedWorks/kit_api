@@ -24,10 +24,10 @@ export async function createPlace(place, organization, options) {
 }
 
 export async function updatePlace(place, options) {
-  const cleanedPlace = place;
+  const cleanedPlace = Object.assign({}, place);
   delete cleanedPlace.phones;
   delete cleanedPlace.addresses;
-  return Place.forge(cleanedPlace).save(null, { method: 'update', patch: true })
+  return Place.where({ id: cleanedPlace.id }).save(cleanedPlace, { method: 'update', patch: true })
     .then((placeData) => {
       crudEntityPhones({ place_id: placeData.id }, place.phones);
       crudEntityAddresses({ place_id: placeData.id }, place.addresses);
