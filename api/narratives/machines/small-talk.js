@@ -158,10 +158,14 @@ export default {
 
   async failed_request() {
     // Analytics & Notifications
-    new SlackService({
-      username: 'Misunderstood Request',
-      icon: 'question',
-    }).send(`>*Con. ${this.snapshot.constituent_id}:* "${this.snapshot.input.payload.text}"\n>*Org*: ${this.snapshot.data_store.organization.name} -- *Interface*: ${this.snapshot.constituent.facebookEntry ? 'Facebook' : 'Web'}`);
+    try {
+      new SlackService({
+        username: 'Misunderstood Request',
+        icon: 'question',
+      }).send(`>*Con. ${this.snapshot.constituent_id}:* "${this.snapshot.input.payload.text}"\n>*Org*: ${this.snapshot.organization.name} -- *Interface*: ${this.snapshot.constituent.facebookEntry ? 'Facebook' : 'Web'}`);
+    } catch (e) {
+      logger.error(e);
+    }
     EventTracker('constituent_input_failure', { session: this });
     // Handle Failure
     const firstFailMessage = randomPick([
