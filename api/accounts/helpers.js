@@ -76,18 +76,22 @@ export const createRepresentative = (rep, org, options = {}) => {
     // If no password is in use, update
     } else if (foundRep && !foundRep.get('password')) {
       return changePassword(repObj).then((updatedRep) => {
-        return updatedRep.refresh({ withRelated: ['organization', 'organization.integrations', 'organization.messageEntries'] })
+        return updatedRep.refresh({ withRelated: ['organization', 'organization.address', 'organization.integrations', 'organization.messageEntries'] })
           .then((populatedRep) => {
-            return options.returnJSON ? populatedRep.toJSON() : populatedRep;
+            const cleanedRep = Object.assign({}, populatedRep.toJSON());
+            delete cleanedRep.password;
+            return cleanedRep;
           }).catch((error) => { throw new Error(error); });
       }).catch((error) => { throw new Error(error); });
     // Otherwise, create a new rep
     } else {
       return Representative.forge(repObj).save(null, { method: 'insert' }).then((createdRep) => {
         if (!org) return options.returnJSON ? createdRep.toJSON() : createdRep;
-        return createdRep.refresh({ withRelated: ['organization'] })
+        return createdRep.refresh({ withRelated: ['organization', 'organization.address', 'organization.integrations', 'organization.messageEntries'] })
           .then((populatedRep) => {
-            return options.returnJSON ? populatedRep.toJSON() : populatedRep;
+            const cleanedRep = Object.assign({}, populatedRep.toJSON());
+            delete cleanedRep.password;
+            return cleanedRep;
           }).catch((error) => { throw new Error(error); });
       }).catch((error) => { throw new Error(error); });
     }
