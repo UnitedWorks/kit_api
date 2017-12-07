@@ -285,7 +285,7 @@ export function genericEvent(event) {
 
   const buttons = [];
   if (event.location || event.address) {
-    const coords = event.location.coordinates || getCoordinatesFromAddress(event.address);
+    const coords = event.location ? event.location.coordinates : getCoordinatesFromAddress(event.address);
     if (coords) {
       buttons.push({
         type: 'web_url',

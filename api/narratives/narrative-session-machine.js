@@ -175,7 +175,10 @@ export class NarrativeSessionMachine extends StateMachine {
     const self = this;
     return NarrativeSession.where({ session_id: self.snapshot.session_id }).fetch().then((existingStore) => {
       const attributes = {
-        constituent_id: self.snapshot.constituent.id,
+        constituent_id: self.snapshot.constituent
+          ? self.snapshot.constituent.id : self.snapshot.constituent_id,
+        organization_id: self.snapshot.organization
+          ? self.snapshot.organization.id : self.snapshot.organization_id,
         session_id: self.snapshot.session_id,
         state_machine_name: self.snapshot.state_machine_name,
         state_machine_previous_state: self.previous,
@@ -184,21 +187,16 @@ export class NarrativeSessionMachine extends StateMachine {
       };
 
       // If an organization was set, put the ID on the session object
-      if (!self.get('organization')) {
-        attributes.organization_id = null;
-      } else if (self.get('organization')) {
-        attributes.organization_id = self.get('organization').id || null;
+      if (self.snapshot.organization) {
+        attributes.organization_id = self.snapshot.organization.id || null;
       // If no org is assigned org, default associate the entry point org id
-      } else if (!self.get('organization') && self.snapshot.constituent.facebookEntry) {
+      } else if (!self.snapshot.organization && self.snapshot.constituent.facebookEntry) {
         attributes.organization_id = self.snapshot.constituent.facebookEntry.organization_id;
-      } else if (!self.get('organization') && self.snapshot.constituent.smsEntry) {
+      } else if (!self.snapshot.organization && self.snapshot.constituent.smsEntry) {
         attributes.organization_id = self.snapshot.constituent.smsEntry.organization_id;
       }
 
-      if (existingStore) {
-        attributes.id = existingStore.attributes.id;
-      }
-
+      if (existingStore) attributes.id = existingStore.attributes.id;
       return NarrativeSession.forge(attributes).save(null, null).then(() => {});
     });
   }

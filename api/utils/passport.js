@@ -10,11 +10,17 @@ const localLogin = new LocalStrategy(localOptions, (email, password, done) => {
   Representative.where({ email })
     .fetch({ withRelated: ['organization', 'organization.address', 'organization.integrations', 'organization.messageEntries'] })
     .then((foundRep) => {
-      if (!foundRep) done(null, false);
-      comparePassword(foundRep.toJSON(), password).then((isMatch) => {
-        if (!isMatch) return done(null, false);
-        done(null, foundRep.toJSON());
-      }).catch(err => done(err));
+      if (!foundRep) {
+        done(null, false);
+      } else {
+        comparePassword(foundRep.toJSON(), password).then((isMatch) => {
+          if (!isMatch) {
+            done(null, false);
+          } else {
+            done(null, foundRep.toJSON());
+          }
+        }).catch(err => done(err));
+      }
     }).catch(err => done(err));
 });
 
