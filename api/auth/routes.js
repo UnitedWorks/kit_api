@@ -1,11 +1,22 @@
 import { Router } from 'express';
-import { requireSignIn } from '../utils/passport';
+import { requireSignIn, requireAuth } from '../utils/passport';
 import { tokenForUser } from './helpers';
 import SlackService from '../utils/slack';
 import { logger } from '../logger';
 import { createRepresentative } from '../accounts/helpers';
 
 const router = new Router();
+
+router.get('/', requireAuth, (req, res, next) => {
+  try {
+    res.status(200).send({
+      representative: req.user,
+      organization: req.user.organization,
+    });
+  } catch (e) {
+    next(e);
+  }
+});
 
 router.post('/signin', requireSignIn, (req, res, next) => {
   try {

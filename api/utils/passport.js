@@ -8,7 +8,7 @@ import { comparePassword } from '../auth/helpers';
 const localOptions = { usernameField: 'email' };
 const localLogin = new LocalStrategy(localOptions, (email, password, done) => {
   Representative.where({ email })
-    .fetch({ withRelated: ['organization', 'organization.integrations', 'organization.messageEntries'] })
+    .fetch({ withRelated: ['organization', 'organization.address', 'organization.integrations', 'organization.messageEntries'] })
     .then((foundRep) => {
       if (!foundRep) done(null, false);
       comparePassword(foundRep.toJSON(), password).then((isMatch) => {
@@ -24,7 +24,7 @@ const jwtOptions = {
   secretOrKey: process.env.TOKEN_SECRET,
 };
 const jwtLogin = new JwtStrategy(jwtOptions, (payload, done) => {
-  Representative.where({ id: payload.sub }).fetch({ withRelated: ['organization', 'organization.integrations', 'organization.messageEntries'] })
+  Representative.where({ id: payload.sub }).fetch({ withRelated: ['organization', 'organization.address', 'organization.integrations', 'organization.messageEntries'] })
     .then((foundRep) => {
       if (foundRep) {
         done(null, foundRep.toJSON());
