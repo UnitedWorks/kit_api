@@ -2,8 +2,26 @@ import { bookshelf, knex } from '../orm';
 import { Address } from './models';
 import geocoder from '../utils/geocoder';
 
+export function getMapsViewUrl(payload, type = 'name') {
+  if (type === 'coordinates' && payload.length) {
+    return `https://www.google.com/maps/@${payload[0]},${payload[1]}`;
+  }
+  const formattedString = payload.replace(/\s/, '+');
+  return `https://www.google.com/maps/place/${formattedString}`;
+}
+
 export function addressToString(address) {
+  if (!address) return null;
+  if (typeof address === 'string') return address;
   return `${address.address_1}, ${address.city || ''}${address.region ? `, ${address.region} ` : ' '}${address.state || ''} ${address.country || ''}`;
+}
+
+export function getCoordinatesFromAddress(address) {
+  if (!address) return null;
+  if (address.location) {
+    return address.location.coordinates;
+  }
+  return null;
 }
 
 export function getGeomPointTextForAddress(address) {
@@ -47,25 +65,19 @@ export async function crudEntityAddresses(relation, addresses) {
 }
 
 export async function createAddress(address, options = { returnJSON: true }) {
-  // If already geocoded, just forge (should have formatting + coordinates from geocoder)
-  if (address.location || address.address) {
-    return await Address.forge(address).save(null, { method: 'insert' })
-      .then(data => (options.returnJSON ? data.toJSON() : data));
-  // Otherwise, run geocode and format/forge
+  if (!address) return null;
+  // Was this address geocoded already?
+  const pointText = getGeomPointTextForAddress(address);
+  if (pointText) {
+    return Address.forge({
+      ...address,
+      location: bookshelf.knex.raw(pointText),
+    }).save().then(a => (options.returnJSON ? a.toJSON() : a));
   }
-  let geocodedObj = null;
-  // If given a string
-  if (typeof address === 'string') {
-    geocodedObj = await geocoder(address).then(g => g);
-  // If given an address object
-  } else if (address.address) {
-    geocodedObj = await geocoder(addressToString(address.address)).then(g => g);
-  } else if (address.lat && address.lon) {
-    geocodedObj = await geocoder(`${address.lat}, ${address.lon}`).then(g => g);
-  }
-  return Address.forge({
-    ...address,
-    location: geocodedObj ? bookshelf.knex.raw(getGeomPointTextForAddress(geocodedObj)) : null,
-  }).save(null, { method: 'insert' })
-  .then(add => (options.returnJSON ? add.toJSON() : add));
+  // If not, geocode!
+  return geocoder(typeof address === 'string' ? address : addressToString(address))
+    .then(newAddress => Address.forge({
+      ...newAddress,
+      location: bookshelf.knex.raw(getGeomPointTextForAddress(newAddress)),
+    }).save().then(a => (options.returnJSON ? a.toJSON() : a)));
 }

@@ -1,6 +1,5 @@
 import moment from 'moment';
-import { getPlacesUrl } from '../../utils';
-import { addressToString } from '../../geo/helpers';
+import { addressToString, getCoordinatesFromAddress, getMapsViewUrl } from '../../geo/helpers';
 import { ILLUSTRATION_URLS } from './assets';
 
 export const genericSanitation = {
@@ -199,12 +198,16 @@ export function genericPlace(place) {
     subtitle: `${place.brief_description}`,
   };
   const buttons = [];
-  if (place.hasOwnProperty('addresses') && place.addresses != null) {
-    buttons.push({
-      type: 'web_url',
-      title: 'View on Map',
-      url: getPlacesUrl(addressToString(place.addresses[0])),
-    });
+  if (place.address || (place.addresses && place.addresses.length > 0)) {
+    // If we have coordinates, place!
+    const coords = getCoordinatesFromAddress(place.address || place.addresses[0]);
+    if (coords) {
+      buttons.push({
+        type: 'web_url',
+        title: 'View on Map',
+        url: getMapsViewUrl(coords, 'coordinates'),
+      });
+    }
   }
   if (place.phone_number) {
     buttons.push({
@@ -279,13 +282,17 @@ export function genericEvent(event) {
   }
   if (dtString) element.subtitle = dtString;
   if (event.description) element.subtitle = `${element.subtitle} - ${event.description}`;
+
   const buttons = [];
-  if (event.hasOwnProperty('location') && event.location.display_name != null) {
-    buttons.push({
-      type: 'web_url',
-      title: 'View on Map',
-      url: getPlacesUrl(addressToString(event.address.address)),
-    });
+  if (event.location || event.address) {
+    const coords = event.location.coordinates || getCoordinatesFromAddress(event.address);
+    if (coords) {
+      buttons.push({
+        type: 'web_url',
+        title: 'View on Map',
+        url: getMapsViewUrl(addressToString(event.address.address)),
+      });
+    }
   }
   if (event.url) {
     buttons.push({

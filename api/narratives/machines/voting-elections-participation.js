@@ -1,6 +1,6 @@
 import VotingClient from '../clients/voting-client';
 import * as US_VOTE_CONSTANTS from '../../constants/voting-foundation';
-import { getPlacesUrl } from '../../utils';
+import { getMapsViewUrl } from '../../geo/helpers';
 import { i18n } from '../templates/messages';
 import * as ELEMENT_TEMPLATES from '../templates/assets';
 
@@ -312,7 +312,7 @@ export default {
           officeElements[0].buttons.push({
             type: 'web_url',
             title: 'View Location',
-            url: getPlacesUrl(`${info.office.mailing_address.street1} ${info.office.mailing_address.city} ${info.office.mailing_address.state} ${info.office.mailing_address.zip}}`),
+            url: getMapsViewUrl(`${info.office.mailing_address.street1} ${info.office.mailing_address.city} ${info.office.mailing_address.state} ${info.office.mailing_address.zip}}`),
           });
         }
         this.messagingClient.addToQuene('If you need more help, here\'s a nearby election office:');

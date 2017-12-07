@@ -130,9 +130,9 @@ export async function getEntitiesByFunction(strings = [], organizationId, option
   const getFunctions = [];
   strings.forEach((str) => {
     getFunctions.push(Place.query(qb => qb.whereRaw(`'${str}' = ANY(places.functions)`).andWhere('organization_id', '=', organizationId))
-      .fetchAll({ withRelated: ['location'] }).then(d => d.toJSON().map(f => ({ type: 'place', payload: f }))));
+      .fetchAll({ withRelated: ['addresses'] }).then(d => d.toJSON().map(f => ({ type: 'place', payload: f }))));
     getFunctions.push(Service.query(qb => qb.whereRaw(`'${str}' = ANY(services.functions)`).andWhere('organization_id', '=', organizationId))
-      .fetchAll({ withRelated: ['location'] }).then(d => d.toJSON().map(s => ({ type: 'service', payload: s }))));
+      .fetchAll({ withRelated: ['addresses'] }).then(d => d.toJSON().map(s => ({ type: 'service', payload: s }))));
   });
   const results = await Promise.all(getFunctions)
     .then(data => [...data[0], ...data[1]]);
