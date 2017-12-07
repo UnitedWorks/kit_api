@@ -4,7 +4,7 @@ import geocoder from '../utils/geocoder';
 
 export function getMapsViewUrl(payload, type = 'name') {
   if (type === 'coordinates' && payload.length) {
-    return `https://www.google.com/maps/@${payload[0]},${payload[1]}`;
+    return `https://www.google.com/maps?q=${payload[0]},${payload[1]}`;
   }
   const formattedString = payload.replace(/\s/, '+');
   return `https://www.google.com/maps/place/${formattedString}`;
