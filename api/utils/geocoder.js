@@ -19,7 +19,7 @@ export function structureGoogleResult(gAdd) {
     address_1: `${unitNumber.length > 0 ? unitNumber[0].long_name : ''} ${streetNumber.length > 0 ? streetNumber[0].long_name : ''} ${streetName.length > 0 ? streetName[0].long_name : ''}`.trim(),
     city: city.length > 0 ? city[0].long_name : null,
     region: region.length > 0 ? region[0].long_name : null,
-    state: state.length > 0 ? state[0].short_name.toUpperCase() : null,
+    state: state.length > 0 ? state[0].long_name.toUpperCase() : null,
     postal_code: postalCode.length > 0 ? postalCode[0].long_name : null,
     country: country.length > 0 ? country[0].long_name : null,
     country_code: country.length > 0 ? country[0].short_name.toUpperCase() : null,
