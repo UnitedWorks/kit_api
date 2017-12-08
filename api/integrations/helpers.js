@@ -39,3 +39,59 @@ export function updateIntegration(params, options) {
 export function deleteIntegration(params) {
   return Integration.where({ id: params.integration.id }).destroy({ required: true });
 }
+
+export function checkIntegration(organization, integration = {}) {
+  const integrationParams = {};
+  if (integration.id) integrationParams.id = integration.id;
+  if (integration.label) integrationParams.label = integration.label;
+  return Integration.where(integrationParams).fetch().then((integrationModel) => {
+    return OrganizationIntegrations.where({
+      organization_id: organization.id,
+      integration_id: integrationModel.get('id'),
+    }).fetch().then((foundIntegration) => {
+      if (foundIntegration) return true;
+      return false;
+    });
+  });
+}
+
+export function setForOrganization(params) {
+  return getIntegrations(params).then((orgIntegrations) => {
+    const integrationToBeSet = orgIntegrations.filter(
+      integration => integration.id === params.integration.id)[0];
+    // If we're trying to enable an unavailable integration, throw error, otherwise go for it
+    if (params.integration.enabled) {
+      // If we're enabling, check if it already exists (Update vs. Save)
+      return checkIntegration(params.organization, params.integration).then((active) => {
+        if (!active) {
+          return OrganizationIntegrations.forge({
+            organization_id: params.organization.id,
+            integration_id: integrationToBeSet.id,
+            config: params.integration.config,
+          }).save().then(() => {
+            integrationToBeSet.enabled = true;
+            return integrationToBeSet;
+          });
+        }
+        return OrganizationIntegrations.where({
+          organization_id: params.organization.id,
+          integration_id: integrationToBeSet.id,
+        }).save({
+          organization_id: params.organization.id,
+          integration_id: integrationToBeSet.id,
+          config: params.integration.config,
+        }, { method: 'update' }).then(() => {
+          integrationToBeSet.enabled = true;
+          return integrationToBeSet;
+        });
+      });
+    }
+    return OrganizationIntegrations.where({
+      organization_id: params.organization.id,
+      integration_id: integrationToBeSet.id,
+    }).destroy().then(() => {
+      integrationToBeSet.enabled = false;
+      return integrationToBeSet;
+    });
+  });
+}

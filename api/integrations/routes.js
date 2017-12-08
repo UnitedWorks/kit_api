@@ -27,4 +27,10 @@ router.route('/')
       .catch(error => res.status(400).send({ error }));
   });
 
+router.post('/set-for-organization', requireAuth, (req, res) => {
+  helpers.setForOrganization(req.body)
+    .then(integration => res.status(200).send({ integration }))
+    .catch(err => res.status(400).send(err));
+});
+
 module.exports = router;
