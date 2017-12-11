@@ -51,7 +51,7 @@ export default {
         username: 'Entity Search Returned Nothing',
         icon: 'disappointed',
       }).send(`>*Query*: ${this.snapshot.input.payload.text}`);
-      this.messagingClient.send('I wasn\'t able to find relevant places, services, or persons. Sorry about that.');
+      this.messagingClient.send('Sorry, I was unable to find a department, place, service, or personnel.');
       return this.getBaseState();
     }
 

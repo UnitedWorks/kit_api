@@ -12,6 +12,14 @@
 		"intent": "personality.age"
 	},
 	{
+		"text": "What is your name?",
+		"intent": "personality.name"
+	},
+	{
+		"text": "Do you have a name?",
+		"intent": "personality.name"
+	},
+	{
 		"text": "this is broken",
 		"intent": "personality.broken"
 	},

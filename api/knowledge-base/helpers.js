@@ -125,7 +125,7 @@ export async function searchEntitiesBySimilarity(strings = [], organizationId, o
             .then(fetched => ({ type: 'person', payload: { ...fetched.toJSON(), similarity: p.similarity } }));
         })));
   });
-  const results = await Promise.all(searchFunctions).then(data => Promise.all([...data[0], ...data[1], ...data[2], ...data[3]])).then((data) => {
+  const results = await Promise.all(searchFunctions).then(data => Promise.all([].concat.apply([], data))).then((data) => {
     const allEntities = [];
     data.forEach((e) => {
       let entityListed = false;

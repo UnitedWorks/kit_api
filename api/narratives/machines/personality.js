@@ -23,7 +23,7 @@ export default {
   makers() {
     const message = randomPick([
       `${this.snapshot.organization.name} working with Hey Mayor! (https://mayor.chat)`,
-      'Mark and Nick! 📷 → instagram.com/heymayor',
+      // 'Mark and Nick! 📷 → instagram.com/heymayor',
     ]);
     this.messagingClient.send(message);
     return this.getBaseState();
@@ -31,6 +31,10 @@ export default {
   age() {
     const age = moment([2017, 9, 30]).fromNow(true);
     this.messagingClient.send(`I've been around for ${age}!`);
+    return this.getBaseState();
+  },
+  name() {
+    this.messagingClient.send("Chatbots don't usually have names, but some folks call me Jane!");
     return this.getBaseState();
   },
   handle_greeting() {

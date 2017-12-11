@@ -1,7 +1,7 @@
 import { logger } from '../../logger';
 import { nlp } from '../../utils/nlp';
 import { getConstituentTasks } from '../../tasks/helpers';
-import { hasIntegration } from '../../integrations/helpers';
+import { checkIntegration } from '../../integrations/helpers';
 import * as INTEGRATIONS from '../../constants/integrations';
 import SlackService from '../../utils/slack';
 import { EventTracker } from '../../utils/event-tracking';
@@ -75,6 +75,7 @@ export default {
           'personality.has_question': 'personality.has_question',
           'personality.makers': 'personality.makers',
           'personality.age': 'personality.age',
+          'personality.name': 'personality.name',
           'personality.weather': 'personality.weather',
 
           'search.knowledge_entity': 'search.knowledge_entity',
@@ -182,7 +183,7 @@ export default {
     } else {
       this.snapshot.nlp.entities.category_labels.forEach(entity => labels.push(entity.value));
     }
-    const hasSeeClickFix = await hasIntegration(this.snapshot.organization, INTEGRATIONS.SEE_CLICK_FIX).then(bool => bool);
+    const hasSeeClickFix = await checkIntegration(this.snapshot.organization, INTEGRATIONS.SEE_CLICK_FIX).then(bool => bool);
     return getCategoryFallback(labels, this.snapshot.organization_id).then((fallbackData) => {
       // See if we have fallback persons
       if (fallbackData.persons.length === 0) {
