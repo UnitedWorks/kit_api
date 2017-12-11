@@ -29,7 +29,7 @@ export default {
 
   elections() {
     if (!this.snapshot.organization.address) return this.stateRedirect('location', 'voting_elections_participation.elections');
-    this.messagingClient.send('Hmmm, let me go grab the calendar!');
+    this.messagingClient.send('Let me go grab the calendar!');
     return new VotingClient({ address: this.snapshot.organization.address }).getElections().then((elections) => {
       this.messagingClient.addToQuene(i18n('us_vote_attribution'));
       if (elections.length === 0) {

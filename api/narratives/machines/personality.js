@@ -58,8 +58,8 @@ export default {
   },
   handle_thank_you() {
     const youreWelcomes = [
-      'You are very welcome!',
-      'No problem!',
+      'You are very welcome! Let me know if you need anything else.',
+      'Happy to help! Let me know if you need anything else.',
     ];
     const youreWelcome = youreWelcomes[Math.floor(Math.random() * youreWelcomes.length)];
     this.messagingClient.send(youreWelcome);

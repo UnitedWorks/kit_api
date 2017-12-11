@@ -170,7 +170,7 @@ export default {
     EventTracker('constituent_input_failure', { session: this });
     // Handle Failure
     const firstFailMessage = randomPick([
-      'Hmm, I didn\'t connect that to an answer. Can you rephrase that?',
+      'Not sure I understand. Can you rephrase that?',
     ]);
     // If first failure, ask for a repeat of question
     if (this.snapshot.state_machine_previous_state !== 'failed_request') {
