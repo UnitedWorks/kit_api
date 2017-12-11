@@ -5,7 +5,6 @@ import { crudEntityPhones } from '../phones/helpers';
 export async function createService(service, organization, location, options) {
   const composedService = {
     name: service.name,
-    brief_description: service.brief_description,
     description: service.description,
     url: service.url,
     organization_id: organization.id,
@@ -25,7 +24,6 @@ export async function updateService(service, options) {
   const compiledService = {
     id: service.id,
     name: service.name,
-    brief_description: service.brief_description,
     description: service.description,
     url: service.url,
     availabilitys: service.availabilitys,

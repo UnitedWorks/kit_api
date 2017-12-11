@@ -7,7 +7,6 @@ export async function createPlace(place, organization, options) {
   const composedPlace = {
     name: place.name,
     alternate_names: place.alternate_names,
-    brief_description: place.brief_description,
     description: place.description,
     url: place.url,
     availabilitys: place.availabilitys,

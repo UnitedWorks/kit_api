@@ -234,7 +234,7 @@ export function genericPerson(person) {
 export function genericPhone(phone) {
   const element = {
     title: phone.name,
-    subtitle: `Phone${phone.brief_description ? ` - ${phone.brief_description}` : ''}`,
+    subtitle: `Phone${phone.description ? ` - ${phone.description}` : ''}`,
   };
   const buttons = [];
   buttons.push({
@@ -250,7 +250,7 @@ export function genericPhone(phone) {
 export function genericPlace(place) {
   const element = {
     title: place.name,
-    subtitle: `Place${place.brief_description ? ` - ${place.brief_description}` : ''}`,
+    subtitle: `Place${place.description ? ` - ${place.description}` : ''}`,
   };
   const buttons = [];
   if (place.address || (place.addresses && place.addresses.length > 0)) {
