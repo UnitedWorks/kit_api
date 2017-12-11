@@ -4,7 +4,7 @@ import { Phone } from './models';
 export function cleanPhoneFormating(dirtyPhoneObj) {
   const cleanPhoneObj = dirtyPhoneObj;
   const barePhoneNumber = dirtyPhoneObj.number.replace(/\D/g, '');
-  cleanPhoneObj.number = `(${barePhoneNumber.slice(0, 3)}) ${barePhoneNumber.slice(3, 6)}-${barePhoneNumber.slice(6)}`;
+  cleanPhoneObj.number = `${barePhoneNumber.slice(0, 3)}-${barePhoneNumber.slice(3, 6)}-${barePhoneNumber.slice(6)}`;
   cleanPhoneObj.extension = dirtyPhoneObj.extension.replace(/\D/g, '');
   return cleanPhoneObj;
 }

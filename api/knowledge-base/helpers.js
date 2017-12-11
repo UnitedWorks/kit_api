@@ -1,7 +1,7 @@
 import stringSimilarity from 'string-similarity';
 import { knex } from '../orm';
 import * as env from '../env';
-import { Representative } from '../accounts/models';
+import { Representative, Organization  } from '../accounts/models';
 import { KnowledgeAnswer, KnowledgeCategory, KnowledgeQuestion } from './models';
 import EmailService from '../utils/email';
 import { runFeed } from '../feeds/helpers';
@@ -78,7 +78,22 @@ export async function searchEntitiesBySimilarity(strings = [], organizationId, o
   if (strings.length === 0) return [];
   // Postgres UNION ALL could make this more efficient... but hit a snag with results columns
   const searchFunctions = [];
-  strings.forEach((str) => {
+  strings.map(s => s.replace(/'|"/g, '')).forEach((str) => {
+    searchFunctions.push(
+      knex.select(knex.raw(`*, similarity(unnest(array_append(alternate_names, name::text)), '${str}') AS similarity`))
+        .from('organizations')
+        .where('parent_organization_id', '=', organizationId)
+        .orderBy('similarity', 'desc')
+        .limit(10)
+        .then(rows => rows.filter(r => r.similarity > options.confidence).map((o) => {
+          return Organization.where({ id: o.id }).fetch({ withRelated: ['addresses', 'places', 'places.addresses', 'places.phones', 'services', 'services.addresses', 'services.phones', 'phones', 'persons', 'persons.phones'] })
+            .then((fetched) => {
+              return {
+                type: 'organization',
+                payload: { ...fetched.toJSON(), similarity: o.similarity }
+              };
+            });
+        })));
     searchFunctions.push(
       knex.select(knex.raw(`*, similarity(unnest(array_append(alternate_names, name::text)), '${str}') AS similarity`))
         .from('services')
@@ -110,7 +125,7 @@ export async function searchEntitiesBySimilarity(strings = [], organizationId, o
             .then(fetched => ({ type: 'person', payload: { ...fetched.toJSON(), similarity: p.similarity } }));
         })));
   });
-  const results = await Promise.all(searchFunctions).then(data => Promise.all([...data[0], ...data[1], ...data[2]])).then((data) => {
+  const results = await Promise.all(searchFunctions).then(data => Promise.all([...data[0], ...data[1], ...data[2], ...data[3]])).then((data) => {
     const allEntities = [];
     data.forEach((e) => {
       let entityListed = false;

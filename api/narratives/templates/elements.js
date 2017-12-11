@@ -159,17 +159,56 @@ export const SeeClickFixTemplate = {
   elements: [SeeClickFixElement],
 };
 
+export function genericOrganization(organization) {
+  const element = {
+    title: organization.name,
+    subtitle: `Organization${organization.description ? `- ${organization.description}` : ''}`,
+  };
+  const buttons = [];
+  if (organization.address || (organization.addresses && organization.addresses.length > 0)) {
+    // If we have coordinates, organization!
+    const coords = getCoordinatesFromAddress(organization.address || organization.addresses[0]);
+    if (coords) {
+      buttons.push({
+        type: 'web_url',
+        title: 'View on Map',
+        url: getMapsViewUrl(coords, 'coordinates'),
+      });
+    }
+  }
+  if (organization.phones && organization.phones.length > 0) {
+    const firstPhone = organization.phones[0];
+    buttons.push({
+      type: 'phone_number',
+      title: `${firstPhone.number}${firstPhone.extension ? ` x ${firstPhone.extension}` : ''}`,
+      payload: `${firstPhone.number}${firstPhone.extension ? `,${firstPhone.extension}` : ''}`,
+    });
+  }
+  if (organization.url) {
+    buttons.push({
+      type: 'web_url',
+      title: organization.url,
+      url: organization.url,
+      webview_height_ratio: 'tall',
+    });
+  }
+  if (buttons.length < 3) buttons.push({ type: 'element_share' });
+  if (buttons.length > 0) element.buttons = buttons;
+  return element;
+}
+
 export function genericPerson(person) {
   const element = {
     title: person.name,
-    subtitle: `${person.title ? `${person.title} - ` : ''}${person.responsibilities}`,
+    subtitle: `Personnel${person.title ? ` - ${person.title}` : ''}${person.responsibilities ? ` - ${person.responsibilities}` : ''}`,
   };
   const buttons = [];
-  if (person.phone_number) {
+  if (person.phones && person.phones.length > 0) {
+    const firstPhone = person.phones[0];
     buttons.push({
       type: 'phone_number',
-      title: person.phone_number,
-      payload: person.phone_number,
+      title: `${firstPhone.number}${firstPhone.extension ? ` x ${firstPhone.extension}` : ''}`,
+      payload: `${firstPhone.number}${firstPhone.extension ? `,${firstPhone.extension}` : ''}`,
     });
   }
   if (person.url) {
@@ -192,10 +231,26 @@ export function genericPerson(person) {
   return element;
 }
 
+export function genericPhone(phone) {
+  const element = {
+    title: phone.name,
+    subtitle: `Phone${phone.brief_description ? ` - ${phone.brief_description}` : ''}`,
+  };
+  const buttons = [];
+  buttons.push({
+    type: 'phone_number',
+    title: `${phone.number}${phone.extension ? ` x ${phone.extension}` : ''}`,
+    payload: `${phone.number}${phone.extension ? `,${phone.extension}` : ''}`,
+  });
+  if (buttons.length < 3) buttons.push({ type: 'element_share' });
+  if (buttons.length > 0) element.buttons = buttons;
+  return element;
+}
+
 export function genericPlace(place) {
   const element = {
-    title: `${place.name} (Place)`,
-    subtitle: `${place.brief_description}`,
+    title: place.name,
+    subtitle: `Place${place.brief_description ? ` - ${place.brief_description}` : ''}`,
   };
   const buttons = [];
   if (place.address || (place.addresses && place.addresses.length > 0)) {
@@ -209,11 +264,12 @@ export function genericPlace(place) {
       });
     }
   }
-  if (place.phone_number) {
+  if (place.phones && place.phones.length > 0) {
+    const firstPhone = place.phones[0];
     buttons.push({
       type: 'phone_number',
-      title: place.phone_number,
-      payload: place.phone_number,
+      title: `${firstPhone.number}${firstPhone.extension ? ` x ${firstPhone.extension}` : ''}`,
+      payload: `${firstPhone.number}${firstPhone.extension ? `,${firstPhone.extension}` : ''}`,
     });
   }
   if (place.url) {
@@ -238,15 +294,16 @@ export function genericPlace(place) {
 
 export function genericService(service) {
   const element = {
-    title: `${service.name} (Service)`,
-    subtitle: `${service.brief_description}`,
+    title: service.name,
+    subtitle: `Service${service.description ? ` - ${service.description}` : ''}`,
   };
   const buttons = [];
-  if (service.phone_number) {
+  if (service.phones && service.phones.length > 0) {
+    const firstPhone = service.phones[0];
     buttons.push({
       type: 'phone_number',
-      title: service.phone_number,
-      payload: service.phone_number,
+      title: `${firstPhone.number}${firstPhone.extension ? ` x ${firstPhone.extension}` : ''}`,
+      payload: `${firstPhone.number}${firstPhone.extension ? `,${firstPhone.extension}` : ''}`,
     });
   }
   if (service.email) {

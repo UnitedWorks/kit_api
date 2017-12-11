@@ -10,10 +10,10 @@ export function getMapsViewUrl(payload, type = 'name') {
   return `https://www.google.com/maps/place/${formattedString}`;
 }
 
-export function addressToString(address) {
+export function addressToString(address, options = { slim: true }) {
   if (!address) return null;
   if (typeof address === 'string') return address;
-  return `${address.address_1}, ${address.city || ''}${address.region ? `, ${address.region} ` : ' '}${address.state || ''} ${address.country || ''}`;
+  return `${address.address_1}, ${address.city || ''}${address.region && !options.slim ? `, ${address.region} ` : ' '}${address.state || ''} ${address.country && !options.slim ? address.country || '' : ''}`;
 }
 
 export function getCoordinatesFromAddress(address) {

@@ -136,9 +136,10 @@ export const ENTITY_PROPERTY = 'entity_property';
 // VALUES
 export const AVAILABILITY = 'availability';
 export const AVAILABILITY_SCHEDULE = 'availability.schedule';
-export const PERSON = 'person';
-export const PERSON_PHONE = 'person.phone';
-export const PERSON_EMAIL = 'person.email';
+export const PERSONNEL = 'personnel';
+export const CONTACT = 'contact';
+export const CONTACT_PHONE = 'contact.phone';
+export const CONTACT_EMAIL = 'contact.email';
 // export const LOCATION = 'location'; // Already exporting
 export const LOCATION_CLOSEST = 'location.closest'; // Already exporting
 export const URL = 'url';

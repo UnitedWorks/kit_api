@@ -4,7 +4,6 @@ import KitClient from '../clients/kit-client';
 import * as replyTemplates from '../templates/quick-replies';
 import * as LOOKUP from '../../constants/nlp-tagging';
 import SlackService from '../../utils/slack';
-import { logger } from '../../logger';
 import { Feed } from '../../feeds/models';
 import * as FEED_CONSTANTS from '../../constants/feeds';
 import { runFeed } from '../../feeds/helpers';
@@ -23,6 +22,17 @@ export default {
       this.messagingClient.send('I didn\'t catch the name of something you\'re looking up. Sorry! Can you say differently for me?');
       return this.getBaseState();
     }
+
+    // Check look up type, and get location if person is looking for closest
+    const lookupType = (this.snapshot.nlp.entities && this.snapshot.nlp.entities.entity_property && this.snapshot.nlp.entities.entity_property[0])
+      ? this.snapshot.nlp.entities.entity_property[0].value
+      : null;
+    // Check for user location, and ask for it if we don't have it
+    if (lookupType === LOOKUP.LOCATION_CLOSEST && !this.get('last_input')) {
+      this.messagingClient.send('Where are you currently located?', [replyTemplates.location, replyTemplates.exit]);
+      return this.requestClosestLocation();
+    }
+
     const functionChecks = [];
     if (this.snapshot.nlp.entities.service_function) {
       this.snapshot.nlp.entities.service_function.forEach(f => functionChecks.push(f.value));
@@ -30,55 +40,27 @@ export default {
     if (this.snapshot.nlp.entities.place_function) {
       this.snapshot.nlp.entities.place_function.forEach(f => functionChecks.push(f.value));
     }
-    const similarEntities = await searchEntitiesBySimilarity(entityStrings, this.snapshot.organization_id, { limit: 9, confidence: functionChecks.length > 0 ? 0.65 : 0.3 });
+    const similarlyNamedEntities = await searchEntitiesBySimilarity(entityStrings, this.snapshot.organization_id, { limit: 9, confidence: functionChecks.length > 0 ? 0.65 : 0.3 });
     // If no similar enities, but we had place/service functions, get those
     const entitiesByFunction = await getEntitiesByFunction(functionChecks, this.snapshot.organization_id, { sortStrings: entityStrings });
     // Join em
-    const joinedEntities = [].concat(similarEntities).concat(entitiesByFunction);
-    // Sort Entities if looking for closest
-    const lookupType = (this.snapshot.nlp.entities && this.snapshot.nlp.entities.entity_property && this.snapshot.nlp.entities.entity_property[0])
-      ? this.snapshot.nlp.entities.entity_property[0].value
-      : null;
-    // Check for user location, and ask for it if we don't have it
-    if (lookupType === LOOKUP.LOCATION_CLOSEST) {
-      this.messagingClient.send('Where are you currently located?', [replyTemplates.location, replyTemplates.exit]);
-      return this.requestClosestLocation();
-    }
-    const sortedEntities = (lookupType === LOOKUP.LOCATION_CLOSEST)
-      ? KitClient.sortEntitiesByDistance(joinedEntities, [this.get('attributes').current_location.lat, this.get('attributes').current_location.lon])
-      : joinedEntities;
-    // Check if we actually have any entities
-    if (sortedEntities.length === 0) {
-      try {
-        new SlackService({
-          username: 'Entity Search Returned Nothing',
-          icon: 'disappointed',
-        }).send(`>*Query*: ${this.snapshot.input.payload.text}`);
-      } catch (e) {
-        logger.error(e);
-      }
+    const joinedEntities = [].concat(similarlyNamedEntities).concat(entitiesByFunction);
+    // Abort if we don't have any entities
+    if (joinedEntities.length === 0) {
+      new SlackService({
+        username: 'Entity Search Returned Nothing',
+        icon: 'disappointed',
+      }).send(`>*Query*: ${this.snapshot.input.payload.text}`);
       this.messagingClient.send('I wasn\'t able to find relevant places, services, or persons. Sorry about that.');
       return this.getBaseState();
     }
+
+    // Finally Return
     // Produce entities from search
-    this.messagingClient.addToQuene('Here is what I found for you!');
-    this.messagingClient.addAll(KitClient.genericTemplateFromEntities(sortedEntities), replyTemplates.evalHelpfulAnswer);
+    this.messagingClient.addAll(KitClient.genericTemplateFromEntities(joinedEntities, lookupType, this), replyTemplates.evalHelpfulAnswer);
     // Pick off information based on the request (phone, schedule, etc.)
     if (lookupType) {
-      this.messagingClient.addAll(sortedEntities.map((entity) => {
-        if (lookupType === LOOKUP.AVAILABILITY_SCHEDULE) {
-          return KitClient.entityAvailabilityToText(entity.type, entity.payload, { constituentAttributes: this.get('attributes') });
-        } else if (lookupType === LOOKUP.PERSON_PHONE) {
-          return KitClient.entityPersonToText(entity.payload, 'phone');
-        } else if (lookupType === LOOKUP.PERSON) {
-          return KitClient.entityPersonToText(entity.payload);
-        } else if (lookupType === LOOKUP.LOCATION || lookupType === LOOKUP.LOCATION_CLOSEST) {
-          return KitClient.entityLocationToText(entity.payload);
-        } else if (lookupType === LOOKUP.URL) {
-          return KitClient.entityURLToText(entity.payload);
-        }
-        return null;
-      }).filter(text => text), replyTemplates.evalHelpfulAnswer);
+      this.messagingClient.addToQuene(KitClient.lookupTextFromEntities(joinedEntities, lookupType, this), replyTemplates.evalHelpfulAnswer);
     }
     return this.messagingClient.runQuene().then(() => this.getBaseState());
   },
