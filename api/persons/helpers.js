@@ -26,8 +26,9 @@ export const createPerson = ({ person, organization }, options = {}) => {
 };
 
 export const updatePerson = (person, options = {}) => {
-  const cleanedPerson = person;
+  const cleanedPerson = Object.assign({}, person);
   delete cleanedPerson.knowledgeCategories;
+  delete cleanedPerson.phones;
   return Person.where({ id: person.id })
     .save(cleanedPerson, { method: 'update', patch: true })
     .then((personModel) => {

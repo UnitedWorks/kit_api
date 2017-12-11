@@ -1,11 +1,11 @@
 import { knex } from '../orm';
 import { Phone } from './models';
 
-export function cleanPhoneFormating(dirtyPhoneObj) {
-  const cleanPhoneObj = dirtyPhoneObj;
-  const barePhoneNumber = dirtyPhoneObj.number.replace(/\D/g, '');
+export function cleanPhoneFormating(ogPhone) {
+  const cleanPhoneObj = ogPhone;
+  const barePhoneNumber = ogPhone.number.replace(/\D/g, '');
   cleanPhoneObj.number = `${barePhoneNumber.slice(0, 3)}-${barePhoneNumber.slice(3, 6)}-${barePhoneNumber.slice(6)}`;
-  cleanPhoneObj.extension = dirtyPhoneObj.extension.replace(/\D/g, '');
+  if (ogPhone.extension) cleanPhoneObj.extension = ogPhone.extension.replace(/\D/g, '');
   return cleanPhoneObj;
 }
 
@@ -26,10 +26,11 @@ export async function crudEntityPhones(relation, phones) {
       if (phone.id && phone.number.length === 0) {
         return knex('phones_entity_associations').where({ phone_id: phone.id }).del().then(() =>
           knex('phones').where({ id: phone.id }).del().then(() => null));
-      } else if (phone.id) {
+      } else if (phone.id && phone.number.length > 0) {
         return Phone.where({ id: phone.id }).save(cleanPhoneFormating(phone), { method: 'update', patch: true }).then(p => p.id);
+      } else if (!phone.id && phone.number.length > 0) {
+        return Phone.forge(cleanPhoneFormating(phone)).save(null, { method: 'insert' }).then(p => p.id);
       }
-      return Phone.forge(cleanPhoneFormating(phone)).save(null, { method: 'insert' }).then(p => p.id);
     })).then(ids => ids.filter(i => i));
     // Create relations between phones/entities
     return knex('phones_entity_associations').where(relation).del().then(() => {
