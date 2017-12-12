@@ -4,6 +4,7 @@ import { Media } from '../media/models';
 import { Feed } from '../feeds/models';
 import { Prompt } from '../prompts/models';
 import { Person } from '../persons/models';
+import { Phone } from '../phones/models';
 import { Place } from '../places/models';
 import { Service } from '../services/models';
 import { Event } from '../events/models';
@@ -70,6 +71,9 @@ export const KnowledgeAnswer = bookshelf.Model.extend({
   },
   person() {
     return this.hasOne(Person, 'id', 'person_id');
+  },
+  phone() {
+    return this.hasOne(Phone, 'id', 'phone_id');
   },
   prompt() {
     return this.hasOne(Prompt, 'id', 'prompt_id');

@@ -65,10 +65,7 @@ function missingQuestionEmail(representatives, session, question) {
     repEmails.push({ name: rep.name, email: rep.email });
   });
   const emailMessage = `<b>"${question.question}"</b> ... was asked by a constituent but we don't seem to have an answer!<br/><br/><a href="${env.getDashboardRoot()}/answer?question_id=${question.id}" target="_blank">Create an Answer!</a><br><br> If you have questions, send <a href="mailto:mark@mayor.chat">us</a> an email!`;
-  new EmailService().send(`🤖 Missing Answer for "${question.question}" QID:${question.id} OID:${session.snapshot.organization.id}`, emailMessage, repEmails, {
-    organization_id: session.snapshot.organization.id,
-    knowledge_question_id: question.id,
-  });
+  new EmailService().send(`🤖 Missing Answer for "${question.question}" QID:${question.id} OID:${session.snapshot.organization.id}`, emailMessage, repEmails, { question_id: question.id });
 }
 
 /* TODO(nicksahler) Move this all to higher order answering */

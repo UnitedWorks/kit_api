@@ -54,8 +54,9 @@ export default class KitClient {
     const templateElements = [
       ...answers.services.map(s => elementTemplates.genericService(s)),
       ...answers.places.map(f => elementTemplates.genericPlace(f)),
-      ...answers.persons.map(c => elementTemplates.genericPerson(c)),
-      ...answers.events.map(c => elementTemplates.genericEvent(c)),
+      ...answers.persons.map(p => elementTemplates.genericPerson(p)),
+      ...answers.phones.map(p => elementTemplates.genericPhone(p)),
+      ...answers.events.map(e => elementTemplates.genericEvent(e)),
     ];
     const answerArray = [];
     const textAnswer = KitClient.answerText(answers);

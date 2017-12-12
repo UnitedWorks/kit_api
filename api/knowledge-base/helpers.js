@@ -1,7 +1,7 @@
 import stringSimilarity from 'string-similarity';
 import { knex } from '../orm';
 import * as env from '../env';
-import { Representative, Organization  } from '../accounts/models';
+import { Representative, Organization } from '../accounts/models';
 import { KnowledgeAnswer, KnowledgeCategory, KnowledgeQuestion } from './models';
 import EmailService from '../utils/email';
 import { runFeed } from '../feeds/helpers';
@@ -34,7 +34,7 @@ export async function getAnswers(params = {}, options = { returnJSON: true }) {
     withRelated: [{
       answers: q => q.where('organization_id', params.organization_id).whereNotNull('approved_at'),
     }, 'category', 'answers.place', 'answers.place.addresses', 'answers.service',
-      'answers.service.addresses', 'answers.person', 'answers.feed', 'answers.media'],
+      'answers.service.addresses', 'answers.person', 'answers.phone', 'answers.feed', 'answers.media'],
   }).then(d => d);
   if (!options.returnJSON) return data.get('answers');
   if (data == null) return {};
@@ -55,6 +55,7 @@ export async function getAnswers(params = {}, options = { returnJSON: true }) {
       places: answerJSON.filter(a => a.place_id).map(a => a.place),
       services: answerJSON.filter(a => a.service_id).map(a => a.service),
       persons: answerJSON.filter(a => a.person_id).map(a => a.person),
+      phones: answerJSON.filter(a => a.phone_id).map(a => a.phone),
       events: await Promise.all(answerJSON.filter(a => a.feed_id)
         .map(answer => runFeed(answer.feed).then(found => found.events)))
         .then((feed) => {
@@ -542,7 +543,7 @@ export async function answerQuestion(organization, question, answers) {
     .then(r => r.toJSON()).filter(r => r.email)
     .map(r => ({ email: r.email, name: r.name }));
   new EmailService().send(`🤖 Answer Needs Approval - "${question.question}"`,
-    `An employee has saved an answer for "${question.question}"! Please <a href="${env.getDashboardRoot()}/answer?organization_id=${organization.id}&knowledge_question_id=${question.id}" target="_blank">go approve it</a> so we can send it to constituents.<br/><br/>If you have questions, send <a href="mailto:mark@mayor.chat">us</a> an email!`,
+    `An employee has saved an answer for "${question.question}"! Please <a href="${env.getDashboardRoot()}/answer?question_id=${question.id}" target="_blank">go approve it</a> so we can send it to constituents.<br/><br/>If you have questions, send <a href="mailto:mark@mayor.chat">us</a> an email!`,
     approvalReps,
   );
   // Conclude
