@@ -1,8 +1,9 @@
-import { Router } from 'express';
 import S3Router from 'react-s3-uploader/s3router';
+import { Router } from 'express';
+import { knex } from '../orm';
 import { logger } from '../logger';
-import { saveMedia } from './helpers';
 import { PRODUCTION } from '../constants/environments';
+import { saveMedia } from './helpers';
 import { Media } from './models';
 
 const router = new Router();
@@ -37,9 +38,14 @@ router.route('/')
       .catch(err => next(err));
   })
   .delete((req, res, next) => {
-    Media.forge({ id: req.query.media_id }).destroy()
-      .then(() => res.status(200).send())
-      .catch(err => next(err));
+    return Promise.all([
+      knex('knowledge_answers').where({ media_id: req.query.media_id }).del().then(d => d),
+      knex('resources_medias').where({ media_id: req.query.media_id }).del().then(d => d),
+    ]).then(() => {
+      Media.forge({ id: req.query.media_id }).destroy()
+        .then(() => res.status(200).send())
+        .catch(err => next(err));
+    })
   });
 
 router.use('/s3', S3Router({

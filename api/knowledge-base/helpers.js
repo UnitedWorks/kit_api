@@ -34,7 +34,8 @@ export async function getAnswers(params = {}, options = { returnJSON: true }) {
     withRelated: [{
       answers: q => q.where('organization_id', params.organization_id).whereNotNull('approved_at'),
     }, 'category', 'answers.place', 'answers.place.addresses', 'answers.service',
-      'answers.service.addresses', 'answers.person', 'answers.phone', 'answers.feed', 'answers.media'],
+      'answers.service.addresses', 'answers.person', 'answers.phone', 'answers.feed',
+      'answers.media', 'answers.resource', 'answers.resource.media'],
   }).then(d => d);
   if (!options.returnJSON) return data.get('answers');
   if (data == null) return {};
@@ -54,6 +55,7 @@ export async function getAnswers(params = {}, options = { returnJSON: true }) {
       category: questionJSON.category,
       places: answerJSON.filter(a => a.place_id).map(a => a.place),
       services: answerJSON.filter(a => a.service_id).map(a => a.service),
+      resources: answerJSON.filter(a => a.resource_id).map(a => a.resource),
       persons: answerJSON.filter(a => a.person_id).map(a => a.person),
       phones: answerJSON.filter(a => a.phone_id).map(a => a.phone),
       events: await Promise.all(answerJSON.filter(a => a.feed_id)

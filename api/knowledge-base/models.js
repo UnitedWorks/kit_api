@@ -7,6 +7,7 @@ import { Person } from '../persons/models';
 import { Phone } from '../phones/models';
 import { Place } from '../places/models';
 import { Service } from '../services/models';
+import { Resource } from '../resources/models';
 import { Event } from '../events/models';
 
 // Knowledge Base Entities
@@ -74,6 +75,9 @@ export const KnowledgeAnswer = bookshelf.Model.extend({
   },
   phone() {
     return this.hasOne(Phone, 'id', 'phone_id');
+  },
+  resource() {
+    return this.hasOne(Resource, 'id', 'resource_id');
   },
   prompt() {
     return this.hasOne(Prompt, 'id', 'prompt_id');

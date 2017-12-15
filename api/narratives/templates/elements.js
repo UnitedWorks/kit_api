@@ -247,6 +247,37 @@ export function genericPhone(phone) {
   return element;
 }
 
+export function genericResource(resource) {
+  const element = {
+    title: resource.name,
+    subtitle: `Resource${resource.description ? ` - ${resource.description}` : ''}`,
+  };
+  const buttons = [];
+  if (resource.url) {
+    buttons.push({
+      type: 'web_url',
+      title: resource.url,
+      url: resource.url,
+      webview_height_ratio: 'tall',
+    });
+  }
+  if (resource.media && resource.media.length > 0) {
+    resource.media.forEach((m) => {
+      if (buttons.length < 3) {
+        buttons.push({
+          type: 'web_url',
+          title: m.name,
+          url: m.url,
+          webview_height_ratio: 'tall',
+        });
+      }
+    });
+  }
+  if (buttons.length < 3) buttons.push({ type: 'element_share' });
+  element.buttons = buttons;
+  return element;
+}
+
 export function genericPlace(place) {
   const element = {
     title: place.name,
