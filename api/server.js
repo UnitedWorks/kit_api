@@ -52,6 +52,7 @@ app.use('/phones', require('./phones/routes'));
 app.use('/places', require('./places/routes'));
 app.use('/prompts', require('./prompts/routes'));
 app.use('/organizations', require('./organizations/routes'));
+app.use('/resources', require('./resources/routes'));
 app.use('/shouts', require('./shouts/routes'));
 app.use('/services', require('./services/routes'));
 app.use('/tasks', require('./tasks/routes'));

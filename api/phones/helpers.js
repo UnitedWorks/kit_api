@@ -15,7 +15,7 @@ export async function crudEntityPhones(relation, phones) {
   // Get Phone Ids Where Relation Exists
   const existingPhoneIds = await knex.select('phone_id').from('phones_entity_associations').where(relation).then(ids => ids);
   // If no phones exist, delete on the relation
-  if (!phones || (phones.length === 0)) {
+  if (!phones || phones.length === 0) {
     // Remove Relations
     await knex('phones_entity_associations').where(relation).del().then(d => d);
     // Remove Phones by ID
