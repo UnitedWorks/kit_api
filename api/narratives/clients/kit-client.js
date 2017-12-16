@@ -113,6 +113,7 @@ export default class KitClient {
         if (e.type === 'person') return elementTemplates.genericPerson(e.payload);
         if (e.type === 'phone') return elementTemplates.genericPhone(e.payload);
         if (e.type === 'event') return elementTemplates.genericEvent(e.payload);
+        if (e.type === 'resource') return elementTemplates.genericResource(e.payload);
         return null;
       }).filter(d => d);
     }

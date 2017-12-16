@@ -11,6 +11,7 @@ import ShoutOuts from '../shouts/logic';
 import { Place } from '../places/models';
 import { Service } from '../services/models';
 import { Person } from '../persons/models';
+import { Resource } from '../resources/models';
 
 export function incrementTimesAsked(questionId, orgId) {
   if (!questionId || !orgId) return;
@@ -126,6 +127,16 @@ export async function searchEntitiesBySimilarity(strings = [], organizationId, o
         .then(rows => rows.filter(r => r.similarity > options.confidence).map((p) => {
           return Person.where({ id: p.id }).fetch({ withRelated: ['phones'] })
             .then(fetched => ({ type: 'person', payload: { ...fetched.toJSON(), similarity: p.similarity } }));
+        })));
+    searchFunctions.push(
+      knex.select(knex.raw(`*, similarity(unnest(array_append(alternate_names, name::text)), '${str}') AS similarity`))
+        .from('resources')
+        .where('organization_id', '=', organizationId)
+        .orderBy('similarity', 'desc')
+        .limit(10)
+        .then(rows => rows.filter(r => r.similarity > options.confidence).map((r) => {
+          return Resource.where({ id: r.id }).fetch({ withRelated: ['media'] })
+            .then(fetched => ({ type: 'resource', payload: { ...fetched.toJSON(), similarity: r.similarity } }));
         })));
   });
   const results = await Promise.all(searchFunctions).then(data => Promise.all([].concat.apply([], data))).then((data) => {
