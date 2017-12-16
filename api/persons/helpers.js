@@ -3,7 +3,7 @@ import { Person } from './models';
 import { crudEntityPhones } from '../phones/helpers';
 
 export const getPersons = (params, options = {}) => {
-  return Person.where(params).fetchAll({ withRelated: ['knowledgeCategories', 'phones'] })
+  return Person.where(params).fetchAll({ withRelated: ['phones'] })
     .then(data => (options.returnJSON ? data.toJSON() : data))
     .catch(error => error)
 };
@@ -38,7 +38,7 @@ export const updatePerson = (person, options = {}) => {
 };
 
 export const deletePerson = (person) => {
-  return knex('knowledge_categorys_persons')
+  return knex('knowledge_categorys_fallbacks')
     .where('person_id', '=', person.id)
     .del()
     .then(() => {

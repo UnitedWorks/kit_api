@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { logger } from '../logger';
 import { getAnswers, getCategories, getQuestions, makeAnswer, updateAnswer, deleteAnswer,
   getQuestionsAsTable, createAnswersFromRows, setCategoryFallback,
-  setCategoryRepresentatives, answerQuestion, approveAnswers } from './helpers';
+  answerQuestion, approveAnswers } from './helpers';
 import { requireAuth } from '../utils/passport';
 
 const router = new Router();
@@ -20,16 +20,6 @@ router.get('/categories', (req, res) => {
 router.post('/categories/fallback', requireAuth, (req, res, next) => {
   try {
     setCategoryFallback(req.body)
-      .then(() => res.status(200).send())
-      .catch(error => next(error));
-  } catch (e) {
-    next(e);
-  }
-});
-
-router.post('/categories/representatives', requireAuth, (req, res, next) => {
-  try {
-    setCategoryRepresentatives(req.body)
       .then(() => res.status(200).send())
       .catch(error => next(error));
   } catch (e) {

@@ -87,58 +87,50 @@ export async function fetchAnswers(intent, session) {
   } else if (!answers || (!answers.text && !answers.actions && !answers.places &&
     !answers.services && !answers.persons && !answers.feeds)) {
     const shoutOutTemplate = shoutOutLogic.ready[intent];
-    const fallback = await getCategoryFallback([intent.split('.')[0]], session.snapshot.organization.id).then(fbd => fbd);
-    // Check Shout Out
+    const fallback = await getCategoryFallback(intent.split('.')[0], session.snapshot.organization.id).then(f => f);
+    // Message employees if we have them
+    if (question && fallback.representatives.length > 0) {
+      missingQuestionEmail(fallback.representatives, session, question);
+    }
+
+    // Check Shout Out and set it if we have it
     if (shoutOutTemplate) {
       // If Integration Overriding Shout Out Exists, run it
-      const hasSeeClickFix = await getIntegrations({ organization: { id: session.snapshot.organization.id } })
-        .then((ints) => {
-          const filtered = ints.filter(i => i.label === INTEGRATIONS.SEE_CLICK_FIX);
-          return filtered[0] && filtered[0].enabled;
-        });
+      const hasSeeClickFix = await getIntegrations({ organization: { id: session.snapshot.organization.id } }).then((ints) => {
+        const filtered = ints.filter(i => i.label === INTEGRATIONS.SEE_CLICK_FIX);
+        return filtered[0] && filtered[0].enabled;
+      });
       if (hasSeeClickFix) {
-        session.messagingClient.addAll([
-          i18n('see_click_fix'),
-          elementTemplates.SeeClickFixTemplate,
-        ], replyTemplates.evalHelpfulAnswer);
-        session.messagingClient.runQuene();
-        return session.getBaseState();
+        session.messagingClient.addAll([i18n('see_click_fix'), elementTemplates.SeeClickFixTemplate], replyTemplates.evalHelpfulAnswer);
+        session.messagingClient.runQuene().then(() => session.getBaseState());
       // If a default Shout Out exists, run it
       }
       const actionObj = { shout_out: intent, params: paramsToPromptSteps(shoutOutTemplate.params) };
       session.set('action', actionObj);
-      missingQuestionEmail(fallback.representatives, session, question);
       return 'action.waiting_for_response';
     }
+
     // See if we have fallback persons
-    if (fallback.persons.length === 0) {
-      session.messagingClient.addToQuene(i18n('dont_know'));
-      EventTracker('answer_sent', { session, question }, { status: 'failed' });
+    if (fallback) {
+      // If we have fallback
+      session.messagingClient.addToQuene(fallback.message ? fallback.message : i18n('dont_know'), replyTemplates.evalHelpfulAnswer);
+      // Set template elements
+      const elements = [];
+      if (fallback.persons && fallback.persons.length > 0) fallback.persons.forEach(p => elements.push(elementTemplates.genericPerson(p)));
+      if (fallback.phones && fallback.phones.length > 0) fallback.phones.forEach(p => elements.push(elementTemplates.genericPhone(p)));
+      if (fallback.resources && fallback.resources.length > 0) fallback.resources.forEach(r => elements.push(elementTemplates.genericResource(r)));
+      if (elements.length > 0) {
+        session.messagingClient.addToQuene({
+          type: 'template',
+          templateType: 'generic',
+          elements,
+        }, replyTemplates.evalHelpfulAnswer);
+        EventTracker('answer_sent', { session, question }, { status: 'fallback' });
+      } else {
+        EventTracker('answer_sent', { session, question }, { status: 'failed' });
+      }
     } else {
-      // If we have fallback, list names and templates
-      let compiledPersons = '';
-      fallback.persons.forEach((person, index, arr) => {
-        if (index === 0) {
-          compiledPersons = compiledPersons.concat(person.name);
-        } else if (arr.length - 1 === index) {
-          compiledPersons = compiledPersons.concat(`, or ${person.name}`);
-        } else {
-          compiledPersons = compiledPersons.concat(`, ${person.name}`);
-        }
-      });
-      session.messagingClient.addToQuene(i18n('dont_know', { tryPersoning: compiledPersons }));
-      // Give templates
-      session.messagingClient.addToQuene({
-        type: 'template',
-        templateType: 'generic',
-        elements: fallback.persons.map(
-          person => elementTemplates.genericPerson(person)),
-      });
-      EventTracker('answer_sent', { session, question }, { status: 'fallback' });
-    }
-    // EMAIL: See if have a representative we can send this to
-    if (question && fallback.representatives.length > 0) {
-      missingQuestionEmail(fallback.representatives, session, question);
+      session.messagingClient.addToQuene(i18n('dont_know'));
     }
     // Run Message
     return session.messagingClient.runQuene().then(() => session.getBaseState());

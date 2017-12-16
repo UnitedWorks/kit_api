@@ -11,16 +11,26 @@ import { Resource } from '../resources/models';
 import { Event } from '../events/models';
 
 // Knowledge Base Entities
+export const KnowledgeEntityFallback = bookshelf.Model.extend({
+  tableName: 'knowledge_categorys_fallbacks',
+  person() {
+    return this.belongsTo(Person, 'person_id');
+  },
+  phone() {
+    return this.belongsTo(Phone, 'phone_id');
+  },
+  resource() {
+    return this.belongsTo(Resource, 'resource_id');
+  },
+  representative() {
+    return this.belongsTo(Representative, 'representative_id');
+  },
+});
+
 export const KnowledgeCategory = bookshelf.Model.extend({
   tableName: 'knowledge_categorys',
-  questions() {
-    return this.hasMany(KnowledgeQuestion, 'knowledge_category_id');
-  },
-  persons() {
-    return this.belongsToMany(Person, 'knowledge_categorys_persons', 'knowledge_category_id');
-  },
-  representatives() {
-    return this.belongsToMany(Representative, 'knowledge_categorys_representatives', 'knowledge_category_id');
+  fallbacks() {
+    return this.hasMany(KnowledgeEntityFallback, 'knowledge_category_id');
   },
 });
 

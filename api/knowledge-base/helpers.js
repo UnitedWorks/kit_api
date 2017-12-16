@@ -211,26 +211,33 @@ export function getQuestions(params = {}, options = {}) {
 
 export function getCategories(params = {}) {
   if (params.organization_id) {
-    return KnowledgeCategory.fetchAll({
-      withRelated: {
-        persons: q => q.where('persons.organization_id', params.organization_id),
-        representatives: q => q.where('representatives.organization_id', params.organization_id),
-        questions: q => q,
-        'questions.answers': q => q.where('knowledge_answers.organization_id', params.organization_id),
-      },
+    const filters = {};
+    if (params.label) filters.label = params.label;
+    return KnowledgeCategory.where(filters).fetchAll({
+      withRelated: ['fallbacks', 'fallbacks.phone', 'fallbacks.person',
+        'fallbacks.resource', 'fallbacks.representative'],
     }).then((data) => {
       return data.toJSON().map((category) => {
-        // I hate that I have to do this. Tried initializing this data on model
-        const newObj = category;
-        newObj.totalQuestions = category.questions.length;
-        newObj.answeredQuestions = 0;
-        category.questions.forEach((q) => {
-          if (q.answers.length > 0) {
-            newObj.answeredQuestions += 1;
-          }
+        const categoryState = {
+          id: category.id,
+          label: category.label,
+          name: category.name,
+          fallback: {
+            message: null,
+            resources: [],
+            persons: [],
+            phones: [],
+            representatives: [],
+          },
+        };
+        category.fallbacks.forEach((fallback) => {
+          if (fallback.message) categoryState.fallback.message = fallback.message;
+          if (fallback.resource_id) categoryState.fallback.resources.push(fallback.resource);
+          if (fallback.phone_id) categoryState.fallback.phones.push(fallback.phone);
+          if (fallback.person_id) categoryState.fallback.persons.push(fallback.person);
+          if (fallback.representative_id) categoryState.fallback.representatives.push(fallback.representative);
         });
-        delete newObj.questions;
-        return newObj;
+        return categoryState;
       });
     }).catch(error => error);
   }
@@ -239,42 +246,59 @@ export function getCategories(params = {}) {
   }).catch(error => error);
 }
 
-export function setCategoryFallback({ organization, category, persons = [] }) {
+export function setCategoryFallback({ organization, categories }) {
   if (!organization.id) throw new Error('No Organization ID');
-  if (!category.id) throw new Error('No Category Provided');
-  const relationshipInserts = [];
-  persons.forEach((person) => {
-    relationshipInserts.push(knex('knowledge_categorys_persons').insert({
-      knowledge_category_id: category.id,
-      person_id: person.id,
-      organization_id: organization.id,
-    }));
+  const categoryEdits = [];
+  categories.forEach((category) => {
+    // Delete relationships this org's persons have with this category
+    categoryEdits.push(knex('knowledge_categorys_fallbacks')
+      .where('knowledge_category_id', '=', category.id)
+      .andWhere('organization_id', '=', organization.id)
+      .del()
+      .then(() => {
+        const inserts = [];
+        if (category.fallback.message && typeof category.fallback.message === 'string' && category.fallback.message.length > 0) {
+          inserts.push(knex('knowledge_categorys_fallbacks').insert({
+            knowledge_category_id: category.id,
+            organization_id: organization.id,
+            message: category.fallback.message }));
+        }
+        if (category.fallback.phones) {
+          category.fallback.phones.forEach((phone) => {
+            inserts.push(knex('knowledge_categorys_fallbacks').insert({
+              knowledge_category_id: category.id,
+              organization_id: organization.id,
+              phone_id: phone.id }));
+          });
+        }
+        if (category.fallback.resources) {
+          category.fallback.resources.forEach((resource) => {
+            inserts.push(knex('knowledge_categorys_fallbacks').insert({
+              knowledge_category_id: category.id,
+              organization_id: organization.id,
+              resource_id: resource.id }));
+          });
+        }
+        if (category.fallback.persons) {
+          category.fallback.persons.forEach((person) => {
+            inserts.push(knex('knowledge_categorys_fallbacks').insert({
+              knowledge_category_id: category.id,
+              organization_id: organization.id,
+              person_id: person.id }));
+          });
+        }
+        if (category.fallback.representatives) {
+          category.fallback.representatives.forEach((representative) => {
+            inserts.push(knex('knowledge_categorys_fallbacks').insert({
+              knowledge_category_id: category.id,
+              organization_id: organization.id,
+              representative_id: representative.id }));
+          });
+        }
+        return Promise.all(inserts).then(d => d);
+      }));
   });
-  // Delete relationships this org's persons have with this category
-  return knex.select('*').from('knowledge_categorys_persons')
-    .where('knowledge_category_id', '=', category.id)
-    .andWhere('organization_id', '=', organization.id)
-    .del()
-    .then(() => Promise.all(relationshipInserts));
-}
-
-export function setCategoryRepresentatives({ organization, category, representatives = [] }) {
-  if (!organization.id) throw new Error('No Organization ID');
-  if (!category.id) throw new Error('No Category Provided');
-  const repInserts = [];
-  representatives.forEach((representative) => {
-    repInserts.push(knex('knowledge_categorys_representatives').insert({
-      knowledge_category_id: category.id,
-      representative_id: representative.id,
-      organization_id: organization.id,
-    }));
-  });
-  // Delete relationships this org's representatives have with this category
-  return knex.select('*').from('knowledge_categorys_representatives')
-    .where('knowledge_category_id', '=', category.id)
-    .andWhere('organization_id', '=', organization.id)
-    .del()
-    .then(() => Promise.all(repInserts));
+  return Promise.all(categoryEdits).then(d => d);
 }
 
 export function makeAnswer(organization, question, answer, options = { returnJSON: true }) {
@@ -449,48 +473,18 @@ export function createAnswersFromRows({ answers, organization }, options = { ret
     .catch(error => error);
 }
 
-export async function getCategoryFallback(labels, orgId) {
-  const fallbackObj = {
-    labels,
-    organizationId: orgId,
-  };
-  const categoryFetches = [];
-  labels.forEach((label) => {
-    categoryFetches.push(KnowledgeCategory.where({ label })
-      .fetch({
-        withRelated: [{
-          persons: q => q.where('persons.organization_id', '=', orgId),
-          representatives: q => q.where('representatives.organization_id', '=', orgId),
-        }],
-      }).then(labelData => (labelData ? labelData.toJSON() : [])),
-    );
-  });
-  let mergedPersons = [];
-  let mergedRepresentatives = [];
-  await Promise.all(categoryFetches).then((labelData) => {
-    labelData.forEach((label) => {
-      mergedPersons = mergedPersons.concat(label.persons || []);
-      mergedRepresentatives = mergedRepresentatives.concat(label.representatives || []);
-    });
-  });
-  // If no persons, look farther up
-  if (mergedPersons.length === 0) {
-    await KnowledgeCategory.where({ label: KNOWLEDGE_CONST.GENERAL_CATEGORY_LABEL }).fetch({
-      withRelated: [{
-        persons: q => q.where('persons.organization_id', '=', orgId),
-      }],
-    }).then((generalData) => {
-      fallbackObj.labels = [KNOWLEDGE_CONST.GENERAL_CATEGORY_LABEL];
-      fallbackObj.fellback = true;
-      fallbackObj.persons = (generalData) ? generalData.toJSON().persons : [];
-    });
-  } else {
-    fallbackObj.fellback = false;
-    fallbackObj.persons = mergedPersons;
+export async function getCategoryFallback(label, orgId) {
+  let category = await getCategories({ label, organization_id: orgId }).then(c => c);
+  if (category.length === 0) {
+    category = await getCategories({
+      label: KNOWLEDGE_CONST.GENERAL_CATEGORY_LABEL,
+      organization_id: orgId,
+    }).then(c => c);
   }
-  // If representatives were assigned, send them an email so we can get an answer
-  fallbackObj.representatives = mergedRepresentatives;
-  return fallbackObj;
+  if (category.length > 0) {
+    return category[0].fallback;
+  }
+  return null;
 }
 
 export async function answerQuestion(organization, question, answers) {

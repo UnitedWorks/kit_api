@@ -169,44 +169,35 @@ export default {
     }
     EventTracker('constituent_input_failure', { session: this });
     // Handle Failure
-    const firstFailMessage = randomPick([
-      'Not sure I understand. Can you rephrase that?',
-    ]);
+    const firstFailMessage = randomPick(['Not sure I understand. Can you rephrase that?']);
     // If first failure, ask for a repeat of question
     if (this.snapshot.state_machine_previous_state !== 'failed_request') {
       return this.messagingClient.send(firstFailMessage).then(() => 'start');
     }
     // If second failure, fetch resources to assist
-    const labels = [];
-    if (!this.snapshot.nlp.entities.category_labels || this.snapshot.nlp.entities.category_labels.length === 0) {
-      labels.push(KNOWLEDGE_CONST.GENERAL_CATEGORY_LABEL);
-    } else {
-      this.snapshot.nlp.entities.category_labels.forEach(entity => labels.push(entity.value));
+    let categoryLabel = KNOWLEDGE_CONST.GENERAL_CATEGORY_LABEL;
+    if (this.snapshot.nlp.entities.category_labels && this.snapshot.nlp.entities.category_labels.length > 0) {
+      categoryLabel = this.snapshot.nlp.entities.category_labels[0].value;
     }
-    const hasSeeClickFix = await checkIntegration(this.snapshot.organization, INTEGRATIONS.SEE_CLICK_FIX).then(bool => bool);
-    return getCategoryFallback(labels, this.snapshot.organization_id).then((fallbackData) => {
-      // See if we have fallback persons
-      if (fallbackData.persons.length === 0) {
-        this.messagingClient.addToQuene(hasSeeClickFix ? `${i18n('dont_know')} If this is something you want to report, please use SeeClickFix and select the appropriate category.` : i18n('dont_know'));
-        if (hasSeeClickFix) {
+    return getCategoryFallback(categoryLabel, this.snapshot.organization_id).then((fallback) => {
+      // If no fallback
+      if (!fallback) {
+        this.messagingClient.addToQuene(i18n('dont_know'));
+      } else {
+        // If we have fallback
+        this.messagingClient.addToQuene(fallback.message ? fallback.message : i18n('dont_know'), replyTemplates.evalHelpfulAnswer);
+        // Set template elements
+        const elements = [];
+        if (fallback.persons && fallback.persons.length > 0) fallback.persons.forEach(p => elements.push(elementTemplates.genericPerson(p)));
+        if (fallback.phones && fallback.phones.length > 0) fallback.phones.forEach(p => elements.push(elementTemplates.genericPhone(p)));
+        if (fallback.resources && fallback.resources.length > 0) fallback.resources.forEach(r => elements.push(elementTemplates.genericResource(r)));
+        if (elements.length > 0) {
           this.messagingClient.addToQuene({
             type: 'template',
             templateType: 'generic',
-            elements: [elementTemplates.SeeClickFixElement],
+            elements,
           }, replyTemplates.evalHelpfulAnswer);
         }
-      } else {
-        // If we do, templates!
-        this.messagingClient.addToQuene(hasSeeClickFix ? `${i18n('dont_know')} If this is an issue you want to report, please use SeeClickFix and select the appropriate category. Here's who I've found that you can get in touch with.` : i18n('dont_know'));
-        // Give templates
-        let personElements = fallbackData.persons.map(
-          person => elementTemplates.genericPerson(person));
-        if (hasSeeClickFix) personElements = personElements.concat(elementTemplates.SeeClickFixElement);
-        this.messagingClient.addToQuene({
-          type: 'template',
-          templateType: 'generic',
-          elements: personElements,
-        }, replyTemplates.evalHelpfulAnswer);
       }
       return this.messagingClient.runQuene().then(() => 'start');
     }).catch((err) => {
