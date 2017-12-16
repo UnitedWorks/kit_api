@@ -37,13 +37,13 @@ export const updatePerson = (person, options = {}) => {
     }).catch(error => error);
 };
 
-export const deletePerson = (person) => {
-  return knex('knowledge_categorys_fallbacks')
-    .where('person_id', '=', person.id)
-    .del()
-    .then(() => {
-      return Person.where({ id: person.id }).destroy()
-        .then(() => ({ id: person.id }))
-        .catch(error => error);
-    });
-};
+export function deletePerson(id) {
+  return Promise.all([
+    knex('knowledge_answers').where('person_id', '=', id).del().then(p => p),
+    knex('knowledge_categorys_fallbacks').where('person_id', '=', id).del().then(p => p),
+    knex('organizations_entity_associations').where('person_id', '=', id).del().then(p => p),
+    knex('phones_entity_associations').where('person_id', '=', id).del().then(p => p),
+  ])
+  .then(() => Person.where({ id }).destroy().then(() => ({ id }))
+  .catch(error => error)).catch(err => err);
+}

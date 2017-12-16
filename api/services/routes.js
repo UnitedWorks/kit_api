@@ -28,7 +28,7 @@ router.route('/')
   })
   .delete((req, res, next) => {
     deleteService(req.query.service_id)
-      .then(service => res.status(200).send({ service }))
+      .then(() => res.status(200).send())
       .catch(err => next(err));
   });
 

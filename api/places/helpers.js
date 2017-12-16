@@ -1,5 +1,5 @@
+import { knex } from '../orm';
 import { Place } from './models';
-import { KnowledgeAnswer } from '../knowledge-base/models';
 import { crudEntityAddresses } from '../geo/helpers';
 import { crudEntityPhones } from '../phones/helpers';
 
@@ -35,10 +35,13 @@ export async function updatePlace(place, options) {
     .catch(err => err);
 }
 
-export function deletePlace(placeId) {
-  return KnowledgeAnswer.where({ place_id: placeId }).destroy().then(() => {
-    return Place.forge({ id: placeId }).destroy()
-      .then(() => ({ id: placeId }))
-      .catch(err => err);
-  }).catch(err => err);
+export function deletePlace(id) {
+  return Promise.all([
+    knex('addresss_entity_associations').where('place_id', '=', id).del().then(p => p),
+    knex('knowledge_answers').where('place_id', '=', id).del().then(p => p),
+    knex('organizations_entity_associations').where('place_id', '=', id).del().then(p => p),
+    knex('phones_entity_associations').where('place_id', '=', id).del().then(p => p),
+  ])
+  .then(() => Place.where({ id }).destroy().then(() => ({ id }))
+  .catch(error => error)).catch(err => err);
 }

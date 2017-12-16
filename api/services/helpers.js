@@ -1,5 +1,5 @@
+import { knex } from '../orm';
 import { Service } from './models';
-import { KnowledgeAnswer } from '../knowledge-base/models';
 import { crudEntityPhones } from '../phones/helpers';
 
 export async function createService(service, organization, location, options) {
@@ -39,10 +39,13 @@ export async function updateService(service, options) {
     .catch(err => err);
 }
 
-export function deleteService(serviceId) {
-  return KnowledgeAnswer.where({ service_id: serviceId }).destroy().then(() => {
-    return Service.forge({ id: serviceId }).destroy().then(() => {
-      return { id: serviceId };
-    }).catch(err => err);
-  }).catch(err => err);
+export function deleteService(id) {
+  return Promise.all([
+    knex('addresss_entity_associations').where('service_id', '=', id).del().then(p => p),
+    knex('knowledge_answers').where('service_id', '=', id).del().then(p => p),
+    knex('organizations_entity_associations').where('service_id', '=', id).del().then(p => p),
+    knex('phones_entity_associations').where('service_id', '=', id).del().then(p => p),
+  ])
+  .then(() => Service.where({ id }).destroy().then(() => ({ id }))
+  .catch(error => error)).catch(err => err);
 }

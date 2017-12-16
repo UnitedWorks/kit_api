@@ -36,8 +36,8 @@ router.route('/')
   })
   .delete((req, res, next) => {
     try {
-      deletePerson({ id: req.query.person_id }, { returnJSON: true })
-        .then(persons => res.status(200).send({ persons }))
+      deletePerson(req.query.person_id, { returnJSON: true })
+        .then(() => res.status(200).send())
         .catch(error => next(error));
     } catch (e) {
       next(e);

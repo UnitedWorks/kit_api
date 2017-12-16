@@ -38,3 +38,14 @@ export async function crudEntityPhones(relation, phones) {
     });
   }
 }
+
+export function deletePhone(id) {
+  return Promise.all([
+    knex('knowledge_answers').where('phone_id', '=', id).del().then(p => p),
+    knex('knowledge_categorys_fallbacks').where('phone_id', '=', id).del().then(p => p),
+    knex('organizations_entity_associations').where('phone_id', '=', id).del().then(p => p),
+    knex('phones_entity_associations').where('phone_id', '=', id).del().then(p => p),
+  ])
+  .then(() => Phone.where({ id }).destroy().then(() => ({ id }))
+  .catch(error => error)).catch(err => err);
+}

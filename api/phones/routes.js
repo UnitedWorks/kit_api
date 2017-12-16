@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { knex } from '../orm';
 import { Phone } from './models';
-import { cleanPhoneFormating } from './helpers';
+import { cleanPhoneFormating, deletePhone } from './helpers';
 
 const router = new Router();
 
@@ -38,10 +38,9 @@ router.route('/')
     }).catch(err => next(err));
   })
   .delete((req, res, next) => {
-    Phone.forge({ id: req.query.phone_id }).destroy()
-      .then(() => {
-        res.status(200).send({ phone: { id: req.query.id } });
-      }).catch(err => next(err));
+    deletePhone(req.query.phone_id)
+      .then(() => res.status(200).send())
+      .catch(err => next(err));
   });
 
 module.exports = router;

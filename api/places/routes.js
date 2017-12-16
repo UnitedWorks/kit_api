@@ -29,7 +29,7 @@ router.route('/')
    })
   .delete((req, res, next) => {
     deletePlace(req.query.place_id)
-      .then(place => res.status(200).send({ place }))
+      .then(() => res.status(200).send())
       .catch(err => next(err));
   });
 
