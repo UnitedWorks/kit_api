@@ -168,10 +168,10 @@ export default class KitClient {
   static entityContactToText(entity) {
     let entitySnippet = '';
     if (entity.number) {
-      entitySnippet += `${entity.name} can be called at ${entity.number}${entity.extension ? ` x ${entity.extension}` : ''}`;
+      entitySnippet += `${entity.name} can be called at ${entity.number}${entity.extension ? `,${entity.extension}` : ''}`;
     // Otherwise
     } else if (entity.phones && entity.phones.length > 0) {
-      entitySnippet += `${entity.name} can be called at ${entity.phones[0].number}${entity.phones[0].extension ? ` x ${entity.phones[0].extension}` : ''}`;
+      entitySnippet += `${entity.name} can be called at ${entity.phones[0].number}${entity.phones[0].extension ? `,${entity.phones[0].extension}` : ''}`;
     }
     if (entity.url) {
       if (entitySnippet.length > 0) {
@@ -186,10 +186,10 @@ export default class KitClient {
   static entityPhonesToText(entity) {
     // If entity is a phone
     if (entity.number) {
-      return `${entity.name} is available at ${entity.number}${entity.extension ? ` x ${entity.extension}` : ''}`;
+      return `${entity.name} is available at ${entity.number}${entity.extension ? `,${entity.extension}` : ''}`;
     // Otherwise
     } else if (entity.phones && entity.phones.length > 0) {
-      return `${entity.name} is available at ${entity.phones[0].number}${entity.phones[0].extension ? ` x ${entity.phones[0].extension}` : ''}`;
+      return `${entity.name} is available at ${entity.phones[0].number}${entity.phones[0].extension ? `,${entity.phones[0].extension}` : ''}`;
     }
     return null;
   }
