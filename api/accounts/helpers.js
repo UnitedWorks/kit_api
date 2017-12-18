@@ -2,14 +2,6 @@ import bcrypt from 'bcrypt-nodejs';
 import { knex } from '../orm';
 import { Constituent, Organization, Representative } from './models';
 
-export const createOrganization = (organizationModel, options = {}) => {
-  return Organization.forge(organizationModel).save(null, { method: 'insert' }).then((model) => {
-    return model.refresh({ withRelated: ['address', 'integrations'] }).then((refreshedModel) => {
-      return options.returnJSON ? refreshedModel.toJSON() : refreshedModel;
-    });
-  }).catch(error => error);
-};
-
 export const getGovernmentOrganizationAtLocation = (geoData, options = {}) => {
   let subquery = knex('locations')
     .select('id')

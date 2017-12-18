@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { knex } from '../orm';
 import { Organization } from '../accounts/models';
+import { createOrganization, updateOrganization } from './helpers';
 
 const router = new Router();
 
@@ -21,8 +22,9 @@ router.route('/')
     try {
       if (!req.body.organization) throw new Error('Must have organization');
       if (!req.body.organization.parent_organization_id) throw new Error('Must belong to an organization');
-      Organization.forge(req.body.organization).save(null, { method: 'insert' })
-        .then(orgs => res.status(200).send({ organizations: orgs.toJSON() }));
+      createOrganization(req.body.organization)
+        .then(organization => res.status(200).send({ organization }))
+        .catch(e => next(e));
     } catch (e) {
       next(e);
     }
@@ -30,8 +32,9 @@ router.route('/')
   .put((req, res, next) => {
     try {
       if (!req.body.organization || !req.body.organization.id) throw new Error('Organization must already have an ID');
-      Organization.where({ id: req.body.organization.id }).save(req.body.organization, { patch: true, method: 'update' })
-        .then(orgs => res.status(200).send({ organizations: orgs.toJSON() }));
+      updateOrganization(req.body.organization)
+        .then(organization => res.status(200).send({ organization }))
+        .catch(e => next(e));
     } catch (e) {
       next(e);
     }

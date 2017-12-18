@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import geocoder from '../utils/geocoder';
 import * as helpers from './helpers';
+import { createOrganization } from '../organizations/helpers';
 import { logger } from '../logger';
 import { createAddress } from '../geo/helpers';
 import { Representative, Organization } from './models';
@@ -55,7 +56,7 @@ router.post('/organization', requireAuth, (req, res, next) => {
           createAddress(geoData[0], { returnJSON: true }).then((location) => {
             const orgWithLocation = Object.assign(organization, { location_id: location.id });
             // Create organization
-            helpers.createOrganization(orgWithLocation, { returnJSON: true })
+            createOrganization(orgWithLocation, { returnJSON: true })
               .then((newOrganization) => {
                 new SlackService({ username: 'Welcome', icon: 'capitol' }).send(`Organization *${newOrganization.name}* just signed up!`);
                 res.status(200).json({ organization: newOrganization });
@@ -72,7 +73,7 @@ router.post('/organizations/add-provider', requireAuth, (req, res, next) => {
     if (organization.type == null || organization.type !== 'provider') {
       throw new Error('Not a Provider Organization');
     }
-    helpers.createOrganization(organization, { returnJSON: true })
+    createOrganization(organization, { returnJSON: true })
     .then((newOrganization) => {
       res.status(200).json({ organization: newOrganization });
     }).catch(error => next(error));
