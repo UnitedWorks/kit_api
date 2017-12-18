@@ -58,6 +58,7 @@ export default class KitClient {
       ...answers.phones.map(p => elementTemplates.genericPhone(p)),
       ...answers.resources.map(r => elementTemplates.genericResource(r)),
       ...answers.events.map(e => elementTemplates.genericEvent(e)),
+      ...answers.organizations.map(o => elementTemplates.genericOrganization(o)),
     ];
     const answerArray = [];
     const textAnswer = KitClient.answerText(answers);

@@ -162,7 +162,7 @@ export const SeeClickFixTemplate = {
 export function genericOrganization(organization) {
   const element = {
     title: organization.name,
-    subtitle: `Organization${organization.description ? `- ${organization.description}` : ''}`,
+    subtitle: `${organization.description ? `- ${organization.description}` : ''}`,
   };
   const buttons = [];
   if (organization.address || (organization.addresses && organization.addresses.length > 0)) {
@@ -200,7 +200,7 @@ export function genericOrganization(organization) {
 export function genericPerson(person) {
   const element = {
     title: person.name,
-    subtitle: `Personnel${person.title ? ` - ${person.title}` : ''}${person.responsibilities ? ` - ${person.responsibilities}` : ''}`,
+    subtitle: `${person.title ? ` - ${person.title}` : ''}${person.responsibilities ? ` - ${person.responsibilities}` : ''}`,
   };
   const buttons = [];
   if (person.phones && person.phones.length > 0) {
@@ -234,7 +234,7 @@ export function genericPerson(person) {
 export function genericPhone(phone) {
   const element = {
     title: phone.name,
-    subtitle: `Phone${phone.description ? ` - ${phone.description}` : ''}`,
+    subtitle: `${phone.description ? ` - ${phone.description}` : ''}`,
   };
   const buttons = [];
   buttons.push({
@@ -250,7 +250,7 @@ export function genericPhone(phone) {
 export function genericResource(resource) {
   const element = {
     title: resource.name,
-    subtitle: `Resource${resource.description ? ` - ${resource.description}` : ''}`,
+    subtitle: `${resource.description ? ` - ${resource.description}` : ''}`,
   };
   const buttons = [];
   if (resource.url) {
@@ -281,7 +281,7 @@ export function genericResource(resource) {
 export function genericPlace(place) {
   const element = {
     title: place.name,
-    subtitle: `Place${place.description ? ` - ${place.description}` : ''}`,
+    subtitle: `${place.description ? ` - ${place.description}` : ''}`,
   };
   const buttons = [];
   if (place.address || (place.addresses && place.addresses.length > 0)) {
@@ -326,7 +326,7 @@ export function genericPlace(place) {
 export function genericService(service) {
   const element = {
     title: service.name,
-    subtitle: `Service${service.description ? ` - ${service.description}` : ''}`,
+    subtitle: `${service.description ? ` - ${service.description}` : ''}`,
   };
   const buttons = [];
   if (service.phones && service.phones.length > 0) {

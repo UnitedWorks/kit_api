@@ -59,37 +59,40 @@ export const KnowledgeQuestion = bookshelf.Model.extend({
 export const KnowledgeAnswer = bookshelf.Model.extend({
   tableName: 'knowledge_answers',
   hasTimestamps: true,
-  organization() {
-    return this.belongsTo(Organization);
+  owner() {
+    return this.belongsTo(Organization, 'owner_organization_id');
   },
   question() {
-    return this.belongsTo(KnowledgeQuestion, 'knowledge_question_id');
+    return this.belongsTo(KnowledgeQuestion);
   },
   events() {
-    return this.hasOne(Event, 'id', 'event_id');
+    return this.belongsTo(Event);
   },
   place() {
-    return this.hasOne(Place, 'id', 'place_id');
+    return this.belongsTo(Place);
   },
   service() {
-    return this.hasOne(Service, 'id', 'service_id');
+    return this.belongsTo(Service);
   },
   media() {
-    return this.hasOne(Media, 'id', 'media_id');
+    return this.belongsTo(Media);
   },
   feed() {
-    return this.hasOne(Feed, 'id', 'feed_id');
+    return this.belongsTo(Feed);
   },
   person() {
-    return this.hasOne(Person, 'id', 'person_id');
+    return this.belongsTo(Person);
   },
   phone() {
-    return this.hasOne(Phone, 'id', 'phone_id');
+    return this.belongsTo(Phone);
   },
   resource() {
-    return this.hasOne(Resource, 'id', 'resource_id');
+    return this.belongsTo(Resource);
   },
   prompt() {
-    return this.hasOne(Prompt, 'id', 'prompt_id');
+    return this.belongsTo(Prompt);
+  },
+  organization() {
+    return this.belongsTo(Organization);
   },
 });

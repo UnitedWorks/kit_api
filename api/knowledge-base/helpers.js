@@ -33,10 +33,11 @@ export function incrementTimesAsked(questionId, orgId) {
 export async function getAnswers(params = {}, options = { returnJSON: true }) {
   const data = await KnowledgeQuestion.where({ label: params.label }).fetch({
     withRelated: [{
-      answers: q => q.where('organization_id', params.organization_id).whereNotNull('approved_at'),
+      answers: q => q.where('owner_organization_id', params.organization_id).whereNotNull('approved_at'),
     }, 'category', 'answers.place', 'answers.place.addresses', 'answers.service',
       'answers.service.addresses', 'answers.person', 'answers.phone', 'answers.feed',
-      'answers.media', 'answers.resource', 'answers.resource.media'],
+      'answers.media', 'answers.resource', 'answers.resource.media', 'answers.organization',
+      'answers.organization.phones', 'answers.organization.addresses'],
   }).then(d => d);
   if (!options.returnJSON) return data.get('answers');
   if (data == null) return {};
@@ -59,6 +60,7 @@ export async function getAnswers(params = {}, options = { returnJSON: true }) {
       resources: answerJSON.filter(a => a.resource_id).map(a => a.resource),
       persons: answerJSON.filter(a => a.person_id).map(a => a.person),
       phones: answerJSON.filter(a => a.phone_id).map(a => a.phone),
+      organizations: answerJSON.filter(a => a.organization_id).map(a => a.organization),
       events: await Promise.all(answerJSON.filter(a => a.feed_id)
         .map(answer => runFeed(answer.feed).then(found => found.events)))
         .then((feed) => {
@@ -194,7 +196,7 @@ export function getQuestions(params = {}, options = {}) {
   }).fetchAll({
     withRelated: {
       category: q => q,
-      answers: q => q.where('organization_id', params.organization_id),
+      answers: q => q.where('owner_organization_id', params.organization_id),
     },
   }).then((questions) => {
     // Append Trigger Configurations for Shoutouts
@@ -316,10 +318,10 @@ export function makeAnswer(organization, question, answer, options = { returnJSO
   const newAnswerModel = {
     ...answer,
     knowledge_question_id: question.id,
-    organization_id: organization.id,
+    owner_organization_id: organization.id,
   };
   return KnowledgeAnswer.forge(newAnswerModel).save(null, { method: 'insert' })
-    .then(data => options.returnJSON ? data.toJSON() : data)
+    .then(data => (options.returnJSON ? data.toJSON() : data))
     .catch(error => error);
 }
 
@@ -503,7 +505,7 @@ export async function getCategoryFallback(label, orgId) {
 }
 
 export async function answerQuestion(organization, question, answers) {
-  await knex('knowledge_answers').where({ organization_id: organization.id, knowledge_question_id: question.id }).del();
+  await knex('knowledge_answers').where({ owner_organization_id: organization.id, knowledge_question_id: question.id }).del();
   const answerInserts = [];
   const idHash = {};
   answers.forEach((answer) => {
@@ -515,7 +517,7 @@ export async function answerQuestion(organization, question, answers) {
       const cleanedConfig = answer.actions.config;
       delete cleanedActions.config;
       answerInserts.push(knex('knowledge_answers').insert({
-        organization_id: organization.id,
+        owner_organization_id: organization.id,
         knowledge_question_id: question.id,
         approved_at: null,
         actions: cleanedActions,
@@ -542,7 +544,7 @@ export async function answerQuestion(organization, question, answers) {
       if (!answerDuplicate) {
         answerInserts.push(knex('knowledge_answers').insert({
           ...answer,
-          organization_id: organization.id,
+          owner_organization_id: organization.id,
           knowledge_question_id: question.id,
           approved_at: null,
         }));
