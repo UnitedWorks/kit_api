@@ -486,7 +486,11 @@ export function createAnswersFromRows({ answers, organization }, options = { ret
 
 export async function getCategoryFallback(label, orgId) {
   let category = await getCategories({ label, organization_id: orgId }).then(c => c);
-  if (category.length === 0) {
+  if (category.length === 0 || (!category[0].fallback.message
+    && category[0].fallback.resources.length === 0
+    && category[0].fallback.persons.length === 0
+    && category[0].fallback.phones.length === 0
+    && category[0].fallback.representatives.length === 0)) {
     category = await getCategories({
       label: KNOWLEDGE_CONST.GENERAL_CATEGORY_LABEL,
       organization_id: orgId,
