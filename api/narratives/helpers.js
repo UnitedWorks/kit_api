@@ -102,9 +102,9 @@ export async function fetchAnswers(intent, session) {
       });
       if (hasSeeClickFix) {
         session.messagingClient.addAll([i18n('see_click_fix'), elementTemplates.SeeClickFixTemplate], replyTemplates.evalHelpfulAnswer);
-        session.messagingClient.runQuene().then(() => session.getBaseState());
-      // If a default Shout Out exists, run it
+        return session.messagingClient.runQuene().then(() => session.getBaseState());
       }
+      // If a default Shout Out exists, run it
       const actionObj = { shout_out: intent, params: paramsToPromptSteps(shoutOutTemplate.params) };
       session.set('action', actionObj);
       return 'action.waiting_for_response';
