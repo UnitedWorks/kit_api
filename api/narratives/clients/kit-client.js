@@ -77,9 +77,20 @@ export default class KitClient {
     return answerArray;
   }
 
-  static sortEntitiesByDistance(entities, coordinates) {
-    return entities.filter(e => e.payload.location && e.payload.location.lat).sort((a, b) => {
-      return geolib.getDistance({ latitude: a.payload.lat, longitude: a.payload.lon }, { latitude: coordinates[0], longitude: coordinates[1] }) - geolib.getDistance({ latitude: b.payload.lat, longitude: b.payload.lon }, { latitude: coordinates[0], longitude: coordinates[1] });
+  static sortEntitiesByConstituentDistance(entities, coordinates) {
+    if (!coordinates) return [];
+    return entities.filter(e => (e.payload.addresses && e.payload.addresses.length > 0) || e.payload.address || (e.payload.location && e.payload.location.lat)).sort((a, b) => {
+      let aCoordinates = null;
+      let bCoordinates = null;
+      if (a.payload.addresses && a.payload.addresses.length > 0) aCoordinates = a.payload.addresses[0].location.coordinates;
+      if (a.payload.location && a.payload.location.lat) aCoordinates = a.payload.location;
+      if (b.payload.addresses && b.payload.addresses.length > 0) bCoordinates = b.payload.addresses[0].location.coordinates;
+      if (b.payload.location && b.payload.location.lat) aCoordinates = b.payload.location;
+      // Evaluate
+      if (!aCoordinates && !bCoordinates) return 0;
+      if (!aCoordinates) return 1;
+      if (!bCoordinates) return -1;
+      return geolib.getDistance({ latitude: aCoordinates.lat, longitude: aCoordinates.lon }, { latitude: coordinates[0], longitude: coordinates[1] }) - geolib.getDistance({ latitude: bCoordinates.lat, longitude: bCoordinates.lon }, { latitude: coordinates[0], longitude: coordinates[1] });
     });
   }
 

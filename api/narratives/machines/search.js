@@ -45,7 +45,16 @@ export default {
     // If no similar enities, but we had place/service functions, get those
     const entitiesByFunction = await getEntitiesByFunction(functionChecks, this.snapshot.organization_id, { limit: 9, sortStrings: entityStrings });
     // Join em
-    const joinedEntities = [].concat(similarlyNamedEntities).concat(entitiesByFunction);
+    let joinedEntities = [].concat(similarlyNamedEntities).concat(entitiesByFunction);
+    if (lookupType === LOOKUP.LOCATION_CLOSEST) {
+      joinedEntities = KitClient.sortEntitiesByConstituentDistance(
+        [].concat(similarlyNamedEntities).concat(entitiesByFunction),
+        [this.get('attributes').current_location.lat, this.get('attributes').current_location.lon]);
+    } else if (lookupType === LOOKUP.LOCATION) {
+      joinedEntities = KitClient.sortEntitiesByConstituentDistance(
+        [].concat(similarlyNamedEntities).concat(entitiesByFunction),
+        [this.get('attributes').location.lat, this.get('attributes').location.lon]);
+    }
     // Abort if we don't have any entities
     if (joinedEntities.length === 0) {
       new SlackService({
