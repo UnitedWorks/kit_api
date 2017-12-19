@@ -25,10 +25,10 @@ export async function broadcastMessage(broadcast, organization) {
     // If availiability polygon exists, run check
     if (broadcast.availability && broadcast.availability.geo) {
       // Check for default address. If none exists, ask to set
-      if (!session.data_store.attributes || (session.data_store.attributes && !session.data_store.attributes.default_location)) {
+      if (!session.data_store.attributes || (session.data_store.attributes && !session.data_store.attributes.location)) {
         client.send(i18n('get_home_location'));
       } else {
-        const constituentPosition = session.data_store.attributes.default_location;
+        const constituentPosition = session.data_store.attributes.location;
         const constituentIncluded = geoCheck(broadcast.availability.geo,
           [constituentPosition.lat, constituentPosition.lon]);
         if (constituentIncluded) client.send(broadcast.message);

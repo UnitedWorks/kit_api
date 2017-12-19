@@ -232,28 +232,29 @@ export default class KitClient {
   }
 
   static entityAvailabilityToText(type, entity, { datetime, constituentAttributes = {} } = {}) {
-    let entityAvailabilityText = '';
+    let availString = '';
     // Describe General Schedule (even if no datetime, mention schedule)
     if (!datetime && entity.availabilitys) {
-      entity.availabilitys.forEach((availability, index, array) => {
+      entity.availabilitys.forEach((availability) => {
         // Geo Check
-        if (constituentAttributes.default_location && availability.geo && availability.geo[0] && !geoCheck(availability.geo, [constituentAttributes.default_location.lat, constituentAttributes.default_location.lon])) return;
+        if (constituentAttributes.location && availability.geo && availability.geo[0] && !geoCheck(availability.geo, [constituentAttributes.location.lat, constituentAttributes.location.lon])) return;
         // Analyize RRules/Times
         const rule = new RRule(RRule.parseString(availability.rrule));
         const timeStart = moment(availability.t_start, 'HH-mm-ss');
         const timeEnd = moment(availability.t_end, 'HH-mm-ss');
-        entityAvailabilityText = entityAvailabilityText.concat(
-          `${rule.toText()}${availability.t_start && availability.t_end ? ` (${timeStart.format('h:mm A')} - ${timeEnd.format('h:mm A')})` : ' (No Hours Listed)'}${index !== array.length - 1 ? ' / ' : ''}`);
+        if (rule) availString = rule.toText();
+        if (availability.t_start) availString = (availString || '').concat(` ${timeStart.format('h:mm A')} - ${timeEnd.format('h:mm A')}`);
+        if (availString) availString = availString.trim();
       });
     // Check if a entity's availabilitys use geo and constituent home address is available.
     // If none available, send back message asking for default_address
-    } else if (entity.availabilitys && entity.availabilitys.filter(o => o.geo).length > 0 && !constituentAttributes.default_location) {
+    } else if (entity.availabilitys && entity.availabilitys.filter(o => o.geo).length > 0 && !constituentAttributes.location) {
       return i18n('get_home_location', { name: entity.name });
     // Speak to Specific Day Availability
     } else if (datetime[0] && datetime[0].grain === 'day' && entity.availabilitys) {
       entity.availabilitys.forEach((availability) => {
         // Geo Check
-        if (availability.geo && availability.geo[0] && !geoCheck(availability.geo, [constituentAttributes.default_location.lat, constituentAttributes.default_location.lon])) return;
+        if (availability.geo && availability.geo[0] && !geoCheck(availability.geo, [constituentAttributes.location.lat, constituentAttributes.location.lon])) return;
         // Analyize RRules/Times
         const rruleSet = new RRuleSet();
         rruleSet.rrule(RRule.fromString(availability.rrule));
@@ -265,17 +266,17 @@ export default class KitClient {
         dayLaterDate.setHours(23, 59, 59);
         const betweenSlice = rruleSet.between(floorDate, dayLaterDate);
         if (betweenSlice.length > 0) {
-          entityAvailabilityText = entityAvailabilityText.concat(
-            `${moment(betweenSlice[0]).format('dddd, M/DD')}${availability.t_start && availability.t_end ? ` (${timeStart.format('h:mm A')} - ${timeEnd.format('h:mm A')})` : ' (No Hours Listed)'}`);
+          availString = availString.concat(
+            `${moment(betweenSlice[0]).format('dddd, M/DD')}${availability.t_start && availability.t_end ? ` (${timeStart.format('h:mm A')} - ${timeEnd.format('h:mm A')})` : ''}`);
         }
       });
     }
     /* TODO Get Next Availability (how does this trigger? action?) */
-    if (entityAvailabilityText.length > 0) {
+    if (availString.length > 0) {
       if (type === 'service') {
-        return `${entity.name} is available ${entityAvailabilityText}`;
+        return `${entity.name} is available ${availString}`;
       } else if (type === 'place') {
-        return `${entity.name} is open ${entityAvailabilityText}`;
+        return `${entity.name} is open ${availString}`;
       }
     } else if (entity.availabilitys && entity.availabilitys.length > 0 && type === 'place') {
       const quickAvailability = entity.availabilitys[0];
@@ -283,7 +284,7 @@ export default class KitClient {
       const rule = new RRule(RRule.parseString(quickAvailability.rrule));
       const timeStart = moment(quickAvailability.t_start, 'HH-mm-ss');
       const timeEnd = moment(quickAvailability.t_end, 'HH-mm-ss');
-      return `${entity.name} is unavailable at that time, but is available ${rule.toText()}${quickAvailability.t_start && quickAvailability.t_end ? ` (${timeStart.format('h:mm A')} - ${timeEnd.format('h:mm A')})` : ' (No Hours Listed)'}`;
+      return `${entity.name} is unavailable at that time, but is available ${rule.toText()}${quickAvailability.t_start && quickAvailability.t_end ? ` (${timeStart.format('h:mm A')} - ${timeEnd.format('h:mm A')})` : ''}`;
     }
     // Should do a check for services
     return null;

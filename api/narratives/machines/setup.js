@@ -23,7 +23,7 @@ export default {
           lat: geoData.location.coordinates
             ? geoData.location.coordinates[0] : geoData.location.lat,
           lon: geoData.location.coordinates
-            ? geoData.location.coordinates[0] : geoData.location.lon,
+            ? geoData.location.coordinates[1] : geoData.location.lon,
         };
       }
       this.set('attributes', newAttributes);
