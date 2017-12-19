@@ -55,11 +55,10 @@ export default {
           lon: geoData.location.coordinates[1],
         },
       });
-      this.messagingClient.send("Thanks! I've updated your current location.");
       // If we had a previous input, run it
       if (this.get('last_input')) return this.runLastInput();
       // Otherwise, just return to base state
-      return this.getBaseState();
+      return this.messagingClient.send("Thanks! I've updated your current location.").then(() => this.getBaseState());
     }
     return this.messagingClient.send('Sorry, I didn\'t catch an address. Can you say that again?', [replyTemplates.location, replyTemplates.exit]);
   },

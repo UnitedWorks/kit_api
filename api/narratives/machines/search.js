@@ -10,6 +10,7 @@ import { runFeed } from '../../feeds/helpers';
 
 export default {
   async knowledge_entity() {
+
     const entityStrings = [];
     if (!this.snapshot.nlp) return this.getBaseState();
     if (this.snapshot.nlp.entities.location && this.snapshot.nlp.entities.location.length > 0) {
@@ -28,7 +29,7 @@ export default {
       ? this.snapshot.nlp.entities.entity_property[0].value
       : null;
     // Check for user location, and ask for it if we don't have it
-    if (lookupType === LOOKUP.LOCATION_CLOSEST && !this.get('last_input')) {
+    if (lookupType === LOOKUP.LOCATION_CLOSEST && (!this.get('attributes') || !this.get('attributes').current_location)) {
       this.messagingClient.send('Where are you currently located?', [replyTemplates.location, replyTemplates.exit]);
       return this.requestClosestLocation();
     }
@@ -42,7 +43,7 @@ export default {
     }
     const similarlyNamedEntities = await searchEntitiesBySimilarity(entityStrings, this.snapshot.organization_id, { limit: 9, confidence: functionChecks.length > 0 ? 0.65 : 0.3 });
     // If no similar enities, but we had place/service functions, get those
-    const entitiesByFunction = await getEntitiesByFunction(functionChecks, this.snapshot.organization_id, { sortStrings: entityStrings });
+    const entitiesByFunction = await getEntitiesByFunction(functionChecks, this.snapshot.organization_id, { limit: 9, sortStrings: entityStrings });
     // Join em
     const joinedEntities = [].concat(similarlyNamedEntities).concat(entitiesByFunction);
     // Abort if we don't have any entities
@@ -52,6 +53,8 @@ export default {
         icon: 'disappointed',
       }).send(`>*Query*: ${this.snapshot.input.payload.text}`);
       this.messagingClient.send('Sorry, I was unable to find a department, place, service, or personnel.');
+      // Clear current location if it was in use
+      this.clearCurrentLocation();
       return this.getBaseState();
     }
 
@@ -62,7 +65,12 @@ export default {
     if (lookupType) {
       this.messagingClient.addToQuene(KitClient.lookupTextFromEntities(joinedEntities, lookupType, this), replyTemplates.evalHelpfulAnswer);
     }
-    return this.messagingClient.runQuene().then(() => this.getBaseState());
+    const self = this;
+    return this.messagingClient.runQuene().then(() => {
+      // Clear current location if it was in use
+      self.clearCurrentLocation();
+      return self.getBaseState();
+    });
   },
 
   async event() {

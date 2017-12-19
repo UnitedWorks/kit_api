@@ -170,6 +170,13 @@ export class NarrativeSessionMachine extends StateMachine {
     this.fire('start', 'message');
   }
 
+  clearCurrentLocation() {
+    const cleanedAttributes = Object.assign({}, this.get('attributes'));
+    delete cleanedAttributes.current_location;
+    this.set('attributes', cleanedAttributes);
+    return this.save();
+  }
+
   // TODO(nicksahler): Proper SQL update
   save() {
     const self = this;
