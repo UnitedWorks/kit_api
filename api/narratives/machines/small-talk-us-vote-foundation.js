@@ -73,7 +73,7 @@ export default {
       elementTemplates.genericVotingAndElections,
       {
         title: 'U.S. Vote Foundation',
-        subtitle: 'Ask about elections, voter ID laws, registration deadlines, and anything else to help you elect representatives!',
+        subtitle: 'Ask about elections, voting deadlines, and other political information!',
         image_url: 'https://s3.amazonaws.com/kit.community/public/images/logos/USVF_logo_H.jpg',
         buttons: [{
           type: 'web_url',

@@ -21,7 +21,7 @@ export const genericSanitation = {
 
 export const genericVotingAndElections = {
   title: 'Voting and Elections',
-  subtitle: 'Ask about elections, voter ID laws, registration deadlines, and anything else to help you elect representatives!',
+  subtitle: 'Ask about elections, voting deadlines, and other political information!',
   image_url: ILLUSTRATION_URLS.voting,
   buttons: [{
     type: 'postback',
