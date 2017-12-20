@@ -43,6 +43,10 @@ export default async function geocoder(input, addressBoundary) {
       }).then(r => r.data.results.map(d => structureGoogleResult(d)));
       finalResponse = finalResponse.filter(loc =>
         loc.state || (loc.location.lat && loc.location.lon));
+    } else if (passingLocations.length === 1) {
+      finalResponse = [passingLocations[0]];
+    } else {
+      finalResponse = [];
     }
   }
   return finalResponse.length > 0 ? finalResponse[0] : null;
