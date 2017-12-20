@@ -3,7 +3,7 @@ import { addressToString, getCoordinatesFromAddress, getMapsViewUrl } from '../.
 import { ILLUSTRATION_URLS } from './assets';
 
 export const genericSanitation = {
-  title: 'Ask Schedule and Service Info',
+  title: 'Service Schedules & Info',
   subtitle: 'Get schedule information about garbage, recycling, and more!',
   image_url: ILLUSTRATION_URLS.events,
   buttons: [{
@@ -55,8 +55,8 @@ export const genericHousing = {
 
 // Biker
 export const genericCommuter = {
-  title: 'Transportation Feedback',
-  subtitle: 'Report and request services around your community and in transit.',
+  title: 'Commuting & Transportation',
+  subtitle: 'Report issues and request services around transit.',
   image_url: ILLUSTRATION_URLS.transit,
   buttons: [{
     type: 'postback',
@@ -73,7 +73,7 @@ export const genericCommuter = {
 
 export const genericDirectory = {
   title: 'Directory',
-  subtitle: 'Get hours and person information for departments.',
+  subtitle: 'Get information about departments and organizations.',
   image_url: ILLUSTRATION_URLS.asking,
   buttons: [{
     type: 'postback',
@@ -90,7 +90,7 @@ export const genericDirectory = {
 
 export const genericEvents = {
   title: 'Events',
-  subtitle: 'Find out about upcoming town celebrations, council meetings, and other official events!',
+  subtitle: 'Learn about upcoming celebrations, council meetings, and other official events!',
   image_url: ILLUSTRATION_URLS.parents,
   buttons: [{
     type: 'postback',
@@ -142,10 +142,10 @@ export const genericBusiness = {
 
 export const SeeClickFixElement = {
   title: 'SeeClickFix',
-  subtitle: 'Online Reporting for Issues and Suggestions',
+  subtitle: "Report issues and concerns. Get updates on what you've reported.",
   buttons: [{
     type: 'web_url',
-    title: 'Web Reporter',
+    title: 'Report Online',
     url: 'https://seeclickfix.com/report',
     webview_height_ratio: 'tall',
   }, {
