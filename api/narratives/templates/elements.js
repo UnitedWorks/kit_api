@@ -36,8 +36,8 @@ export const genericVotingAndElections = {
   }],
 };
 
-export const genericRenter = {
-  title: 'Know the Neighborhood',
+export const genericHousing = {
+  title: 'Housing',
   subtitle: 'Let us know how we can help your community!',
   image_url: ILLUSTRATION_URLS.renters,
   buttons: [{
@@ -46,8 +46,8 @@ export const genericRenter = {
     payload: 'Request street light',
   }, {
     type: 'postback',
-    title: 'Report Graffiti',
-    payload: 'Report graffiti',
+    title: 'Housing Rights Guide',
+    payload: 'Housing rights guide',
   }, {
     type: 'element_share',
   }],
@@ -60,11 +60,11 @@ export const genericCommuter = {
   image_url: ILLUSTRATION_URLS.transit,
   buttons: [{
     type: 'postback',
-    title: 'Driveway Blocked',
+    title: "My Driveway's Blocked",
     payload: 'Someone is blocking my driveway',
   }, {
     type: 'postback',
-    title: 'Request Bikelane',
+    title: 'Start Bike Sharing',
     payload: 'Request a bike lane',
   }, {
     type: 'element_share',
@@ -180,7 +180,7 @@ export function genericOrganization(organization) {
     const firstPhone = organization.phones[0];
     buttons.push({
       type: 'phone_number',
-      title: `${firstPhone.number}${firstPhone.extension ? ` x ${firstPhone.extension}` : ''}`,
+      title: `${firstPhone.number}${firstPhone.extension ? ` x${firstPhone.extension}` : ''}`,
       payload: `${firstPhone.number}${firstPhone.extension ? `,${firstPhone.extension}` : ''}`,
     });
   }
@@ -200,14 +200,14 @@ export function genericOrganization(organization) {
 export function genericPerson(person) {
   const element = {
     title: person.name,
-    subtitle: `${person.title ? ` - ${person.title}` : ''}${person.responsibilities ? ` - ${person.responsibilities}` : ''}`,
+    subtitle: `${person.title ? `${person.title}` : ''}${person.responsibilities ? `${person.responsibilities}` : ''}`,
   };
   const buttons = [];
   if (person.phones && person.phones.length > 0) {
     const firstPhone = person.phones[0];
     buttons.push({
       type: 'phone_number',
-      title: `${firstPhone.number}${firstPhone.extension ? ` x ${firstPhone.extension}` : ''}`,
+      title: `${firstPhone.number}${firstPhone.extension ? ` x${firstPhone.extension}` : ''}`,
       payload: `${firstPhone.number}${firstPhone.extension ? `,${firstPhone.extension}` : ''}`,
     });
   }
@@ -234,12 +234,12 @@ export function genericPerson(person) {
 export function genericPhone(phone) {
   const element = {
     title: phone.name,
-    subtitle: `${phone.description ? ` - ${phone.description}` : ''}`,
+    subtitle: `${phone.description ? `${phone.description}` : ''}`,
   };
   const buttons = [];
   buttons.push({
     type: 'phone_number',
-    title: `${phone.number}${phone.extension ? ` x ${phone.extension}` : ''}`,
+    title: `${phone.number}${phone.extension ? ` x${phone.extension}` : ''}`,
     payload: `${phone.number}${phone.extension ? `,${phone.extension}` : ''}`,
   });
   if (buttons.length < 3) buttons.push({ type: 'element_share' });
@@ -250,7 +250,7 @@ export function genericPhone(phone) {
 export function genericResource(resource) {
   const element = {
     title: resource.name,
-    subtitle: `${resource.description ? ` - ${resource.description}` : ''}`,
+    subtitle: `${resource.description ? `${resource.description}` : ''}`,
   };
   const buttons = [];
   if (resource.url) {
@@ -281,7 +281,7 @@ export function genericResource(resource) {
 export function genericPlace(place) {
   const element = {
     title: place.name,
-    subtitle: `${place.description ? ` - ${place.description}` : ''}`,
+    subtitle: `${place.description ? `${place.description}` : ''}`,
   };
   const buttons = [];
   if (place.address || (place.addresses && place.addresses.length > 0)) {
@@ -299,7 +299,7 @@ export function genericPlace(place) {
     const firstPhone = place.phones[0];
     buttons.push({
       type: 'phone_number',
-      title: `${firstPhone.number}${firstPhone.extension ? ` x ${firstPhone.extension}` : ''}`,
+      title: `${firstPhone.number}${firstPhone.extension ? ` x${firstPhone.extension}` : ''}`,
       payload: `${firstPhone.number}${firstPhone.extension ? `,${firstPhone.extension}` : ''}`,
     });
   }
@@ -326,14 +326,14 @@ export function genericPlace(place) {
 export function genericService(service) {
   const element = {
     title: service.name,
-    subtitle: `${service.description ? ` - ${service.description}` : ''}`,
+    subtitle: `${service.description ? `${service.description}` : ''}`,
   };
   const buttons = [];
   if (service.phones && service.phones.length > 0) {
     const firstPhone = service.phones[0];
     buttons.push({
       type: 'phone_number',
-      title: `${firstPhone.number}${firstPhone.extension ? ` x ${firstPhone.extension}` : ''}`,
+      title: `${firstPhone.number}${firstPhone.extension ? ` x${firstPhone.extension}` : ''}`,
       payload: `${firstPhone.number}${firstPhone.extension ? `,${firstPhone.extension}` : ''}`,
     });
   }

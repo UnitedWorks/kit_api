@@ -1327,7 +1327,19 @@
 		"text": "Someone is squatting in my building"
 	},
 	{
+		"text": "What rights do I have as a tenant?",
+		"intent": "property_buildings_homes.tenant.rights"
+	},
+	{
+		"text": "Housing Rights",
+		"intent": "property_buildings_homes.tenant.rights"
+	},
+	{
 		"text": "As a tenant do I have any rights?",
+		"intent": "property_buildings_homes.tenant.rights"
+	},
+	{
+		"text": "Housing rights guide",
 		"intent": "property_buildings_homes.tenant.rights"
 	},
 	{

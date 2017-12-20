@@ -19,9 +19,9 @@ const intoTemplates = {
     elementTemplates.genericSanitation,
     elementTemplates.genericEvents,
     elementTemplates.genericCommuter,
-    elementTemplates.genericRenter,
+    elementTemplates.genericHousing,
     elementTemplates.genericVotingAndElections,
-    elementTemplates.genericBusiness,
+    // elementTemplates.genericBusiness,
     elementTemplates.genericDirectory,
   ],
 };

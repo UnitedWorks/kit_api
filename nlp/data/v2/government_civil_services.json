@@ -533,5 +533,17 @@
   {
     "text": "I need to make an OPRA request",
     "intent": "government_civil_services.opra"
+  },
+  {
+    "text": "How do I find the ordinances and laws for the city?",
+    "intent": "government_civil_services.ordinances"
+  },
+  {
+    "text": "what's the law in jersey city",
+    "intent": "government_civil_services.ordinances"
+  },
+  {
+    "text": "search ordinances",
+    "intent": "government_civil_services.ordinances"
   }
 ]

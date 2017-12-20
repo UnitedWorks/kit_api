@@ -53,7 +53,27 @@
 	},
 	{
 		"intent": "transportation_streets_sidewalks.bicycle.sharing",
-		"text": "The bike sharing machine isnt working"
+		"text": "How do I use the bike sharing?"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.bicycle.sharing",
+		"text": "What is Citibike?"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.bicycle.sharing",
+		"text": "Do we have bike sharing?"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.bicycle.sharing.search",
+		"text": "Where are the bike sharing station located?"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.bicycle.sharing.search",
+		"text": "Where is the closest bike sharing station"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.bicycle.sharing.search",
+		"text": "Bike sharing station map"
 	},
 	{
 		"intent": "transportation_streets_sidewalks.construction.noise",
