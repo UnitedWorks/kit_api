@@ -64,8 +64,8 @@ export const genericCommuter = {
     payload: 'Someone is blocking my driveway',
   }, {
     type: 'postback',
-    title: 'Start Bike Sharing',
-    payload: 'Request a bike lane',
+    title: 'Join Bike Sharing',
+    payload: 'Join bike sharing',
   }, {
     type: 'element_share',
   }],
