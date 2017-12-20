@@ -288,6 +288,18 @@
     "intent": "social_services.assistance"
   },
   {
+    "text": "Information about affordable housing, vouchers, or other rental assistance",
+    "intent": "social_services.assistance.rent"
+  },
+  {
+    "text": "Affordable Housing",
+    "intent": "social_services.assistance.rent"
+  },
+  {
+    "text": "i need affordable housing",
+    "intent": "social_services.assistance.rent"
+  },
+  {
     "text": "I need help making rent",
     "intent": "social_services.assistance.rent"
   },

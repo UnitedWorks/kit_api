@@ -38,12 +38,12 @@ export const genericVotingAndElections = {
 
 export const genericHousing = {
   title: 'Housing',
-  subtitle: 'Let us know how we can help your community!',
+  subtitle: 'Report issues and find information about developments and tenant rights.',
   image_url: ILLUSTRATION_URLS.renters,
   buttons: [{
     type: 'postback',
-    title: 'Request Street light',
-    payload: 'Request street light',
+    title: 'Affordable Housing',
+    payload: 'Affordable housing info',
   }, {
     type: 'postback',
     title: 'Housing Rights Guide',
@@ -162,7 +162,7 @@ export const SeeClickFixTemplate = {
 export function genericOrganization(organization) {
   const element = {
     title: organization.name,
-    subtitle: `${organization.description ? `- ${organization.description}` : ''}`,
+    subtitle: `${organization.description ? organization.description : ''}`,
   };
   const buttons = [];
   if (organization.address || (organization.addresses && organization.addresses.length > 0)) {
@@ -359,7 +359,7 @@ export function genericService(service) {
 
 export function genericEvent(event) {
   const element = {
-    title: `${event.name} (Event)`,
+    title: event.name,
   };
   // Set date-time
   let dtString = null;
