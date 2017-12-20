@@ -27,11 +27,11 @@ export default {
         };
       }
       this.set('attributes', newAttributes);
-      this.messagingClient.send(`Thanks! I've set your default location to ${geoData.address_1}${geoData.city ? `, ${geoData.city}` : ''}`);
       // If we had a previous input, run it
       if (this.get('last_input')) return this.runLastInput();
       // Otherwise, just return to base state
-      return this.getBaseState();
+      return this.messagingClient.send(`Thanks! I've set your default location to ${geoData.address_1}${geoData.city ? `, ${geoData.city}` : ''}`)
+        .then(() => this.getBaseState());
     }
     this.messagingClient.send('Sorry, I didn\'t catch an address. Can you say that again?', [replyTemplates.location, replyTemplates.exit]);
   },
