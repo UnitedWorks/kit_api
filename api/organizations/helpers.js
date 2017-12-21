@@ -1,16 +1,16 @@
+import { knex } from '../orm';
 import { Organization } from '../accounts/models';
+import { crudEntityAddresses } from '../geo/helpers';
 
-export function createOrganization(org, options = { returnJSON: true }) {
+export async function createOrganization(org, options = { returnJSON: true }) {
   if (org.id) throw new Error('Has ID. Use Update');
-  return Organization.forge(org).save(null, { method: 'insert' })
-    .then((model) => {
-      return model.refresh({ withRelated: ['address', 'integrations'] }).then((refreshedModel) => {
-        return options.returnJSON ? refreshedModel.toJSON() : refreshedModel;
-      });
-    }).catch(error => error);
+  const orgModel = await Organization.forge(org).save(null, { method: 'insert' }).then(o => o);
+  if (org.addresses) await crudEntityAddresses({ organization_id: orgModel.id }, org.addresses);
+  const refreshedOrg = await orgModel.refresh({ withRelated: ['address', 'addresses', 'integrations'] }).then(rf => rf);
+  return options.returnJSON ? refreshedOrg.toJSON() : refreshedOrg;
 }
 
-export function updateOrganization(org, options = { returnJSON: true }) {
+export async function updateOrganization(org, options = { returnJSON: true }) {
   const cleanedOrg = {
     id: org.id,
     name: org.name,
@@ -18,10 +18,18 @@ export function updateOrganization(org, options = { returnJSON: true }) {
     alternate_names: org.alternate_names,
     description: org.description,
   };
-  return Organization.where({ id: cleanedOrg.id }).save(cleanedOrg, { patch: true, method: 'update' })
-    .then((model) => {
-      return model.refresh({ withRelated: ['address', 'integrations'] }).then((refreshedModel) => {
-        return options.returnJSON ? refreshedModel.toJSON() : refreshedModel;
-      });
-    }).catch(error => error);
+  const orgModel = await Organization.where({ id: cleanedOrg.id }).save(cleanedOrg, { patch: true, method: 'update' }).then(o => o);
+  if (org.addresses) await crudEntityAddresses({ organization_id: orgModel.id }, org.addresses);
+  const refreshedOrg = await orgModel.refresh({ withRelated: ['address', 'addresses', 'integrations'] }).then(rf => rf);
+  return options.returnJSON ? refreshedOrg.toJSON() : refreshedOrg;
+}
+
+export function deleteOrganization(id) {
+  return Promise.all([
+    knex('addresss_entity_associations').where('organization_id', '=', id).del().then(p => p),
+    knex('knowledge_answers').where('organization_id', '=', id).del().then(p => p),
+    knex('organizations_entity_associations').where('organization_id', '=', id).del().then(p => p),
+  ])
+  .then(() => Organization.where({ id }).destroy().then(() => ({ id }))
+  .catch(error => error)).catch(err => err);
 }

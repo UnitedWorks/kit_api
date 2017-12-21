@@ -85,9 +85,7 @@ export default {
   async event() {
     const feeds = await Feed.where({ organization_id: this.snapshot.organization_id, entity: FEED_CONSTANTS.EVENT })
       .fetchAll().then(f => f.toJSON());
-    if (feeds.length > 0) {
-      this.messagingClient.addToQuene('I think I found what you are looking for:');
-    } else {
+    if (feeds.length === 0) {
       this.messagingClient.send('Your local gov hasn\'t recorded any events yet. Sorry!');
       return this.getBaseState();
     }

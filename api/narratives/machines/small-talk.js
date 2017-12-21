@@ -29,8 +29,6 @@ const intoTemplates = {
 export default {
   init: {
     async enter() {
-      let firstName;
-      this.messagingClient.addToQuene(i18n('intro_hello', { firstName }));
       this.messagingClient.addToQuene(intoTemplates);
       this.messagingClient.addToQuene(i18n('intro_information', { organizationName: this.snapshot.organization.name }), [replyTemplates.allNotificationsOn]);
       return this.messagingClient.runQuene().then(() => {
@@ -43,7 +41,7 @@ export default {
   what_can_i_do: {
     enter() {
       this.messagingClient.addToQuene(intoTemplates);
-      this.messagingClient.addToQuene('I can answer questions about your local government or your community. I can also reminder you about trash/recycling pickup, events, and the weather!', [replyTemplates.allNotificationsOn]);
+      this.messagingClient.addToQuene('I can also reminder you about scheduled services, events, and the weather!', [replyTemplates.allNotificationsOn]);
       return this.messagingClient.runQuene().then(() => 'start');
     },
   },

@@ -1,7 +1,7 @@
 export const i18n = (key, inserts = {}) => {
   const translations = {
     intro_hello: `Hey${inserts.firstName ? ` ${inserts.firstName}` : ''}!`,
-    intro_information: `Can I help you find something? I can tell you about ${inserts.organizationName ? `${inserts.organizationName}` : 'local'} services, public noticies, and service reminders. Just ask!`,
+    intro_information: 'Hey! Can I help you find something? I can give you department phone numbers, service schedules, event notices, reminders, and more! Just ask!',
     bot_apology: `Sorry, I wasn't expeting that answer or may have misunderstood. ${inserts.appendQuestion ? inserts.appendQuestion : ''}`,
     dont_know: `Sorry, I don’t have an answer to this.${inserts.tryContacting ? ` Try personing ${inserts.tryContacting} if you need assistance now.` : ''}`,
     setup_ask_city: 'Ok! What\'s your CITY and STATE?  Ex) "New Brunswick, NJ"',

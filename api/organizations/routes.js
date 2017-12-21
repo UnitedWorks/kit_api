@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { knex } from '../orm';
 import { Organization } from '../accounts/models';
-import { createOrganization, updateOrganization } from './helpers';
+import { createOrganization, updateOrganization, deleteOrganization } from './helpers';
 
 const router = new Router();
 
@@ -42,10 +42,13 @@ router.route('/')
   .delete((req, res, next) => {
     try {
       if (!req.query.organization_id) throw new Error('Must provide ID');
-      knex('organizations_entity_associations').where({ organization_id: req.query.organization_id }).del().then(() => {
-        Organization.forge({ id: req.query.organization_id }).destroy()
-          .then(() => res.status(200).send({ organization: { id: req.query.organization_id } }));
-      });
+      Organization.where({ id: req.query.organization_id }).fetch().then((org) => {
+        if (!org) throw new Error('No Organization Found');
+        if (!org.toJSON().parent_organization_id) throw new Error('Cannot Delete Top Level Organizations');
+        deleteOrganization(req.query.organization_id)
+          .then(() => res.status(200).send())
+          .catch(err => next(err));
+      })
     } catch (e) {
       next(e);
     }
