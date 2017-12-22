@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { logger } from '../logger';
 import { getAnswers, getCategories, getQuestions, makeAnswer, updateAnswer, deleteAnswer,
   getQuestionsAsTable, createAnswersFromRows, setCategoryFallback,
-  answerQuestion, approveAnswers } from './helpers';
+  answerQuestion, approveAnswers, findQuestion } from './helpers';
 import { requireAuth } from '../utils/passport';
 
 const router = new Router();
@@ -30,7 +30,13 @@ router.post('/categories/fallback', requireAuth, (req, res, next) => {
 /**
  * Questions Endpoint
  */
-router.post('/question/answer', (req, res, next) => {
+router.get('/question/find', requireAuth, (req, res, next) => {
+  findQuestion(req.query.statement)
+    .then(question => res.status(200).send({ question }))
+    .catch(err => next(err));
+});
+
+router.post('/question/answer', requireAuth, (req, res, next) => {
   logger.info('Pinged: Answering Question');
   answerQuestion(req.body.organization, req.body.question, req.body.answers)
     .then(data => res.status(200).send(data))
@@ -57,7 +63,7 @@ router.get('/questions/download', (req, res, next) => {
  * Answers Endpoint
  */
 router.route('/answers')
-  .get((req, res) => {
+  .get(requireAuth, (req, res) => {
     const params = req.query;
     getAnswers(params, {}).then(({ answers }) => {
       res.status(200).send({
@@ -65,7 +71,7 @@ router.route('/answers')
       });
     });
   })
-  .post((req, res, next) => {
+  .post(requireAuth, (req, res, next) => {
     try {
       makeAnswer(req.body.organization, req.body.question, req.body.answer, { returnJSON: true })
         .then(answerModel => res.status(200).send({ answer: answerModel }))
@@ -74,12 +80,12 @@ router.route('/answers')
       next(e);
     }
   })
-  .put((req, res, next) => {
+  .put(requireAuth, (req, res, next) => {
     updateAnswer(req.body.answer, { returnJSON: true })
       .then(answerModel => res.status(200).send({ answer: answerModel }))
       .catch(err => next(err));
   })
-  .delete((req, res, next) => {
+  .delete(requireAuth, (req, res, next) => {
     deleteAnswer(req.query.answer_id)
       .then(answer => res.status(200).send({ answer }))
       .catch(err => next(err));
@@ -95,7 +101,7 @@ router.post('/answers/batch', requireAuth, (req, res, next) => {
   }
 });
 
-router.post('/answers/approve', (req, res, next) => {
+router.post('/answers/approve', requireAuth, (req, res, next) => {
   try {
     approveAnswers(req.body.answers)
       .then(() => res.status(200).send())

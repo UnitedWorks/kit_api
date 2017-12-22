@@ -1,6 +1,7 @@
 import stringSimilarity from 'string-similarity';
 import { knex } from '../orm';
 import * as env from '../env';
+import { nlp } from '../utils/nlp';
 import { Representative, Organization } from '../accounts/models';
 import { KnowledgeAnswer, KnowledgeCategory, KnowledgeQuestion } from './models';
 import EmailService from '../utils/email';
@@ -570,4 +571,12 @@ export function approveAnswers(answers = []) {
   return Promise.all(answers.map((answer) => {
     return knex('knowledge_answers').where({ id: answer.id }).update({ approved_at: knex.raw('now()') }).returning('id');
   })).then(results => ({ answers: results }));
+}
+
+export async function findQuestion(statement) {
+  const witEntities = await nlp.message(statement).then(n => n.entities);
+  if (!witEntities.intent) return null;
+  const foundIntent = witEntities.intent[0].value
+  return KnowledgeQuestion.where({ label: foundIntent }).fetch()
+    .then(question => question.toJSON());
 }
