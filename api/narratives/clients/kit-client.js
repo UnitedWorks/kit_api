@@ -79,7 +79,8 @@ export default class KitClient {
 
   static sortEntitiesByConstituentDistance(entities, coordinates) {
     if (!coordinates) return [];
-    return entities.filter(e => (e.payload.addresses && e.payload.addresses.length > 0) || e.payload.address || (e.payload.location && e.payload.location.lat)).sort((a, b) => {
+    // return entities.filter(e => (e.payload.addresses && e.payload.addresses.length > 0) || e.payload.address || (e.payload.location && e.payload.location.lat)).sort((a, b) => {
+    return entities.sort((a, b) => { // Got rid of filter, because even if it doesn't have an address, you should still return it so someone can call/get in touch
       let aCoordinates = null;
       let bCoordinates = null;
       if (a.payload.addresses && a.payload.addresses.length > 0) aCoordinates = a.payload.addresses[0].location.coordinates;
