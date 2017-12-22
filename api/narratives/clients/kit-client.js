@@ -275,9 +275,9 @@ export default class KitClient {
     /* TODO Get Next Availability (how does this trigger? action?) */
     if (availString.length > 0) {
       if (type === 'service') {
-        return `${entity.name} is available ${availString}`;
+        return `${entity.name} is available ${availString}.`;
       } else if (type === 'place') {
-        return `${entity.name} is open ${availString}`;
+        return `${entity.name} is open ${availString}.`;
       }
     } else if (entity.availabilitys && entity.availabilitys.length > 0 && type === 'place') {
       const quickAvailability = entity.availabilitys[0];
