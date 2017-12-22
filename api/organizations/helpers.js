@@ -20,7 +20,7 @@ export async function updateOrganization(org, options = { returnJSON: true }) {
   };
   const orgModel = await Organization.where({ id: cleanedOrg.id }).save(cleanedOrg, { patch: true, method: 'update' }).then(o => o);
   if (org.addresses) await crudEntityAddresses({ organization_id: orgModel.id }, org.addresses);
-  const refreshedOrg = await orgModel.refresh({ withRelated: ['address', 'addresses', 'integrations'] }).then(rf => rf);
+  const refreshedOrg = await orgModel.refresh({ withRelated: ['address', 'addresses', 'integrations', 'phones', 'persons', 'places', 'services'] }).then(rf => rf);
   return options.returnJSON ? refreshedOrg.toJSON() : refreshedOrg;
 }
 
