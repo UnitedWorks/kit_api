@@ -55,6 +55,12 @@ export function checkIntegration(organization, integration = {}) {
   });
 }
 
+export async function getIntegrationConfig(orgId, integrationLabel) {
+  const integrationId = await Integration.where({ label: integrationLabel }).fetch().then(i => i.id);
+  return await OrganizationIntegrations.where({ organization_id: orgId, integration_id: integrationId })
+    .fetch().then(oi => (oi ? oi.toJSON().config : null));
+}
+
 export function setForOrganization(params) {
   return getIntegrations(params).then((orgIntegrations) => {
     const integrationToBeSet = orgIntegrations.filter(

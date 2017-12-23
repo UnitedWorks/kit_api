@@ -76,6 +76,14 @@
 		"text": "Bike sharing station map"
 	},
 	{
+		"intent": "transportation_streets_sidewalks.bicycle.sharing.search",
+		"text": "Is a public bicycle free near me?"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.bicycle.sharing.search",
+		"text": "Closest available Citbike"
+	},
+	{
 		"intent": "transportation_streets_sidewalks.construction.noise",
 		"text": "There is really loud roadwork going on"
 	},

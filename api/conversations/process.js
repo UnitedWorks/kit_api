@@ -122,7 +122,7 @@ function normalizeSessionsFromRequest(req, conversationClient) {
         return Constituent.where({ facebook_id: input.sender.id }).fetch().then((model) => {
           return model || new Constituent({ facebook_id: input.sender.id, facebook_entry_id: input.recipient.id }).save();
         }).then((con) => {
-          return con.refresh({ withRelated: ['facebookEntry', 'facebookEntry.organization', 'facebookEntry.organization.address'] }).then((c) => {
+          return con.refresh({ withRelated: ['facebookEntry', 'facebookEntry.organization', 'facebookEntry.organization.address', 'facebookEntry.organization.integrations'] }).then((c) => {
             const refreshedCon = c.toJSON();
             return setupConstituentState(refreshedCon, refreshedCon.facebookEntry.organization);
           });
@@ -139,7 +139,7 @@ function normalizeSessionsFromRequest(req, conversationClient) {
     return Constituent.where({ phone: input.From }).fetch().then((model) => {
       return model || new Constituent({ phone: input.From, entry_phone_number: input.To }).save();
     }).then((con) => {
-      return con.refresh({ withRelated: ['smsEntry', 'smsEntry.organization', 'smsEntry.organization.address'] }).then((c) => {
+      return con.refresh({ withRelated: ['smsEntry', 'smsEntry.organization', 'smsEntry.organization.address', 'smsEntry.organization.integrations'] }).then((c) => {
         const refreshedCon = c.toJSON();
         return setupConstituentState(refreshedCon, refreshedCon.smsEntry.organization);
       });
@@ -154,7 +154,7 @@ function normalizeSessionsFromRequest(req, conversationClient) {
     Maybe allow a "callback" argument on this end
   */
   } else if (conversationClient === interfaces.HTTP) {
-    return Organization.where({ id: req.query.organization_id }).fetch({ withRelated: ['address'] }).then((org) => {
+    return Organization.where({ id: req.query.organization_id }).fetch({ withRelated: ['address', 'integrations'] }).then((org) => {
       let constPromise;
       if (req.query.constituent_id) {
         constPromise = Constituent.where({ id: req.query.constituent_id }).fetch().then((model) => {

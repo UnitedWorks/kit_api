@@ -291,9 +291,11 @@ export function genericPlace(place) {
     subtitle: `${place.description ? `${place.description}` : ''}`,
   };
   const buttons = [];
-  if (place.address || (place.addresses && place.addresses.length > 0)) {
+  if (place.location || place.address || (place.addresses && place.addresses.length > 0)) {
     // If we have coordinates, place!
-    const coords = getCoordinatesFromAddress(place.address || place.addresses[0]);
+    const coords = place.location
+      ? place.location.coordinates
+      : getCoordinatesFromAddress(place.address || place.addresses[0]);
     if (coords) {
       buttons.push({
         type: 'web_url',

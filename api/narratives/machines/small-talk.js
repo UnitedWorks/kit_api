@@ -1,8 +1,6 @@
 import { logger } from '../../logger';
 import { nlp } from '../../utils/nlp';
 import { getConstituentTasks } from '../../tasks/helpers';
-import { checkIntegration } from '../../integrations/helpers';
-import * as INTEGRATIONS from '../../constants/integrations';
 import SlackService from '../../utils/slack';
 import { EventTracker } from '../../utils/event-tracking';
 import { fetchAnswers, randomPick } from '../helpers';
@@ -94,6 +92,7 @@ export default {
           'speech.frustration': 'personality.handle_frustration',
 
           'transportation_streets_sidewalks.snow.plowing': 'status.plowing',
+          'transportation_streets_sidewalks.bicycle.sharing.search': 'status.bicycle_share_availability',
 
           'notifications': 'notifications',
 

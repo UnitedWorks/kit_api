@@ -1,8 +1,8 @@
 import bcrypt from 'bcrypt-nodejs';
 import { bookshelf } from '../orm';
 import { Task } from '../tasks/models';
-import * as IntegrationModels from '../integrations/models';
-import * as ConversationModels from '../conversations/models';
+import { Integration, OrganizationIntegrations } from '../integrations/models';
+import { MessageEntry } from '../conversations/models';
 import { Service } from '../services/models';
 import { Place } from '../places/models';
 import { Person } from '../persons/models';
@@ -41,10 +41,10 @@ export const Constituent = bookshelf.Model.extend({
     return this.hasMany(Task, 'constituent_id');
   },
   facebookEntry() {
-    return this.hasOne(ConversationModels.MessageEntry, 'facebook_entry_id', 'facebook_entry_id');
+    return this.hasOne(MessageEntry, 'facebook_entry_id', 'facebook_entry_id');
   },
   smsEntry() {
-    return this.hasOne(ConversationModels.MessageEntry, 'phone_number', 'entry_phone_number');
+    return this.hasOne(MessageEntry, 'phone_number', 'entry_phone_number');
   },
 });
 
@@ -54,7 +54,7 @@ export const Organization = bookshelf.Model.extend({
     return this.hasMany(Representative, 'organization_id');
   },
   integrations() {
-    return this.belongsToMany(IntegrationModels.Integration, 'organizations_integrations');
+    return this.belongsToMany(Integration, 'organizations_integrations');
   },
   address() {
     return this.hasOne(Address, 'organization_id');
@@ -63,7 +63,7 @@ export const Organization = bookshelf.Model.extend({
     return this.belongsToMany(Address, 'addresss_entity_associations', 'organization_id', 'address_id');
   },
   messageEntries() {
-    return this.hasMany(ConversationModels.MessageEntry, 'organization_id');
+    return this.hasMany(MessageEntry, 'organization_id');
   },
   services() {
     return this.belongsToMany(Service, 'organizations_entity_associations');
