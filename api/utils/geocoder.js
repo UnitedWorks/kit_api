@@ -35,8 +35,9 @@ export default async function geocoder(input, addressBoundary) {
   // If addressBoundary is passed in, we need a matching state/country
   if (addressBoundary) {
     const passingLocations = finalResponse.filter(loc =>
-      loc.country_code.toUpperCase() === addressBoundary.country_code.toUpperCase()
-      && loc.state.toUpperCase() === addressBoundary.state.toUpperCase());
+      loc.region.toUpperCase() === addressBoundary.region.toUpperCase()
+      && loc.state.toUpperCase() === addressBoundary.state.toUpperCase()
+      && loc.country_code.toUpperCase() === addressBoundary.country_code.toUpperCase());
     if (passingLocations.length === 0) {
       finalResponse = await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
         params: { address: `${input} ${addressBoundary.city} ${addressBoundary.state}`, key: process.env.GEOCODE_KEY },
