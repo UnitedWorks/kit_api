@@ -688,5 +688,41 @@
         "entity": "entity_property"
       }
     ]
+  },
+  {
+    "text": "What data is there on parking?",
+    "intent": "search.data",
+    "entities": [
+      {
+        "start": 22,
+        "end": 29,
+        "value": "parking",
+        "entity": "wit$search_query"
+      }
+    ]
+  },
+  {
+    "text": "Do you have any tax data?",
+    "intent": "search.data",
+    "entities": [
+      {
+        "start": 16,
+        "end": 19,
+        "value": "tax",
+        "entity": "wit$search_query"
+      }
+    ]
+  },
+  {
+    "text": "Datasets for traffic",
+    "intent": "search.data",
+    "entities": [
+      {
+        "start": 13,
+        "end": 20,
+        "value": "traffic",
+        "entity": "wit$search_query"
+      }
+    ]
   }
 ]

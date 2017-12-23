@@ -74,8 +74,9 @@ export default {
           'personality.name': 'personality.name',
           'personality.weather': 'personality.weather',
 
-          'search.knowledge_entity': 'search.knowledge_entity',
+          'search.data': 'search.data',
           'search.event': 'search.event',
+          'search.knowledge_entity': 'search.knowledge_entity',
 
           'settings.locality.update': 'setup.reset_organization', // Do we need this?
           'settings.location': 'setup.location', // Should there be an attribute setting machine?

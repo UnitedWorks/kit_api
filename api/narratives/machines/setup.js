@@ -37,6 +37,13 @@ export default {
   },
 
   async location_closest() {
+    // Go through with Setting Location
+    let tempCoordinates = null;
+
+    // Check for Attachment Point
+    // this.snapshot.input.payload.attachments ?
+    //   this.snapshot.input.payload.attachments[0]
+
     const nlpEntities = this.snapshot.nlp ? this.snapshot.nlp.entities : await nlp.message(this.snapshot.input.payload.text || this.snapshot.input.payload.payload).then(n => n.entities);
     // They want to bounce
     if (nlpEntities.intent && nlpEntities.intent[0].value === 'speech.escape') {
@@ -44,7 +51,8 @@ export default {
       this.messagingClient.send('Ok!', replyTemplates.whatCanIAsk);
       return this.getBaseState();
     }
-    // Go through with Setting Location
+
+    // Check for String
     const formedString = nlpEntities[TAGS.LOCATION] ? nlpEntities[TAGS.LOCATION][0].value : this.snapshot.input.payload.text;
     const geoData = await geocoder(formedString, this.snapshot.organization.address).then(gd => gd);
     if (geoData) {

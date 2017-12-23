@@ -4,3 +4,4 @@ export const SEE_CLICK_FIX = 'seeClickFix';
 export const VOTE_FOUNDATION = 'voteFoundation';
 export const SALES_FORCE = 'salesForce';
 export const STAE = 'stae';
+export const CKAN = 'ckan';

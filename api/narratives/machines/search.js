@@ -1,8 +1,11 @@
 import stringSimilarity from 'string-similarity';
 import { searchEntitiesBySimilarity, getEntitiesByFunction } from '../../knowledge-base/helpers';
+import { getIntegrationConfig } from '../../integrations/helpers';
 import KitClient from '../clients/kit-client';
+import CkanClient from '../clients/ckan-client';
 import * as replyTemplates from '../templates/quick-replies';
 import * as LOOKUP from '../../constants/nlp-tagging';
+import * as INTEGRATION_CONST from '../../constants/integrations';
 import SlackService from '../../utils/slack';
 import { Feed } from '../../feeds/models';
 import * as FEED_CONSTANTS from '../../constants/feeds';
@@ -125,6 +128,52 @@ export default {
         KitClient.genericTemplateFromEntities(finalEventGrouping),
         replyTemplates.evalHelpfulAnswer);
     }
+    return this.messagingClient.runQuene().then(() => this.getBaseState());
+  },
+
+  async data() {
+    // Grab Seach Strings
+    const entityStrings = [];
+    if (!this.snapshot.nlp) return this.getBaseState();
+    if (this.snapshot.nlp.entities.search_query && this.snapshot.nlp.entities.search_query.length > 0) {
+      this.snapshot.nlp.entities.search_query.forEach((q) => {
+        // Trimming the 's' off a search query because ckan is picky
+        const thisValue = q.value.replace('data', '').trim().toLowerCase();
+        entityStrings.push(thisValue.slice(-1) === 's' ? thisValue.slice(0, -1) : thisValue);
+      });
+    }
+    let mayorResources = null;
+    if (entityStrings.length > 0) {
+      mayorResources = await searchEntitiesBySimilarity(entityStrings, this.snapshot.organization_id, { limit: 5, only: 'resources' });
+      if (mayorResources && mayorResources.length > 0) {
+        this.messagingClient.addAll(KitClient.genericTemplateFromEntities(mayorResources));
+      }
+    }
+
+    const ckanConfig = await getIntegrationConfig(
+      this.snapshot.organization_id, INTEGRATION_CONST.CKAN).then(c => c);
+    const staeConfig = await getIntegrationConfig(
+      this.snapshot.organization_id, INTEGRATION_CONST.STAE).then(c => c);
+
+    let ckanResources = null;
+    if (!ckanConfig && !staeConfig) {
+      this.messagingClient.addToQuene('I didn\'t find any data sets for your local government')
+    } else {
+      if (entityStrings.length > 0 && ckanConfig) {
+        ckanResources = await Promise.all(entityStrings.map(str => new CkanClient(ckanConfig)
+          .searchDataResources(str))).then(data => Promise.all([].concat.apply([], data)))
+          .then(ar => ar);
+      } else if (ckanConfig) {
+        ckanResources = new CkanClient(ckanConfig).searchDataResources().then(r => r);
+      }
+      if (ckanResources && ckanResources.length > 0) {
+        this.messagingClient.addAll(KitClient.genericTemplateFromEntities(ckanResources.slice(0, 9)));
+      }
+    }
+    if ((!ckanResources || ckanResources.length === 0) && (!mayorResources || mayorResources.length === 0)) {
+      this.messagingClient.addToQuene('Sorry, I wasn\'t able to find any datasets about that.');
+    }
+    this.messagingClient.addToQuene(`${ckanConfig ? `${this.snapshot.organization.name}'s data portal can be found at ${ckanConfig.portal_url}` : ''} ${staeConfig ? `Realtime data sources are available at https://${staeConfig.municipality_id}.municipal.systems/` : ''}`);
     return this.messagingClient.runQuene().then(() => this.getBaseState());
   },
 };

@@ -87,61 +87,71 @@ export async function searchEntitiesBySimilarity(strings = [], organizationId, o
   // Postgres UNION ALL could make this more efficient... but hit a snag with results columns
   const searchFunctions = [];
   strings.map(s => s.replace(/'|"/g, '')).forEach((str) => {
-    searchFunctions.push(
-      knex.select(knex.raw(`*, similarity(unnest(array_append(alternate_names, name::text)), '${str}') AS similarity`))
+    if (!options.only || options.only === 'organizations') {
+      searchFunctions.push(
+        knex.select(knex.raw(`*, similarity(unnest(array_append(alternate_names, name::text)), '${str}') AS similarity`))
         .from('organizations')
         .where('parent_organization_id', '=', organizationId)
         .orderBy('similarity', 'desc')
         .limit(10)
         .then(rows => rows.filter(r => r.similarity > options.confidence).map((o) => {
           return Organization.where({ id: o.id }).fetch({ withRelated: ['addresses', 'places', 'places.addresses', 'places.phones', 'services', 'services.addresses', 'services.phones', 'phones', 'persons', 'persons.phones'] })
-            .then((fetched) => {
-              return {
-                type: 'organization',
-                payload: { ...fetched.toJSON(), similarity: o.similarity }
-              };
-            });
+          .then((fetched) => {
+            return {
+              type: 'organization',
+              payload: { ...fetched.toJSON(), similarity: o.similarity }
+            };
+          });
         })));
-    searchFunctions.push(
-      knex.select(knex.raw(`*, similarity(unnest(array_append(alternate_names, name::text)), '${str}') AS similarity`))
-        .from('services')
-        .where('organization_id', '=', organizationId)
-        .orderBy('similarity', 'desc')
-        .limit(10)
-        .then(rows => rows.filter(r => r.similarity > options.confidence).map((s) => {
-          return Service.where({ id: s.id }).fetch({ withRelated: ['addresses', 'phones'] })
-            .then(fetched => ({ type: 'service', payload: { ...fetched.toJSON(), similarity: s.similarity } }));
-        })));
-    searchFunctions.push(
-      knex.select(knex.raw(`*, similarity(unnest(array_append(alternate_names, name::text)), '${str}') AS similarity`))
-        .from('places')
-        .where('organization_id', '=', organizationId)
-        .orderBy('similarity', 'desc')
-        .limit(10)
-        .then(rows => rows.filter(r => r.similarity > options.confidence).map((p) => {
-          return Place.where({ id: p.id }).fetch({ withRelated: ['addresses', 'phones'] })
-            .then(fetched => ({ type: 'place', payload: { ...fetched.toJSON(), similarity: p.similarity } }));
-        })));
-    searchFunctions.push(
-      knex.select(knex.raw(`*, similarity(unnest(array_append(array_append(alternate_names, name::text), title::text)), '${str}') AS similarity`))
-        .from('persons')
-        .where('organization_id', '=', organizationId)
-        .orderBy('similarity', 'desc')
-        .limit(10)
-        .then(rows => rows.filter(r => r.similarity > options.confidence).map((p) => {
-          return Person.where({ id: p.id }).fetch({ withRelated: ['phones'] })
-            .then(fetched => ({ type: 'person', payload: { ...fetched.toJSON(), similarity: p.similarity } }));
-        })));
-    searchFunctions.push(
-      knex.select(knex.raw(`*, similarity(unnest(array_append(alternate_names, name::text)), '${str}') AS similarity`))
-        .from('resources')
-        .where('organization_id', '=', organizationId)
-        .orderBy('similarity', 'desc')
-        .limit(10)
-        .then(rows => rows.filter(r => r.similarity > options.confidence).map((r) => {
-          return Resource.where({ id: r.id }).fetch({ withRelated: ['media'] })
-            .then(fetched => ({ type: 'resource', payload: { ...fetched.toJSON(), similarity: r.similarity } }));
-        })));
+    }
+    if (!options.only || options.only === 'services') {
+      searchFunctions.push(
+        knex.select(knex.raw(`*, similarity(unnest(array_append(alternate_names, name::text)), '${str}') AS similarity`))
+          .from('services')
+          .where('organization_id', '=', organizationId)
+          .orderBy('similarity', 'desc')
+          .limit(10)
+          .then(rows => rows.filter(r => r.similarity > options.confidence).map((s) => {
+            return Service.where({ id: s.id }).fetch({ withRelated: ['addresses', 'phones'] })
+              .then(fetched => ({ type: 'service', payload: { ...fetched.toJSON(), similarity: s.similarity } }));
+          })));
+    }
+    if (!options.only || options.only === 'places') {
+      searchFunctions.push(
+        knex.select(knex.raw(`*, similarity(unnest(array_append(alternate_names, name::text)), '${str}') AS similarity`))
+          .from('places')
+          .where('organization_id', '=', organizationId)
+          .orderBy('similarity', 'desc')
+          .limit(10)
+          .then(rows => rows.filter(r => r.similarity > options.confidence).map((p) => {
+            return Place.where({ id: p.id }).fetch({ withRelated: ['addresses', 'phones'] })
+              .then(fetched => ({ type: 'place', payload: { ...fetched.toJSON(), similarity: p.similarity } }));
+          })));
+    }
+    if (!options.only || options.only === 'persons') {
+      searchFunctions.push(
+        knex.select(knex.raw(`*, similarity(unnest(array_append(array_append(alternate_names, name::text), title::text)), '${str}') AS similarity`))
+          .from('persons')
+          .where('organization_id', '=', organizationId)
+          .orderBy('similarity', 'desc')
+          .limit(10)
+          .then(rows => rows.filter(r => r.similarity > options.confidence).map((p) => {
+            return Person.where({ id: p.id }).fetch({ withRelated: ['phones'] })
+              .then(fetched => ({ type: 'person', payload: { ...fetched.toJSON(), similarity: p.similarity } }));
+          })));
+    }
+    if (!options.only || options.only === 'resources') {
+      searchFunctions.push(
+        knex.select(knex.raw(`*, similarity(unnest(array_append(alternate_names, name::text)), '${str}') AS similarity`))
+          .from('resources')
+          .where('organization_id', '=', organizationId)
+          .orderBy('similarity', 'desc')
+          .limit(10)
+          .then(rows => rows.filter(r => r.similarity > options.confidence).map((r) => {
+            return Resource.where({ id: r.id }).fetch({ withRelated: ['media'] })
+              .then(fetched => ({ type: 'resource', payload: { ...fetched.toJSON(), similarity: r.similarity } }));
+          })));
+    }
   });
   const results = await Promise.all(searchFunctions).then(data => Promise.all([].concat.apply([], data))).then((data) => {
     const allEntities = [];
