@@ -12,14 +12,14 @@ export default class Stae {
         if (!options.sortFromPoint || options.sortFromPoint.length !== 2) return res.data.results.slice(0, 3);
         const results = res.data.results.sort((a, b) => {
           return geolib.getDistance({
-            latitude: a.geometry.coordinates[1],
-            longitude: a.geometry.coordinates[0],
+            latitude: b.geometry.coordinates[1],
+            longitude: b.geometry.coordinates[0],
           }, {
             latitude: options.sortFromPoint[0],
             longitude: options.sortFromPoint[1],
           }) - geolib.getDistance({
-            latitude: b.geometry.coordinates[1],
-            longitude: b.geometry.coordinates[0],
+            latitude: a.geometry.coordinates[1],
+            longitude: a.geometry.coordinates[0],
           }, {
             latitude: options.sortFromPoint[0],
             longitude: options.sortFromPoint[1],
