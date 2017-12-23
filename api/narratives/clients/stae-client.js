@@ -24,7 +24,7 @@ export default class Stae {
             latitude: options.sortFromPoint[0],
             longitude: options.sortFromPoint[1],
           });
-        }).slice(0, 3).map((station) => {
+        }).slice(-3).map((station) => {
           const metersAway = geolib.getDistance({
             latitude: station.geometry.coordinates[1],
             longitude: station.geometry.coordinates[0],
