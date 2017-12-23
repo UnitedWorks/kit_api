@@ -165,16 +165,13 @@ export function genericOrganization(organization) {
     subtitle: `${organization.description ? organization.description : ''}`,
   };
   const buttons = [];
-  if (organization.address || (organization.addresses && organization.addresses.length > 0)) {
-    // If we have coordinates, organization!
-    const coords = getCoordinatesFromAddress(organization.address || organization.addresses[0]);
-    if (coords) {
-      buttons.push({
-        type: 'web_url',
-        title: 'View on Map',
-        url: getMapsViewUrl(coords, 'coordinates'),
-      });
-    }
+  if (organization.url) {
+    buttons.push({
+      type: 'web_url',
+      title: organization.url,
+      url: organization.url,
+      webview_height_ratio: 'tall',
+    });
   }
   if (organization.phones && organization.phones.length > 0) {
     const firstPhone = organization.phones[0];
@@ -184,13 +181,23 @@ export function genericOrganization(organization) {
       payload: `${firstPhone.number}${firstPhone.extension ? `,${firstPhone.extension}` : ''}`,
     });
   }
-  if (organization.url) {
-    buttons.push({
-      type: 'web_url',
-      title: organization.url,
-      url: organization.url,
-      webview_height_ratio: 'tall',
-    });
+  if (organization.address
+    || (organization.addresses && organization.addresses.length > 0)
+    || (organization.places && organization.places.length > 0)) {
+    // If we have coordinates, organization!
+    let addressObj = organization.address || organization.addresses[0];
+    if (!addressObj && organization.places && organization.places.length === 1
+      && organization.places[0].addresses && organization.places[0].addresses.length > 0) {
+      addressObj = organization.places[0].addresses[0];
+    }
+    const coords = getCoordinatesFromAddress(addressObj);
+    if (coords) {
+      buttons.push({
+        type: 'web_url',
+        title: 'View on Map',
+        url: getMapsViewUrl(coords, 'coordinates'),
+      });
+    }
   }
   if (buttons.length < 3) buttons.push({ type: 'element_share' });
   if (buttons.length > 0) element.buttons = buttons;

@@ -38,7 +38,8 @@ export async function getAnswers(params = {}, options = { returnJSON: true }) {
     }, 'category', 'answers.place', 'answers.place.addresses', 'answers.service',
       'answers.service.addresses', 'answers.person', 'answers.phone', 'answers.feed',
       'answers.media', 'answers.resource', 'answers.resource.media', 'answers.organization',
-      'answers.organization.phones', 'answers.organization.addresses'],
+      'answers.organization.phones', 'answers.organization.addresses', 'answers.organization.services',
+      'answers.organization.places', 'answers.organization.places.addresses', 'answers.organization.persons'],
   }).then(d => d);
   if (!options.returnJSON) return data.get('answers');
   if (data == null) return {};
