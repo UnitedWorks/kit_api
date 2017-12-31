@@ -1347,6 +1347,14 @@
 		"text": "i dont have heat"
 	},
 	{
+		"intent": "property_buildings_homes.violation.housing.heat",
+		"text": "i have problem with my heating... and the owner home not want repair.... what i need to do?"
+	},
+	{
+		"intent": "property_buildings_homes.violation.housing.heat",
+		"text": "I need help with heating my house ... the owner does not want to repair it"
+	},
+	{
 		"intent": "property_buildings_homes.violation.housing.hot_water",
 		"text": "We don't have any hot water in our apartment"
 	},

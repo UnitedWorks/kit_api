@@ -8,7 +8,7 @@ export default class Stae {
   }
   getBikeShareStations(options = { sortFromPoint: null }) {
     return axios.get(`${this.apiUrl}/dataTypes/transit-station/data?filters[data][type]=bicycle`).then((res) => {
-      if (!options.sortFromPoint || options.sortFromPoint.length !== 2) return res.data.results.slice(0, 3);
+      if (!options.sortFromPoint || options.sortFromPoint.length !== 2) return res.data.results;
       const results = res.data.results.sort((a, b) => {
         return geolib.getDistance({
           latitude: a.geometry.coordinates[1],

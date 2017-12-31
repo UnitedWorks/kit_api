@@ -147,8 +147,8 @@ export async function fetchAnswers(intent, session) {
   if (timelyServices.length > 0 || timelyFacilities.length > 0) {
     // If we have text, don't forget to include still
     // and we have datetime, validate whether or not its available
-    const availableEntities = answers.services.filter(entity => KitClient.entityAvailabilityToText('service', entity, { datetime: entities[TAGS.DATETIME], constituentAttributes: session.get('attributes') }))
-      .concat(answers.places.filter(entity => KitClient.entityAvailabilityToText('place', entity, { datetime: entities[TAGS.DATETIME], constituentAttributes: session.get('attributes') })));
+    const availableEntities = answers.services.filter(entity => KitClient.entityAvailability('service', entity, { datetime: entities[TAGS.DATETIME], constituentAttributes: session.get('attributes') }))
+      .concat(answers.places.filter(entity => KitClient.entityAvailability('place', entity, { datetime: entities[TAGS.DATETIME], constituentAttributes: session.get('attributes') })));
     const locationServices = timelyServices.filter(s => s.availabilitys.filter(a => a.geo).length > 0);
     // If we're going to need a location, abort entirely and set default constituent location
     if (locationServices.length > 0 && (!session.get('attributes') || !session.get('attributes').address)) {
@@ -164,8 +164,8 @@ export async function fetchAnswers(intent, session) {
       // If none available, say ___ is unavailable at that time (and then articulate schedules)
       const entityAvailabilities = [
         (availableEntities.length === 0 ? "I don't see anything available then" : null),
-        ...answers.services.map(entity => KitClient.entityAvailabilityToText('service', entity, { datetime: entities[TAGS.DATETIME], constituentAttributes: session.get('attributes') }) || `${entity.name} is not available.`),
-        ...answers.places.map(entity => KitClient.entityAvailabilityToText('place', entity, { datetime: entities[TAGS.DATETIME], constituentAttributes: session.get('attributes') }) || `${entity.name} is not open.`),
+        ...answers.services.map(entity => KitClient.entityAvailability('service', entity, { datetime: entities[TAGS.DATETIME], constituentAttributes: session.get('attributes') }) || `${entity.name} is not available.`),
+        ...answers.places.map(entity => KitClient.entityAvailability('place', entity, { datetime: entities[TAGS.DATETIME], constituentAttributes: session.get('attributes') }) || `${entity.name} is not open.`),
       ].filter(text => text);
       if (entityAvailabilities.length > 0) session.messagingClient.addToQuene(entityAvailabilities.join('. '), replyTemplates.evalHelpfulAnswer);
     }

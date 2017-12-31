@@ -148,7 +148,7 @@ export default class KitClient {
       if ([NLP_TAGS.LOCATION, NLP_TAGS.LOCATION_CLOSEST].indexOf(lookupType) > -1) {
         snip = KitClient.entityLocationToText(orgEntity.type, orgEntity.payload);
       } else if (lookupType === NLP_TAGS.AVAILABILITY_SCHEDULE && orgEntity.payload.places && orgEntity.payload.places.length > 0) {
-        snip = KitClient.entityAvailabilityToText('place', orgEntity.payload.places[0], { constituentAttributes: session.get('attributes'), datetime: session.snapshot.nlp.entities[NLP_TAGS.DATETIME] });
+        snip = KitClient.entityAvailability('place', orgEntity.payload.places[0], { constituentAttributes: session.get('attributes'), datetime: session.snapshot.nlp.entities[NLP_TAGS.DATETIME] });
         if (snip) snip = `${orgEntity.payload.name}'s hours depend on the location. ${snip}`
       } else if (lookupType === NLP_TAGS.CONTACT) {
         snip = KitClient.entityContactToText(orgEntity.payload);
@@ -162,7 +162,7 @@ export default class KitClient {
       entityArray.forEach((entity) => {
         let snip = null;
         if (lookupType === NLP_TAGS.AVAILABILITY_SCHEDULE) {
-          snip = KitClient.entityAvailabilityToText(entity.type, entity.payload, { constituentAttributes: session.get('attributes'), datetime: session.snapshot.nlp.entities[NLP_TAGS.DATETIME] });
+          snip = KitClient.entityAvailability(entity.type, entity.payload, { constituentAttributes: session.get('attributes'), datetime: session.snapshot.nlp.entities[NLP_TAGS.DATETIME] });
         } else if (lookupType === NLP_TAGS.CONTACT) {
           snip = KitClient.entityContactToText(entity.payload);
         } else if (lookupType === NLP_TAGS.CONTACT_PHONE) {
@@ -232,7 +232,7 @@ export default class KitClient {
     return entity.url ? `${entity.name}'s website is ${entity.url}` : null;
   }
 
-  static entityAvailabilityToText(type, entity, { datetime, constituentAttributes = {} } = {}) {
+  static entityAvailability(type, entity, { datetime, constituentAttributes = {} } = {}, options = { toText: true }) {
     let availString = '';
     // Describe General Schedule (even if no datetime, mention schedule)
     if (!datetime && entity.availabilitys) {
@@ -250,6 +250,7 @@ export default class KitClient {
     // Check if a entity's availabilitys use geo and constituent home address is available.
     // If none available, send back message asking for default_address
     } else if (entity.availabilitys && entity.availabilitys.filter(o => o.geo).length > 0 && !constituentAttributes.location) {
+      if (!options.toText) return false;
       return i18n('get_home_location', { name: entity.name });
     // Speak to Specific Day Availability
     } else if (datetime[0] && datetime[0].grain === 'day' && entity.availabilitys) {
@@ -274,12 +275,14 @@ export default class KitClient {
     }
     /* TODO Get Next Availability (how does this trigger? action?) */
     if (availString.length > 0) {
+      if (!options.toText) return true;
       if (type === 'service') {
         return `${entity.name} is available ${availString}.`;
       } else if (type === 'place') {
         return `${entity.name} is open ${availString}.`;
       }
     } else if (entity.availabilitys && entity.availabilitys.length > 0 && type === 'place') {
+      if (!options.toText) return false;
       const quickAvailability = entity.availabilitys[0];
       // Analyize RRules/Times
       const rule = new RRule(RRule.parseString(quickAvailability.rrule));
@@ -288,6 +291,7 @@ export default class KitClient {
       return `${entity.name} is unavailable at that time, but is available ${rule.toText()}${quickAvailability.t_start && quickAvailability.t_end ? ` (${timeStart.format('h:mm A')} - ${timeEnd.format('h:mm A')})` : ''}`;
     }
     // Should do a check for services
+    if (!options.toText) return false;
     return null;
   }
 }

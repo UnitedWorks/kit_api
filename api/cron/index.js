@@ -155,13 +155,21 @@ export function scheduledJobs() {
             const answerCluster = {};
             if (trashCluster.answers.filter(a => a.service)) {
               if (Object.keys(answerCluster).length === 0) answerCluster[orgId] = {};
-              answerCluster[orgId].trash = trashCluster.answers
-                .filter(a => a.service).map(a => a.service);
+              answerCluster[orgId].trash = trashCluster.answers.filter(a => a.service_id);
+              if (answerCluster[orgId].trash.length === 1) {
+                answerCluster[orgId].trash = answerCluster[orgId].trash[0].service;
+              } else {
+                answerCluster[orgId].trash = null;
+              }
             }
             if (recyclingCluster.answers.filter(a => a.service)) {
               if (Object.keys(answerCluster).length === 0) answerCluster[orgId] = {};
-              answerCluster[orgId].recycling = recyclingCluster.answers
-                .filter(a => a.serivce).map(a => a.service);
+              answerCluster[orgId].recycling = recyclingCluster.answers.filter(a => a.service_id);
+              if (answerCluster[orgId].recycling.length === 1) {
+                answerCluster[orgId].recycling = answerCluster[orgId].recycling[0].service;
+              } else {
+                answerCluster[orgId].recycling = null;
+              }
             }
             if (Object.keys(answerCluster).length > 0) return answerCluster;
           });
@@ -171,24 +179,24 @@ export function scheduledJobs() {
         answerClusters.filter(c => c).forEach(cluster =>
           (orgAnswerSet[Object.keys(cluster)[0]] = cluster[Object.keys(cluster)[0]]));
         // Run Notifciation on Sessions
-        sessions.forEach((session, index) => {
+        sessions.forEach((session) => {
           // Check if org even has answers
           if (orgAnswerSet.hasOwnProperty(session.organization_id)) {
             if (session.data_store && !session.data_store.notifications) session.data_store.notifications = {};
             const tomorrow = moment().add(1, 'days').utc().format();
             let hasRecycling = false;
             let hasTrash = false;
-            if (orgAnswerSet[session.organization_id].recycling && orgAnswerSet[session.organization_id].recycling[0]) {
-              hasRecycling = KitClient.entityAvailabilityToText('service', orgAnswerSet[session.organization_id].recycling[0], {
+            if (orgAnswerSet[session.organization_id].recycling && orgAnswerSet[session.organization_id].recycling) {
+              hasRecycling = KitClient.entityAvailability('service', orgAnswerSet[session.organization_id].recycling, {
                 datetime: [{ grain: 'day', value: tomorrow }],
-                constituentAttributes: session.data_store.attributes
-              }) != null;
+                constituentAttributes: session.data_store.attributes,
+              }, { toText: false });
             }
-            if (orgAnswerSet[session.organization_id].trash && orgAnswerSet[session.organization_id].trash[0]) {
-              hasTrash = KitClient.entityAvailabilityToText('service', orgAnswerSet[session.organization_id].trash[0], {
+            if (orgAnswerSet[session.organization_id].trash && orgAnswerSet[session.organization_id].trash) {
+              hasTrash = KitClient.entityAvailability('service', orgAnswerSet[session.organization_id].trash, {
                 datetime: [{ grain: 'day', value: tomorrow }],
-                constituentAttributes: session.data_store.attributes
-              }) != null;
+                constituentAttributes: session.data_store.attributes,
+              }, { toText: false });
             }
             let messageInsert = null;
             if (hasRecycling && !hasTrash) {
