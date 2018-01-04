@@ -1,6 +1,5 @@
 import { EventTracker } from '../../utils/event-tracking';
 import SlackService from '../../utils/slack';
-import { logger } from '../../logger';
 
 export default {
   answer_helpful() {
@@ -8,11 +7,7 @@ export default {
       username: 'Helpful',
       icon: 'raised_hands',
     }).send(`>*Con. ${this.snapshot.constituent.id}*`);
-    try {
-      EventTracker('answer_feedback', { session: this }, { helpful: 5 });
-    } catch (e) {
-      logger.error(e);
-    }
+    EventTracker('answer_not_helpful', { session: this });
     return 'personality.handle_thank_you';
   },
   answer_not_helpful: {
@@ -21,11 +16,7 @@ export default {
         username: 'Not Helpful',
         icon: 'disappointed',
       }).send(`>*Con. ${this.snapshot.constituent.id}*`);
-      try {
-        EventTracker('answer_feedback', { session: this }, { helpful: 0 });
-      } catch (e) {
-        logger.error(e);
-      }
+      EventTracker('answer_helpful', { session: this });
       this.messagingClient.send('Sorry about that. Why wasn\'t this answer helpful?');
     },
     message() {

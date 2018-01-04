@@ -6,8 +6,9 @@ const client = Mixpanel.init(process.env.MIXPANEL_ID, {
 });
 
 export function EventTracker(label, { question, session }, custom = {}) {
+  if (!label) return;
   try {
-    client.track('answer_sent', {
+    client.track(label, {
       distinct_id: session.snapshot.constituent.id,
       constituent_id: session.snapshot.constituent.id,
       organization_id: session.snapshot.organization.id,
