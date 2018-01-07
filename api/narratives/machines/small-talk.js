@@ -62,6 +62,9 @@ export default {
 
           'education_employment.employment_job_training': 'employment.waiting_job_training',
 
+          'escalate.911': 'safety_emergency',
+          'escalate.suicide': 'personal_emergency',
+
           'health_medicine.clinics': 'health.waiting_clinic_search',
 
           'interaction.tasks.status': 'get_tasks',
@@ -244,6 +247,20 @@ export default {
       }
     }
     this.set('notifications', notifications);
+    return 'start';
+  },
+
+  safety_emergency() {
+    this.messagingClient.send('Call 911 immediately.');
+    return 'start';
+  },
+
+  personal_emergency() {
+    new SlackService({
+      username: 'Suicide / Crisis / Emergency',
+      icon: 'bangbang',
+    }).send(`>*Con. ${this.snapshot.constituent_id}:* "${this.snapshot.input.payload.text}"\n>*Org*: ${this.snapshot.organization.name} -- *Interface*: ${this.snapshot.constituent.facebookEntry ? 'Facebook' : 'Web'}`);
+    this.messagingClient.send("You're not alone. Can you text hello to 741741 for me? Whatever you're going through, people are ready to help. I'm just a chatbot, but I was programmed by a human that cares about you. Please reach out to 741741 for me");
     return 'start';
   },
 };
