@@ -10,6 +10,10 @@ export function getMapsViewUrl(payload, type = 'name') {
   return `https://www.google.com/maps/place/${formattedString}`;
 }
 
+export function getStaticMapsImageUrl(lat, lon) {
+  return `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lon}&zoom=17&size=600x300&markers=color:0x3C3EFF%7C${lat},${lon}&7Csize:tiny&key=${process.env.GOOGLE_MAPS_API_KEY}`;
+}
+
 export function addressToString(address, options = { slim: true }) {
   if (!address) return null;
   if (typeof address === 'string') return address;

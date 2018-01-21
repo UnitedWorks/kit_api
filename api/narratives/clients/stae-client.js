@@ -35,8 +35,8 @@ export default class Stae {
         return {
           type: 'place',
           payload: {
-            name: `${station.data.operator ? station.data.operator.slice(0, 1).toUpperCase() : ''}${station.data.operator ? station.data.operator.slice(1) : ''} ${station.data.name}`,
-            description: `Bike share station with ${station.data.capacity} bicycles located ${milesAway} miles away. Operated by ${station.data.operator.slice(0, 1).toUpperCase()}${station.data.operator.slice(1)}.`,
+            name: `${station.data.operators[0] ? station.data.operators[0].slice(0, 1).toUpperCase() : ''}${station.data.operators[0] ? station.data.operators[0].slice(1) : ''} ${station.data.name}`,
+            description: `Bike share station with ${station.data.capacity} bicycles located ${milesAway} miles away. Operated by ${station.data.operators[0].slice(0, 1).toUpperCase()}${station.data.operators[0].slice(1)}.`,
             location: {
               type: 'Point',
               coordinates: [
@@ -47,7 +47,7 @@ export default class Stae {
           },
         };
       });
-      return results;
+      return results.slice(0, 3);
     }).catch(e => e);
   }
 }

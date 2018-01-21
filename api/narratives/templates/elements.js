@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { addressToString, getCoordinatesFromAddress, getMapsViewUrl } from '../../geo/helpers';
+import { addressToString, getCoordinatesFromAddress, getMapsViewUrl, getStaticMapsImageUrl } from '../../geo/helpers';
 import { ILLUSTRATION_URLS } from './assets';
 
 export const genericSanitation = {
@@ -297,11 +297,18 @@ export function genericPlace(place) {
       ? place.location.coordinates
       : getCoordinatesFromAddress(place.address || place.addresses[0]);
     if (coords) {
+      // Add Button
       buttons.push({
         type: 'web_url',
         title: 'View on Map',
         url: getMapsViewUrl(coords, 'coordinates'),
       });
+      // Set Static Image
+      element.image_url = getStaticMapsImageUrl(coords[0], coords[1]);
+      element.default_action = {
+        type: 'web_url',
+        url: getMapsViewUrl(coords, 'coordinates'),
+      };
     }
   }
   if (place.phones && place.phones.length > 0) {
