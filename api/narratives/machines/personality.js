@@ -6,13 +6,13 @@ import * as QUICK_REPLIES from '../templates/quick-replies';
 export default {
   what_am_i() {
     const message = randomPick([
-      '🤖 I\'m a chatbot trying to get you in touch with the right folks in gov!',
+      `I am your digital assistant to help you find the information you need about ${this.snapshot.organization.name}. Ask me anything and I will try to find the answer for you!`,
     ]);
     this.messagingClient.send(message);
     return this.getBaseState();
   },
   chatbot_curiosity() {
-    const message = 'Chatbots are automated assistants 🤖. They\'ve been around for decades, but they\'re very new to government! I\'m one of the only in the world :)';
+    const message = 'Chatbots are automated digital assistants. They\'ve been around for decades as experiments, but now they are starting to become more common!';
     this.messagingClient.send(message);
     return this.getBaseState();
   },
