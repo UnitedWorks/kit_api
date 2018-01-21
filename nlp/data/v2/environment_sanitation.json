@@ -192,6 +192,10 @@
 		"intent": "environment_sanitation.disposal.bulk_pickup.guide"
 	},
 	{
+		"text": "i want to dispose of a bulk item",
+		"intent": "environment_sanitation.disposal.bulk_pickup.guide"
+	},
+	{
 		"text": "How do I get bulky waste items collected?",
 		"intent": "environment_sanitation.disposal.bulk_pickup.request"
 	},

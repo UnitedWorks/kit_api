@@ -285,7 +285,8 @@ const updateOperations = [
   // { delete: 'property_buildings_homes.district' },
   // { from: 'transportation_streets_sidewalks.plowing.schedule', to: 'transportation_streets_sidewalks.snow.plowing' },
   // { delete: 'transportation_streets_sidewalks.plowing' },
-  { from: 'transportation_streets_sidewalks.adopt_a_highway', to: 'transportation_streets_sidewalks.highway.adopt' },
+  // { from: 'transportation_streets_sidewalks.adopt_a_highway', to: 'transportation_streets_sidewalks.highway.adopt' },
+  // { from: 'government_civil_services.opra', to: 'government_civil_services.information.request' },
 ].map((modification) => {
   // Simply update the label
   if (modification.from && modification.to) {

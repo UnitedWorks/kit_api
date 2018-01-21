@@ -592,27 +592,27 @@
 		"text": "How do I request a sidewalk inspection to remove a violation?"
 	},
 	{
-		"intent": "transportation_streets_sidewalks.sidewalk.broken",
+		"intent": "transportation_streets_sidewalks.sidewalk.safety",
 		"text": "The sidewalk needs fixing"
 	},
 	{
-		"intent": "transportation_streets_sidewalks.sidewalk.broken",
+		"intent": "transportation_streets_sidewalks.sidewalk.safety",
 		"text": "How can I request sidewalk repairs?"
 	},
 	{
-		"intent": "transportation_streets_sidewalks.sidewalk.broken",
+		"intent": "transportation_streets_sidewalks.sidewalk.safety",
 		"text": "A tree has split the sidewalk"
 	},
 	{
-		"intent": "transportation_streets_sidewalks.sidewalk.broken",
+		"intent": "transportation_streets_sidewalks.sidewalk.safety",
 		"text": "How do I report a broken, raised, or uneven sidewalk?"
 	},
 	{
-		"intent": "transportation_streets_sidewalks.sidewalk.broken",
+		"intent": "transportation_streets_sidewalks.sidewalk.safety",
 		"text": "How do report getting my sidewalk repaired?"
 	},
 	{
-		"intent": "transportation_streets_sidewalks.sidewalk.broken",
+		"intent": "transportation_streets_sidewalks.sidewalk.safety",
 		"text": "This sidewalk is broken. People keep tripping"
 	},
 	{

@@ -116,6 +116,22 @@
 		"intent": "personality.weather"
 	},
 	{
+		"text": "What time is it?",
+		"intent": "personality.time"
+	},
+	{
+		"text": "can iknow the time",
+		"intent": "personality.time"
+	},
+	{
+		"text": "whats the time",
+		"intent": "personality.time"
+	},
+	{
+		"text": "current time",
+		"intent": "personality.time"
+	},
+	{
 		"text": "what are you",
 		"intent": "personality.what_am_i"
 	},

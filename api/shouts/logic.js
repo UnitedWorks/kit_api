@@ -422,8 +422,8 @@ SO['transportation_streets_sidewalks.sidewalk'] = {
   tags: ['transportation_streets_sidewalks', 'sidewalk'],
   params: basicReport,
 };
-SO['transportation_streets_sidewalks.sidewalk.broken'] = {
-  tags: ['transportation_streets_sidewalks', 'sidewalk', 'broken'],
+SO['transportation_streets_sidewalks.sidewalk.safety'] = {
+  tags: ['transportation_streets_sidewalks', 'sidewalk', 'safety'],
   params: basicReport,
 };
 SO['transportation_streets_sidewalks.curb'] = {

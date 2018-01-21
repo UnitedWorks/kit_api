@@ -279,6 +279,10 @@
     "intent": "government_civil_services.marriage_civil_union_license.arrival"
   },
   {
+    "text": "Can you help me get a copy of my divorce papers?",
+    "intent": "government_civil_services.divorce.request"
+  },
+  {
     "text": "How do I get a divorce?",
     "intent": "government_civil_services.divorce.request"
   },
@@ -528,11 +532,15 @@
   },
   {
     "text": "How do I submit an open records request?",
-    "intent": "government_civil_services.opra"
+    "intent": "government_civil_services.information.request"
   },
   {
     "text": "I need to make an OPRA request",
-    "intent": "government_civil_services.opra"
+    "intent": "government_civil_services.information.request"
+  },
+  {
+    "text": "I want to request information on zoning history for a parcel through a FOIL",
+    "intent": "government_civil_services.information.request"
   },
   {
     "text": "How do I find the ordinances and laws for the city?",

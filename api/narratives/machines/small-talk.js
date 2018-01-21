@@ -75,6 +75,7 @@ export default {
           'personality.makers': 'personality.makers',
           'personality.age': 'personality.age',
           'personality.name': 'personality.name',
+          'personality.time': 'personality.time',
           'personality.weather': 'personality.weather',
 
           'search.data': 'search.data',

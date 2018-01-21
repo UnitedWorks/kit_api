@@ -69,6 +69,10 @@ export default {
     this.messagingClient.send("Sorry, I can't do a better job :( There are people improving my abilities every day. I hope I can do a better job for you tomorrow.");
     return this.getBaseState();
   },
+  time() {
+    this.messagingClient.send(`The current time is ${moment().format('h:mm a')}`);
+    return this.getBaseState();
+  },
   async weather() {
     const forecast = await new WeatherClient().dayForecast(
       this.snapshot.organization.address.location.coordinates[0], this.snapshot.organization.address.location.coordinates[1]).then(f => f);
