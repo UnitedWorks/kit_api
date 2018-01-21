@@ -12,7 +12,7 @@ export function getMapsViewUrl(payload, type = 'name') {
 
 export function getStaticMapsImageUrl(lat, lon) {
   // 570x300 is a 1.9:1 ratio FB requires
-  return `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lon}&zoom=17&size=570x300&scale=2&markers=color:0x3C3EFF%7C${lat},${lon}&7Csize:tiny&key=${process.env.GOOGLE_MAPS_API_KEY}`;
+  return `https://maps.googleapis.com/maps/api/staticmap?&maptype=roadmap&style=feature:poi.attraction|visibility:off&style=feature:poi.business|visibility:off&center=${lat},${lon}&zoom=17&size=570x300&scale=2&markers=color:0x3C3EFF%7C${lat},${lon}&7Csize:tiny&key=${process.env.GOOGLE_MAPS_API_KEY}`;
 }
 
 export function addressToString(address, options = { slim: true }) {

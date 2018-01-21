@@ -37,6 +37,10 @@ export default {
     this.messagingClient.send("Chatbots don't usually have names, but some folks call me Jane!");
     return this.getBaseState();
   },
+  real() {
+    this.messagingClient.send("I'm a real bot trained by people!");
+    return this.getBaseState();
+  },
   handle_greeting() {
     const greetings = [
       'Hello neighbor!',
