@@ -9,10 +9,8 @@ exports.seed = (knex, Promise) => {
   ])
   .then(() => {
     // Clearing knowledge entities in a particular order because of relationships
-    return knex('knowledge_events').del().then(() => {
-      return knex('knowledge_services').del().then(() => {
-        return knex('knowledge_facilitys').del();
-      });
+    return knex('services').del().then(() => {
+      return knex('places').del();
     });
   })
   .then(() => {
@@ -29,63 +27,50 @@ exports.seed = (knex, Promise) => {
       knex('organizations').del(),
       knex('constituents').del(),
       knex('knowledge_categorys').del(),
-      knex('integrations_locations').del(),
     ]);
   })
   .then(() => {
     return Promise.all([
-      knex('locations').del(),
+      knex('addresss').del(),
     ]);
   })
   .then(() => {
     // Seed Locations
-    const seedJerseyCity = knex('locations').insert({
-      lat: 40.72815749999999,
-      lon: -74.0776417,
-      display_name: 'Jersey City, NJ, USA',
-      address: {
-        city: 'Jersey City',
-        state: 'New Jersey',
-        county: 'Hudson County',
-        country: 'United States of America',
-        country_code: 'us',
-      },
+    const seedJerseyCity = knex('addresss').insert({
+      location: 'SRID=4326;POINT(40.72815749999999 -74.0776417)',
+      name: 'Jersey City, NJ, USA',
+      city: 'Jersey City',
+      state: 'New Jersey',
+      region: 'Hudson County',
+      country: 'United States',
+      country_code: 'US',
     }, 'id');
-    const seedNewBrunswick = knex('locations').insert({
-      lat: 40.4862157,
-      lon: -74.4518188,
-      display_name: 'New Brunswick, NJ, USA',
-      address: {
-        city: 'New Brunswick',
-        state: 'New Jersey',
-        county: 'Middlesex County',
-        country: 'United States of America',
-        country_code: 'us',
-      },
+    const seedNewBrunswick = knex('addresss').insert({
+      location: 'SRID=4326;POINT(40.4862157 -74.4518188)',
+      name: 'New Brunswick, NJ, USA',
+      city: 'New Brunswick',
+      state: 'New Jersey',
+      region: 'Middlesex County',
+      country: 'United States',
+      country_code: 'US',
     }, 'id');
-    const seedHighlandPark = knex('locations').insert({
-      lat: 40.4973,
-      lon: -74.4242,
-      display_name: 'Highland Park, Middlesex County, New Jersey, United States of America',
-      address: {
-        city: 'Highland Park',
-        state: 'New Jersey',
-        county: 'Middlesex County',
-        country: 'United States of America',
-        country_code: 'us',
-      },
+    const seedHighlandPark = knex('addresss').insert({
+      location: 'SRID=4326;POINT(40.4973 -74.4242)',
+      name: 'Highland Park, Middlesex County, New Jersey, United States',
+      city: 'Highland Park',
+      state: 'New Jersey',
+      region: 'Middlesex County',
+      country: 'United States',
+      country_code: 'US',
     }, 'id');
-    const seedSanFrancisco = knex('locations').insert({
-      lat: 37.7749295,
-      lon: -122.4194155,
-      display_name: 'SF, CA, USA',
-      address: {
-        city: 'SF',
-        state: 'California',
-        county: 'SF',
-        country: 'United States of America',
-        country_code: 'us',
-      },
+    const seedSanFrancisco = knex('addresss').insert({
+      location: 'SRID=4326;POINT(37.7749295 -122.4194155)',
+      name: 'SF, CA, USA',
+      city: 'SF',
+      state: 'California',
+      region: 'SF',
+      country: 'United States',
+      country_code: 'US',
     }, 'id');
     return Promise.join(seedJerseyCity, seedNewBrunswick, seedHighlandPark, seedSanFrancisco, (jC, nB, hT, sF) => {
       return {
@@ -104,30 +89,43 @@ exports.seed = (knex, Promise) => {
       knex('organizations').insert({
         name: 'Jersey City',
         type: 'government',
-        activated: true,
-        website: 'http://www.cityofjerseycity.com',
-        location_id: passedObj.locationIds.jerseyCityLocation,
-      }, 'id').then((ids) => { return ids[0]; }),
+        url: 'http://www.cityofjerseycity.com',
+      }, 'id').then((ids) => {
+        return knex('addresss_entity_associations').insert({
+          organization_id: ids[0],
+          address_id: passedObj.locationIds.jerseyCityLocation,
+        }).then(() => ids[0]);
+      }),
       knex('organizations').insert({
         name: 'City of New Brunswick',
         type: 'government',
-        activated: true,
-        website: 'http://www.thecityofnewbrunswick.org',
-        location_id: passedObj.locationIds.newBrunswickLocation,
-      }, 'id').then((ids) => { return ids[0] }),
+        url: 'http://www.thecityofnewbrunswick.org',
+      }, 'id').then((ids) => {
+        return knex('addresss_entity_associations').insert({
+          organization_id: ids[0],
+          address_id: passedObj.locationIds.newBrunswickLocation,
+        }).then(() => ids[0]);
+      }),
       knex('organizations').insert({
         name: 'Highland Park',
         type: 'government',
-        website: 'www.hpboro.com/',
-        location_id: passedObj.locationIds.highlandParkLocation,
-      }, 'id').then((ids) => { return ids[0] }),
+        url: 'www.hpboro.com/',
+      }, 'id').then((ids) => {
+        return knex('addresss_entity_associations').insert({
+          organization_id: ids[0],
+          address_id: passedObj.locationIds.highlandParkLocation,
+        }).then(() => ids[0]);
+      }),
       knex('organizations').insert({
         name: 'San Francisco',
         type: 'government',
-        activated: true,
-        website: 'http://sfgov.org/',
-        location_id: passedObj.locationIds.sanFranciscoLocation,
-      }, 'id').then((ids) => { return ids[0] }),
+        url: 'http://sfgov.org/',
+      }, 'id').then((ids) => {
+        return knex('addresss_entity_associations').insert({
+          organization_id: ids[0],
+          address_id: passedObj.locationIds.sanFranciscoLocation,
+        }).then(() => ids[0]);
+      }),
     ]).then((ids) => {
       return Object.assign(passedObj, {
         organizationIds: [].concat(...ids),
