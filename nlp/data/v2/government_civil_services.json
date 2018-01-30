@@ -227,18 +227,6 @@
     "intent": "government_civil_services.marriage_civil_union_license"
   },
   {
-    "text": "How do I get a copy of my marriage license?",
-    "intent": "government_civil_services.marriage_civil_union_license.request",
-    "entities": [
-      {
-        "start": 26,
-        "end": 42,
-        "value": "government_civil_services",
-        "entity": "category_labels"
-      }
-    ]
-  },
-  {
     "text": "How do I get my Civil Union Certificate?",
     "intent": "government_civil_services.marriage_civil_union_license",
     "entities": [
@@ -251,10 +239,6 @@
     ]
   },
   {
-    "text": "Where can I get a certified copy of a Marriage Certificate or Civil Union certificate?",
-    "intent": "government_civil_services.marriage_civil_union_license.request"
-  },
-  {
     "text": "How do I get my Marriage Certificate?",
     "intent": "government_civil_services.marriage_civil_union_license",
     "entities": [
@@ -265,6 +249,22 @@
         "entity": "category_labels"
       }
     ]
+  },
+  {
+    "text": "How do I get a copy of my marriage license?",
+    "intent": "government_civil_services.marriage_civil_union_license.request",
+    "entities": [
+      {
+        "start": 26,
+        "end": 42,
+        "value": "government_civil_services",
+        "entity": "category_labels"
+      }
+    ]
+  },
+  {
+    "text": "Where can I get a certified copy of a Marriage Certificate or Civil Union certificate?",
+    "intent": "government_civil_services.marriage_civil_union_license.request"
   },
   {
     "text": "When do I get my civil union certificate?",
