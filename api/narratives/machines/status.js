@@ -23,7 +23,7 @@ export default {
     const staeConfig = await getIntegrationConfig(this.snapshot.organization_id, INTEGRATION_CONST.STAE).then(c => c);
     if (staeConfig) {
       // Check for user location, and ask for it if we don't have it
-      if (this.get('attributes') && !this.get('attributes').current_location) {
+      if (!this.get('attributes') || (this.get('attributes') && !this.get('attributes').current_location)) {
         this.messagingClient.send('Where are you currently located?', [replyTemplates.location, replyTemplates.exit]);
         return this.requestClosestLocation();
       }

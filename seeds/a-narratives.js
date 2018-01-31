@@ -49,10 +49,17 @@ exports.seed = function(knex, Promise) {
       description: 'Realtime Data Streams',
       url: 'https://seeclickfix.com',
     });
+    const ckanInsert = knex('integrations').insert({
+      name: 'CKAN',
+      type: 'knowledge',
+      label: 'ckan',
+      description: 'Data management system.',
+      url: 'https://ckan.org/',
+    });
     const sfSelect = knex.select().where('name', 'San Francisco').from('organizations')
       .then(rows => rows[0].id);
     return Promise.join(
-      askDarcelInsert, sfSelect, voteFoundationInsert, benefitKitchenInsert, seeClickFixInsert, staeInsert,
+      askDarcelInsert, sfSelect, voteFoundationInsert, benefitKitchenInsert, seeClickFixInsert, staeInsert, ckanInsert,
       (askDarcelId, sfId) => {
         idsObj.sourceIds = {
           askDarcel: askDarcelId,

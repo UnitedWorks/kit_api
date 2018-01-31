@@ -35,7 +35,8 @@ export default async function geocoder(input, addressBoundary) {
   // If addressBoundary is passed in, we need a matching state/country
   if (addressBoundary) {
     const passingLocations = finalResponse.filter(loc =>
-      loc.region.toUpperCase() === addressBoundary.region.toUpperCase()
+      loc.region && loc.state && loc.country_code
+      && loc.region.toUpperCase() === addressBoundary.region.toUpperCase()
       && loc.state.toUpperCase() === addressBoundary.state.toUpperCase()
       && loc.country_code.toUpperCase() === addressBoundary.country_code.toUpperCase());
     if (passingLocations.length === 0) {

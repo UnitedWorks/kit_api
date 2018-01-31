@@ -89,7 +89,7 @@ export async function fetchAnswers(intent, session) {
     const shoutOutTemplate = shoutOutLogic.ready[intent];
     const fallback = await getCategoryFallback(intent.split('.')[0], session.snapshot.organization.id).then(f => f);
     // Message employees if we have them
-    if (question && fallback.representatives.length > 0) {
+    if (question && fallback && fallback.representatives.length > 0) {
       missingQuestionEmail(fallback.representatives, session, question);
     }
 

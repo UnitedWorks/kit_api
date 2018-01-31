@@ -6,68 +6,117 @@ import * as replyTemplates from '../templates/quick-replies';
 export default {
 
   async location() {
-    const nlpEntities = this.snapshot.nlp ? this.snapshot.nlp.entities : await nlp.message(this.snapshot.input.payload.text || this.snapshot.input.payload.payload).then(n => n.entities);
-    // They want to bounce
-    if (nlpEntities.intent && nlpEntities.intent[0].value === 'speech.escape') {
-      this.delete('last_input');
-      this.messagingClient.send('Ok!', replyTemplates.whatCanIAsk);
-      return this.getBaseState();
-    }
-    // Go through with Setting Location
-    const formedString = nlpEntities[TAGS.LOCATION] ? nlpEntities[TAGS.LOCATION][0].value : this.snapshot.input.payload.text;
-    const geoData = await geocoder(formedString, this.snapshot.organization.address).then(gd => gd);
-    if (geoData) {
-      const newAttributes = { address: geoData, ...this.get('attributes') };
-      if (geoData.location) {
-        newAttributes.location = {
-          lat: geoData.location.coordinates
-            ? geoData.location.coordinates[0] : geoData.location.lat,
-          lon: geoData.location.coordinates
-            ? geoData.location.coordinates[1] : geoData.location.lon,
-        };
+    // If coordinates are attached, avoid NLP Checks Point
+    const passedCoordinates = this.snapshot.input.payload &&
+      this.snapshot.input.payload.attachments &&
+      this.snapshot.input.payload.attachments[0] &&
+      this.snapshot.input.payload.attachments[0].type === 'location' ? {
+        lat: this.snapshot.input.payload.attachments[0].payload.coordinates.lat,
+        lon: this.snapshot.input.payload.attachments[0].payload.coordinates.long,
+      } : null;
+    if (passedCoordinates) {
+      this.set('attributes', {
+        ...this.get('attributes'),
+        location: passedCoordinates,
+      });
+    // If no coordinates passed, run NLP/text setup
+    } else if (this.snapshot.input) {
+      const nlpEntities = this.snapshot.nlp
+        ? this.snapshot.nlp.entities
+        : await nlp.message(this.snapshot.input.payload.text || this.snapshot.input.payload.payload)
+          .then(n => n.entities);
+      // They want to bounce
+      if (nlpEntities.intent && nlpEntities.intent[0].value === 'speech.escape') {
+        this.delete('last_input');
+        this.messagingClient.send('Ok!', replyTemplates.whatCanIAsk);
+        return this.getBaseState();
       }
-      this.set('attributes', newAttributes);
+      // Go through with Setting Location
+      const formedString = nlpEntities[TAGS.LOCATION]
+        ? nlpEntities[TAGS.LOCATION][0].value
+        : this.snapshot.input.payload.text;
+      const geoData = await geocoder(formedString, this.snapshot.organization.address)
+        .then(gd => gd);
+      if (geoData) {
+        const newAttributes = { address: geoData, ...this.get('attributes') };
+        if (geoData.location) {
+          newAttributes.location = {
+            lat: geoData.location.coordinates
+            ? geoData.location.coordinates[0] : geoData.location.lat,
+            lon: geoData.location.coordinates
+            ? geoData.location.coordinates[1] : geoData.location.lon,
+          };
+        }
+        this.set('attributes', newAttributes);
+      }
+    }
+
+    // So if a location was set, wrap up this state
+    if (this.get('attributes').location && this.get('attributes').location.lat) {
       // If we had a previous input, run it
       if (this.get('last_input')) return this.runLastInput();
+
       // Otherwise, just return to base state
-      return this.messagingClient.send(`Thanks! I've set your default location to ${geoData.address_1}${geoData.city ? `, ${geoData.city}` : ''}`)
+      return this.messagingClient.send(`Thanks! I've set your address to ${geoData.address_1}${geoData.city ? `, ${geoData.city}` : ''}`)
         .then(() => this.getBaseState());
     }
-    this.messagingClient.send('Sorry, I didn\'t catch an address. Can you say that again?', [replyTemplates.location, replyTemplates.exit]);
+
+    // If we failed to get setup, ask again
+    return this.messagingClient.send('Sorry, I didn\'t catch an address. Can you say that again?', [replyTemplates.location, replyTemplates.exit]);
   },
 
   async location_closest() {
-    // Go through with Setting Location
-    let tempCoordinates = null;
-
-    // Check for Attachment Point
-    // this.snapshot.input.payload.attachments ?
-    //   this.snapshot.input.payload.attachments[0]
-
-    const nlpEntities = this.snapshot.nlp ? this.snapshot.nlp.entities : await nlp.message(this.snapshot.input.payload.text || this.snapshot.input.payload.payload).then(n => n.entities);
-    // They want to bounce
-    if (nlpEntities.intent && nlpEntities.intent[0].value === 'speech.escape') {
-      this.delete('last_input');
-      this.messagingClient.send('Ok!', replyTemplates.whatCanIAsk);
-      return this.getBaseState();
-    }
-
-    // Check for String
-    const formedString = nlpEntities[TAGS.LOCATION] ? nlpEntities[TAGS.LOCATION][0].value : this.snapshot.input.payload.text;
-    const geoData = await geocoder(formedString, this.snapshot.organization.address).then(gd => gd);
-    if (geoData) {
+    // If coordinates are attached, avoid NLP Checks Point
+    const passedCoordinates = this.snapshot.input.payload &&
+      this.snapshot.input.payload.attachments &&
+      this.snapshot.input.payload.attachments[0] &&
+      this.snapshot.input.payload.attachments[0].type === 'location' ? {
+        lat: this.snapshot.input.payload.attachments[0].payload.coordinates.lat,
+        lon: this.snapshot.input.payload.attachments[0].payload.coordinates.long,
+      } : null;
+    if (passedCoordinates) {
       this.set('attributes', {
         ...this.get('attributes'),
-        current_location: {
-          lat: geoData.location.coordinates[0],
-          lon: geoData.location.coordinates[1],
-        },
+        current_location: passedCoordinates,
       });
+    // If no coordinates passed, run NLP/text setup
+    } else if (this.snapshot.input) {
+      const nlpEntities = this.snapshot.nlp
+        ? this.snapshot.nlp.entities
+        : await nlp.message(this.snapshot.input.payload.text || this.snapshot.input.payload.payload)
+          .then(n => n.entities);
+      // NLP shows they want to escape this flow
+      if (nlpEntities.intent && nlpEntities.intent[0].value === 'speech.escape') {
+        this.delete('last_input');
+        this.messagingClient.send('Ok!', replyTemplates.whatCanIAsk);
+        return this.getBaseState();
+      }
+      // Check for location string
+      const formedString = nlpEntities[TAGS.LOCATION]
+        ? nlpEntities[TAGS.LOCATION][0].value
+        : this.snapshot.input.payload.text;
+      const geoData = await geocoder(formedString, this.snapshot.organization.address)
+        .then(gd => gd);
+      if (geoData) {
+        this.set('attributes', {
+          ...this.get('attributes'),
+          current_location: {
+            lat: geoData.location.coordinates[0],
+            lon: geoData.location.coordinates[1],
+          },
+        });
+      }
+    }
+
+    // So if a location was set, wrap up this state
+    if (this.get('attributes').current_location && this.get('attributes').current_location.lat) {
       // If we had a previous input, run it
       if (this.get('last_input')) return this.runLastInput();
       // Otherwise, just return to base state
       return this.messagingClient.send("Thanks! I've updated your current location.").then(() => this.getBaseState());
     }
+
+    // If we failed to get setup, ask again
     return this.messagingClient.send('Sorry, I didn\'t catch an address. Can you say that again?', [replyTemplates.location, replyTemplates.exit]);
   },
 };
