@@ -199,10 +199,10 @@ export default class KitClient {
   static entityPhonesToText(entity) {
     // If entity is a phone
     if (entity.number) {
-      return `${entity.name} is available at ${entity.number}${entity.extension ? `,${entity.extension}` : ''}`;
+      return `${entity.name} can be reached at ${entity.number}${entity.extension ? `,${entity.extension}` : ''}`;
     // Otherwise
     } else if (entity.phones && entity.phones.length > 0) {
-      return `${entity.name} is available at ${entity.phones[0].number}${entity.phones[0].extension ? `,${entity.phones[0].extension}` : ''}`;
+      return `${entity.name} can be reached at ${entity.phones[0].number}${entity.phones[0].extension ? `,${entity.phones[0].extension}` : ''}`;
     }
     return null;
   }
