@@ -269,11 +269,11 @@ export function genericResource(resource) {
     });
   }
   if (resource.media && resource.media.length > 0) {
-    resource.media.forEach((m) => {
+    resource.media.forEach((m, i, a) => {
       if (buttons.length < 3) {
         buttons.push({
           type: 'web_url',
-          title: m.name,
+          title: `Download ${m.name && a.length > 1 ? `${m.name.substr(0, 7)}...` : 'File'}`,
           url: m.url,
           webview_height_ratio: 'tall',
         });
