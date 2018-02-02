@@ -3,7 +3,7 @@ import { bookshelf } from '../orm';
 
 export const Address = bookshelf.Model.extend({
   tableName: 'addresss',
-  hidden: ['_pivot_address_id', '_pivot_organization_id'],
+  hidden: ['_pivot_address_id', '_pivot_organization_id', '_pivot_place_id'],
   toJSON() {
     const attrs = bookshelf.Model.prototype.toJSON.apply(this, arguments);
     if (attrs.location) {

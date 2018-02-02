@@ -2,12 +2,17 @@ import { bookshelf, knex } from '../orm';
 import { Address } from './models';
 import geocoder from '../utils/geocoder';
 
-export function getMapsViewUrl(payload, type = 'name') {
-  if (type === 'coordinates' && payload.length) {
-    return `https://www.google.com/maps?q=${payload[0]},${payload[1]}`;
+export function getMapsViewUrl({ coordinates, string }) {
+  if (coordinates && !string) {
+    return `https://www.google.com/maps?q=${coordinates[0]},${coordinates[1]}`;
+  } else if (!coordinates && string) {
+    const formattedString = string.replace(/\s/, '+');
+    return `https://www.google.com/maps/place/${formattedString}`;
+  } else if (coordinates && string) {
+    const formattedString = string.replace(/\s/, '+');
+    return `https://www.google.com/maps/place/${formattedString}/@${coordinates[0]},${coordinates[1]},15z`;
   }
-  const formattedString = payload.replace(/\s/, '+');
-  return `https://www.google.com/maps/place/${formattedString}`;
+  return null;
 }
 
 export function getStaticMapsImageUrl(lat, lon, zoom = 16) {

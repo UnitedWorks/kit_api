@@ -195,7 +195,7 @@ export function genericOrganization(organization) {
       buttons.push({
         type: 'web_url',
         title: 'View on Map',
-        url: getMapsViewUrl(coords, 'coordinates'),
+        url: getMapsViewUrl({ coordinates: coords, string: organization.name }),
       });
     }
   }
@@ -301,13 +301,13 @@ export function genericPlace(place) {
       buttons.push({
         type: 'web_url',
         title: 'View on Map',
-        url: getMapsViewUrl(coords, 'coordinates'),
+        url: getMapsViewUrl({ coordinates: coords, string: place.name }),
       });
       // Set Static Image
       element.image_url = getStaticMapsImageUrl(coords[0], coords[1]);
       element.default_action = {
         type: 'web_url',
-        url: getMapsViewUrl(coords, 'coordinates'),
+        url: getMapsViewUrl({ coordinates: coords, string: place.name }),
       };
     }
   }
@@ -394,7 +394,7 @@ export function genericEvent(event) {
       buttons.push({
         type: 'web_url',
         title: 'View on Map',
-        url: getMapsViewUrl(addressToString(event.address.address)),
+        url: getMapsViewUrl({ coordinates: coords }),
       });
     }
   }
