@@ -63,13 +63,13 @@ app.use('/vehicles', require('./vehicles/routes'));
 app.get('/logs/info', (req, res, next) => {
   fs.readFile(path.join(__dirname, '..', 'logs/info.log'), 'utf8', (err, data) => {
     if (err) next(err);
-    res.status(200).json(data);
+    res.status(200).send(data);
   });
 });
 app.get('/logs/error', (req, res, next) => {
   fs.readFile(path.join(__dirname, '..', 'logs/error.log'), 'utf8', (err, data) => {
     if (err) next(err);
-    res.status(200).json(data);
+    res.status(200).send(data);
   });
 });
 
