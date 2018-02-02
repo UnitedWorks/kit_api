@@ -54,9 +54,11 @@ export default {
         [].concat(similarlyNamedEntities).concat(entitiesByFunction),
         [this.get('attributes').current_location.lat, this.get('attributes').current_location.lon]);
     } else if (lookupType === LOOKUP.LOCATION) {
-      joinedEntities = KitClient.sortEntitiesByConstituentDistance(
-        [].concat(similarlyNamedEntities).concat(entitiesByFunction),
-        [this.get('attributes').location.lat, this.get('attributes').location.lon]);
+      if (this.get('attributes') && this.get('attributes').location) {
+        joinedEntities = KitClient.sortEntitiesByConstituentDistance(
+          [].concat(similarlyNamedEntities).concat(entitiesByFunction),
+          [this.get('attributes').location.lat, this.get('attributes').location.lon]);
+      }
     }
     // Abort if we don't have any entities
     if (joinedEntities.length === 0) {
