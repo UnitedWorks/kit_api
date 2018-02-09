@@ -57,7 +57,7 @@ export default {
       if (this.get('last_input')) return this.runLastInput();
 
       // Otherwise, just return to base state
-      return this.messagingClient.send(`Thanks! I've set your address to ${geoData.address_1}${geoData.city ? `, ${geoData.city}` : ''}`)
+      return this.messagingClient.send(`Thanks! I've set your address to ${this.get('attributes').address.address_1}${this.get('attributes').address.city ? `, ${this.get('attributes').address.city}` : ''}`)
         .then(() => this.getBaseState());
     }
 

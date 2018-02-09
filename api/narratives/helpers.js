@@ -45,14 +45,13 @@ export function randomPick(array = [], num = 1) {
 export function geoCheck(geo, constituentPosition) {
   let passesGeoCheck = false;
   if (geo && geo[0]) {
-    geo.forEach((boundary) => {
-      if (boundary.length) {
+    geo.forEach((poly) => {
+      if (poly.length) {
         // If Polygon
-        const boundaryPolygon = boundary[0].map(c => [c.lat, c.lng]);
-        if (pointPolygonCollision(constituentPosition, boundaryPolygon)) passesGeoCheck = true;
-      } else if (boundary.radius) {
+        if (pointPolygonCollision(constituentPosition, poly)) passesGeoCheck = true;
+      } else if (poly.radius) {
         // If Circle
-        if (pointCircleCollision(constituentPosition, [boundary.lat, boundary.lng], boundary.radius)) passesGeoCheck = true;
+        if (pointCircleCollision(constituentPosition, [poly.lat, poly.lng], poly.radius)) passesGeoCheck = true;
       }
     });
   }

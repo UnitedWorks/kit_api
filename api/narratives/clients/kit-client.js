@@ -238,7 +238,7 @@ export default class KitClient {
     if (!datetime && entity.availabilitys) {
       entity.availabilitys.forEach((availability) => {
         // Geo Check
-        if (constituentAttributes.location && availability.geo_rules && availability.geo_rules[0] && !geoCheck(availability.geo_rules, [constituentAttributes.location.lat, constituentAttributes.location.lon])) return;
+        if (constituentAttributes.location && availability.geo_rules && availability.geo_rules.coordinates && !geoCheck(availability.geo_rules.coordinates, [constituentAttributes.location.lat, constituentAttributes.location.lon])) return;
         // Analyize RRules/Times
         let rule;
         let timeStart;
@@ -261,7 +261,7 @@ export default class KitClient {
     } else if (datetime && datetime[0] && datetime[0].grain === 'day' && entity.availabilitys && entity.availabilitys.filter(a => a.schedule_rules && a.schedule_rules[0].rrule).length > 0) {
       entity.availabilitys.forEach((availability) => {
         // Geo Check
-        if (availability.geo_rules && availability.geo_rules[0] && !geoCheck(availability.geo_rules, [constituentAttributes.location.lat, constituentAttributes.location.lon])) return;
+        if (availability.geo_rules && availability.geo_rules.coordinates && !geoCheck(availability.geo_rules.coordinates, [constituentAttributes.location.lat, constituentAttributes.location.lon])) return;
         // Analyize RRules/Times
         const rruleSet = new RRuleSet();
         let timeStart;
