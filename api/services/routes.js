@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import { knex } from '../orm';
 import { Service } from '../services/models';
-import { Availability } from '../availabilitys/models';
 import { deleteService, createService, updateService } from './helpers';
 
 const router = new Router();

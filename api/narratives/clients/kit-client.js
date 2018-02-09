@@ -234,9 +234,15 @@ export default class KitClient {
 
   static entityAvailability(type, entity, { datetime, constituentAttributes = {} } = {}, options = { toText: true }) {
     let availString = '';
+    let overrideString = null;
     // Describe General Schedule (even if no datetime, mention schedule)
     if (!datetime && entity.availabilitys) {
       entity.availabilitys.forEach((availability) => {
+        // Check if this is an override
+        if (availability.over_ride_until || availability.over_ride_reason) {
+          overrideString = `However BE ADVISED, there has been a change: "${availability.over_ride_reason}"`;
+          return;
+        }
         // Geo Check
         if (constituentAttributes.location && availability.geo_rules && availability.geo_rules.coordinates && !geoCheck(availability.geo_rules.coordinates, [constituentAttributes.location.lat, constituentAttributes.location.lon])) return;
         // Analyize RRules/Times
@@ -260,6 +266,10 @@ export default class KitClient {
     // Speak to Specific Day Availability
     } else if (datetime && datetime[0] && datetime[0].grain === 'day' && entity.availabilitys && entity.availabilitys.filter(a => a.schedule_rules && a.schedule_rules[0].rrule).length > 0) {
       entity.availabilitys.forEach((availability) => {
+        if (availability.over_ride_until || availability.over_ride_reason) {
+          overrideString = `However BE ADVISED, there has been a change: "${availability.over_ride_reason}"`;
+          return;
+        }
         // Geo Check
         if (availability.geo_rules && availability.geo_rules.coordinates && !geoCheck(availability.geo_rules.coordinates, [constituentAttributes.location.lat, constituentAttributes.location.lon])) return;
         // Analyize RRules/Times
@@ -286,9 +296,9 @@ export default class KitClient {
     if (availString.length > 0) {
       if (!options.toText) return true;
       if (type === 'service') {
-        return `${entity.name} is available ${availString}.`;
+        return `${entity.name} is available ${availString}.${overrideString ? ` ${overrideString}` : ''}`;
       } else if (type === 'place') {
-        return `${entity.name} is open ${availString}.`;
+        return `${entity.name} is open ${availString}.${overrideString ? ` ${overrideString}` : ''}`;
       }
     } else if (entity.availabilitys && entity.availabilitys.length > 0 && type === 'place') {
       if (!options.toText) return false;
@@ -301,7 +311,7 @@ export default class KitClient {
         if (schedule.t_start) timeStart = moment(schedule.t_start, 'HH-mm-ss');
         if (schedule.t_end) timeEnd = moment(schedule.t_end, 'HH-mm-ss');
       }));
-      return `${entity.name} is unavailable at that time, but is available ${rule.toText()}${timeStart && timeEnd ? ` (${timeStart.format('h:mm A')} - ${timeEnd.format('h:mm A')})` : ''}`;
+      return `${entity.name} is unavailable at that time, but is available ${rule.toText()}${timeStart && timeEnd ? ` (${timeStart.format('h:mm A')} - ${timeEnd.format('h:mm A')})` : ''}${overrideString ? ` ${overrideString}` : ''}`;
     }
     // Should do a check for services
     if (!options.toText) return false;
