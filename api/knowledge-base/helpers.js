@@ -35,8 +35,8 @@ export async function getAnswers(params = {}, options = { returnJSON: true }) {
   const data = await KnowledgeQuestion.where({ label: params.label }).fetch({
     withRelated: [{
       answers: q => q.where('owner_organization_id', params.organization_id).whereNotNull('approved_at'),
-    }, 'category', 'answers.place', 'answers.place.addresses', 'answers.service',
-      'answers.service.addresses', 'answers.person', 'answers.phone', 'answers.feed',
+    }, 'category', 'answers.place', 'answers.place.addresses', 'answers.place.availabilitys', 'answers.service',
+      'answers.service.addresses', 'answers.service.availabilitys', 'answers.person', 'answers.phone', 'answers.feed',
       'answers.media', 'answers.resource', 'answers.resource.media', 'answers.organization',
       'answers.organization.phones', 'answers.organization.addresses', 'answers.organization.services',
       'answers.organization.places', 'answers.organization.places.addresses', 'answers.organization.persons'],
@@ -95,7 +95,7 @@ export async function searchEntitiesBySimilarity(strings = [], organizationId, o
         .orderBy('similarity', 'desc')
         .limit(10)
         .then(rows => rows.filter(r => r.similarity > options.confidence).map((o) => {
-          return Organization.where({ id: o.id }).fetch({ withRelated: ['addresses', 'places', 'places.addresses', 'places.phones', 'services', 'services.addresses', 'services.phones', 'phones', 'persons', 'persons.phones'] })
+          return Organization.where({ id: o.id }).fetch({ withRelated: ['addresses', 'places', 'places.addresses', 'places.availabilitys', 'places.phones', 'services', 'services.addresses', 'services.availabilitys', 'services.phones', 'phones', 'persons', 'persons.phones'] })
           .then((fetched) => {
             return {
               type: 'organization',
@@ -112,7 +112,7 @@ export async function searchEntitiesBySimilarity(strings = [], organizationId, o
           .orderBy('similarity', 'desc')
           .limit(10)
           .then(rows => rows.filter(r => r.similarity > options.confidence).map((s) => {
-            return Service.where({ id: s.id }).fetch({ withRelated: ['addresses', 'phones'] })
+            return Service.where({ id: s.id }).fetch({ withRelated: ['addresses', 'availabilitys', 'phones'] })
               .then(fetched => ({ type: 'service', payload: { ...fetched.toJSON(), similarity: s.similarity } }));
           })));
     }
@@ -124,7 +124,7 @@ export async function searchEntitiesBySimilarity(strings = [], organizationId, o
           .orderBy('similarity', 'desc')
           .limit(10)
           .then(rows => rows.filter(r => r.similarity > options.confidence).map((p) => {
-            return Place.where({ id: p.id }).fetch({ withRelated: ['addresses', 'phones'] })
+            return Place.where({ id: p.id }).fetch({ withRelated: ['addresses', 'availabilitys', 'phones'] })
               .then(fetched => ({ type: 'place', payload: { ...fetched.toJSON(), similarity: p.similarity } }));
           })));
     }

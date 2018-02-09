@@ -238,30 +238,39 @@ export default class KitClient {
     if (!datetime && entity.availabilitys) {
       entity.availabilitys.forEach((availability) => {
         // Geo Check
-        if (constituentAttributes.location && availability.geo && availability.geo[0] && !geoCheck(availability.geo, [constituentAttributes.location.lat, constituentAttributes.location.lon])) return;
+        if (constituentAttributes.location && availability.geo_rules && availability.geo_rules[0] && !geoCheck(availability.geo_rules, [constituentAttributes.location.lat, constituentAttributes.location.lon])) return;
         // Analyize RRules/Times
-        const rule = new RRule(RRule.parseString(availability.rrule));
-        const timeStart = moment(availability.t_start, 'HH-mm-ss');
-        const timeEnd = moment(availability.t_end, 'HH-mm-ss');
+        let rule;
+        let timeStart;
+        let timeEnd;
+        availability.schedule_rules.forEach((schedule) => {
+          rule = new RRule(RRule.parseString(schedule.rrule));
+          if (schedule.t_start) timeStart = moment(schedule.t_start, 'HH-mm-ss');
+          if (schedule.t_end) timeEnd = moment(schedule.t_end, 'HH-mm-ss');
+        });
         if (rule) availString = rule.toText();
         if (availability.t_start) availString = (availString || '').concat(` ${timeStart.format('h:mm A')} - ${timeEnd.format('h:mm A')}`);
         if (availString) availString = availString.trim();
       });
     // Check if a entity's availabilitys use geo and constituent home address is available.
     // If none available, send back message asking for default_address
-    } else if (entity.availabilitys && entity.availabilitys.filter(o => o.geo).length > 0 && !constituentAttributes.location) {
+    } else if (entity.availabilitys && entity.availabilitys.filter(o => o.geo_rules).length > 0 && !constituentAttributes.location) {
       if (!options.toText) return false;
       return i18n('get_home_location', { name: entity.name });
     // Speak to Specific Day Availability
-    } else if (datetime[0] && datetime[0].grain === 'day' && entity.availabilitys) {
+    } else if (datetime && datetime[0] && datetime[0].grain === 'day' && entity.availabilitys && entity.availabilitys.filter(a => a.schedule_rules && a.schedule_rules[0].rrule).length > 0) {
       entity.availabilitys.forEach((availability) => {
         // Geo Check
-        if (availability.geo && availability.geo[0] && !geoCheck(availability.geo, [constituentAttributes.location.lat, constituentAttributes.location.lon])) return;
+        if (availability.geo_rules && availability.geo_rules[0] && !geoCheck(availability.geo_rules, [constituentAttributes.location.lat, constituentAttributes.location.lon])) return;
         // Analyize RRules/Times
         const rruleSet = new RRuleSet();
-        rruleSet.rrule(RRule.fromString(availability.rrule));
-        const timeStart = moment(availability.t_start, 'HH-mm-ss');
-        const timeEnd = moment(availability.t_end, 'HH-mm-ss');
+        let timeStart;
+        let timeEnd;
+        availability.schedule_rules.forEach((schedule) => {
+          rruleSet.rrule(RRule.fromString(schedule.rrule));
+          if (schedule.t_start) timeStart = moment(schedule.t_start, 'HH-mm-ss');
+          if (schedule.t_end) timeEnd = moment(schedule.t_end, 'HH-mm-ss');
+        });
         const floorDate = new Date(datetime[0].value);
         floorDate.setHours(0);
         const dayLaterDate = new Date(datetime[0].value);
@@ -269,7 +278,7 @@ export default class KitClient {
         const betweenSlice = rruleSet.between(floorDate, dayLaterDate);
         if (betweenSlice.length > 0) {
           availString = availString.concat(
-            `${moment(betweenSlice[0]).format('dddd, M/DD')}${availability.t_start && availability.t_end ? ` (${timeStart.format('h:mm A')} - ${timeEnd.format('h:mm A')})` : ''}`);
+            `${moment(betweenSlice[0]).format('dddd, M/DD')}${timeStart && timeEnd ? ` (${timeStart.format('h:mm A')} - ${timeEnd.format('h:mm A')})` : ''}`);
         }
       });
     }
@@ -283,12 +292,16 @@ export default class KitClient {
       }
     } else if (entity.availabilitys && entity.availabilitys.length > 0 && type === 'place') {
       if (!options.toText) return false;
-      const quickAvailability = entity.availabilitys[0];
       // Analyize RRules/Times
-      const rule = new RRule(RRule.parseString(quickAvailability.rrule));
-      const timeStart = moment(quickAvailability.t_start, 'HH-mm-ss');
-      const timeEnd = moment(quickAvailability.t_end, 'HH-mm-ss');
-      return `${entity.name} is unavailable at that time, but is available ${rule.toText()}${quickAvailability.t_start && quickAvailability.t_end ? ` (${timeStart.format('h:mm A')} - ${timeEnd.format('h:mm A')})` : ''}`;
+      let rule;
+      let timeStart;
+      let timeEnd;
+      entity.availabilitys.forEach(availability => availability.schedule_rules.forEach((schedule) => {
+        rule = new RRule(RRule.parseString(schedule.rrule));
+        if (schedule.t_start) timeStart = moment(schedule.t_start, 'HH-mm-ss');
+        if (schedule.t_end) timeEnd = moment(schedule.t_end, 'HH-mm-ss');
+      }));
+      return `${entity.name} is unavailable at that time, but is available ${rule.toText()}${timeStart && timeEnd ? ` (${timeStart.format('h:mm A')} - ${timeEnd.format('h:mm A')})` : ''}`;
     }
     // Should do a check for services
     if (!options.toText) return false;
