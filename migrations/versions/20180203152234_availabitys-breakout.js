@@ -33,27 +33,29 @@ exports.up = function(knex, Promise) {
     .then(() => knex.select('*').from('services').then((rows) => {
       const availabilityInsertions = [];
       rows.forEach((record) => {
-        record.availabilitys.forEach((ava) => {
-          // For each geo, we need to create a new availability rule set
-          const polygonStrings = [];
-          ava.geo.forEach((geo) => {
-            geo.forEach((g) => {
-              let polyString = '';
-              g.forEach((point, index) => { polyString += `${index !== 0 ? ',' : ''}${point.lat} ${point.lng}`; });
-              polyString = `${polyString}, ${g[0].lat} ${g[0].lng}`;
-              polygonStrings.push(`((${polyString}))`);
+        if (record.legacy_availabilitys) {
+          record.legacy_availabilitys.forEach((ava) => {
+            // For each geo, we need to create a new availability rule set
+            const polygonStrings = [];
+            ava.geo.forEach((geo) => {
+              geo.forEach((g) => {
+                let polyString = '';
+                g.forEach((point, index) => { polyString += `${index !== 0 ? ',' : ''}${point.lat} ${point.lng}`; });
+                polyString = `${polyString}, ${g[0].lat} ${g[0].lng}`;
+                polygonStrings.push(`((${polyString}))`);
+              });
+            });
+            availabilityInsertions.push({
+              schedule_rules: [{
+                rrule: ava.rrule,
+                t_start: ava.t_start,
+                t_end: ava.t_end,
+              }],
+              geo_rules: polygonStrings.length > 0 ? knex.raw(`ST_GeomFromText('MULTIPOLYGON(${polygonStrings.join(', ')})',4326)`) : null,
+              service_id: record.id,
             });
           });
-          availabilityInsertions.push({
-            schedule_rules: [{
-              rrule: ava.rrule,
-              t_start: ava.t_start,
-              t_end: ava.t_end,
-            }],
-            geo_rules: knex.raw(`ST_GeomFromText('MULTIPOLYGON(${polygonStrings.join(', ')})',4326)`),
-            service_id: record.id,
-          });
-        });
+        }
       });
       return knex.batchInsert('availabilitys', availabilityInsertions).then(r => r);
     }))
@@ -61,16 +63,18 @@ exports.up = function(knex, Promise) {
     .then(() => knex.select('*').from('places').then((rows) => {
       const availabilityInsertions = [];
       rows.forEach((record) => {
-        record.availabilitys.forEach((ava) => {
-          availabilityInsertions.push({
-            schedule_rules: [{
-              rrule: ava.rrule,
-              t_start: ava.t_start,
-              t_end: ava.t_end,
-            }],
-            place_id: record.id,
+        if (record.legacy_availabilitys) {
+          record.legacy_availabilitys.forEach((ava) => {
+            availabilityInsertions.push({
+              schedule_rules: [{
+                rrule: ava.rrule,
+                t_start: ava.t_start,
+                t_end: ava.t_end,
+              }],
+              place_id: record.id,
+            });
           });
-        });
+        }
       });
       return knex.batchInsert('availabilitys', availabilityInsertions).then(r => r);
     }));

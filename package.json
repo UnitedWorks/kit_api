@@ -6,6 +6,7 @@
     "migrate-local": "cross-env NODE_ENV=local knex migrate:latest",
     "migrate-production": "cross-env NODE_ENV=production knex migrate:latest",
     "rollback-local": "cross-env NODE_ENV=local knex migrate:rollback",
+    "rollback-production": "cross-env NODE_ENV=production knex migrate:rollback",
     "seed-local": "cross-env NODE_ENV=local knex seed:run",
     "start": "cross-env npm run start-production",
     "start-local": "cross-env NODE_ENV=local nodemon api/start.js",
