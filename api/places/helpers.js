@@ -2,6 +2,7 @@ import { knex } from '../orm';
 import { Place } from './models';
 import { crudEntityAddresses } from '../geo/helpers';
 import { crudEntityPhones } from '../phones/helpers';
+import { crudEntityAvailabilitys } from '../availabilitys/helpers';
 
 export async function createPlace(place, organization, options) {
   const composedPlace = {
@@ -9,7 +10,6 @@ export async function createPlace(place, organization, options) {
     alternate_names: place.alternate_names,
     description: place.description,
     url: place.url,
-    availabilitys: place.availabilitys,
     functions: place.functions,
     organization_id: organization.id,
   };
@@ -17,6 +17,7 @@ export async function createPlace(place, organization, options) {
     .then((placeData) => {
       crudEntityPhones({ place_id: placeData.id }, place.phones);
       crudEntityAddresses({ place_id: placeData.id }, place.addresses);
+      crudEntityAvailabilitys({ place_id: placeData.id }, place.availabilitys);
       return options.returnJSON ? placeData.toJSON() : placeData;
     })
     .catch(err => err);
@@ -26,10 +27,12 @@ export async function updatePlace(place, options) {
   const cleanedPlace = Object.assign({}, place);
   delete cleanedPlace.phones;
   delete cleanedPlace.addresses;
+  delete cleanedPlace.availabilitys
   return Place.where({ id: cleanedPlace.id }).save(cleanedPlace, { method: 'update', patch: true })
     .then((placeData) => {
       crudEntityPhones({ place_id: placeData.id }, place.phones);
       crudEntityAddresses({ place_id: placeData.id }, place.addresses);
+      crudEntityAvailabilitys({ place_id: placeData.id }, place.availabilitys);
       return options.returnJSON ? placeData.toJSON() : placeData;
     })
     .catch(err => err);
