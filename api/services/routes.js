@@ -1,5 +1,7 @@
 import { Router } from 'express';
+import { knex } from '../orm';
 import { Service } from '../services/models';
+import { Availability } from '../availabilitys/models';
 import { deleteService, createService, updateService } from './helpers';
 
 const router = new Router();
@@ -29,6 +31,32 @@ router.route('/')
   .delete((req, res, next) => {
     deleteService(req.query.service_id)
       .then(() => res.status(200).send())
+      .catch(err => next(err));
+  });
+
+router.route('/availability/override')
+  .post((req, res, next) => {
+    knex('availabilitys')
+      .where({ service_id: req.body.service_id })
+      .whereNotNull('over_ride_reason')
+      .del()
+      .then(() => {
+        knex('availabilitys').insert({
+          service_id: req.body.service_id,
+          over_ride_reason: req.body.over_ride_reason,
+          over_ride_until: req.body.over_ride_until,
+        })
+        .then(a => res.status(200).send({ availability_id: a.id }))
+        .catch(err => next(err));
+      })
+      .catch(err => next(err));
+  })
+  .delete((req, res, next) => {
+    knex('availabilitys')
+      .where({ service_id: req.query.service_id })
+      .whereNotNull('over_ride_reason')
+      .del()
+      .then(() => res.status(200).send({ service_id: req.query.service_id }))
       .catch(err => next(err));
   });
 
