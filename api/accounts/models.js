@@ -9,6 +9,7 @@ import { Person } from '../persons/models';
 import { Vehicle } from '../vehicles/models';
 import { Phone } from '../phones/models';
 import { Address } from '../geo/models';
+import { Availability } from '../availabilitys/models';
 
 export const Representative = bookshelf.Model.extend({
   tableName: 'representatives',
@@ -79,5 +80,8 @@ export const Organization = bookshelf.Model.extend({
   },
   phones() {
     return this.belongsToMany(Phone, 'organizations_entity_associations');
+  },
+  availabilitys() {
+    return this.hasMany(Availability, 'organization_id');
   },
 });

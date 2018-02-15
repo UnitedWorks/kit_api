@@ -147,9 +147,21 @@ export default class KitClient {
       const orgEntity = entityArray[0];
       if ([NLP_TAGS.LOCATION, NLP_TAGS.LOCATION_CLOSEST].indexOf(lookupType) > -1) {
         snip = KitClient.entityLocationToText(orgEntity.type, orgEntity.payload);
-      } else if (lookupType === NLP_TAGS.AVAILABILITY_SCHEDULE && orgEntity.payload.places && orgEntity.payload.places.length > 0) {
-        snip = KitClient.entityAvailability('place', orgEntity.payload.places[0], { constituentAttributes: session.get('attributes'), datetime: session.snapshot.nlp.entities[NLP_TAGS.DATETIME] });
-        if (snip) snip = `${orgEntity.payload.name}'s hours depend on the location. ${snip}`
+      } else if (lookupType === NLP_TAGS.AVAILABILITY_SCHEDULE) {
+        const orgSnip = KitClient.entityAvailability('organization', orgEntity.payload, { constituentAttributes: session.get('attributes'), datetime: session.snapshot.nlp.entities[NLP_TAGS.DATETIME] });
+        let placeSnip;
+        if (orgEntity.payload.places && orgEntity.payload.places.length > 0) {
+          placeSnip = KitClient.entityAvailability('place', orgEntity.payload.places[0], { constituentAttributes: session.get('attributes'), datetime: session.snapshot.nlp.entities[NLP_TAGS.DATETIME] });
+        }
+        if (orgSnip && !placeSnip) {
+          snip = orgSnip;
+        } else if (!orgSnip && placeSnip) {
+          snip = `${orgEntity.payload.name} is located in ${orgEntity.payload.places[0].name}. ${placeSnip}`;
+        } else if (orgSnip && placeSnip) {
+          snip = `${orgSnip} ${orgEntity.payload.name} is located in ${orgEntity.payload.places[0].name}. ${placeSnip}`;
+        } else if (!orgSnip && !placeSnip) {
+          snip = `I don't have hours listed for ${orgEntity.payload.name}.`;
+        }
       } else if (lookupType === NLP_TAGS.CONTACT) {
         snip = KitClient.entityContactToText(orgEntity.payload);
       } else if (lookupType === NLP_TAGS.CONTACT_PHONE) {
@@ -255,7 +267,7 @@ export default class KitClient {
           if (schedule.t_end) timeEnd = moment(schedule.t_end, 'HH-mm-ss');
         });
         if (rule) availString = rule.toText();
-        if (availability.t_start) availString = (availString || '').concat(` ${timeStart.format('h:mm A')} - ${timeEnd.format('h:mm A')}`);
+        if (timeStart && timeEnd) availString = (availString || '').concat(` (${timeStart.format('h:mm A')} - ${timeEnd.format('h:mm A')})`);
         if (availString) availString = availString.trim();
       });
     // Check if a entity's availabilitys use geo and constituent home address is available.
@@ -267,7 +279,7 @@ export default class KitClient {
     } else if (datetime && datetime[0] && datetime[0].grain === 'day' && entity.availabilitys && entity.availabilitys.filter(a => a.schedule_rules && a.schedule_rules[0].rrule).length > 0) {
       entity.availabilitys.forEach((availability) => {
         if (availability.over_ride_until || availability.over_ride_reason) {
-          overrideString = `However BE ADVISED, there has been a change: "${availability.over_ride_reason}"`;
+          overrideString = `BE ADVISED. A service change is listed: "${availability.over_ride_reason}"`;
           return;
         }
         // Geo Check
@@ -297,7 +309,7 @@ export default class KitClient {
       if (!options.toText) return true;
       if (type === 'service') {
         return `${entity.name} is available ${availString}.${overrideString ? ` ${overrideString}` : ''}`;
-      } else if (type === 'place') {
+      } else if (type === 'place' || type === 'organization') {
         return `${entity.name} is open ${availString}.${overrideString ? ` ${overrideString}` : ''}`;
       }
     } else if (entity.availabilitys && entity.availabilitys.length > 0 && type === 'place') {

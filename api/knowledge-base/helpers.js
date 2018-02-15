@@ -95,7 +95,7 @@ export async function searchEntitiesBySimilarity(strings = [], organizationId, o
         .orderBy('similarity', 'desc')
         .limit(10)
         .then(rows => rows.filter(r => r.similarity > options.confidence).map((o) => {
-          return Organization.where({ id: o.id }).fetch({ withRelated: ['addresses', 'places', 'places.addresses', 'places.availabilitys', 'places.phones', 'services', 'services.addresses', 'services.availabilitys', 'services.phones', 'phones', 'persons', 'persons.phones'] })
+          return Organization.where({ id: o.id }).fetch({ withRelated: ['addresses', 'availabilitys', 'places', 'places.addresses', 'places.availabilitys', 'places.phones', 'services', 'services.addresses', 'services.availabilitys', 'services.phones', 'phones', 'persons', 'persons.phones'] })
           .then((fetched) => {
             return {
               type: 'organization',

@@ -2,20 +2,23 @@ import { knex } from '../orm';
 import { Availability } from './models';
 
 export function fixAvailabilityFormat(availability) {
+  let formattedGeoRule = null;
   const preppedavailability = availability;
-  const polygonStrings = [];
-  availability.geo_rules.coordinates.forEach((polys) => {
-    let polyString = '';
-    polys.forEach((point, index) => {
-      polyString += `${index !== 0 ? ',' : ''}${point[0]} ${point[1]}`;
+  if (availability.geo_rules) {
+    const polygonStrings = [];
+    availability.geo_rules.coordinates.forEach((polys) => {
+      let polyString = '';
+      polys.forEach((point, index) => {
+        polyString += `${index !== 0 ? ',' : ''}${point[0]} ${point[1]}`;
+      });
+      polyString = `${polyString}, ${polys[0][0]} ${polys[0][1]}`;
+      polygonStrings.push(`((${polyString}))`);
     });
-    polyString = `${polyString}, ${polys[0][0]} ${polys[0][1]}`;
-    polygonStrings.push(`((${polyString}))`);
-  });
-  const formattedGeoString = knex.raw(`ST_GeomFromText('MULTIPOLYGON(${polygonStrings.join(', ')})',4326)`);
+    formattedGeoRule = knex.raw(`ST_GeomFromText('MULTIPOLYGON(${polygonStrings.join(', ')})',4326)`);
+  }
   return {
     ...preppedavailability,
-    geo_rules: formattedGeoString,
+    geo_rules: formattedGeoRule,
   };
 }
 
