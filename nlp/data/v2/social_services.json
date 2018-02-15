@@ -390,5 +390,17 @@
   {
     "text": "How do I get rid of my child's lisp",
     "intent": "social_services.speech_therapy.child"
+  },
+  {
+    "text": "Prisoner reentry program assistance",
+    "intent": "social_services.prisoner_reentry"
+  },
+  {
+    "text": "Help for prisoners re-entering community",
+    "intent": "social_services.prisoner_reentry"
+  },
+  {
+    "text": "Prisoner Re-Entry",
+    "intent": "social_services.prisoner_reentry"
   }
 ]

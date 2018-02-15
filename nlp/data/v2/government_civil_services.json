@@ -523,6 +523,14 @@
     "intent": "government_civil_services.taxes.website"
   },
   {
+    "text": "Where can I find the revaluation update?",
+    "intent": "government_civil_services.revaluation"
+  },
+  {
+    "text": "Revaluation update",
+    "intent": "government_civil_services.revaluation"
+  },
+  {
     "text": "How do I file a claim against the City?",
     "intent": "government_civil_services.claim"
   },

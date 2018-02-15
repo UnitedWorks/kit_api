@@ -163,6 +163,10 @@ SO['environment_sanitation.dumping'] = {
 };
 
 // Health
+SO['health_medicine.report'] = {
+  tags: ['health_medicine'],
+  params: basicReport,
+};
 SO['health_medicine.unsanitary.business'] = {
   tags: ['health_medicine', 'unsanitary', 'business'],
   params: basicReport,
@@ -252,6 +256,10 @@ SO['property_buildings_homes.contested.housing.tenant'] = {
 };
 SO['property_buildings_homes.contested.housing.lease'] = {
   tags: ['property_buildings_homes', 'contested', 'housing', 'landlord'],
+  params: followUpReport,
+};
+SO['property_buildings_homes.tenant.report'] = {
+  tags: ['property_buildings_homes', 'tenant'],
   params: followUpReport,
 };
 SO['property_buildings_homes.sewage.backup'] = {

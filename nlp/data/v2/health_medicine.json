@@ -216,6 +216,14 @@
     ]
   },
   {
+    "intent": "health_medicine.report",
+    "text": "I want to report a problem to the Public Health Department."
+  },
+  {
+    "intent": "health_medicine.report",
+    "text": "Report a public health concern"
+  },
+  {
     "intent": "health_medicine.unsanitary.business",
     "text": "This store has rats all over"
   },

@@ -352,6 +352,18 @@
 		]
 	},
 	{
+		"text": "What do I need open a food truck?",
+		"intent": "business_finance.permit_license_permission.food_truck"
+	},
+	{
+		"text": "Mobile food truck permit",
+		"intent": "business_finance.permit_license_permission.food_truck"
+	},
+	{
+		"text": "Mobile Food Truck License",
+		"intent": "business_finance.permit_license_permission.food_truck"
+	},
+	{
 		"text": "I need a permit for my resturaunt",
 		"intent": "business_finance.permit_license_permission.food_service"
 	},

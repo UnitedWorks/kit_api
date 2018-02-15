@@ -156,6 +156,18 @@
 		]
 	},
 	{
+		"text": "Is there anyway I can reschedule a court date?",
+		"intent": "public_safety_law.court.date.reschedule"
+	},
+	{
+		"text": "I need the email address to re schedule a court date",
+		"intent": "public_safety_law.court.date.reschedule"
+	},
+	{
+		"text": "Could you reschedule a court date",
+		"intent": "public_safety_law.court.date.reschedule"
+	},
+	{
 		"text": "Whats needed for court?",
 		"intent": "public_safety_law.court.guide"
 	},

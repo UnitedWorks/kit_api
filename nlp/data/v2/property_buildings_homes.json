@@ -351,6 +351,14 @@
 		"intent": "property_buildings_homes.history_records.complaint.tenant"
 	},
 	{
+		"text": "I want to report a tenant",
+		"intent": "property_buildings_homes.tenant.report"
+	},
+	{
+		"text": "Report a section 8 tenant",
+		"intent": "property_buildings_homes.tenant.report"
+	},
+	{
 		"text": "Check the property infestation history",
 		"intent": "property_buildings_homes.history_records.infestation"
 	},
@@ -1035,6 +1043,14 @@
 		"intent": "property_buildings_homes.registration.boiler"
 	},
 	{
+		"text": "Permit for Generator",
+		"intent": "property_buildings_homes.permit_license_permission.generator"
+	},
+	{
+		"text": "generator installation",
+		"intent": "property_buildings_homes.permit_license_permission.generator"
+	},
+	{
 		"text": "What do I need to do when selling a home?",
 		"intent": "property_buildings_homes.regulation_requirements.home.selling"
 	},
@@ -1311,6 +1327,14 @@
 		"intent": "property_buildings_homes.sewer_connection.reimbursement"
 	},
 	{
+		"text": "sewer line schematic",
+		"intent": "property_buildings_homes.sewer_connection.schematic"
+	},
+	{
+		"text": "sewer line location",
+		"intent": "property_buildings_homes.sewer_connection.schematic"
+	},
+	{
 		"intent": "property_buildings_homes.squatting",
 		"text": "How do I report someone living in a vacant building?"
 	},
@@ -1493,5 +1517,17 @@
 	{
 		"text": "Make payment on water bill",
 		"intent": "property_buildings_homes.water_bill.payment"
+	},
+	{
+		"text": "Make payment on water bill",
+		"intent": "property_buildings_homes.water_bill.payment"
+	},
+	{
+		"text": "Can I get a mural painted on my building?",
+		"intent": "property_buildings_homes.mural.request"
+	},
+	{
+		"text": "how can I get a mural?",
+		"intent": "property_buildings_homes.mural.request"
 	}
 ]
