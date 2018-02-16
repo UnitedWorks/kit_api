@@ -119,23 +119,28 @@ export default class KitClient {
       }
     // If closest matching entity wasn't an organization, return normally
     } else {
-      finalArray = entityArray.map((e) => {
-        if (e.type === 'organization') return elementTemplates.genericOrganization(e.payload);
-        if (e.type === 'service') return elementTemplates.genericService(e.payload);
-        if (e.type === 'place') return elementTemplates.genericPlace(e.payload);
-        if (e.type === 'person') return elementTemplates.genericPerson(e.payload);
-        if (e.type === 'phone') return elementTemplates.genericPhone(e.payload);
-        if (e.type === 'event') return elementTemplates.genericEvent(e.payload);
-        if (e.type === 'resource') return elementTemplates.genericResource(e.payload);
-        return null;
-      }).filter(d => d);
+      finalArray = [];
+      entityArray.forEach((e) => {
+        if (e.type === 'organization') finalArray.push(elementTemplates.genericOrganization(e.payload));
+        if (e.type === 'service') finalArray.push(elementTemplates.genericService(e.payload));
+        if (e.type === 'place') finalArray.push(elementTemplates.genericPlace(e.payload));
+        if (e.type === 'person') {
+          finalArray.push(elementTemplates.genericPerson(e.payload));
+          if (e.payload.organizations && e.payload.organizations.length > 0) {
+            finalArray.push(elementTemplates.genericOrganization(e.payload.organizations[0]));
+          }
+        }
+        if (e.type === 'phone') finalArray.push(elementTemplates.genericPhone(e.payload));
+        if (e.type === 'event') finalArray.push(elementTemplates.genericEvent(e.payload));
+        if (e.type === 'resource') finalArray.push(elementTemplates.genericResource(e.payload));
+      });
     }
     // If we have coordinates, we want to sort by distance
     return [{
       type: 'template',
       templateType: 'generic',
       image_aspect_ratio: 'horizontal',
-      elements: finalArray,
+      elements: finalArray.filter(d => d),
     }];
   }
 
