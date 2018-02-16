@@ -210,7 +210,7 @@ export default class KitClient {
     }
     if (entity.url) {
       if (entitySnippet.length > 0) {
-        entitySnippet += `and visited online at ${entity.url}`;
+        entitySnippet += ` and visited online at ${entity.url}`;
       } else {
         entitySnippet += `${entity.name} can be visited online at ${entity.url}`;
       }
