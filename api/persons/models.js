@@ -5,8 +5,8 @@ import { Phone } from '../phones/models';
 export const Person = bookshelf.Model.extend({
   tableName: 'persons',
   hasTimestamps: true,
-  organization() {
-    return this.belongsTo(Organization, 'organization_id');
+  organizations() {
+    return this.belongsToMany(Organization, 'organizations_entity_associations');
   },
   phones() {
     return this.belongsToMany(Phone, 'phones_entity_associations');

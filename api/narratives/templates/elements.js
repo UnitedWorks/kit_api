@@ -207,7 +207,7 @@ export function genericOrganization(organization) {
 export function genericPerson(person) {
   const element = {
     title: person.name,
-    subtitle: `${person.title ? `${person.title}` : ''}${person.responsibilities ? `${person.responsibilities}` : ''}`,
+    subtitle: `${person.title ? `${person.title}` : ''}${person.organizations && person.organizations.length > 0 ? ` - ${person.organizations[0].name}` : ''}${person.responsibilities ? ` - ${person.responsibilities}` : ''}`,
   };
   const buttons = [];
   if (person.phones && person.phones.length > 0) {

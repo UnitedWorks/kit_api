@@ -136,7 +136,7 @@ export async function searchEntitiesBySimilarity(strings = [], organizationId, o
           .orderBy('similarity', 'desc')
           .limit(10)
           .then(rows => rows.filter(r => r.similarity > options.confidence).map((p) => {
-            return Person.where({ id: p.id }).fetch({ withRelated: ['phones'] })
+            return Person.where({ id: p.id }).fetch({ withRelated: ['phones', 'organizations', 'organizations.phones'] })
               .then(fetched => ({ type: 'person', payload: { ...fetched.toJSON(), similarity: p.similarity } }));
           })));
     }

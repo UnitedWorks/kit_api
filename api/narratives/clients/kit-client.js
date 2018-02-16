@@ -166,6 +166,8 @@ export default class KitClient {
         snip = KitClient.entityContactToText(orgEntity.payload);
       } else if (lookupType === NLP_TAGS.CONTACT_PHONE) {
         snip = KitClient.entityPhonesToText(orgEntity.payload);
+      } else if (lookupType === NLP_TAGS.CONTACT_EMAIL) {
+        snip = KitClient.entityPhonesToText(orgEntity.payload);
       } else if (lookupType === NLP_TAGS.URL) {
         snip = KitClient.entityURLToText(orgEntity.payload);
       }
@@ -175,10 +177,18 @@ export default class KitClient {
         let snip = null;
         if (lookupType === NLP_TAGS.AVAILABILITY_SCHEDULE) {
           snip = KitClient.entityAvailability(entity.type, entity.payload, { constituentAttributes: session.get('attributes'), datetime: session.snapshot.nlp.entities[NLP_TAGS.DATETIME] });
-        } else if (lookupType === NLP_TAGS.CONTACT) {
-          snip = KitClient.entityContactToText(entity.payload);
-        } else if (lookupType === NLP_TAGS.CONTACT_PHONE) {
-          snip = KitClient.entityPhonesToText(entity.payload);
+        } else if (lookupType === NLP_TAGS.CONTACT || lookupType === NLP_TAGS.CONTACT_PHONE || lookupType === NLP_TAGS.CONTACT_EMAIL) {
+          let contactSnip;
+          if (lookupType === NLP_TAGS.CONTACT) contactSnip = KitClient.entityContactToText(entity.payload);
+          if (lookupType === NLP_TAGS.CONTACT_PHONE) contactSnip = KitClient.entityPhonesToText(entity.payload);
+          if (lookupType === NLP_TAGS.CONTACT_EMAIL) contactSnip = KitClient.entityEmailToText(entity.payload);
+          if (contactSnip) {
+            snip = contactSnip;
+          } else if (!contactSnip && entity.payload.organizations && entity.payload.organizations.length > 0) {
+            snip = `I don't have that information for ${entity.payload.name}, so I'd try getting in touch with ${entity.payload.organizations[0].name}. ${KitClient.entityContactToText(entity.payload.organizations[0])}`;
+          } else {
+            snip = `Sorry, I don't have any contact information for ${entity.payload.name}`;
+          }
         } else if (lookupType === NLP_TAGS.LOCATION || lookupType === NLP_TAGS.LOCATION_CLOSEST) {
           snip = KitClient.entityLocationToText(entity.type, entity.payload);
         } else if (lookupType === NLP_TAGS.URL) {
@@ -216,6 +226,11 @@ export default class KitClient {
     } else if (entity.phones && entity.phones.length > 0) {
       return `${entity.name} can be reached at ${entity.phones[0].number}${entity.phones[0].extension ? `,${entity.phones[0].extension}` : ''}`;
     }
+    return null;
+  }
+
+  static entityEmailToText(entity) {
+    if (entity.email) return `${entity.name} can be reached at ${entity.email}`;
     return null;
   }
 
