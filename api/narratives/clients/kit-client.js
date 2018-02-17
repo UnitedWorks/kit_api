@@ -1,4 +1,5 @@
 import geolib from 'geolib';
+import knex from 'knex';
 import { RRule, RRuleSet } from 'rrule';
 import moment from 'moment';
 import { getAnswers as getAnswersHelper } from '../../knowledge-base/helpers';
@@ -272,7 +273,11 @@ export default class KitClient {
       entity.availabilitys.forEach((availability) => {
         // Check if this is an override
         if (availability.over_ride_until || availability.over_ride_reason) {
-          overrideString = `However BE ADVISED, there has been a change: "${availability.over_ride_reason}"`;
+          if (new Date(availability.over_ride_until) > new Date()) {
+            overrideString = `However BE ADVISED, there has been a change: "${availability.over_ride_reason}"`;
+          } else {
+            knex('availabilitys').where({ id: availability.id }).del().then(d => d);
+          }
           return;
         }
         // Geo Check
@@ -299,7 +304,11 @@ export default class KitClient {
     } else if (datetime && datetime[0] && datetime[0].grain === 'day' && entity.availabilitys && entity.availabilitys.filter(a => a.schedule_rules && a.schedule_rules[0].rrule).length > 0) {
       entity.availabilitys.forEach((availability) => {
         if (availability.over_ride_until || availability.over_ride_reason) {
-          overrideString = `BE ADVISED. A service change is listed: "${availability.over_ride_reason}"`;
+          if (new Date(availability.over_ride_until) > new Date()) {
+            overrideString = `BE ADVISED. A service change is listed: "${availability.over_ride_reason}"`;
+          } else {
+            knex('availabilitys').where({ id: availability.id }).del().then(d => d);
+          }
           return;
         }
         // Geo Check
