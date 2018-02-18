@@ -258,12 +258,16 @@ SO['property_buildings_homes.contested.housing.lease'] = {
   tags: ['property_buildings_homes', 'contested', 'housing', 'landlord'],
   params: followUpReport,
 };
-SO['property_buildings_homes.tenant.report'] = {
-  tags: ['property_buildings_homes', 'tenant'],
+SO['property_buildings_homes.snow.removal'] = {
+  tags: ['property_buildings_homes', 'snow', 'removal'],
   params: followUpReport,
 };
 SO['property_buildings_homes.sewage.backup'] = {
   tags: ['property_buildings_homes', 'sewage', 'backup'],
+  params: followUpReport,
+};
+SO['property_buildings_homes.tenant.report'] = {
+  tags: ['property_buildings_homes', 'tenant'],
   params: followUpReport,
 };
 SO['property_buildings_homes.water.pressure'] = {
@@ -623,6 +627,12 @@ SO['transportation_streets_sidewalks.wire.safety'] = {
   tags: ['transportation_streets_sidewalks', 'wire', 'safety'],
   params: basicReport,
 };
+
+SO['transportation_streets_sidewalks.speed_hump'] = {
+  tags: ['transportation_streets_sidewalks', 'speed_hump'],
+  params: basicReport,
+};
+
 
 // Government, Civil Services
 SO['government_civil_services.vehicle.misuse'] = {

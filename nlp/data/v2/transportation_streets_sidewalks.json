@@ -200,6 +200,38 @@
 		}
 	},
 	{
+		"text": "Is there anytihng I need to do to have a moving container/truck?",
+		"intent": "transportation_streets_sidewalks.parking.moving"
+	},
+	{
+		"text": "container parking",
+		"intent": "transportation_streets_sidewalks.parking.moving"
+	},
+	{
+		"text": "What do I need for parking a moving truck",
+		"intent": "transportation_streets_sidewalks.parking.moving"
+	},
+	{
+		"text": "Are parking rules in effect?",
+		"intent": "transportation_streets_sidewalks.parking.status"
+	},
+	{
+		"text": "Have the parking rules changed because of the holidays",
+		"intent": "transportation_streets_sidewalks.parking.status"
+	},
+	{
+		"text": "Is parking free tomorrow?",
+		"intent": "transportation_streets_sidewalks.parking.status"
+	},
+	{
+		"text": "What are the rules for holiday parking?",
+		"intent": "transportation_streets_sidewalks.parking.holidays"
+	},
+	{
+		"text": "Is holiday parking free?",
+		"intent": "transportation_streets_sidewalks.parking.holidays"
+	},
+	{
 		"text": "What are the ASP rules where I am?",
 		"intent": "transportation_streets_sidewalks.parking.asp.check"
 	},
@@ -485,11 +517,15 @@
 	},
 	{
 		"text": "Who can help me shovel my snow?",
-		"intent": "transportation_streets_sidewalks.snow.shoveling"
+		"intent": "transportation_streets_sidewalks.snow.assistance"
+	},
+	{
+		"text": "Snow shoveling assistance program",
+		"intent": "transportation_streets_sidewalks.snow.assistance"
 	},
 	{
 		"text": "I'm a senior citizen in need of help shoveling snow?",
-		"intent": "transportation_streets_sidewalks.snow.shoveling"
+		"intent": "transportation_streets_sidewalks.snow.assistance"
 	},
 	{
 		"text": "My street needs to be plowed",
@@ -1154,5 +1190,21 @@
 	{
 		"text": "this electrical wire is touching a tree",
 		"intent": "transportation_streets_sidewalks.wire.safety"
+	},
+	{
+		"text": "How can I request a speed hump on my street?",
+		"intent": "transportation_streets_sidewalks.speed_hump"
+	},
+	{
+		"text": "Where can I find the speed hump application",
+		"intent": "transportation_streets_sidewalks.speed_hump"
+	},
+	{
+		"text": "Our street needs a speed hump",
+		"intent": "transportation_streets_sidewalks.speed_hump"
+	},
+	{
+		"text": "We need a speed hump. cars are always flying down our street",
+		"intent": "transportation_streets_sidewalks.speed_hump"
 	}
 ]

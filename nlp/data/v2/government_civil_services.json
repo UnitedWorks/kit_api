@@ -523,6 +523,30 @@
     "intent": "government_civil_services.taxes.website"
   },
   {
+    "text": "Who handles and enforces abatements?",
+    "intent": "government_civil_services.taxes.abatements"
+  },
+  {
+    "text": "Who enforces agreements for abatements",
+    "intent": "government_civil_services.taxes.abatements"
+  },
+  {
+    "text": "who can i speak to about abated taxes on a condo",
+    "intent": "government_civil_services.taxes.abatements"
+  },
+  {
+    "text": "Where can I find parcel tax maps?",
+    "intent": "government_civil_services.taxes.map"
+  },
+  {
+    "text": "Tax map",
+    "intent": "government_civil_services.taxes.map"
+  },
+  {
+    "text": "Parcel tax database lookup",
+    "intent": "government_civil_services.taxes.map"
+  },
+  {
     "text": "Where can I find the revaluation update?",
     "intent": "government_civil_services.revaluation"
   },
@@ -561,5 +585,17 @@
   {
     "text": "search ordinances",
     "intent": "government_civil_services.ordinances"
+  },
+  {
+    "text": "Where can I find the Municipal/City Record of public hearings, notices, contracts, etc.?",
+    "intent": "government_civil_services.municipal_record"
+  },
+  {
+    "text": "how do I read the city record",
+    "intent": "government_civil_services.municipal_record"
+  },
+  {
+    "text": "City record",
+    "intent": "government_civil_services.municipal_record"
   }
 ]

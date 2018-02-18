@@ -22,5 +22,17 @@
   {
     "text": "Who started this city?",
     "intent": "locale.founder"
+  },
+  {
+    "text": "I'm looking for local historical pictures/documents, and need to find resources for that.",
+    "intent": "locale.archive"
+  },
+  {
+    "text": "I am looking for historic pictures of Jersey City Heights, and need to find resources for that... can you help?",
+    "intent": "locale.archive"
+  },
+  {
+    "text": "Where is a local archive of pictures/documents?",
+    "intent": "locale.archive"
   }
 ]

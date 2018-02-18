@@ -6,7 +6,8 @@ const knex = require('../api/orm').knex;
 
 const updateOperations = [
   // { delete: 'transportation_streets_sidewalks.plowing' },
-  // { from: 'government_civil_services.opra', to: 'government_civil_services.info' },
+  { from: 'transportation_streets_sidewalks.snow.shoveling', to: 'transportation_streets_sidewalks.snow.assistance' },
+  { from: 'property_buildings_homes.district_zoning.search', to: 'property_buildings_homes.zoning.map' },
 ].map((modification) => {
   // Simply update the label
   if (modification.from && modification.to) {

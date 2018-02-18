@@ -268,5 +268,17 @@
 	{
 		"text": "When is summer vacation for public schools?",
 		"intent": "education_employment.public_schools.vacation.schedule"
-	}
+	},
+  {
+    "text": "City employment inclement weather number/status check",
+    "intent": "education_employment.inclement_weather"
+  },
+  {
+    "text": "Do I have to come to work today because of the weather?",
+    "intent": "education_employment.inclement_weather"
+  },
+  {
+    "text": "Are city employees off today because of the snow?",
+    "intent": "education_employment.inclement_weather"
+  }
 ]

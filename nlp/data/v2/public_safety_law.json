@@ -200,6 +200,18 @@
 		"intent": "public_safety_law.court.plea"
 	},
 	{
+		"text": "How do I get more info about small claims and how to do it?",
+		"intent": "public_safety_law.court.small_claims"
+	},
+	{
+		"text": "small claims",
+		"intent": "public_safety_law.court.small_claims"
+	},
+	{
+		"text": "I'm owed money. How do I get the person to pay me",
+		"intent": "public_safety_law.court.small_claims"
+	},
+	{
 		"text": "I need to report a crime",
 		"intent": "public_safety_law.crime"
 	},
