@@ -172,6 +172,22 @@
 		]
 	},
 	{
+		"text": "I think I'm witnessing is a workplace violation. How can I report it?",
+		"intent": "education_employment.employment.violation"
+	},
+	{
+		"text": "How do I report a workplace violation?",
+		"intent": "education_employment.employment.violation"
+	},
+	{
+		"text": "Hi, I wanted to ask a question about work conditions (temperature) for my building concierge, and to report a violation if necessary.",
+		"intent": "education_employment.employment.laws_ordinances.heat"
+	},
+	{
+		"text": "I want to know if there's a temperature minimum for workers",
+		"intent": "education_employment.employment.laws_ordinances.heat"
+	},
+	{
 		"text": "How do I get information about city colleges and universities?",
 		"intent": "education_employment.higher_education.guide",
 		"entities": [
@@ -270,15 +286,19 @@
 		"intent": "education_employment.public_schools.vacation.schedule"
 	},
   {
-    "text": "City employment inclement weather number/status check",
-    "intent": "education_employment.inclement_weather"
+    "text": "What are the rules for sick leave? (Do you have a poster?)",
+    "intent": "education_employment.laws_ordinances.sick_leave"
   },
   {
-    "text": "Do I have to come to work today because of the weather?",
-    "intent": "education_employment.inclement_weather"
+    "text": "Where do I find the sick leave poster",
+    "intent": "education_employment.laws_ordinances.sick_leave"
   },
   {
-    "text": "Are city employees off today because of the snow?",
-    "intent": "education_employment.inclement_weather"
+    "text": "sick leave",
+    "intent": "education_employment.laws_ordinances.sick_leave"
+  },
+  {
+    "text": "employee rights for sick leave",
+    "intent": "education_employment.laws_ordinances.sick_leave"
   }
 ]

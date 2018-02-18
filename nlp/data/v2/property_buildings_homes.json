@@ -115,7 +115,7 @@
 		"text": "There is a dispute with my lease"
 	},
 	{
-		"intent": "property_buildings_homes.contested.housing.rent_control",
+		"intent": "property_buildings_homes.contested.housing.rent",
 		"text": "My rent went up more than allowed"
 	},
 	{
@@ -1435,16 +1435,28 @@
 		"text": "There's been a leak in our ceiling that keeps coming back"
 	},
 	{
-		"intent": "property_buildings_homes.water.main_break",
+		"intent": "property_buildings_homes.water.pipe.break",
 		"text": "I think a water main broke"
 	},
 	{
-		"intent": "property_buildings_homes.water.main_break",
+		"intent": "property_buildings_homes.water.pipe.break",
 		"text": "How do I report a Water Main Break?"
 	},
 	{
 		"text": "Water mane broke",
-		"intent": "property_buildings_homes.water.main_break"
+		"intent": "property_buildings_homes.water.pipe.break"
+	},
+	{
+		"text": "The water pipe from the street and pipes in our building are frozen.",
+		"intent": "property_buildings_homes.water.pipe.frozen"
+	},
+	{
+		"text": "the water pipe from the street is frozen",
+		"intent": "property_buildings_homes.water.pipe.frozen"
+	},
+	{
+		"text": "frozen pipes",
+		"intent": "property_buildings_homes.water.pipe.frozen"
 	},
 	{
 		"intent": "property_buildings_homes.water.pressure",
@@ -1556,35 +1568,35 @@
 	},
 	{
 		"text": "What is required for maintaining a vacant building?",
-		"intent": "property_buildings_homes.ordinances.building.vacant"
+		"intent": "property_buildings_homes.laws_ordinances.building.vacant"
 	},
 	{
 		"text": "Is there a minimum required temperature for vacant buildings",
-		"intent": "property_buildings_homes.ordinances.building.vacant"
+		"intent": "property_buildings_homes.laws_ordinances.building.vacant"
 	},
   {
     "text": "What is the heat ordinance",
-    "intent": "property_buildings_homes.ordinances.heat"
+    "intent": "property_buildings_homes.laws_ordinances.heat"
   },
   {
     "text": "What is the minimum temprature a building can be",
-    "intent": "property_buildings_homes.ordinances.heat"
+    "intent": "property_buildings_homes.laws_ordinances.heat"
   },
   {
     "text": "Whats the law about building heating",
-    "intent": "property_buildings_homes.ordinances.heat"
+    "intent": "property_buildings_homes.laws_ordinances.heat"
   },
   {
     "text": "What are the rules for snow removal?",
-    "intent": "property_buildings_homes.ordinances.snow"
+    "intent": "property_buildings_homes.laws_ordinances.snow"
   },
   {
     "text": "Are businesses required to shovel sidewalks?",
-    "intent": "property_buildings_homes.ordinances.snow"
+    "intent": "property_buildings_homes.laws_ordinances.snow"
   },
   {
     "text": "Snow removal ordinances",
-    "intent": "property_buildings_homes.ordinances.snow"
+    "intent": "property_buildings_homes.laws_ordinances.snow"
   },
   {
     "text": "Report building not shoveling sidewalk",

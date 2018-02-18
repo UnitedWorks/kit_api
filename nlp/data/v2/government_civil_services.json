@@ -576,15 +576,15 @@
   },
   {
     "text": "How do I find the ordinances and laws for the city?",
-    "intent": "government_civil_services.ordinances"
+    "intent": "government_civil_services.laws_ordinances"
   },
   {
     "text": "what's the law in jersey city",
-    "intent": "government_civil_services.ordinances"
+    "intent": "government_civil_services.laws_ordinances"
   },
   {
     "text": "search ordinances",
-    "intent": "government_civil_services.ordinances"
+    "intent": "government_civil_services.laws_ordinances"
   },
   {
     "text": "Where can I find the Municipal/City Record of public hearings, notices, contracts, etc.?",
@@ -597,5 +597,17 @@
   {
     "text": "City record",
     "intent": "government_civil_services.municipal_record"
+  },
+  {
+    "text": "City employment inclement weather number/status check",
+    "intent": "government_civil_services.human_resources.inclement_weather"
+  },
+  {
+    "text": "Do I have to come to work today because of the weather?",
+    "intent": "government_civil_services.human_resources.inclement_weather"
+  },
+  {
+    "text": "Are city employees off today because of the snow?",
+    "intent": "government_civil_services.human_resources.inclement_weather"
   }
 ]

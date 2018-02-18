@@ -8,6 +8,9 @@ const updateOperations = [
   // { delete: 'transportation_streets_sidewalks.plowing' },
   { from: 'transportation_streets_sidewalks.snow.shoveling', to: 'transportation_streets_sidewalks.snow.assistance' },
   { from: 'property_buildings_homes.district_zoning.search', to: 'property_buildings_homes.zoning.map' },
+  { from: 'social_services.rent_control', to: 'social_services.rent.search' },
+  { from: 'social_services.rent_control.guide', to: 'social_services.laws_ordinances.rent' },
+  { from: 'property_buildings_homes.water.main_break', to: 'property_buildings_homes.water.pipe.break' },
 ].map((modification) => {
   // Simply update the label
   if (modification.from && modification.to) {

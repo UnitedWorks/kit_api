@@ -325,11 +325,11 @@
   },
   {
     "text": "Where are rent control units?",
-    "intent": "social_services.rent_control"
+    "intent": "social_services.rent.search"
   },
   {
     "text": "Is there rent control?",
-    "intent": "social_services.rent_control",
+    "intent": "social_services.rent.search",
     "entities": [
       {
         "start": 9,
@@ -341,11 +341,28 @@
   },
   {
     "text": "How does rent control work?",
-    "intent": "social_services.rent_control.guide"
+    "intent": "social_services.laws_ordinances.rent"
   },
   {
     "text": "What is rent control?",
-    "intent": "social_services.rent_control.guide"
+    "intent": "social_services.laws_ordinances.rent"
+  },
+  {
+    "text": "What are the rules around rent prices?",
+    "intent": "social_services.laws_ordinances.rent"
+  },
+  
+  {
+    "text": "Whats the most my landlord can increase my rent each year?",
+    "intent": "social_services.laws_ordinances.rent.stabalized"
+  },
+  {
+    "text": "% of allowable rent increase",
+    "intent": "social_services.laws_ordinances.rent.stabalized"
+  },
+  {
+    "text": "Max rent increase allowed by law",
+    "intent": "social_services.laws_ordinances.rent.stabalized"
   },
   {
     "text": "Im having a problem with a shelter",

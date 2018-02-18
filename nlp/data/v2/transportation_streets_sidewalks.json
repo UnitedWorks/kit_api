@@ -496,6 +496,34 @@
 		"text": "Report parking meter"
 	},
 	{
+		"intent": "transportation_streets_sidewalks.parking_meter.guide",
+		"text": "What do the color codes on parking meters mean? How do I know what that means for commercial vehcile parking?"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.parking_meter.guide",
+		"text": "Red parking metet"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.parking_meter.guide",
+		"text": "Why is the parking meter yellow?"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.parking_meter.guide",
+		"text": "What is the difference between red parking meter and normal parking meter?"
+	},
+	{
+		"text": "What are the rules for parking a commercial vehciles? Can I park at meters?",
+		"intent": "transportation_streets_sidewalks.parking_meter.guide"
+	},
+	{
+		"text": "Can I park a commercial vehicle at meter parking? Are there other rules I should know for parking a commercial vehciles?",
+		"intent": "transportation_streets_sidewalks.parking_meter.guide"
+	},
+	{
+		"text": "Can i park a commercial vehicle at meter parking",
+		"intent": "transportation_streets_sidewalks.parking_meter.guide"
+	},
+	{
 		"intent": "transportation_streets_sidewalks.parking_meter.broken",
 		"text": "I tried paying for parking and it's not working"
 	},

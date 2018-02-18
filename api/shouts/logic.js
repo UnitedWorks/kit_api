@@ -92,6 +92,12 @@ const SO = {};
 // Business
 SO['business_finance.business'] = {};
 
+// Employment
+SO['education_employment.employment.violation'] = {
+  tags: ['education_employment', 'employment', 'violation'],
+  params: basicReport,
+};
+
 // Environment
 SO['environment_sanitation.tree'] = {
   tags: ['environment_sanitation', 'tree'],

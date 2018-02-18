@@ -17,7 +17,7 @@ module.exports = {
       ...require('./v2/public_safety_law'),
       // ...require('./v2/search'),
       // ...require('./v2/settings'),
-      // ...require('./v2/social_services'),
+      ...require('./v2/social_services'),
       // ...require('./v2/speech'),
       ...require('./v2/transportation_streets_sidewalks'),
       // ...require('./v2/voting_elections_participation'),
