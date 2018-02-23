@@ -117,11 +117,11 @@ export default {
         });
         return passes;
       }).sort((a, b) => a.availabilitys[0].t_start - b.availabilitys[0].t_start)
-        .slice(0, 10).map(event => ({ type: 'event', payload: event }));
+        .slice(0, 5).map(event => ({ type: 'event', payload: event }));
     } else if (allEvents.length > 0) {
       finalEventGrouping = allEvents.sort((a, b) =>
         a.availabilitys[0].t_start - b.availabilitys[0].t_start)
-        .slice(0, 10).map(event => ({ type: 'event', payload: event }));
+        .slice(0, 5).map(event => ({ type: 'event', payload: event }));
     }
     if (!finalEventGrouping || finalEventGrouping.length === 0) {
       this.messagingClient.addToQuene('Sorry, I was unable to find anything upcoming.');
