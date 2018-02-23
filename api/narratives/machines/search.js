@@ -141,7 +141,7 @@ export default {
       this.snapshot.nlp.entities.search_query.forEach((q) => {
         // Trimming the 's' off a search query because ckan is picky
         const thisValue = q.value.replace('data', '').trim().toLowerCase();
-        entityStrings.push(thisValue.slice(-1) === 's' ? thisValue.slice(0, -1) : thisValue);
+        if (thisValue.length > 0) entityStrings.push(thisValue.slice(-1) === 's' ? thisValue.slice(0, -1) : thisValue);
       });
     }
     let mayorResources = null;
@@ -151,7 +151,6 @@ export default {
         this.messagingClient.addAll(KitClient.genericTemplateFromEntities(mayorResources));
       }
     }
-
     const ckanConfig = await getIntegrationConfig(
       this.snapshot.organization_id, INTEGRATION_CONST.CKAN).then(c => c);
     const staeConfig = await getIntegrationConfig(
@@ -159,7 +158,7 @@ export default {
 
     let ckanResources = null;
     if (!ckanConfig && !staeConfig) {
-      this.messagingClient.addToQuene('I didn\'t find any data sets for your local government')
+      this.messagingClient.addToQuene('I didn\'t find any data sets for your local government');
     } else {
       if (entityStrings.length > 0 && ckanConfig) {
         ckanResources = await Promise.all(entityStrings.map(str => new CkanClient(ckanConfig)
