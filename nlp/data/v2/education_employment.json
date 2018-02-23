@@ -180,11 +180,15 @@
 		"intent": "education_employment.employment.violation"
 	},
 	{
-		"text": "Hi, I wanted to ask a question about work conditions (temperature) for my building concierge, and to report a violation if necessary.",
+		"text": "What temperature rules there are for work conditions?",
 		"intent": "education_employment.employment.laws_ordinances.heat"
 	},
 	{
 		"text": "I want to know if there's a temperature minimum for workers",
+		"intent": "education_employment.employment.laws_ordinances.heat"
+	},
+	{
+		"text": "Hi, I wanted to ask a question about work conditions (temperature) for my building concierge, and to report a violation if necessary.",
 		"intent": "education_employment.employment.laws_ordinances.heat"
 	},
 	{

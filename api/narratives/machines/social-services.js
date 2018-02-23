@@ -1,21 +1,18 @@
 import * as INTEGRATIONS from '../../constants/integrations';
-import { checkIntegration } from '../../integrations/helpers';
+import { getIntegrationConfig } from '../../integrations/helpers';
 import AskDarcelClient from '../clients/ask-darcel-client';
-import KitClient from '../clients/kit-client';
+import { fetchAnswers } from '../helpers';
 import { messageToGeodata } from '../../utils/nlp';
 
 export default {
   waiting_shelter_search: {
-    enter() {
-      if (!this.get('address')) return this.stateRedirect('location', 'socialServices.waiting_shelter_search');
-      return checkIntegration(this.snapshot.organization, INTEGRATIONS.ASK_DARCEL)
-        .then((integrated) => {
-          if (integrated) {
-            this.messagingClient.send('What address are you currently at? I want to make sure I give you locations close by.');
-            return null;
-          }
-          return this.input('message', { integrated: false });
-        });
+    async enter() {
+      // Check for AskDarcel Integration
+      const askDarcelConfig = await getIntegrationConfig(this.snapshot.organization_id, INTEGRATIONS.ASK_DARCEL).then(c => c);
+      if (!askDarcelConfig) return this.input('message', { integrated: false });
+      // Otherwise Continue
+      if (!this.snapshot.organization.address) return this.stateRedirect('location', 'socialServices.waiting_shelter_search');
+      return this.messagingClient.send('What address are you currently at? I want to make sure I give you locations close by.');
     },
     message(aux = {}) {
       if (aux.input && aux.integrated !== false) {
@@ -31,31 +28,22 @@ export default {
               resources.forEach((resource) => {
                 this.messagingClient.addToQuene(`${resource.name}\n${resource.phones[0] ? `${resource.phones[0].number}\n` : ''}${resource.website ? `${resource.website}\n` : ''}${resource.short_description || resource.long_description || ''}\n`.trim());
               });
-              return this.messagingClient.runQuene().then(() => {
-                return this.getBaseState();
-              });
+              return this.messagingClient.runQuene().then(() => this.getBaseState());
             });
         });
       }
-      return new KitClient({ organization: this.snapshot.organization })
-        .getAnswer('social_services_shelters').then((answers) => {
-          this.messagingClient.addAll(KitClient.genericTemplateFromAnswers(answers));
-          return this.messagingClient.runQuene().then(() => this.getBaseState());
-        });
+      return Promise.resolve(fetchAnswers('social_services.shelter', this));
     },
   },
 
   waiting_food_search: {
-    enter() {
-      if (!this.get('address')) return this.stateRedirect('location', 'socialServices.waiting_food_search');
-      return checkIntegration(this.snapshot.organization, INTEGRATIONS.ASK_DARCEL)
-        .then((integrated) => {
-          if (integrated) {
-            this.messagingClient.send('What address are you currently at? I want to make sure I give you locations close by.');
-            return null;
-          }
-          return this.input('message', { integrated: false });
-        });
+    async enter() {
+      // Check for AskDarcel Integration
+      const askDarcelConfig = await getIntegrationConfig(this.snapshot.organization_id, INTEGRATIONS.ASK_DARCEL).then(c => c);
+      if (!askDarcelConfig) return this.input('message', { integrated: false });
+      // Otherwise Continue
+      if (!this.snapshot.organization.address) return this.stateRedirect('location', 'socialServices.waiting_food_search');
+      return this.messagingClient.send('What address are you currently at? I want to make sure I give you locations close by.');
     },
     message(aux = {}) {
       if (aux.input && aux.integrated !== false) {
@@ -71,30 +59,21 @@ export default {
               resources.forEach((resource) => {
                 this.messagingClient.addToQuene(`${resource.name}\n${resource.phones[0] ? `${resource.phones[0].number}\n` : ''}${resource.website ? `${resource.website}\n` : ''}${resource.short_description || resource.long_description || ''}\n`.trim());
               });
-              return this.messagingClient.runQuene().then(() => {
-                return this.getBaseState();
-              });
+              return this.messagingClient.runQuene().then(() => this.getBaseState());
             });
         });
       }
-      return new KitClient({ organization: this.snapshot.organization })
-        .getAnswer('social_services_food_assistance').then((answers) => {
-          this.messagingClient.addAll(KitClient.genericTemplateFromAnswers(answers));
-          return this.messagingClient.runQuene().then(() => this.getBaseState());
-        });
+      return Promise.resolve(fetchAnswers('social_services.food_assistance', this));
     },
   },
   waiting_hygiene_search: {
-    enter() {
-      if (!this.get('address')) return this.stateRedirect('location', 'socialServices.waiting_hygiene_search');
-      return checkIntegration(this.snapshot.organization, INTEGRATIONS.ASK_DARCEL)
-        .then((integrated) => {
-          if (integrated) {
-            this.messagingClient.send('What address are you currently at? I want to make sure I give you locations close by.');
-            return null;
-          }
-          return this.input('message', { integrated: false });
-        });
+    async enter() {
+      // Check for AskDarcel Integration
+      const askDarcelConfig = await getIntegrationConfig(this.snapshot.organization_id, INTEGRATIONS.ASK_DARCEL).then(c => c);
+      if (!askDarcelConfig) return this.input('message', { integrated: false });
+      // Otherwise Continue
+      if (!this.snapshot.organization.address) return this.stateRedirect('location', 'socialServices.waiting_hygiene_search');
+      return this.messagingClient.send('What address are you currently at? I want to make sure I give you locations close by.');
     },
     message(aux = {}) {
       if (aux.input && aux.integrated !== false) {
@@ -110,17 +89,11 @@ export default {
               resources.forEach((resource) => {
                 this.messagingClient.addToQuene(`${resource.name}\n${resource.phones[0] ? `${resource.phones[0].number}\n` : ''}${resource.website ? `${resource.website}\n` : ''}${resource.short_description || resource.long_description || ''}\n`.trim());
               });
-              return this.messagingClient.runQuene().then(() => {
-                return this.getBaseState();
-              });
+              return this.messagingClient.runQuene().then(() => this.getBaseState());
             });
         });
       }
-      return new KitClient({ organization: this.snapshot.organization })
-        .getAnswer('social_services_hygiene').then((answers) => {
-          this.messagingClient.addAll(KitClient.genericTemplateFromAnswers(answers));
-          return this.messagingClient.runQuene().then(() => this.getBaseState());
-        });
+      return Promise.resolve(fetchAnswers('social_services.hygiene', this));
     },
   },
 };
