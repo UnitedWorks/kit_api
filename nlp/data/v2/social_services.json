@@ -351,7 +351,7 @@
     "text": "What are the rules around rent prices?",
     "intent": "social_services.laws_ordinances.rent"
   },
-  
+
   {
     "text": "Whats the most my landlord can increase my rent each year?",
     "intent": "social_services.laws_ordinances.rent.stabalized"
@@ -419,5 +419,13 @@
   {
     "text": "Prisoner Re-Entry",
     "intent": "social_services.prisoner_reentry"
+  },
+  {
+    "text": "Where do I go to sign up for a basketball league?",
+    "intent": "social_services.recreation.league"
+  },
+  {
+    "text": "My kid wants to play sports - where do I go?",
+    "intent": "social_services.recreation.league"
   }
 ]

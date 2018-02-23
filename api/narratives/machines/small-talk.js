@@ -64,6 +64,7 @@ export default {
 
           'escalate.911': 'safety_emergency',
           'escalate.suicide': 'personal_emergency',
+          'escalate.domestic_violence': 'domestic_violence',
 
           'health_medicine.clinics': 'health.waiting_clinic_search',
 
@@ -263,6 +264,15 @@ export default {
       icon: 'bangbang',
     }).send(`>*Con. ${this.snapshot.constituent_id}:* "${this.snapshot.input.payload.text}"\n>*Org*: ${this.snapshot.organization.name} -- *Interface*: ${this.snapshot.constituent.facebookEntry ? 'Facebook' : 'Web'}`);
     this.messagingClient.send("You're not alone. Can you text hello to 741741 for me? Whatever you're going through, people are ready to help. I'm just a chatbot, but I was programmed by a human that cares about you. Please reach out to 741741 for me");
+    return 'start';
+  },
+
+  domestic_violence() {
+    new SlackService({
+      username: 'Domestic Violence',
+      icon: 'bangbang',
+    }).send(`>*Con. ${this.snapshot.constituent_id}:* "${this.snapshot.input.payload.text}"\n>*Org*: ${this.snapshot.organization.name} -- *Interface*: ${this.snapshot.constituent.facebookEntry ? 'Facebook' : 'Web'}`);
+    this.messagingClient.send('Please reach out to the national DV hotline (www.thehotline.org). They can guide and help you for free: 1-800-799-7233');
     return 'start';
   },
 };

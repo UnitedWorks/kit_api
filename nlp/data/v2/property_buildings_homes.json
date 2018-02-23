@@ -1559,6 +1559,14 @@
 		"intent": "property_buildings_homes.water_bill.payment"
 	},
 	{
+		"text": "Where can I see the murals?",
+		"intent": "property_buildings_homes.mural"
+	},
+	{
+		"text": "Where are all the murals located?",
+		"intent": "property_buildings_homes.mural"
+	},
+	{
 		"text": "Can I get a mural painted on my building?",
 		"intent": "property_buildings_homes.mural.request"
 	},
