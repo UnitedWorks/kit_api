@@ -385,15 +385,15 @@
 	},
 	{
 		"text": "What are the rules for signs in front of businesses?",
-		"intent": "business_finance.permit_license_permission.signs"
+		"intent": "business_finance.permit_license_permission.sign"
 	},
 	{
 		"text": "Can I put a sign up on my business?",
-		"intent": "business_finance.permit_license_permission.signs"
+		"intent": "business_finance.permit_license_permission.sign"
 	},
 	{
 		"text": "Do I need anything to put a sign outside my store?",
-		"intent": "business_finance.permit_license_permission.signs"
+		"intent": "business_finance.permit_license_permission.sign"
 	},
 	{
 		"text": "Is it legal to play music on the street?",

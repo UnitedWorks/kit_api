@@ -515,6 +515,26 @@
     "intent": "government_civil_services.taxes.property"
   },
   {
+    "intent": "government_civil_services.taxes.property.payment",
+    "text": "Where can I pay my property/real estate taxes? Prepayment?"
+  },
+  {
+    "intent": "government_civil_services.taxes.property.payment",
+    "text": "how can i prepay property taxes"
+  },
+  {
+    "intent": "government_civil_services.taxes.property.payment",
+    "text": "Can i pay my property tax bill for first and second quarter 2018"
+  },
+  {
+    "intent": "government_civil_services.taxes.property.reassess",
+    "text": "How do I get my property taxes reassessed?"
+  },
+  {
+    "intent": "government_civil_services.taxes.property.reassess",
+    "text": "Where can i get my taxes reassessed?"
+  },
+  {
     "text": "Is there a website for tax payment?",
     "intent": "government_civil_services.taxes.website"
   },

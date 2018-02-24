@@ -119,6 +119,22 @@
 		"text": "My rent went up more than allowed"
 	},
 	{
+		"intent": "property_buildings_homes.housing.rent.notice",
+		"text": "I need a non-rent payment Notice to Quit form"
+	},
+	{
+		"intent": "property_buildings_homes.housing.rent.notice",
+		"text": "Notice to Quit"
+	},
+	{
+		"intent": "property_buildings_homes.housing.rent.notice",
+		"text": "Form for terminating a lease with a tenant"
+	},
+	{
+		"intent": "property_buildings_homes.housing.rent.notice",
+		"text": "Warrant for Removal"
+	},
+	{
 		"intent": "property_buildings_homes.contested.housing.tenant",
 		"text": "The apartment next to me is terrible"
 	},
