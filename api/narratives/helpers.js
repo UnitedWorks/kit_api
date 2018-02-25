@@ -195,6 +195,11 @@ export async function fetchAnswers(intent, session) {
       }
     }
     // Otherwise end user back at start
+    // (and save input incase they say it wasnt helpful)
+    session.set('last_input', {
+      ...session.snapshot.input,
+      nlp: session.snapshot.nlp,
+    });
     return session.getBaseState();
   });
 }

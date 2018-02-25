@@ -1,7 +1,7 @@
 import geolib from 'geolib';
-import knex from 'knex';
-import { RRule, RRuleSet } from 'rrule';
 import moment from 'moment';
+import { RRule, RRuleSet } from 'rrule';
+import { knex } from '../../orm';
 import { getAnswers as getAnswersHelper } from '../../knowledge-base/helpers';
 import * as elementTemplates from '../templates/elements';
 import * as NLP_TAGS from '../../constants/nlp-tagging';
