@@ -333,15 +333,15 @@
 	},
 	{
 		"text": "I'm looking to open a food cart. What do I need to do?",
-		"intent": "business_finance.permit_license_permission.food_cart"
+		"intent": "business_finance.permit_license_permission.food_vendor"
 	},
 	{
 		"text": "What do I need to run a food cart?",
-		"intent": "business_finance.permit_license_permission.food_cart"
+		"intent": "business_finance.permit_license_permission.food_vendor"
 	},
 	{
 		"text": "What license or permit do I need for a food cart?",
-		"intent": "business_finance.permit_license_permission.food_cart",
+		"intent": "business_finance.permit_license_permission.food_vendor",
 		"entities": [
 			{
 				"start": 39,
@@ -353,15 +353,15 @@
 	},
 	{
 		"text": "What do I need open a food truck?",
-		"intent": "business_finance.permit_license_permission.food_truck"
+		"intent": "business_finance.permit_license_permission.food_vendor"
 	},
 	{
 		"text": "Mobile food truck permit",
-		"intent": "business_finance.permit_license_permission.food_truck"
+		"intent": "business_finance.permit_license_permission.food_vendor"
 	},
 	{
 		"text": "Mobile Food Truck License",
-		"intent": "business_finance.permit_license_permission.food_truck"
+		"intent": "business_finance.permit_license_permission.food_vendor"
 	},
 	{
 		"text": "I need a permit for my resturaunt",

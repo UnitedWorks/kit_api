@@ -228,7 +228,7 @@
     "text": "This store has rats all over"
   },
   {
-    "intent": "health_medicine.unsanitary.food_truck",
+    "intent": "health_medicine.unsanitary.food_vendor",
     "text": "This food truck doesn't seem safe"
   },
   {
