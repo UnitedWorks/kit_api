@@ -589,5 +589,5 @@ export async function findQuestion(statement) {
   if (!witEntities.intent) return null;
   const foundIntent = witEntities.intent[0].value
   return KnowledgeQuestion.where({ label: foundIntent }).fetch()
-    .then(question => question.toJSON());
+    .then(question => (question ? question.toJSON() : null));
 }
