@@ -1,6 +1,14 @@
 [
   {
+    "text": "Who should I contact with concerns about animals or wildlife?",
+    "intent": "health_medicine.animal"
+  },
+  {
     "text": "Who should I call regarding a raccoon or other wildlife issue?",
+    "intent": "health_medicine.animal"
+  },
+  {
+    "text": "Where do I report animal diseases?",
     "intent": "health_medicine.animal"
   },
   {

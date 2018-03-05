@@ -193,6 +193,10 @@ SO['health_medicine.standing_water'] = {
   tags: ['health_medicine', 'standing_water'],
   params: basicReport,
 };
+SO['health_medicine.animal'] = {
+  tags: ['health_medicine', 'animal'],
+  params: basicNote,
+};
 SO['health_medicine.animal.rabbies'] = {
   tags: ['health_medicine', 'animal', 'rabbies'],
   params: basicNote,

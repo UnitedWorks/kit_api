@@ -251,6 +251,14 @@
 		]
 	},
 	{
+		"text": "Where can I get a zoning permit?",
+		"intent": "property_buildings_homes.zoning.permit"
+	},
+	{
+		"text": "Request a zoning permit",
+		"intent": "property_buildings_homes.zoning.permit"
+	},
+	{
 		"text": "Issues with drainage on my property",
 		"intent": "property_buildings_homes.drainage",
 		"entities": [

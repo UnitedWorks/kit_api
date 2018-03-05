@@ -5,14 +5,6 @@ import SlackService from '../../utils/slack';
 import EmailService from '../../utils/email';
 import * as env from '../../env';
 
-function checkAnswerEmail(representatives, session, question, statement, reason) {
-  const emailMessage = `A constituent found the bot's response to their question, <b>"${statement}"</b> to be unsatisfactory.<br/><br/>Their reason: ${reason}<br/><br/><a href="${env.getDashboardRoot()}/answer?question_id=${question.id}" target="_blank">Please check its answer!</a>`;
-  new EmailService().send('🤖 Answer Needs Review (Marked Not Helpful)',
-    emailMessage,
-    representatives.map(rep => ({ name: rep.name, email: rep.email })),
-    { question_id: question.id });
-}
-
 export default {
   answer_helpful() {
     new SlackService({
@@ -38,7 +30,12 @@ export default {
     async message() {
       const question = this.get('last_input') && this.get('last_input').nlp ? await KnowledgeQuestion.where({ label: this.get('last_input').nlp.entities.intent[0].value }).fetch({ withRelated: ['category', 'category.fallbacks'] }).then(q => q.toJSON()) : null;
       const fallback = this.get('last_input') && this.get('last_input').nlp ? await getCategoryFallback(this.get('last_input').nlp.entities.intent[0].value, this.snapshot.organization.id).then(f => f) : null;
-      if (fallback && fallback.representatives && question) checkAnswerEmail(fallback.representatives, this, question, this.get('last_input').nlp._text, this.snapshot.input.payload.text);
+      if (fallback && fallback.representatives && question) {
+        new EmailService().send('🤖 Answer Needs Review (Marked Not Helpful)',
+          `A constituent found the bot's response to their question, <b>"${this.get('last_input').nlp._text}"</b> to be unsatisfactory.<br/><br/>Their reason: "<b>${this.snapshot.input.payload.text}</b>"<br/><br/><a href="${env.getDashboardRoot()}/answer?question_id=${question.id}" target="_blank">Please check its answer!</a>`,
+          fallback.representatives.map(rep => ({ name: rep.name, email: rep.email })),
+          { question_id: question.id });
+      }
       new SlackService({
         username: 'Not Helpful',
         icon: 'disappointed',
