@@ -629,5 +629,29 @@
   {
     "text": "Are city employees off today because of the snow?",
     "intent": "government_civil_services.human_resources.inclement_weather"
+  },
+  {
+    "text": "How do I take the Civil Services Exam?",
+    "intent": "government_civil_services.civil_service_exam"
+  },
+  {
+    "text": "I want to take a civil services exam",
+    "intent": "government_civil_services.civil_service_exam"
+  },
+  {
+    "text": "civil services exam",
+    "intent": "government_civil_services.civil_service_exam"
+  },
+  {
+    "text": "Where can I find bidding opportunties with the city?",
+    "intent": "government_civil_services.bid.list"
+  },
+  {
+    "text": "How do I bid on gov jobs?",
+    "intent": "government_civil_services.bid.list"
+  },
+  {
+    "text": "Available RFPs",
+    "intent": "government_civil_services.bid.list"
   }
 ]

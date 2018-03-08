@@ -626,5 +626,69 @@
 	{
 		"text": "I've been robbed",
 		"intent": "public_safety_law.theft"
+	},
+	{
+		"text": "Where can I find the sex offender registry?",
+		"intent": "public_safety_law.sex_offender.search"
+	},
+	{
+		"text": "Sex offender registry",
+		"intent": "public_safety_law.sex_offender.search"
+	},
+	{
+		"text": "How do I look up sex offenders",
+		"intent": "public_safety_law.sex_offender.search"
+	},
+	{
+		"text": "What should I do when the power goes out?",
+		"intent": "public_safety_law.outage"
+	},
+	{
+		"text": "help power is out",
+		"intent": "public_safety_law.outage"
+	},
+	{
+		"text": "How can I prepare for a power outage?",
+		"intent": "public_safety_law.prepare.outage"
+	},
+	{
+		"text": "How do I plan for a power outage?",
+		"intent": "public_safety_law.prepare.outage"
+	},
+	{
+		"text": "How do I prepare for incoming storm?",
+		"intent": "public_safety_law.prepare.storm"
+	},
+	{
+		"text": "How do I get ready for this big storm",
+		"intent": "public_safety_law.prepare.storm"
+	},
+	{
+		"text": "What should I do to get through the storm",
+		"intent": "public_safety_law.prepare.storm"
+	},
+	{
+		"text": "How do I pay a summons?",
+		"intent": "public_safety_law.summons.payment"
+	},
+	{
+		"text": "whats the number to pay for a summons?",
+		"intent": "public_safety_law.summons.payment"
+	},
+	{
+		"text": "What are the police districts?",
+		"intent": "public_safety_law.district_zoning.police"
+	},
+	{
+		"text": "Police districts",
+		"intent": "public_safety_law.district_zoning.police"
+	},
+	{
+		"text": "How can I get CERT certified?",
+		"intent": "public_safety_law.cert.training"
+	},
+	{
+		"text": "CERT Training",
+		"intent": "public_safety_law.cert.training"
 	}
 ]

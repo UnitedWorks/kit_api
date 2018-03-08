@@ -34,5 +34,17 @@
   {
     "text": "Where is a local archive of pictures/documents?",
     "intent": "locale.archive"
+  },
+  {
+    "text": "What are the demographics for our municipality?",
+    "intent": "locale.demographics"
+  },
+  {
+    "text": "what are the demographics of jersey city?",
+    "intent": "locale.demographics"
+  },
+  {
+    "text": "Demographics for our community",
+    "intent": "locale.demographics"
   }
 ]

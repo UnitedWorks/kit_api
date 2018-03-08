@@ -56,12 +56,16 @@
     "intent": "social_services.abuse.relationship"
   },
   {
+    "text": "Where can I get help with getting my child support?",
+    "intent": "social_services.assistance.child_care"
+  },
+  {
     "text": "What do I do after I find out I'm eligible for child care payment assistance?",
-    "intent": "social_services.child_care.payment"
+    "intent": "social_services.assistance.child_care"
   },
   {
     "text": "I need help paying child care",
-    "intent": "social_services.child_care.payment",
+    "intent": "social_services.assistance.child_care",
     "entities": [
       {
         "start": 19,
@@ -73,7 +77,7 @@
   },
   {
     "text": "Am I eligible for child care payment assistance?",
-    "intent": "social_services.child_care.payment"
+    "intent": "social_services.assistance.child_care"
   },
   {
     "text": "I need help managing finances",
@@ -192,6 +196,22 @@
     "intent": "social_services.assistance.food"
   },
   {
+    "text": "Where/How do I get Food Stamps (SNAP)",
+    "intent": "social_services.assistance.food.snap"
+  },
+  {
+    "text": "Signing up for SNAP",
+    "intent": "social_services.assistance.food.snap"
+  },
+  {
+    "text": "How do I get SNAP",
+    "intent": "social_services.assistance.food.snap"
+  },
+  {
+    "text": "Food stamps",
+    "intent": "social_services.assistance.food.snap"
+  },
+  {
     "text": "How do I get help paying for a funeral?",
     "intent": "social_services.assistance.funeral"
   },
@@ -273,19 +293,43 @@
   },
   {
     "text": "What social services does the city provide to residents?",
-    "intent": "social_services.assistance"
+    "intent": "social_services.assistance",
+    "meta": {
+      "vague": true
+    }
   },
   {
     "text": "How do I apply for public assistance?",
-    "intent": "social_services.assistance"
+    "intent": "social_services.assistance",
+    "meta": {
+      "vague": true
+    }
   },
   {
     "text": "What is public assistance",
-    "intent": "social_services.assistance"
+    "intent": "social_services.assistance",
+    "meta": {
+      "vague": true
+    }
   },
   {
     "text": "What assistance does the city provide?",
-    "intent": "social_services.assistance"
+    "intent": "social_services.assistance",
+    "meta": {
+      "vague": true
+    }
+  },
+  {
+    "text": "What veterans program are available from the city?",
+    "intent": "social_services.assistance.veterans"
+  },
+  {
+    "text": "Assitance available for veterans",
+    "intent": "social_services.assistance.veterans"
+  },
+  {
+    "text": "What veterans programs are offered?",
+    "intent": "social_services.assistance.veterans"
   },
   {
     "text": "Information about affordable housing, vouchers, or other rental assistance",
@@ -320,8 +364,16 @@
     "text": "How do I find out about rental assistance?"
   },
   {
-    "intent": "social_services.assistance.rent",
+    "intent": "social_services.assistance.rent.section_8",
     "text": "How do I find out more about section 8?"
+  },
+  {
+    "intent": "social_services.assistance.rent.section_8",
+    "text": "How do I apply for Section 8"
+  },
+  {
+    "intent": "social_services.assistance.rent.section_8",
+    "text": "Section 8 Help"
   },
   {
     "text": "Where are rent control units?",
@@ -422,10 +474,10 @@
   },
   {
     "text": "Where do I go to sign up for a basketball league?",
-    "intent": "social_services.recreation.league"
+    "intent": "social_services.recreation.list"
   },
   {
     "text": "My kid wants to play sports - where do I go?",
-    "intent": "social_services.recreation.league"
+    "intent": "social_services.recreation.list"
   }
 ]

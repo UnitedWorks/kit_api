@@ -1215,6 +1215,14 @@
 		"intent": "property_buildings_homes.regulation_requirements.sprinkler"
 	},
 	{
+		"text": "What do I about overgrowing trees on the street?",
+		"intent": "property_buildings_homes.regulation_requirements.tree.prune"
+	},
+	{
+		"text": "Can we prune our street trees?",
+		"intent": "property_buildings_homes.regulation_requirements.tree.prune"
+	},
+	{
 		"text": "My neighbors tree extends into my property. Can I prune it without permission?",
 		"intent": "property_buildings_homes.regulation_requirements.tree.overhang"
 	},

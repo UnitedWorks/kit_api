@@ -100,11 +100,17 @@
 	},
 	{
 		"text": "Can you help me with my business?",
-		"intent": "business_finance.business"
+		"intent": "business_finance.business",
+		"meta": {
+			"vague": true
+		}
 	},
 	{
 		"text": "Can the city help my business?",
-		"intent": "business_finance.business"
+		"intent": "business_finance.business",
+		"meta": {
+			"vague": true
+		}
 	},
 	{
 		"text": "small business",
@@ -168,6 +174,14 @@
 	{
 		"text": "starting a business",
 		"intent": "business_finance.business.guide"
+	},
+	{
+		"text": "How do I register my business?",
+		"intent": "business_finance.business.registration"
+	},
+	{
+		"text": "Register my business with the city",
+		"intent": "business_finance.business.registration"
 	},
 	{
 		"text": "Where can I find money or loans to start a business?",
@@ -330,6 +344,14 @@
 	{
 		"text": "How do I check if a business is licensed?",
 		"intent": "business_finance.permit_license_permission.business.check"
+	},
+	{
+		"text": "Does my event need a permit?",
+		"intent": "business_finance.permit_license_permission.event"
+	},
+	{
+		"text": "Are temp permits for events needed? We sell premade fudge and truffles",
+		"intent": "business_finance.permit_license_permission.event"
 	},
 	{
 		"text": "I'm looking to open a food cart. What do I need to do?",
