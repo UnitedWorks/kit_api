@@ -46,5 +46,21 @@
   {
     "text": "Demographics for our community",
     "intent": "locale.demographics"
+  },
+  {
+    "text": "Where can I find the best food?",
+    "intent": "locale.food"
+  },
+  {
+    "text": "Best resturaunts?",
+    "intent": "locale.food"
+  },
+  {
+    "text": "where are the food trucks?",
+    "intent": "locale.food"
+  },
+  {
+    "text": "where are the grease trucks?",
+    "intent": "locale.food"
   }
 ]

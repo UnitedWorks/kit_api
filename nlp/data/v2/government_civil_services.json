@@ -653,5 +653,17 @@
   {
     "text": "Available RFPs",
     "intent": "government_civil_services.bid.list"
+  },
+  {
+    "text": "Where can I get legal assistance?",
+    "intent": "government_civil_services.assistance.law"
+  },
+  {
+    "text": "How do I file for bankrupsy?",
+    "intent": "government_civil_services.assistance.law"
+  },
+  {
+    "text": "free legal help",
+    "intent": "government_civil_services.assistance.law"
   }
 ]

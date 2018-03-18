@@ -406,6 +406,14 @@
 		"intent": "business_finance.permit_license_permission.food_service.renew"
 	},
 	{
+		"text": "How do I get a food protection/management certificate?",
+		"intent": "business_finance.permit_license_permission.food_protection_certification"
+	},
+	{
+		"text": "Food manager certification program",
+		"intent": "business_finance.permit_license_permission.food_protection_certification"
+	},
+	{
 		"text": "What are the rules for signs in front of businesses?",
 		"intent": "business_finance.permit_license_permission.sign"
 	},

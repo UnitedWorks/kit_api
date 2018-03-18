@@ -932,8 +932,20 @@
 		"intent": "transportation_streets_sidewalks.ticket.lost"
 	},
 	{
+		"text": "I lost my ticket and would like to pay it online. I do not have my ticket # prefix # or any of the information it is asking me to input. I only have my license IF from NY",
+		"intent": "transportation_streets_sidewalks.ticket.lost"
+	},
+	{
 		"text": "How can I pay for my ticket?",
 		"intent": "transportation_streets_sidewalks.ticket.payment"
+	},
+	{
+		"text": "What happens if I miss my ticket payment/payment plan date?",
+		"intent": "transportation_streets_sidewalks.ticket.payment.missed"
+	},
+	{
+		"text": "I have a payment plan for my tickets, what happens if I miss the payment date?",
+		"intent": "transportation_streets_sidewalks.ticket.payment.missed"
 	},
 	{
 		"text": "How do I appeal a parking ticket judgment and penalty?",
@@ -1234,5 +1246,21 @@
 	{
 		"text": "We need a speed hump. cars are always flying down our street",
 		"intent": "transportation_streets_sidewalks.speed_hump"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.car.registration",
+		"text": "How do I register a car?"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.car.registration",
+		"text": "Registering my car"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.car.permit_license_permission",
+		"text": "How do I get a driver's license?"
+	},
+	{
+		"intent": "transportation_streets_sidewalks.car.permit_license_permission",
+		"text": "Where do I go for a drivers license"
 	}
 ]
