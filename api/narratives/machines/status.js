@@ -39,7 +39,8 @@ export default {
       }
       // Clear current location if it was in use
       this.clearCurrentLocation();
-      return this.messagingClient.runQuene().then(() => this.getBaseState());
+      this.messagingClient.runQuene();
+      return this.getBaseState();
     }
     // Otherwise return normal answer
     return fetchAnswers(this.snapshot.nlp.entities.intent[0].value, this);
