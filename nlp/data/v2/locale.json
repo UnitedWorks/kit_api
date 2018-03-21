@@ -72,7 +72,7 @@
     "intent": "locale.directions"
   },
   {
-    "text": "How do I get to you town?",
+    "text": "Directions",
     "intent": "locale.directions"
   }
 ]
