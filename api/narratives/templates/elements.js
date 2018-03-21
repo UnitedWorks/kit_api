@@ -197,6 +197,12 @@ export function genericOrganization(organization) {
         title: 'View on Map',
         url: getMapsViewUrl({ coordinates: coords, string: organization.name }),
       });
+      // Set Static Image
+      element.image_url = getStaticMapsImageUrl(coords[0], coords[1]);
+      element.default_action = {
+        type: 'web_url',
+        url: getMapsViewUrl({ coordinates: coords, string: organization.name }),
+      };
     }
   }
   if (buttons.length < 3) buttons.push({ type: 'element_share' });

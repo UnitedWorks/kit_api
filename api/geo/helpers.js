@@ -23,7 +23,7 @@ export function getStaticMapsImageUrl(lat, lon, zoom = 16) {
 export function addressToString(address, options = { slim: true }) {
   if (!address) return null;
   if (typeof address === 'string') return address;
-  return `${address.address_1}, ${address.city || ''}${address.region && !options.slim ? `, ${address.region} ` : ' '} ${address.state && !options.slim ? address.state || '' : ''} ${address.country && !options.slim ? address.country || '' : ''}`;
+  return `${address.address_1 ? `${address.address_1}, ` : ''}${address.city || ''}${address.region && !options.slim ? `, ${address.region} ` : ' '} ${address.state && !options.slim ? address.state || '' : ''} ${address.country && !options.slim ? address.country || '' : ''}`;
 }
 
 export function getCoordinatesFromAddress(address) {

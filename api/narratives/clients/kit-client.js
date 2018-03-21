@@ -242,9 +242,9 @@ export default class KitClient {
 
   static entityLocationToText(type, entity) {
     if (type === 'organization') {
-      if (entity.addresses && entity.addresses.length > 0) {
+      if (entity.addresses && entity.addresses.length > 0 && entity.addresses[0].address_1) {
         return `${entity.name} is located at ${addressToString(entity.addresses[0])}`;
-      } else if (entity.places && entity.places.length > 0) {
+      } else if (entity.places && entity.places.length > 0 && entity.addresses[0].address_1) {
         if (entity.places.length === 1) {
           return `${entity.name} is housed at ${entity.places[0].name}${entity.places[0].addresses && entity.places[0].addresses[0] ? `, ${addressToString(entity.places[0].addresses[0])}` : ''}`;
         }
