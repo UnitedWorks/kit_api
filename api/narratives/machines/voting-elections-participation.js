@@ -130,7 +130,7 @@ export default {
       this.messagingClient.addToQuene({
         type: 'template',
         templateType: 'button',
-        text: `Here's a way to check if your registered in ${this.get('location').address.state}:`,
+        text: `Here's a way to check if your registered in ${this.snapshot.organization.address.state}:`,
         buttons: quickActions,
       });
       this.messagingClient.runQuene();
@@ -155,7 +155,7 @@ export default {
         { returnString: true });
       if (registrationDeadline) this.messagingClient.addToQuene(`Your next election registration deadline is ${registrationDeadline}`);
       const elements = [{
-        title: `Register to Vote in ${this.get('location').address.state}`,
+        title: `Register to Vote in ${this.snapshot.organization.address.state}`,
         buttons: [],
       }];
       stateInfo.lookup_tools.forEach((tool) => {
