@@ -92,6 +92,7 @@ export async function searchEntitiesBySimilarity(strings = [], organizationId, o
         knex.select(knex.raw(`*, similarity(unnest(array_append(alternate_names, name::text)), '${str}') AS similarity`))
         .from('organizations')
         .where('parent_organization_id', '=', organizationId)
+        .orWhere('id', '=', organizationId)
         .orderBy('similarity', 'desc')
         .limit(10)
         .then(rows => rows.filter(r => r.similarity > options.confidence).map((o) => {

@@ -62,5 +62,17 @@
   {
     "text": "where are the grease trucks?",
     "intent": "locale.food"
+  },
+  {
+    "text": "Where is your municipality? How do I get there?",
+    "intent": "locale.directions"
+  },
+  {
+    "text": "How do I get to you town?",
+    "intent": "locale.directions"
+  },
+  {
+    "text": "How do I get to you town?",
+    "intent": "locale.directions"
   }
 ]
