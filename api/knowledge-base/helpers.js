@@ -202,10 +202,7 @@ export function getQuestions(params = {}, options = {}) {
       'knowledge_questions.knowledge_category_id', 'knowledge_questions_stats.times_asked'])
       .leftOuterJoin('knowledge_questions_stats', function() {
         this.on('knowledge_questions.id', '=', 'knowledge_questions_stats.knowledge_question_id');
-      })
-      .where('knowledge_questions_stats.organization_id', '=', params.organization_id)
-      .orWhereNull('knowledge_questions_stats.organization_id')
-      .orderByRaw('times_asked DESC NULLS LAST');
+      });
   }).fetchAll({
     withRelated: {
       category: q => q,
