@@ -337,7 +337,7 @@ export default class KitClient {
     if (availString.length > 0) {
       if (!options.toText) return true;
       if (type === 'service') {
-        return `${entity.name} is available ${availString}.${overrideString ? ` ${overrideString}` : ''}`;
+        return `${addressToString(constituentAttributes.address, { slim: true }) ? `I have as your address, ${addressToString(constituentAttributes.address, { slim: true }).trim()}. ` : ''}${entity.name} is available ${availString}.${overrideString ? ` ${overrideString}` : ''}`;
       } else if (type === 'place' || type === 'organization') {
         return `${entity.name} is open ${availString}.${overrideString ? ` ${overrideString}` : ''}`;
       }
