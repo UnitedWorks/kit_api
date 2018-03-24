@@ -64,7 +64,7 @@ async function todaysEvents() {
 }
 
 export async function todaysForecast() {
-  const organizations = await Organization.fetchAll({ withRelated: ['address'] }).then(o => o.toJSON());
+  const organizations = await Organization.where({ parent_organization_id: null }).fetchAll({ withRelated: ['address'] }).then(o => o.toJSON());
   const weatherDeck = {};
   for (let i = 0; i < organizations.length; i += 1) {
     if (organizations[i].address) {
@@ -106,7 +106,7 @@ export function scheduledJobs() {
               const quickReplies = [];
               if (!session.organization || session.organization.type !== ORG_CONST.GOVERNMENT) return;
               const client = getPreferredClient(session.constituent);
-              if (!client || !session.data_store.notifications) return;
+              if (client == null || !session.data_store.notifications) return;
               // Weather
               if (session.data_store.notifications.weather && forecast[session.organization_id]) {
                 quickReplies.push(QUICK_REPLIES.weatherOff);
