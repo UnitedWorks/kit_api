@@ -86,7 +86,7 @@ export async function searchEntitiesBySimilarity(strings = [], organizationId, o
   if (strings.length === 0) return [];
   // Postgres UNION ALL could make this more efficient... but hit a snag with results columns
   const searchFunctions = [];
-  strings.map(s => s.replace(/'|"/g, '')).forEach((str) => {
+  strings.map(s => s.replace(/[^\w|\s]/gmi, '')).forEach((str) => {
     if (!options.only || options.only === 'organizations') {
       searchFunctions.push(
         knex.select(knex.raw(`*, similarity(unnest(array_append(alternate_names, name::text)), '${str}') AS similarity`))
