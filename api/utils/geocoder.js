@@ -35,21 +35,21 @@ export async function geocoder(input, addressBoundary) {
   // If addressBoundary is passed in, we need a matching state/country
   if (addressBoundary) {
     const passingLocations = finalResponse.filter(loc =>
-      loc.region && loc.state && loc.country_code
-      && loc.region.toUpperCase() === addressBoundary.region.toUpperCase()
-      && loc.state.toUpperCase() === addressBoundary.state.toUpperCase()
-      && loc.country_code.toUpperCase() === addressBoundary.country_code.toUpperCase()
-      && loc.city.toUpperCase() === addressBoundary.city.toUpperCase());
+      loc && loc.region && loc.state && loc.country_code
+      && (loc.region || '').toUpperCase() === (addressBoundary.region || '').toUpperCase()
+      && (loc.state || '').toUpperCase() === (addressBoundary.state || '').toUpperCase()
+      && (loc.country_code || '').toUpperCase() === (addressBoundary.country_code || '').toUpperCase()
+      && (loc.city || '').toUpperCase() === (addressBoundary.city || '').toUpperCase());
     if (passingLocations.length === 0) {
       finalResponse = await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
         params: { address: `${input} ${addressBoundary.city} ${addressBoundary.state}`, key: process.env.GEOCODE_KEY },
       }).then(r => r.data.results.map(d => restructureGoogleResult(d)));
       finalResponse = finalResponse.filter(loc =>
-        loc.region && loc.state && loc.country_code
-        && loc.region.toUpperCase() === addressBoundary.region.toUpperCase()
-        && loc.state.toUpperCase() === addressBoundary.state.toUpperCase()
-        && loc.country_code.toUpperCase() === addressBoundary.country_code.toUpperCase()
-        && loc.city.toUpperCase() === addressBoundary.city.toUpperCase());
+        loc && loc.region && loc.state && loc.country_code
+        && (loc.region || '').toUpperCase() === (addressBoundary.region || '').toUpperCase()
+        && (loc.state || '').toUpperCase() === (addressBoundary.state || '').toUpperCase()
+        && (loc.country_code || '').toUpperCase() === (addressBoundary.country_code || '').toUpperCase()
+        && (loc.city || '').toUpperCase() === (addressBoundary.city || '').toUpperCase());
     } else if (passingLocations.length === 1) {
       finalResponse = [passingLocations[0]];
     } else {
