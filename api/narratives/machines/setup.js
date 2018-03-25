@@ -1,4 +1,4 @@
-import geocoder from '../../utils/geocoder';
+import { geocoder, reverseGeocoder } from '../../utils/geocoder';
 import { nlp } from '../../utils/nlp';
 import * as TAGS from '../../constants/nlp-tagging';
 import * as replyTemplates from '../templates/quick-replies';
@@ -15,10 +15,16 @@ export default {
         lon: this.snapshot.input.payload.attachments[0].payload.coordinates.long,
       } : null;
     if (passedCoordinates) {
-      this.set('attributes', {
-        ...this.get('attributes'),
-        location: passedCoordinates,
-      });
+      const geoData = await reverseGeocoder(passedCoordinates).then(gd => gd);
+      if (geoData) {
+        this.set('attributes', {
+          ...this.get('attributes'),
+          address: geoData,
+          location: passedCoordinates,
+        });
+        return this.messagingClient.send(`Thanks! I've set your address to ${this.get('attributes').address.address_1}${this.get('attributes').address.city ? `, ${this.get('attributes').address.city}` : ''}`)
+          .then(() => this.getBaseState());
+      }
     // If no coordinates passed, run NLP/text setup
     } else if (this.snapshot.input) {
       const nlpEntities = this.snapshot.nlp
@@ -42,6 +48,7 @@ export default {
         }
         if (formedString) {
           const geoData = await geocoder(formedString, this.snapshot.organization.address).then(gd => gd);
+          // Location found and passed boundary filters
           if (geoData) {
             const newAttributes = { ...this.get('attributes'), address: geoData };
             if (geoData.location) {
@@ -53,19 +60,21 @@ export default {
               };
             }
             this.set('attributes', newAttributes);
-          }
-          // So if a location was set, wrap up this state
-          if (this.get('attributes').location && this.get('attributes').location.lat) {
-            // If we had a previous input, run it
-            if (this.get('last_input')) return this.runLastInput();
-            // Otherwise, just return to base state
-            return this.messagingClient.send(`Thanks! I've set your address to ${this.get('attributes').address.address_1}${this.get('attributes').address.city ? `, ${this.get('attributes').address.city}` : ''}`)
-            .then(() => this.getBaseState());
+            // So if a location was set, wrap up this state
+            if (this.get('attributes').location && this.get('attributes').location.lat) {
+              // If we had a previous input, run it
+              if (this.get('last_input')) return this.runLastInput();
+              // Otherwise, just return to base state
+              return this.messagingClient.send(`Thanks! I've set your address to ${this.get('attributes').address.address_1}${this.get('attributes').address.city ? `, ${this.get('attributes').address.city}` : ''}`)
+                .then(() => this.getBaseState());
+            }
+          } else {
+            return this.messagingClient.send('Sorry, I didn\'t find that address in your municipality, but I may have just misunderstood. Can you say that again? (Ex: "I live at 62 Erie Street")');
           }
         }
       }
     }
-    return this.messagingClient.send('Sorry, I didn\'t catch an address. Can you say that again?', [replyTemplates.location, replyTemplates.exit]);
+    return this.messagingClient.send('Sorry, I didn\'t catch an address. Can you say that again?');
   },
 
   async location_closest() {

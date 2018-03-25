@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export function structureGoogleResult(gAdd) {
+export function restructureGoogleResult(gAdd) {
   // Pick out Address Components
   const unitNumber = gAdd.address_components.filter(a => a.types.indexOf('subpremise') >= 0);
   const streetNumber = gAdd.address_components.filter(a => a.types.indexOf('street_number') >= 0);
@@ -28,23 +28,28 @@ export function structureGoogleResult(gAdd) {
   return addressObj;
 }
 
-export default async function geocoder(input, addressBoundary) {
+export async function geocoder(input, addressBoundary) {
   let finalResponse = await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
     params: { address: input, key: process.env.GEOCODE_KEY },
-  }).then(r => r.data.results.map(d => structureGoogleResult(d)));
+  }).then(r => r.data.results.map(d => restructureGoogleResult(d)));
   // If addressBoundary is passed in, we need a matching state/country
   if (addressBoundary) {
     const passingLocations = finalResponse.filter(loc =>
       loc.region && loc.state && loc.country_code
       && loc.region.toUpperCase() === addressBoundary.region.toUpperCase()
       && loc.state.toUpperCase() === addressBoundary.state.toUpperCase()
-      && loc.country_code.toUpperCase() === addressBoundary.country_code.toUpperCase());
+      && loc.country_code.toUpperCase() === addressBoundary.country_code.toUpperCase()
+      && loc.city.toUpperCase() === addressBoundary.city.toUpperCase());
     if (passingLocations.length === 0) {
       finalResponse = await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
         params: { address: `${input} ${addressBoundary.city} ${addressBoundary.state}`, key: process.env.GEOCODE_KEY },
-      }).then(r => r.data.results.map(d => structureGoogleResult(d)));
+      }).then(r => r.data.results.map(d => restructureGoogleResult(d)));
       finalResponse = finalResponse.filter(loc =>
-        loc.state || (loc.location.lat && loc.location.lon));
+        loc.region && loc.state && loc.country_code
+        && loc.region.toUpperCase() === addressBoundary.region.toUpperCase()
+        && loc.state.toUpperCase() === addressBoundary.state.toUpperCase()
+        && loc.country_code.toUpperCase() === addressBoundary.country_code.toUpperCase()
+        && loc.city.toUpperCase() === addressBoundary.city.toUpperCase());
     } else if (passingLocations.length === 1) {
       finalResponse = [passingLocations[0]];
     } else {
@@ -53,3 +58,12 @@ export default async function geocoder(input, addressBoundary) {
   }
   return finalResponse.length > 0 ? finalResponse[0] : null;
 }
+
+export async function reverseGeocoder(coords) {
+  const finalResponse = await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
+    params: { latlng: `${coords.lat},${coords.lon}`, key: process.env.GEOCODE_KEY },
+  }).then(r => r.data.results.map(d => restructureGoogleResult(d)));
+  return finalResponse[0];
+}
+
+export default geocoder;
