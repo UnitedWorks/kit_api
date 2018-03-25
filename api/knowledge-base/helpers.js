@@ -90,20 +90,20 @@ export async function searchEntitiesBySimilarity(strings = [], organizationId, o
     if (!options.only || options.only === 'organizations') {
       searchFunctions.push(
         knex.select(knex.raw(`*, similarity(unnest(array_append(alternate_names, name::text)), '${str}') AS similarity`))
-        .from('organizations')
-        .where('parent_organization_id', '=', organizationId)
-        .orWhere('id', '=', organizationId)
-        .orderBy('similarity', 'desc')
-        .limit(10)
-        .then(rows => rows.filter(r => r.similarity > options.confidence).map((o) => {
-          return Organization.where({ id: o.id }).fetch({ withRelated: ['addresses', 'availabilitys', 'places', 'places.addresses', 'places.availabilitys', 'places.phones', 'services', 'services.addresses', 'services.availabilitys', 'services.phones', 'phones', 'persons', 'persons.phones'] })
-          .then((fetched) => {
-            return {
-              type: 'organization',
-              payload: { ...fetched.toJSON(), similarity: o.similarity }
-            };
-          });
-        })));
+          .from('organizations')
+          .where('parent_organization_id', '=', organizationId)
+          .orWhere('id', '=', organizationId)
+          .orderBy('similarity', 'desc')
+          .limit(10)
+          .then(rows => rows.filter(r => r.similarity > options.confidence).map((o) => {
+            return Organization.where({ id: o.id }).fetch({ withRelated: ['addresses', 'availabilitys', 'places', 'places.addresses', 'places.availabilitys', 'places.phones', 'services', 'services.addresses', 'services.availabilitys', 'services.phones', 'phones', 'persons', 'persons.phones'] })
+            .then((fetched) => {
+              return {
+                type: 'organization',
+                payload: { ...fetched.toJSON(), similarity: o.similarity }
+              };
+            });
+          })));
     }
     if (!options.only || options.only === 'services') {
       searchFunctions.push(

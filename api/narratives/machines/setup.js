@@ -32,13 +32,17 @@ export default {
         return this.getBaseState();
       }
       // Go through with Setting Location
-      const formedString = nlpEntities[TAGS.LOCATION]
-        ? nlpEntities[TAGS.LOCATION][0].value
-        : this.snapshot.input.payload.text;
+      let formedString = nlpEntities[TAGS.LOCATION] ? nlpEntities[TAGS.LOCATION][0].value : null;
+      // If no location entities, sift through search queries
+      if (!formedString) {
+        formedString = nlpEntities[TAGS.SEARCH_QUERY] && nlpEntities[TAGS.SEARCH_QUERY].filter(t => /\d/g.test(t.value) && t.value.length > 4).length > 0
+          ? nlpEntities[TAGS.SEARCH_QUERY].filter(t => /\d/g.test(t.value))[0].value
+          : null;
+      }
       const geoData = await geocoder(formedString, this.snapshot.organization.address)
         .then(gd => gd);
       if (geoData) {
-        const newAttributes = { address: geoData, ...this.get('attributes') };
+        const newAttributes = { ...this.get('attributes'), address: geoData };
         if (geoData.location) {
           newAttributes.location = {
             lat: geoData.location.coordinates
