@@ -69,12 +69,14 @@ export default {
                 .then(() => this.getBaseState());
             }
           } else {
-            return this.messagingClient.send('Sorry, I didn\'t find that address in your municipality, but I may have just misunderstood. Can you say that again? (Ex: "I live at 62 Erie Street")');
+            return this.messagingClient.send('Sorry, I didn\'t find that address in your municipality, but I may have just misunderstood. Can you say that again? (Ex: "I live at 62 Erie Street")')
+              .then(() => this.getBaseState());
           }
         }
       }
     }
-    return this.messagingClient.send('Sorry, I didn\'t catch an address. Can you say that again?');
+    return this.messagingClient.send('Sorry, I didn\'t catch an address. Can you say that again?')
+      .then(() => this.getBaseState());
   },
 
   async location_closest() {
