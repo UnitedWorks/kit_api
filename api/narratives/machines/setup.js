@@ -31,41 +31,40 @@ export default {
         this.messagingClient.send('Ok!', replyTemplates.whatCanIAsk);
         return this.getBaseState();
       }
-      // Go through with Setting Location
-      let formedString = nlpEntities[TAGS.LOCATION] ? nlpEntities[TAGS.LOCATION][0].value : null;
-      // If no location entities, sift through search queries
-      if (!formedString) {
-        formedString = nlpEntities[TAGS.SEARCH_QUERY] && nlpEntities[TAGS.SEARCH_QUERY].filter(t => /\d/g.test(t.value) && t.value.length > 4).length > 0
+      if (nlpEntities[TAGS.LOCATION] || nlpEntities[TAGS.SEARCH_QUERY]) {
+        // Go through with Setting Location
+        let formedString = nlpEntities[TAGS.LOCATION] ? nlpEntities[TAGS.LOCATION][0].value : null;
+        // If no location entities, sift through search queries
+        if (!formedString) {
+          formedString = nlpEntities[TAGS.SEARCH_QUERY] && nlpEntities[TAGS.SEARCH_QUERY].filter(t => /\d/g.test(t.value) && t.value.length > 4).length > 0
           ? nlpEntities[TAGS.SEARCH_QUERY].filter(t => /\d/g.test(t.value))[0].value
           : null;
-      }
-      const geoData = await geocoder(formedString, this.snapshot.organization.address)
-        .then(gd => gd);
-      if (geoData) {
-        const newAttributes = { ...this.get('attributes'), address: geoData };
-        if (geoData.location) {
-          newAttributes.location = {
-            lat: geoData.location.coordinates
-            ? geoData.location.coordinates[0] : geoData.location.lat,
-            lon: geoData.location.coordinates
-            ? geoData.location.coordinates[1] : geoData.location.lon,
-          };
         }
-        this.set('attributes', newAttributes);
+        if (formedString) {
+          const geoData = await geocoder(formedString, this.snapshot.organization.address).then(gd => gd);
+          if (geoData) {
+            const newAttributes = { ...this.get('attributes'), address: geoData };
+            if (geoData.location) {
+              newAttributes.location = {
+                lat: geoData.location.coordinates
+                ? geoData.location.coordinates[0] : geoData.location.lat,
+                lon: geoData.location.coordinates
+                ? geoData.location.coordinates[1] : geoData.location.lon,
+              };
+            }
+            this.set('attributes', newAttributes);
+          }
+          // So if a location was set, wrap up this state
+          if (this.get('attributes').location && this.get('attributes').location.lat) {
+            // If we had a previous input, run it
+            if (this.get('last_input')) return this.runLastInput();
+            // Otherwise, just return to base state
+            return this.messagingClient.send(`Thanks! I've set your address to ${this.get('attributes').address.address_1}${this.get('attributes').address.city ? `, ${this.get('attributes').address.city}` : ''}`)
+            .then(() => this.getBaseState());
+          }
+        }
       }
     }
-
-    // So if a location was set, wrap up this state
-    if (this.get('attributes').location && this.get('attributes').location.lat) {
-      // If we had a previous input, run it
-      if (this.get('last_input')) return this.runLastInput();
-
-      // Otherwise, just return to base state
-      return this.messagingClient.send(`Thanks! I've set your address to ${this.get('attributes').address.address_1}${this.get('attributes').address.city ? `, ${this.get('attributes').address.city}` : ''}`)
-        .then(() => this.getBaseState());
-    }
-
-    // If we failed to get setup, ask again
     return this.messagingClient.send('Sorry, I didn\'t catch an address. Can you say that again?', [replyTemplates.location, replyTemplates.exit]);
   },
 
