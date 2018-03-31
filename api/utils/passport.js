@@ -7,7 +7,7 @@ import { comparePassword } from '../auth/helpers';
 // Create local Strategy
 const localOptions = { usernameField: 'email' };
 const localLogin = new LocalStrategy(localOptions, (email, password, done) => {
-  Representative.where({ email })
+  Representative.where({ email: email.toLowerCase() })
     .fetch({ withRelated: ['organization', 'organization.address', 'organization.integrations', 'organization.messageEntries'] })
     .then((foundRep) => {
       if (!foundRep) {
