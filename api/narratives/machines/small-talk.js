@@ -4,11 +4,12 @@ import { getConstituentTasks } from '../../tasks/helpers';
 import SlackService from '../../utils/slack';
 import { EventTracker } from '../../utils/event-tracking';
 import { fetchAnswers, randomPick } from '../helpers';
-import { getCategoryFallback } from '../../knowledge-base/helpers';
+import { getCategoryFallback, searchEntitiesBySimilarity } from '../../knowledge-base/helpers';
 import * as elementTemplates from '../templates/elements';
 import * as replyTemplates from '../templates/quick-replies';
 import { i18n } from '../templates/messages';
 import * as KNOWLEDGE_CONST from '../../constants/knowledge-base';
+import KitClient from '../clients/kit-client';
 
 const intoTemplates = {
   type: 'template',
@@ -46,91 +47,98 @@ export default {
 
   // TODO(nicksahler): Move to init
   start: {
-    message() {
+    async message() {
       if (!this.snapshot.input.payload.text && this.snapshot.input.payload.payload) {
         this.snapshot.input.payload.text = this.snapshot.input.payload.payload;
       }
-      return nlp.message(this.snapshot.input.payload.text).then((nlpData) => {
-        this.snapshot.nlp = nlpData;
+      this.snapshot.nlp = await nlp.message(this.snapshot.input.payload.text)
+        .then(nlpData => nlpData);
 
-        logger.info(nlpData);
+      logger.info(this.snapshot.nlp);
 
-        const entities = nlpData.entities;
-        const intentMap = {
+      const entities = this.snapshot.nlp.entities;
+      const intentMap = {
 
-          // benefits_internet: 'benefits-internet.init',
+        // benefits_internet: 'benefits-internet.init',
 
-          'education_employment.employment_job_training': 'employment.waiting_job_training',
+        'education_employment.employment_job_training': 'employment.waiting_job_training',
 
-          'escalate.911': 'safety_emergency',
-          'escalate.suicide': 'personal_emergency',
-          'escalate.domestic_violence': 'domestic_violence',
+        'escalate.911': 'safety_emergency',
+        'escalate.suicide': 'personal_emergency',
+        'escalate.domestic_violence': 'domestic_violence',
 
-          'health_medicine.clinics': 'health.waiting_clinic_search',
+        'health_medicine.clinics': 'health.waiting_clinic_search',
 
-          'interaction.tasks.status': 'get_tasks',
+        'interaction.tasks.status': 'get_tasks',
 
-          'personality.what_am_i': 'personality.what_am_i',
-          'personality.chatbot_curiosity': 'personality.chatbot_curiosity',
-          'personality.has_question': 'personality.has_question',
-          'personality.makers': 'personality.makers',
-          'personality.age': 'personality.age',
-          'personality.name': 'personality.name',
-          'personality.time': 'personality.time',
-          'personality.real': 'personality.real',
-          'personality.weather': 'personality.weather',
+        'personality.what_am_i': 'personality.what_am_i',
+        'personality.chatbot_curiosity': 'personality.chatbot_curiosity',
+        'personality.has_question': 'personality.has_question',
+        'personality.makers': 'personality.makers',
+        'personality.age': 'personality.age',
+        'personality.name': 'personality.name',
+        'personality.time': 'personality.time',
+        'personality.real': 'personality.real',
+        'personality.weather': 'personality.weather',
 
-          'search.data': 'search.data',
-          'search.event': 'search.event',
-          'search.knowledge_entity': 'search.knowledge_entity',
+        'search.data': 'search.data',
+        'search.event': 'search.event',
+        'search.knowledge_entity': 'search.knowledge_entity',
 
-          'settings.locality.update': 'setup.reset_organization', // Do we need this?
-          'settings.location': 'setup.location', // Should there be an attribute setting machine?
-          'settings.default_location': 'setup.location', // Temp while wit updates
+        'settings.locality.update': 'setup.reset_organization', // Do we need this?
+        'settings.location': 'setup.location', // Should there be an attribute setting machine?
+        'settings.default_location': 'setup.location', // Temp while wit updates
 
-          'social_services.shelters': 'socialServices.waiting_shelter_search',
-          'social_services.food_assistance': 'socialServices.waiting_food_search',
-          'social_services.hygiene': 'socialServices.waiting_hygiene_search',
+        'social_services.shelters': 'socialServices.waiting_shelter_search',
+        'social_services.food_assistance': 'socialServices.waiting_food_search',
+        'social_services.hygiene': 'socialServices.waiting_hygiene_search',
 
-          'speech.help': 'what_can_i_do',
-          'speech.greeting': 'personality.handle_greeting',
-          'speech.thanks': 'personality.handle_thank_you',
-          'speech.praise': 'personality.handle_praise',
-          'speech.frustration': 'personality.handle_frustration',
+        'speech.help': 'what_can_i_do',
+        'speech.greeting': 'personality.handle_greeting',
+        'speech.thanks': 'personality.handle_thank_you',
+        'speech.praise': 'personality.handle_praise',
+        'speech.frustration': 'personality.handle_frustration',
 
-          'transportation_streets_sidewalks.snow.plowing': 'status.plowing',
-          'transportation_streets_sidewalks.bicycle.sharing.search': 'status.bicycle_share_availability',
+        'transportation_streets_sidewalks.snow.plowing': 'status.plowing',
+        'transportation_streets_sidewalks.bicycle.sharing.search': 'status.bicycle_share_availability',
 
-          'notifications': 'notifications',
+        'notifications': 'notifications',
 
-          'voting_elections_participation.absentee_ballot': 'voting_elections_participation.absentee_ballot',
-          'voting_elections_participation.deadlines': 'voting_elections_participation.deadlines',
-          'voting_elections_participation.elections': 'voting_elections_participation.elections',
-          'voting_elections_participation.registration.request': 'voting_elections_participation.registration_request',
-          'voting_elections_participation.registration.check': 'voting_elections_participation.registration_check',
-          'voting_elections_participation.polls.search': 'voting_elections_participation.polls_search',
-          'voting_elections_participation.identification': 'voting_elections_participation.identification',
-          'voting_elections_participation.eligibility': 'voting_elections_participation.eligibility',
-          'voting_elections_participation.sample_ballot': 'voting_elections_participation.sample_ballot',
-          'voting_elections_participation.early': 'voting_elections_participation.early',
-          'voting_elections_participation.blocking': 'voting_elections_participation.blocking',
-          'voting_elections_participation.assistance': 'voting_elections_participation.assistance',
+        'voting_elections_participation.absentee_ballot': 'voting_elections_participation.absentee_ballot',
+        'voting_elections_participation.deadlines': 'voting_elections_participation.deadlines',
+        'voting_elections_participation.elections': 'voting_elections_participation.elections',
+        'voting_elections_participation.registration.request': 'voting_elections_participation.registration_request',
+        'voting_elections_participation.registration.check': 'voting_elections_participation.registration_check',
+        'voting_elections_participation.polls.search': 'voting_elections_participation.polls_search',
+        'voting_elections_participation.identification': 'voting_elections_participation.identification',
+        'voting_elections_participation.eligibility': 'voting_elections_participation.eligibility',
+        'voting_elections_participation.sample_ballot': 'voting_elections_participation.sample_ballot',
+        'voting_elections_participation.early': 'voting_elections_participation.early',
+        'voting_elections_participation.blocking': 'voting_elections_participation.blocking',
+        'voting_elections_participation.assistance': 'voting_elections_participation.assistance',
 
-        };
+      };
 
-        // Run if we have intent
-        if (entities.intent && entities.intent[0]) {
-          new SlackService({ username: 'Message', icon: 'envelope' })
-            .send(`>*Con. ${this.snapshot.constituent_id}:* "${this.snapshot.input.payload.text}"`);
-          return Promise.resolve(intentMap[entities.intent[0].value]
-            || fetchAnswers(entities.intent[0].value, this));
-        // If no intent but have place/search functions, return related entities
-        } else if (entities.place_function || entities.service_function) {
-          return Promise.resolve(intentMap['search.knowledge_entity']);
+      // Run if we have intent
+      if (entities.intent && entities.intent[0]) {
+        new SlackService({ username: 'Message', icon: 'envelope' })
+          .send(`>*Con. ${this.snapshot.constituent_id}:* "${this.snapshot.input.payload.text}"`);
+        return Promise.resolve(intentMap[entities.intent[0].value]
+          || fetchAnswers(entities.intent[0].value, this));
+      // If no intent but have place/search functions, return related entities
+      } else if (entities.place_function || entities.service_function) {
+        return Promise.resolve(intentMap['search.knowledge_entity']);
+      // Otherwise, do a search and if we have no close results, abandon
+      } else {
+        const similarlyNamedEntities = await searchEntitiesBySimilarity([this.snapshot.input.payload.text], this.snapshot.organization_id, { limit: 9, confidence: 0.65 }).then(e => e);
+        if (similarlyNamedEntities && similarlyNamedEntities.length > 0) {
+          this.messagingClient.addAll(
+            KitClient.genericTemplateFromEntities(similarlyNamedEntities),
+            replyTemplates.evalHelpfulAnswer);
+          return this.messagingClient.runQuene().then(() => 'start');
         }
-        // Otherwise just fail
         return 'failed_request';
-      });
+      }
     },
 
     action() {
