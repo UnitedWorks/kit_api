@@ -203,18 +203,6 @@
 		"intent": "property_buildings_homes.district_zoning.historical"
 	},
 	{
-		"text": "What council, ward, or political districts am I in?",
-		"intent": "property_buildings_homes.district_zoning.political"
-	},
-	{
-		"text": "What Council District do I live in?",
-		"intent": "property_buildings_homes.district_zoning.political"
-	},
-	{
-		"text": "what ward do i live in?",
-		"intent": "property_buildings_homes.district_zoning.political"
-	},
-	{
 		"text": "What zone is my property in?",
 		"intent": "property_buildings_homes.zoning.map"
 	},

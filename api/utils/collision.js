@@ -1,4 +1,5 @@
 export function pointPolygonCollision(point, vs) {
+  if (!point || !vs) return false;
   // ray-casting algorithm based on
   // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
   const x = point[0];

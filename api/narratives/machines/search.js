@@ -10,6 +10,9 @@ import SlackService from '../../utils/slack';
 import { Feed } from '../../feeds/models';
 import * as FEED_CONSTANTS from '../../constants/feeds';
 import { runFeed } from '../../feeds/helpers';
+import { Boundary } from '../../boundarys/models';
+import { geoCheck } from '../helpers';
+import * as elementTemplates from '../templates/elements';
 
 export default {
   async knowledge_entity() {
@@ -177,4 +180,33 @@ export default {
     this.messagingClient.addToQuene(`${ckanConfig ? `${this.snapshot.organization.name}'s data portal can be found at ${ckanConfig.portal_url}` : ''} ${staeConfig ? `Realtime data sources are available at https://${staeConfig.municipality_id}.municipal.systems/` : ''}`);
     return this.messagingClient.runQuene().then(() => this.getBaseState());
   },
+
+  political: {
+    async enter() {
+      // Check for Boundaries
+      const boundaries = await Boundary.query(qb => qb.whereRaw("'Political' = ANY(boundarys.functions)")).where('organization_id', '=', this.snapshot.organization.id).fetchAll().then(b => b.length > 0);
+      if (!boundaries || boundaries.length === 0) return this.input('message', { boundaries: false });
+      // Otherwise Continue
+      if (!this.get('attributes').address) return this.requestLocation();
+      return this.input('message', { boundaries: true });
+    },
+    async message(aux = {}) {
+      if (aux.boundaries === true) {
+        const boundaries = await Boundary.query(qb => qb.whereRaw("'Political' = ANY(boundarys.functions)")).where('organization_id', '=', this.snapshot.organization.id).fetchAll().then(b => b.toJSON())
+          .filter(b => (geoCheck(b.geo_rules.coordinates, [this.get('attributes').location.lat, this.get('attributes').location.lon])));
+        if (boundaries.length > 0) {
+          this.messagingClient.addAll([{
+            type: 'template',
+            templateType: 'generic',
+            image_aspect_ratio: 'horizontal',
+            elements: boundaries.map(b => elementTemplates.genericBoundary(b)),
+          }]);
+          this.messagingClient.addToQuene(`You are part of ${boundaries[0].name} ${this.get('attributes').address ? `(I have your address as ${this.get('attributes').address.address_1})` : ''}`);
+          return this.messagingClient.runQuene().then(() => this.getBaseState());
+        }
+      }
+      return this.messagingClient.send('Unfortunately, I don\'t have political zones saved in my database.').then(() => this.getBaseState());
+    },
+  },
+
 };

@@ -64,7 +64,7 @@ export class NarrativeSessionMachine extends StateMachine {
 
   stateRedirect(instructions, nextState, message) {
     if (instructions === 'location') {
-      this.messagingClient.send('Ok! What\'s your CITY and STATE?  Ex) "New Brunswick, NJ"');
+      this.messagingClient.send('Ok! What\'s your address?');
       const stateRedirects = [{
         whenExiting: 'setup.waiting_organization_confirm',
         exitIs: 'smallTalk.what_can_i_do',

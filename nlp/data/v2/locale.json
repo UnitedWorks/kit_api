@@ -74,5 +74,13 @@
   {
     "text": "Directions",
     "intent": "locale.directions"
+  },
+  {
+    "text": "What should I do if I'm visiting?",
+    "intent": "locale.attractions"
+  },
+  {
+    "text": "Attractions in jersey city",
+    "intent": "locale.attractions"
   }
 ]

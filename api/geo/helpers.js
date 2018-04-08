@@ -1,6 +1,6 @@
 import { bookshelf, knex } from '../orm';
 import { Address } from './models';
-import geocoder from '../utils/geocoder';
+import { geocoder } from '../utils/geocoder';
 
 export function getMapsViewUrl({ coordinates, string }) {
   if (coordinates && !string) {
@@ -18,6 +18,11 @@ export function getMapsViewUrl({ coordinates, string }) {
 export function getStaticMapsImageUrl(lat, lon, zoom = 16) {
   // 570x300 is a 1.9:1 ratio FB requires
   return `https://api.mapbox.com/styles/v1/mapbox/streets-v10/static/pin-s+3C3EFF(${lon},${lat})/${lon},${lat},${zoom}/570x300@2x?access_token=${process.env.MAPBOX_API_TOKEN}`;
+}
+
+export function getStaticMapsPolyImageUrl(geoJSON, lat, lon, zoom = 16) {
+  // 570x300 is a 1.9:1 ratio FB requires
+  return `http://maps.googleapis.com/maps/api/staticmap?size=570x300&sensor=false&path=color:0x3C3EFF40|weight:3|fillcolor:0x3C3EFF40|${geoJSON.coordinates[0].map(c => `${c[0]},${c[1]}`).join('|')}`;
 }
 
 export function addressToString(address, options = { slim: true }) {

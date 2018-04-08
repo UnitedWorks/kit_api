@@ -390,5 +390,26 @@
   {
     "text": "Can I be on city council?",
     "intent": "voting_elections_participation.public_office"
-  }
+  },
+
+	{
+		"text": "What council, ward, or political districts am I in?",
+		"intent": "voting_elections_participation.district_zoning.political"
+	},
+	{
+		"text": "What Council District do I live in?",
+		"intent": "voting_elections_participation.district_zoning.political"
+	},
+	{
+		"text": "what ward do i live in?",
+		"intent": "voting_elections_participation.district_zoning.political"
+	},
+	{
+		"text": "what is my community board?",
+		"intent": "voting_elections_participation.district_zoning.political"
+	},
+	{
+		"text": "What congressional district do I live in?",
+		"intent": "voting_elections_participation.district_zoning.political.external"
+	},
 ]

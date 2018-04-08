@@ -45,6 +45,13 @@ export default {
     },
   },
 
+  what_are_notifications: {
+    enter() {
+      this.messagingClient.addToQuene('Each day, I can send you a notificatio on Facebook Messenger about the weather, schedule services like recycling or garbage, and tell you about upcoming events in your neighborhood!', [replyTemplates.allNotificationsOn]);
+      return this.messagingClient.runQuene().then(() => 'start');
+    },
+  },
+
   // TODO(nicksahler): Move to init
   start: {
     async message() {
@@ -94,6 +101,7 @@ export default {
         'social_services.hygiene': 'socialServices.waiting_hygiene_search',
 
         'speech.help': 'what_can_i_do',
+        'speech.help.notifications': 'what_are_notifications',
         'speech.greeting': 'personality.handle_greeting',
         'speech.thanks': 'personality.handle_thank_you',
         'speech.praise': 'personality.handle_praise',
@@ -116,6 +124,8 @@ export default {
         'voting_elections_participation.early': 'voting_elections_participation.early',
         'voting_elections_participation.blocking': 'voting_elections_participation.blocking',
         'voting_elections_participation.assistance': 'voting_elections_participation.assistance',
+
+        'voting_elections_participation.district_zoning.political': 'search.political',
 
       };
 

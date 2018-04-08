@@ -224,6 +224,18 @@
 		"intent": "speech.help"
 	},
 	{
+		"text": "What do notifications do?",
+		"intent": "speech.help.notifications"
+	},
+	{
+		"text": "What are reminders?",
+		"intent": "speech.help.notifications"
+	},
+	{
+		"text": "Notifications for what?",
+		"intent": "speech.help.notifications"
+	},
+	{
 		"text": "you're amazing!",
 		"intent": "speech.praise"
 	},

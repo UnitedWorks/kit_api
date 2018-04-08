@@ -1,5 +1,6 @@
 import moment from 'moment';
-import { addressToString, getCoordinatesFromAddress, getMapsViewUrl, getStaticMapsImageUrl } from '../../geo/helpers';
+import { addressToString, getCoordinatesFromAddress, getMapsViewUrl,
+  getStaticMapsImageUrl, getStaticMapsPolyImageUrl } from '../../geo/helpers';
 import { ILLUSTRATION_URLS } from './assets';
 
 export const genericSanitation = {
@@ -342,6 +343,15 @@ export function genericPlace(place) {
   }
   if (buttons.length < 3) buttons.push({ type: 'element_share' });
   if (buttons.length > 0) element.buttons = buttons;
+  return element;
+}
+
+export function genericBoundary(boundary) {
+  const element = {
+    title: boundary.name,
+  };
+  element.image_url = getStaticMapsPolyImageUrl(boundary.geo_rules);
+  element.buttons = [{ type: 'element_share' }];
   return element;
 }
 

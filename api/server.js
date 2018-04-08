@@ -41,6 +41,7 @@ app.use(cors(corsOptions));
 // API
 app.use('/auth', require('./auth/routes'));
 app.use('/accounts', require('./accounts/routes'));
+app.use('/boundarys', require('./boundarys/routes'));
 app.use('/conversations', require('./conversations/routes'));
 app.use('/email', require('./email/routes'));
 app.use('/feeds', require('./feeds/routes'));
