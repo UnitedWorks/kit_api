@@ -225,19 +225,19 @@ export function genericPerson(person) {
       payload: `${firstPhone.number}${firstPhone.extension ? `,${firstPhone.extension}` : ''}`,
     });
   }
+  if (person.email) {
+    buttons.push({
+      type: 'email',
+      title: person.email,
+      email: person.email,
+    });
+  }
   if (person.url) {
     buttons.push({
       type: 'web_url',
       title: person.url,
       url: person.url,
       webview_height_ratio: 'tall',
-    });
-  }
-  if (person.email) {
-    buttons.push({
-      type: 'email',
-      title: person.email,
-      email: person.email,
     });
   }
   if (buttons.length < 3) buttons.push({ type: 'element_share' });

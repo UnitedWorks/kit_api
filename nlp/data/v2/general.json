@@ -106,7 +106,7 @@
 	{
 		"text": "Directory of departments and personnel",
 		"intent": "general.directory"
-	}
+	},
 	{
 		"text": "City directory",
 		"intent": "general.directory"

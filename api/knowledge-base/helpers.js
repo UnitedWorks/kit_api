@@ -36,7 +36,7 @@ export async function getAnswers(params = {}, options = { returnJSON: true }) {
     withRelated: [{
       answers: q => q.where('owner_organization_id', params.organization_id).whereNotNull('approved_at'),
     }, 'category', 'answers.place', 'answers.place.addresses', 'answers.place.availabilitys', 'answers.service',
-      'answers.service.addresses', 'answers.service.availabilitys', 'answers.person', 'answers.phone', 'answers.feed',
+      'answers.service.addresses', 'answers.service.availabilitys', 'answers.person', 'answers.person.phones', 'answers.phone', 'answers.feed',
       'answers.media', 'answers.resource', 'answers.resource.media', 'answers.organization',
       'answers.organization.phones', 'answers.organization.addresses', 'answers.organization.services',
       'answers.organization.places', 'answers.organization.places.addresses', 'answers.organization.persons'],
