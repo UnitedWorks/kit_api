@@ -192,16 +192,23 @@ export default {
     },
     async message(aux = {}) {
       if (aux.boundaries === true) {
-        const boundaries = await Boundary.query(qb => qb.whereRaw("'Political' = ANY(boundarys.functions)")).where('organization_id', '=', this.snapshot.organization.id).fetchAll().then(b => b.toJSON())
+        const boundaries = await Boundary.query(qb => qb.whereRaw("'Political' = ANY(boundarys.functions)")).where('organization_id', '=', this.snapshot.organization.id).fetchAll({ withRelated: ['persons', 'organizations'] }).then(b => b.toJSON())
           .filter(b => (geoCheck(b.geo_rules.coordinates, [this.get('attributes').location.lat, this.get('attributes').location.lon])));
         if (boundaries.length > 0) {
+          const boundary = boundaries[0];
+          const representatives = [
+            ...(boundary.persons || []).map(p => ({ type: 'person', payload: p })),
+            ...(boundary.organizations || []).map(o => ({ type: 'organization', payload: o })),
+          ].filter(e => e);
           this.messagingClient.addAll([{
             type: 'template',
             templateType: 'generic',
             image_aspect_ratio: 'horizontal',
-            elements: boundaries.map(b => elementTemplates.genericBoundary(b)),
+            elements: [elementTemplates.genericBoundary(boundary), ...representatives.map(r => (r.type === 'person' ? elementTemplates.genericPerson(r.payload) : elementTemplates.genericOrganization(r.payload)))],
           }]);
-          this.messagingClient.addToQuene(`You are part of ${boundaries[0].name} ${this.get('attributes').address ? `(I have your address as ${this.get('attributes').address.address_1})` : ''}`);
+          this.messagingClient.addToQuene(`You are part of ${boundaries[0].name} ${this.get('attributes').address
+          ? `(I have your address as ${this.get('attributes').address.address_1})` : ''}${representatives && representatives.length > 0
+            ? ` This area is represented by ${representatives.map((r, i) => `${i !== 0 ? ', ' : ''}${r.payload.name}`)}` : ''}.`);
           return this.messagingClient.runQuene().then(() => this.getBaseState());
         }
       }

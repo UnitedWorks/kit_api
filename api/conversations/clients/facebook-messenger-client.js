@@ -9,7 +9,7 @@ const gettingStarted = {
 };
 
 function buttonTransforming(buttons) {
-  return buttons.map((button) => {
+  return (buttons || []).map((button) => {
     if (button.type === 'email') {
       return {
         type: 'web_url',

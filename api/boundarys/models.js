@@ -1,5 +1,7 @@
 import wkx from 'wkx';
 import { bookshelf } from '../orm';
+import { Person } from '../persons/models';
+import { Organization } from '../accounts/models';
 
 export const Boundary = bookshelf.Model.extend({
   tableName: 'boundarys',
@@ -15,5 +17,11 @@ export const Boundary = bookshelf.Model.extend({
       };
     }
     return attrs;
+  },
+  persons() {
+    return this.belongsToMany(Person, 'boundarys_entity_associations');
+  },
+  organizations() {
+    return this.belongsToMany(Organization, 'boundarys_entity_associations');
   },
 });
