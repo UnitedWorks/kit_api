@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { logger } from '../logger';
 import { getAnswers, getCategories, getQuestions, makeAnswer, updateAnswer, deleteAnswer,
   getQuestionsAsTable, createAnswersFromRows, setCategoryFallback,
-  answerQuestion, approveAnswers, findQuestion } from './helpers';
+  answerQuestion, approveAnswers } from './helpers';
 import { requireAuth } from '../utils/passport';
 
 const router = new Router();
@@ -30,12 +30,6 @@ router.post('/categories/fallback', requireAuth, (req, res, next) => {
 /**
  * Questions Endpoint
  */
-router.get('/question/find', requireAuth, (req, res, next) => {
-  findQuestion(req.query.statement)
-    .then(question => res.status(200).send({ question }))
-    .catch(err => next(err));
-});
-
 router.post('/question/answer', requireAuth, (req, res, next) => {
   logger.info('Pinged: Answering Question');
   answerQuestion(req.body.organization, req.body.question, req.body.answers)

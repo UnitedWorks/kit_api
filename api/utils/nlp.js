@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { Wit } from 'node-wit';
 import { logger } from '../logger';
 import geocoder from './geocoder';
@@ -48,3 +49,23 @@ export const messageToGeodata = (input, userAddress) => {
     });
   });
 };
+
+export async function trainNewStatement(text, intent) {
+  if (!text || !intent) throw new Error('Missing Text/Label');
+  return axios.post('https://api.wit.ai/samples?v=20170307', [{
+    text,
+    entities: [{
+      entity: 'intent',
+      value: intent,
+    }, {
+      entity: 'category_labels',
+      value: intent.substr(0, intent.indexOf('.')),
+    }],
+  }], {
+    headers: {
+      Authorization: `Bearer ${process.env.WIT_ACCESS_TOKEN}`,
+    },
+  })
+  .then(r => r)
+  .catch(e => e);
+}

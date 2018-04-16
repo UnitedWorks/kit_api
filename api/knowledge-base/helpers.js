@@ -581,11 +581,3 @@ export function approveAnswers(answers = []) {
     return knex('knowledge_answers').where({ id: answer.id }).update({ approved_at: knex.raw('now()') }).returning('id');
   })).then(results => ({ answers: results }));
 }
-
-export async function findQuestion(statement) {
-  const witEntities = await nlp.message(statement).then(n => n.entities);
-  if (!witEntities.intent) return null;
-  const foundIntent = witEntities.intent[0].value
-  return KnowledgeQuestion.where({ label: foundIntent }).fetch()
-    .then(question => (question ? question.toJSON() : null));
-}
