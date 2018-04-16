@@ -51,13 +51,12 @@ async function todaysEvents() {
     fResults.forEach(r => (events = events.concat(r.events)));
     return events;
   });
-  // Group by organization
   const eventDeck = {};
   feedEvents.filter(e => e.organization_id).forEach((e) => {
     if (!eventDeck[e.organization_id]) eventDeck[e.organization_id] = [];
     // If passes check, push
     const diff = moment(new Date(e.availabilitys[0].t_start)).diff(moment(), 'h');
-    const passes = diff <= 18 && diff > -4;
+    const passes = diff <= 42 && diff > -4;
     if (passes) eventDeck[e.organization_id].push(e);
   });
   return eventDeck;
@@ -118,7 +117,7 @@ export function scheduledJobs() {
               if (session.data_store.notifications.events && events[session.organization_id]
                 && events[session.organization_id].length > 0) {
                 quickReplies.push(QUICK_REPLIES.eventsOff);
-                client.addToQuene('📅 Your town has events going on today!');
+                client.addToQuene('📅 You have local events coming up!');
                 client.addAll(KitClient.genericTemplateFromEntities(
                   events[session.organization_id].map(event => ({ type: 'event', payload: event }))),
                   quickReplies);
