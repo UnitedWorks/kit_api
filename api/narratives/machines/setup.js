@@ -75,7 +75,7 @@ export default {
         }
       }
     }
-    return this.messagingClient.send('Sorry, I didn\'t catch an address. Can you say that again?')
+    return this.messagingClient.send('Can you say that address again?')
       .then(() => this.getBaseState());
   },
 
