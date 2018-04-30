@@ -206,6 +206,7 @@ export function genericOrganization(organization) {
       };
     }
   }
+  if (!element.image_url) element.image_url = organization.photo_url;
   if (buttons.length < 3) buttons.push({ type: 'element_share' });
   if (buttons.length > 0) element.buttons = buttons;
   return element;
@@ -240,6 +241,7 @@ export function genericPerson(person) {
       webview_height_ratio: 'tall',
     });
   }
+  if (!element.image_url) element.image_url = person.photo_url;
   if (buttons.length < 3) buttons.push({ type: 'element_share' });
   if (buttons.length > 0) element.buttons = buttons;
   return element;
@@ -287,6 +289,7 @@ export function genericResource(resource) {
       }
     });
   }
+  if (!element.image_url) element.image_url = resource.photo_url;
   if (buttons.length < 3) buttons.push({ type: 'element_share' });
   element.buttons = buttons;
   return element;
@@ -341,6 +344,7 @@ export function genericPlace(place) {
       email: place.email,
     });
   }
+  if (!element.image_url) element.image_url = place.photo_url;
   if (buttons.length < 3) buttons.push({ type: 'element_share' });
   if (buttons.length > 0) element.buttons = buttons;
   return element;
@@ -384,6 +388,7 @@ export function genericService(service) {
       webview_height_ratio: 'tall',
     });
   }
+  if (!element.image_url) element.image_url = service.photo_url;
   if (buttons.length < 3) buttons.push({ type: 'element_share' });
   if (buttons.length > 0) element.buttons = buttons;
   return element;
