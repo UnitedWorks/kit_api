@@ -256,13 +256,13 @@ export default {
         notifications.events = true;
         notifications.weather = true;
         notifications.alerts = true;
-        this.messagingClient.send('Reminders are on! You won\'t miss a beat now!', [replyTemplates.allNotificationsOff]);
+        this.messagingClient.send('Notifications and reminders are on! You won\'t miss a beat now!', [replyTemplates.allNotificationsOff]);
       } else {
         notifications.sanitation_collection = false;
         notifications.events = false;
         notifications.weather = false;
         notifications.alerts = false;
-        this.messagingClient.send('Notifications are off. Let me whenever you want reminders about the weather, events, or collection again.', [replyTemplates.allNotificationsOn]);
+        this.messagingClient.send('Notifications and reminders are off. Let me whenever you want reminders about the weather, events, or collection again.', [replyTemplates.allNotificationsOn]);
       }
     }
     this.set('notifications', notifications);

@@ -94,25 +94,27 @@ export function scheduledJobs() {
   // });
 
   // Constituent Notification: Morning - Weather, Events, Alerts
-  // Default: 0 15 12 * * *
-  schedule.scheduleJob('0 15 12 * * *', () => {
+  // Default: 0 0 13 * * *
+  schedule.scheduleJob('0 0 13 * * *', () => {
     NarrativeSession.fetchAll({ withRelated: ['constituent', 'constituent.facebookEntry', 'constituent.smsEntry', 'organization'] }).then((s) => {
       todaysForecast().then((forecast) => {
         todaysEvents().then((events) => {
           todaysAlerts().then((alerts) => {
             // Run Notifciation on Sessions
-            s.toJSON().forEach((session) => {
+            const sessions = s.toJSON().filter(session => session.organization
+              && session.organization.type === ORG_CONST.GOVERNMENT
+              && session.organization.parent_organization_id == null);
+            sessions.forEach((session) => {
               const quickReplies = [];
-              if (!session.organization || session.organization.type !== ORG_CONST.GOVERNMENT) return;
               const client = getPreferredClient(session.constituent);
               if (client == null || !session.data_store.notifications) return;
               // Weather
-              if (session.data_store.notifications.weather && forecast[session.organization_id]) {
-                quickReplies.push(QUICK_REPLIES.weatherOff);
-                client.addToQuene(`${WeatherClient.emojiMap[forecast[session.organization_id].weather.id] || ''} Looks like today will have a low of ${forecast[session.organization_id].min}° and a high of ${forecast[session.organization_id].max}°${forecast[session.organization_id].weather.description ? ` with ${forecast[session.organization_id].weather.description}.` : ''}`, quickReplies);
-              } else if (session.data_store.notifications.weather === false) {
-                quickReplies.push(QUICK_REPLIES.weatherOn);
-              }
+              // if (session.data_store.notifications.weather && forecast[session.organization_id]) {
+              //   quickReplies.push(QUICK_REPLIES.weatherOff);
+              //   client.addToQuene(`${WeatherClient.emojiMap[forecast[session.organization_id].weather.id] || ''} Looks like today will have a low of ${forecast[session.organization_id].min}° and a high of ${forecast[session.organization_id].max}°${forecast[session.organization_id].weather.description ? ` with ${forecast[session.organization_id].weather.description}.` : ''}`, quickReplies);
+              // } else if (session.data_store.notifications.weather === false) {
+              //   quickReplies.push(QUICK_REPLIES.weatherOn);
+              // }
               // Events
               if (session.data_store.notifications.events && events[session.organization_id]
                 && events[session.organization_id].length > 0) {
@@ -124,6 +126,7 @@ export function scheduledJobs() {
               } else if (session.data_store.notifications.events === false) {
                 quickReplies.push(QUICK_REPLIES.eventsOn);
               }
+              // Alerts
               if (session.data_store.notifications.alerts && alerts[session.organization_id]
                 && alerts[session.organization_id].length > 0) {
                 quickReplies.push(QUICK_REPLIES.alertsOff);
@@ -144,8 +147,9 @@ export function scheduledJobs() {
   schedule.scheduleJob('0 30 22 * * *', () => {
     NarrativeSession.fetchAll({ withRelated: ['organization', 'constituent', 'constituent.facebookEntry', 'constituent.smsEntry'] }).then((s) => {
       // Get sanitation answers for each org
-      const sessions = s.toJSON().filter(session => session.organization &&
-        session.organization.type === ORG_CONST.GOVERNMENT);
+      const sessions = s.toJSON().filter(session => session.organization
+        && session.organization.type === ORG_CONST.GOVERNMENT
+        && session.organization.parent_organization_id == null);
       Promise.all([...new Set(sessions.map(session => session.organization_id))].map((orgId) => {
         return getAnswers({ organization_id: orgId, label: 'environment_sanitation.recycling.schedule' }, { answerGrouped: true, returnJSON: true }).then((recyclingCluster) => {
           return getAnswers({ organization_id: orgId, label: 'environment_sanitation.trash.schedule' }, { answerGrouped: true, returnJSON: true }).then((trashCluster) => {
