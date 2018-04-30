@@ -69,7 +69,7 @@ function missingQuestionEmail(representatives, session, question) {
 
 /* TODO(nicksahler) Move this all to higher order answering */
 export async function fetchAnswers(intent, session) {
-  const entities = session.snapshot.nlp.entities;
+  const entities = session.snapshot.nlp ? session.snapshot.nlp.entities : [];
   /*TODO(nicksahler) Move this higher up (into the filter argument) to clean + validate [wit makes this prone to crashing] */
   const { question, answers, altQuestions } = await new KitClient({ organization: session.snapshot.organization }).getAnswer(intent).then(answerGroup => answerGroup);
 

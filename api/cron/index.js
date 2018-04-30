@@ -77,21 +77,21 @@ export async function todaysForecast() {
 export function scheduledJobs() {
   // Constituent Notification Signup
   // Default: 0 15 13 27 * *
-  schedule.scheduleJob('0 15 13 27 * *', () => {
-    NarrativeSession.fetchAll({ withRelated: ['constituent', 'constituent.facebookEntry', 'constituent.smsEntry', 'organization'] })
-      .then((s) => {
-        s.toJSON().filter(session => session.organization &&
-          session.organization.type === ORG_CONST.GOVERNMENT)
-          .forEach((session) => {
-            const client = getPreferredClient(session.constituent);
-            if (client && !session.data_store.notifications) {
-              client.send(
-                'Would you like reminders about trash/recycling collection, big city events, and the weather?',
-                [QUICK_REPLIES.allNotificationsOn, QUICK_REPLIES.allNotificationsOff]);
-            }
-          });
-      });
-  });
+  // schedule.scheduleJob('0 15 13 27 * *', () => {
+  //   NarrativeSession.fetchAll({ withRelated: ['constituent', 'constituent.facebookEntry', 'constituent.smsEntry', 'organization'] })
+  //     .then((s) => {
+  //       s.toJSON().filter(session => session.organization &&
+  //         session.organization.type === ORG_CONST.GOVERNMENT)
+  //         .forEach((session) => {
+  //           const client = getPreferredClient(session.constituent);
+  //           if (client && !session.data_store.notifications) {
+  //             client.send(
+  //               'Would you like reminders about trash/recycling collection, big city events, and the weather?',
+  //               [QUICK_REPLIES.allNotificationsOn, QUICK_REPLIES.allNotificationsOff]);
+  //           }
+  //         });
+  //     });
+  // });
 
   // Constituent Notification: Morning - Weather, Events, Alerts
   // Default: 0 15 12 * * *

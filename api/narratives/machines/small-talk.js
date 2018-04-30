@@ -74,6 +74,8 @@ export default {
         'escalate.suicide': 'personal_emergency',
         'escalate.domestic_violence': 'domestic_violence',
 
+        'government_civil_services.council': 'government_civil_services.council',
+
         'health_medicine.clinics': 'health.waiting_clinic_search',
 
         'interaction.tasks.status': 'get_tasks',
@@ -236,35 +238,31 @@ export default {
       this.snapshot.nlp.entities.on_off[0].value : null;
     // If no state, abort
     if (newState === null) return this.messagingClient.send('Sorry, I didn\'t catch whether you wanted to turn on or off a notification.').then(() => 'start');
-    // If no type, set all off or on
-    if (!notificationType) {
-      if (newState === 'off') {
-        notifications.sanitation_collection = false;
-        notifications.events = false;
-        notifications.weather = false;
-        notifications.alerts = false;
-        this.messagingClient.send('Notifications are off. Let me whenever you want reminders about the weather, events, or collection again.', [replyTemplates.allNotificationsOn]);
-      } else {
+    if (notificationType === 'weather') {
+      notifications.weather = newState === 'on';
+      this.messagingClient.send(`Weather updates are ${notifications.weather ? 'on. I\'ll help you stay dry ☀' : 'off. Let me know if you want weahter updates again.'}`, !notifications.weather ? [replyTemplates.weatherOn] : null);
+    } else if (notificationType === 'sanitation_collection') {
+      notifications.sanitation_collection = newState === 'on';
+      this.messagingClient.send(`Garbage/recycling reminders are ${notifications.sanitation_collection ? 'on. Collection day wont catch you by surprise again!' : 'off. Let me know when you want collection reminders again.'}`, !notifications.sanitation_collection ? [replyTemplates.sanitationOn] : null);
+    } else if (notificationType === 'events') {
+      notifications.events = newState === 'on';
+      this.messagingClient.send(`Event reminders are ${notifications.events ? 'on. I\'ll keep you in the know.' : 'off. Feel free to ask for updates again at any time.'}`, !notifications.events ? [replyTemplates.eventsOn] : null);
+    } else if (notificationType === 'alerts') {
+      notifications.alerts = newState === 'on';
+      this.messagingClient.send(`Priority updates are ${notifications.alerts ? 'on. Hope that your commute goes a bit smoother!' : 'off. Feel free to ask for them again anytime.'}`, !notifications.alerts ? [replyTemplates.alertsOn] : null);
+    } else {
+      if (newState === 'on') {
         notifications.sanitation_collection = true;
         notifications.events = true;
         notifications.weather = true;
         notifications.alerts = true;
         this.messagingClient.send('Reminders are on! You won\'t miss a beat now!', [replyTemplates.allNotificationsOff]);
-      }
-    // Otherwise flip specific type
-    } else {
-      if (notificationType === 'weather') {
-        notifications.weather = newState === 'on';
-        this.messagingClient.send(`Weather updates are ${notifications.weather ? 'on. I\'ll help you stay dry ☀' : 'off. Let me know if you want weahter updates again.'}`, !notifications.weather ? [replyTemplates.weatherOn] : null);
-      } else if (notificationType === 'sanitation_collection') {
-        notifications.sanitation_collection = newState === 'on';
-        this.messagingClient.send(`Garbage/recycling reminders are ${notifications.sanitation_collection ? 'on. Collection day wont catch you by surprise again!' : 'off. Let me know when you want collection reminders again.'}`, !notifications.sanitation_collection ? [replyTemplates.sanitationOn] : null);
-      } else if (notificationType === 'events') {
-        notifications.events = newState === 'on';
-        this.messagingClient.send(`Event reminders are ${notifications.events ? 'on. I\'ll keep you in the know.' : 'off. Feel free to ask for updates again at any time.'}`, !notifications.events ? [replyTemplates.eventsOn] : null);
-      } else if (notificationType === 'alerts') {
-        notifications.alerts = newState === 'on';
-        this.messagingClient.send(`Priority updates are ${notifications.alerts ? 'on. Hope that your commute goes a bit smoother!' : 'off. Feel free to ask for them again anytime.'}`, !notifications.alerts ? [replyTemplates.alertsOn] : null);
+      } else {
+        notifications.sanitation_collection = false;
+        notifications.events = false;
+        notifications.weather = false;
+        notifications.alerts = false;
+        this.messagingClient.send('Notifications are off. Let me whenever you want reminders about the weather, events, or collection again.', [replyTemplates.allNotificationsOn]);
       }
     }
     this.set('notifications', notifications);

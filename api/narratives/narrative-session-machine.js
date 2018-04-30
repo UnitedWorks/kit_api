@@ -6,6 +6,7 @@ import { EventTracker } from '../utils/event-tracking';
 // Base Machines
 import BenefitsInternetMachine from './machines/benefits-internet';
 import EmploymentMachine from './machines/employment';
+import GovernmentCivilServicesMachine from './machines/government_civil_services';
 import EvaluationMachine from './machines/eval';
 import HealthMachine from './machines/health';
 import PersonalityMachine from './machines/personality';
@@ -27,6 +28,7 @@ export const stateMachines = {
   'benefits-internet': BenefitsInternetMachine,
   employment: EmploymentMachine,
   eval: EvaluationMachine,
+  government_civil_services: GovernmentCivilServicesMachine,
   health: HealthMachine,
   personality: PersonalityMachine,
   action: ActionMachine,
